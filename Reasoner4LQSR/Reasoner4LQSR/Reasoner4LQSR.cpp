@@ -2,10 +2,22 @@
 //
 
 #include "stdafx.h"
+#include <fstream>
+#include <string>
+#include <iostream>
 
+//#define debug
+
+std::ofstream out;
 
 int main()
 {
-    return 0;
+  std::ofstream out("LOG.log");
+  #ifdef debug
+   out << "input2";	
+  #endif // debug
+
+  out.close();	
+  return 0;
 }
 
