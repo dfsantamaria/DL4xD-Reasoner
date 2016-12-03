@@ -5,42 +5,63 @@
 #include <fstream>
 #include <string>
 #include <iostream>
+#include <typeinfo>
+
 using namespace std;
 //#define debug
 std::ofstream logFile;   //log file
 
-class Entity
- {
- protected: string name; int *priority;
-   public: virtual int getPriority()=0;
-   Entity(string inname) { name = inname; };
-   void setName(char *inname) { name=inname; }
-   string getName() { return name; }
- };
+ /*
+      L0 has type 0
+	  L1 has type 1
+	  L2 has type 2
+	  L3 as ObjectProperty has type 3
+	  L3 as DataProperty has type 4
+  */
+ class Var
+  {
+   private: 
+		    int type;
+			int min = -1;
+			int max = 5;
+			string name;
+			int isValid(int _type) { return _type > min && _type < max; };
+   public:
+		   Var(string _name, int _type)
+		    {
+			   name = _name;
+			   if (isValid(_type))
+				   type = _type;
+			   else
+				   type = -1;
+		    }
+		   int getType() { return type; };
+		   string getName() { return name; };
+		   int setName(string _name) 
+		      { 
+			    name = _name; 
+			    return type; 
+		      };
+		   int setType(int _type)
+		      { 
+			   if (isValid(_type))
+			     type = _type;			    
+			   else			     
+				  type = -1; 
+			   return type;			   
+		      };
+		   
+  };
 
-class L0Var : Entity {};
 
-
-class L0VarConst : Entity
-{
-  public: int getPriority() { return 1; }; 
-  L0VarConst(string inname): Entity(inname){}
-};
-
-class L0VarBound : Entity
-{
-  public: int getPriority() { return 2; };
-  L0VarBound(string inname) : Entity(inname) {}
-};
 
 int main()
 {
   std::ofstream logFile("LOG.log");
   #ifdef debug  
   #endif // debug
-    L0VarBound b ("ciao");
-	
-  cout << b.getPriority();
+  Var b ("ciao", 0);
+  cout << b.getName() << b.getType(); 
   logFile.close();	
   return 0;
 }
