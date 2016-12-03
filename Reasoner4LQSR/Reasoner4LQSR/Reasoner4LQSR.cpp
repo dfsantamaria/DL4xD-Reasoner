@@ -5,19 +5,43 @@
 #include <fstream>
 #include <string>
 #include <iostream>
-
+using namespace std;
 //#define debug
+std::ofstream logFile;   //log file
 
-std::ofstream out;
+class Entity
+ {
+ protected: string name; int *priority;
+   public: virtual int getPriority()=0;
+   Entity(string inname) { name = inname; };
+   void setName(char *inname) { name=inname; }
+   string getName() { return name; }
+ };
+
+class L0Var : Entity {};
+
+
+class L0VarConst : Entity
+{
+  public: int getPriority() { return 1; }; 
+  L0VarConst(string inname): Entity(inname){}
+};
+
+class L0VarBound : Entity
+{
+  public: int getPriority() { return 2; };
+  L0VarBound(string inname) : Entity(inname) {}
+};
 
 int main()
 {
-  std::ofstream out("LOG.log");
-  #ifdef debug
-   out << "input2";	
+  std::ofstream logFile("LOG.log");
+  #ifdef debug  
   #endif // debug
-
-  out.close();	
+    L0VarBound b ("ciao");
+	
+  cout << b.getPriority();
+  logFile.close();	
   return 0;
 }
 
