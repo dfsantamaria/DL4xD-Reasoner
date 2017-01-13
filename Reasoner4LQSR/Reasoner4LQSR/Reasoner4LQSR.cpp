@@ -77,42 +77,43 @@ const int max = 3;
  
  };
 
- class Formulae
+ class Node
  {
- private: vector<Formula> SetFormula;
-
+   private: vector<Formula> SetFormula;
  };
 
 // Implementing Tableau as vector. Use index*2 for left child and index*2+1 for right
-vector<Formulae> Tableau;
+vector<Node> Tableau;
 
 int init()
-{
-	VCL.reserve(max);
-	VVL.reserve(max);		
-	for (int i = 0; i < max; i++)
-	{
-		VCL.push_back(vector<Var>());
-		VVL.push_back(vector<Var>());
-	}
-	return 0;
+ {
+  VCL.reserve(max);
+  VVL.reserve(max);		
+  for (int i = 0; i < max; i++)
+   {
+	VCL.push_back(vector<Var>());
+	VVL.push_back(vector<Var>());
+   }
+  return 0;
 }
 
 int addNewElement(Var &element, vector < vector <Var>> &evector)
-{
-	
-	int type = element.getType();
-	if (element.isValidType())
-	{
+ {	
+  int type = element.getType();
+  if (element.isValidType()&&element.isValidVar())
 	 (evector.at(type)).push_back(element);
-	}
-	return type;
-}
+  return type;
+ }
 
 int addNewConst(Var &element)
-{
-	return (addNewElement(element, VCL));
-}
+ {
+  return (addNewElement(element, VCL));
+ }
+
+int addNewVar(Var &element)
+ {
+  return (addNewElement(element, VVL));
+ }
 
 int main()
 {  
