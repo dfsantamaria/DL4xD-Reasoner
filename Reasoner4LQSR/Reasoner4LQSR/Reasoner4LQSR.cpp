@@ -20,27 +20,27 @@ L2 has type 2
 L3 as ObjectProperty has type 3
 L3 as DataProperty has type 4
 */
-int min = -1;
-int max = 5;
+const int min = -1;
+const int max = 3;
 
  class Var
   {
    private: 
 		    int type;
-			
+			int var;
 			string name;
-			int isValid(int _type) { return _type > min && _type < max; };
+			int isValidType(int _type) { return _type > min && _type <= max; };
+			int isValidVar(int _var) { return _var >= 0 && _var <= 1; };
    public:
-		   Var(string _name, int _type)
+		   Var(string _name, int _type, int _var)
 		    {
-			   name = _name;
-			   if (isValid(_type))
-				   type = _type;
-			   else
-				   type = -1;
+			   setName( _name);
+			   setType(_type);
+			   setVarType(_var);
 		    }
 		   int getType() { return type; };
 		   string getName() { return name; };
+		   int getVarType() { return var; };
 		   int setName(string _name) 
 		      { 
 			    name = _name; 
@@ -48,29 +48,30 @@ int max = 5;
 		      };
 		   int setType(int _type)
 		      { 
-			   if (isValid(_type))
+			   if (isValidType(_type))
 			     type = _type;			    
 			   else			     
 				  type = -1; 
 			   return type;			   
 		      };
-		   
+		   int setVarType(int _var)
+		   {
+			   if (isValidVar(_var))
+				   var = _var;
+			   else var = -1;	
+			   return var;
+		   };
   };
 
  // vector of 4LQSR Variables. V stays for variable, C for constant.
- vector<Var> VCL0;
- vector<Var> VCL1;
- vector<Var> VCL2;
- vector<Var> VCL3;
- vector<Var> VVL0;
- vector<Var> VVL1;
- vector<Var> VVL2;
- vector<Var> VVL3;
+ vector< vector <Var> > VCL;
+ vector< vector <Var> > VVL;
 
  class Formula
  {
  
  };
+
  class Formulae
  {
  private: vector<Formula> SetFormula;
@@ -81,12 +82,18 @@ int max = 5;
 vector<Formulae> Tableau;
 
 int main()
-{
+{  
   std::ofstream logFile("LOG.log");
   #ifdef debug  
   #endif // debug
-  Var b ("monastero", 0);
-  cout << b.getName() << b.getType(); 
+  Var b ("monastero", 0, 0);
+  Var x("cortile", 1, 0);
+  Var g("boh", 2, 1);
+  Var h("haLivello", 3, 0);
+  cout << b.getName() <<","<< b.getType() <<","<< b.getVarType() << endl; 
+  cout << x.getName() << "," << x.getType() << "," << x.getVarType() << endl;
+  cout << g.getName() << "," << g.getType() << "," << g.getVarType() << endl;
+  cout << h.getName() << "," << h.getType() << "," << h.getVarType() << endl;
   logFile.close();	
   return 0;
 }
