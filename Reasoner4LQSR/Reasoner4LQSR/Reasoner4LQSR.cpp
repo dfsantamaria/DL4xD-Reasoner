@@ -31,6 +31,7 @@ const int max = 3;
 			string name;
 			int isValidType(int _type) { return _type > min && _type <= max; };
 			int isValidVar(int _var) { return _var >= 0 && _var <= 1; };
+			
    public:
 		   Var(string _name, int _type, int _var)
 		    {
@@ -38,6 +39,10 @@ const int max = 3;
 			   setType(_type);
 			   setVarType(_var);
 		    }
+		   		   
+		   int isValidType() { return isValidType(type);};
+		   int isValidVar() { return isValidVar(var); };
+
 		   int getType() { return type; };
 		   string getName() { return name; };
 		   int getVarType() { return var; };
@@ -81,8 +86,37 @@ const int max = 3;
 // Implementing Tableau as vector. Use index*2 for left child and index*2+1 for right
 vector<Formulae> Tableau;
 
+int init()
+{
+	VCL.reserve(max);
+	VVL.reserve(max);		
+	for (int i = 0; i < max; i++)
+	{
+		VCL.push_back(vector<Var>());
+		VVL.push_back(vector<Var>());
+	}
+	return 0;
+}
+
+int addNewElement(Var &element, vector < vector <Var>> &evector)
+{
+	
+	int type = element.getType();
+	if (element.isValidType())
+	{
+	 (evector.at(type)).push_back(element);
+	}
+	return type;
+}
+
+int addNewConst(Var &element)
+{
+	return (addNewElement(element, VCL));
+}
+
 int main()
 {  
+  int res=init();
   std::ofstream logFile("LOG.log");
   #ifdef debug  
   #endif // debug
@@ -94,6 +128,16 @@ int main()
   cout << x.getName() << "," << x.getType() << "," << x.getVarType() << endl;
   cout << g.getName() << "," << g.getType() << "," << g.getVarType() << endl;
   cout << h.getName() << "," << h.getType() << "," << h.getVarType() << endl;
+  
+  cout << "Testing addNewConst: " << addNewConst(b)<<endl;
+  cout<< "--------------------  "<< VCL.at(0).capacity()<<endl;
+  cout << "-------------------- " << VCL.at(0).at(0).getName() << endl;
+ // cout<<addNewElement(x, VCL)<<endl;
+  //cout << VCL.at(0).at(0).getName() << endl;
+  cout << VCL.capacity()<< endl;
+
+
+
   logFile.close();	
   return 0;
 }
