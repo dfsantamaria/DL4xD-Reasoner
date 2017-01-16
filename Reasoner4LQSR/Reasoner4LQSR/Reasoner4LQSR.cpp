@@ -24,6 +24,7 @@ L3 as DataProperty has type 4
 const int minVarSize = -1;
 const int maxVarSize = 3;
 const int maxAtLen = 3;
+const int maxOpLen = 4;
 
  class Var
   {
@@ -36,11 +37,11 @@ const int maxAtLen = 3;
 			
    public:
 		   Var(string _name, int _type, int _var)
-		    {
-			   setName( _name);
+		     {
+			  setName( _name);
 			   setType(_type);
 			   setVarType(_var);
-		    }
+		   };
 		   		   
 		   int isValidType() { return isValidType(type);};
 		   int isValidVar() { return isValidVar(var); };
@@ -62,12 +63,13 @@ const int maxAtLen = 3;
 			   return type;			   
 		      };
 		   int setVarType(int _var)
-		   {
+		    {
 			   if (isValidVar(_var))
-				   var = _var;
-			   else var = -1;	
+				  var = _var;
+			   else 
+				 var = -1;	
 			   return var;
-		   };
+		    };
   };
 
  // vector of 4LQSR Variables. V stays for variable, C for constant.
@@ -87,36 +89,21 @@ const int maxAtLen = 3;
  class Atom
  {
    private:  
-	       array<Var*,maxAtLen> components;
-		   int atomOp; 
+	       
+		   int atomOp;		  
 		    /*
 			   -1 unsetted; 0 \in ; 1 \notin; 2 \equals; 3 \notequals 
 			*/
+		   vector<Var*> components;		   
    public: 
-	      Atom() 
+	      Atom(int size, int op, vector<Var*> vec) 
            {
-	         for (int i = 0; i < maxAtLen; i++)
-		      components[i] = NULL;
-	         atomOp = -1;
-		  };
-		  
-		  Atom(Var& last, Var& first, Var& second, int op)
-		  {
-			  components[0] = &last;
-			  components[1] = &first;
-			  components[2] = &second;
-			  atomOp = op;
-		  };
-
-		  Atom(Var& last, Var& first, int op)
-		  {
-			  components[0] = &last;
-			  components[1] = &first;
-			  components[2] = NULL;
-			  atomOp = op;
-		  };
-
-		  array<Var*, maxAtLen> getElements()
+			  components.reserve(size);
+			  setAtomOp(op);
+			  components = vec;
+		  };		  
+		 
+		  vector<Var*> getElements()
 		  {
 			return components;
 		  };
@@ -131,13 +118,18 @@ const int maxAtLen = 3;
 			  atomOp = value;
 		  };
 
-		  Var* getVarAtIndex(int index)
+		  Var* getElementAt(int index)
 		  {
-			if (index<maxAtLen)
-			  return components[index];
+			if ( index < components.size())			  
+			 return components.at(index);
 			return NULL;
+			  
+		  }
+		 /* void addElement(Var& element)
+		  {
+			  getElements().push_back(&element);
 		  };
-  
+		  */
  };
 // Implementing Tableau as vector. Use index*2 for left child and index*2+1 for right
 vector<Node> Tableau;
@@ -193,8 +185,11 @@ int main()
  // cout<<addNewElement(x, VCL)<<endl;
   //cout << VCL.at(0).at(0).getName() << endl;
   cout << VCL.capacity()<< endl;
-  Atom atom(h, b, 0);  
-  cout << "Atom print: " << (*atom.getVarAtIndex(0)).getName() << endl;
+  Atom atom(2, 0, {&b,&h});
+  cout << "Atom print: " <<  (*(atom.getElementAt(0))).getName() << endl;
+  cout << "Atom print: " << (*(atom.getElementAt(1))).getName() << endl;
+  if( ((atom.getElementAt(2)))==NULL)
+       cout << "Atom print: NULL " << endl;
 
   logFile.close();	
   return 0;
