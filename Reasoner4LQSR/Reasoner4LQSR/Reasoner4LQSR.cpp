@@ -7,6 +7,7 @@
 #include <iostream>
 #include <typeinfo>
 #include <vector>
+#include <array>
 
 using namespace std;
 //#define debug
@@ -20,8 +21,9 @@ L2 has type 2
 L3 as ObjectProperty has type 3
 L3 as DataProperty has type 4
 */
-const int min = -1;
-const int max = 3;
+const int minVarSize = -1;
+const int maxVarSize = 3;
+const int maxAtLen = 3;
 
  class Var
   {
@@ -29,7 +31,7 @@ const int max = 3;
 		    int type;
 			int var;
 			string name;
-			int isValidType(int _type) { return _type > min && _type <= max; };
+			int isValidType(int _type) { return _type > minVarSize && _type <= maxVarSize; };
 			int isValidVar(int _var) { return _var >= 0 && _var <= 1; };
 			
    public:
@@ -73,23 +75,78 @@ const int max = 3;
  vector< vector <Var> > VVL;
 
  class Formula
- {
+  {
  
- };
+  };
 
  class Node
- {
-   private: vector<Formula> SetFormula;
- };
+  {
+   private: vector<Formula> setFormula;
+  };
 
+ class Atom
+ {
+   private:  
+	       array<Var*,maxAtLen> components;
+		   int atomOp; 
+		    /*
+			   -1 unsetted; 0 \in ; 1 \notin; 2 \equals; 3 \notequals 
+			*/
+   public: 
+	      Atom() 
+           {
+	         for (int i = 0; i < maxAtLen; i++)
+		      components[i] = NULL;
+	         atomOp = -1;
+		  };
+		  
+		  Atom(Var& last, Var& first, Var& second, int op)
+		  {
+			  components[0] = &last;
+			  components[1] = &first;
+			  components[2] = &second;
+			  atomOp = op;
+		  };
+
+		  Atom(Var& last, Var& first, int op)
+		  {
+			  components[0] = &last;
+			  components[1] = &first;
+			  components[2] = NULL;
+			  atomOp = op;
+		  };
+
+		  array<Var*, maxAtLen> getElements()
+		  {
+			return components;
+		  };
+
+		  int getAtomOp() 
+		  {
+			return atomOp;
+		  };
+
+		  void setAtomOp(int value)
+		  {
+			  atomOp = value;
+		  };
+
+		  Var* getVarAtIndex(int index)
+		  {
+			if (index<maxAtLen)
+			  return components[index];
+			return NULL;
+		  };
+  
+ };
 // Implementing Tableau as vector. Use index*2 for left child and index*2+1 for right
 vector<Node> Tableau;
 
 int init()
  {
-  VCL.reserve(max);
-  VVL.reserve(max);		
-  for (int i = 0; i < max; i++)
+  VCL.reserve(maxVarSize);
+  VVL.reserve(maxVarSize);		
+  for (int i = 0; i < maxVarSize; i++)
    {
 	VCL.push_back(vector<Var>());
 	VVL.push_back(vector<Var>());
@@ -136,8 +193,8 @@ int main()
  // cout<<addNewElement(x, VCL)<<endl;
   //cout << VCL.at(0).at(0).getName() << endl;
   cout << VCL.capacity()<< endl;
-
-
+  Atom atom(h, b, 0);  
+  cout << "Atom print: " << (*atom.getVarAtIndex(0)).getName() << endl;
 
   logFile.close();	
   return 0;
