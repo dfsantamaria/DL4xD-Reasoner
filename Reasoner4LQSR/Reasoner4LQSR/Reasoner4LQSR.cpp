@@ -97,7 +97,7 @@ int init()
   return 0;
 }
 
-int addNewElement(Var &element, vector < vector <Var>> &evector)
+int addNewElement(Var& element, vector < vector <Var>>& evector)
  {	
   int type = element.getType();
   if (element.isValidType()&&element.isValidVar())
@@ -105,12 +105,12 @@ int addNewElement(Var &element, vector < vector <Var>> &evector)
   return type;
  }
 
-int addNewConst(Var &element)
+int addNewConst(Var& element)
  {
   return (addNewElement(element, VCL));
  }
 
-int addNewVar(Var &element)
+int addNewVar(Var& element)
  {
   return (addNewElement(element, VVL));
  }
