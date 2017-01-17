@@ -22,10 +22,11 @@ L3 as ObjectProperty has type 3
 L3 as DataProperty has type 4
 */
 const int minVarSize = -1;
-const int maxVarSize = 3;
+const int maxVarSize = 3;   //size of variable
 const int maxAtLen = 3;
 const int maxOpLen = 4;
 
+//Class of the single Var
  class Var
   {
    private: 
@@ -45,7 +46,6 @@ const int maxOpLen = 4;
 		   		   
 		   int isValidType() { return isValidType(type);};
 		   int isValidVar() { return isValidVar(var); };
-
 		   int getType() { return type; };
 		   string getName() { return name; };
 		   int getVarType() { return var; };
@@ -83,10 +83,12 @@ const int maxOpLen = 4;
 
  class Node
   {
-   private: vector<Formula> setFormula;
-			Node* leftChild;
-			Node* rightChild;
-			Node* father;
+   private: 
+	   vector<Formula> setFormula;
+	   Node* leftChild;
+	   Node* rightChild;
+	   Node* father;
+
    public: 
 	   Node() { leftChild = rightChild = father = NULL; };
 	   Node(vector<Formula>* formula) { setFormula = *formula; leftChild = rightChild = father = NULL; };
@@ -102,60 +104,68 @@ const int maxOpLen = 4;
 
  class Atom
  {
-   private:  
-	       
+   private:  	       
 		   int atomOp;		  
 		    /*
 			   -1 unsetted; 0 \in ; 1 \notin; 2 \equals; 3 \notequals 
 			*/
-		   vector<Var*> components;		   
+		   vector<Var*> components;	
+		   /*
+		       Right Operand is the first element of the vector.
+			   Pair is the second and the third.
+		   */
    public: 
 	      Atom(int size, int op, vector<Var*> vec) 
            {
 			  components.reserve(size);
 			  setAtomOp(op);
 			  components = vec;
-		  };		  
+		   };		  
 		 
 		  vector<Var*>* getElements()
-		  {
+		   {
 			return &components;
-		  };
+		   };
 
 		  int getAtomOp() 
-		  {
+		   {
 			return atomOp;
-		  };
+		   };
 
 		  void setAtomOp(int value)
-		  {
-			  atomOp = value;
-		  };
+		   {
+			 atomOp = value;
+		   };
 
 		  Var* getElementAt(int index)
-		  {
+		   {
 			if ( index < components.size())			  
-			 return components.at(index);
-			return NULL;
-			  
-		  }
-		 /* void addElement(Var& element)
-		  {
-			  getElements().push_back(&element);
-		  };
+			  return components.at(index);
+			return NULL;			  
+		   }
+		  /*
+		     Use Carefully. Remember the position of the left/right operand
 		  */
+		  void addElement(Var& element)
+		   {
+			 (*getElements()).push_back(&element);
+		   };		  
  };
 
+ /*
+    The Tableau.
+ */
  class Tableau
  {
    private: Node* radix;
    public: 
 	   Tableau(Node* initial) { radix = initial; };
-	   Node* getTableau() { return radix; };
-	   
+	   Node* getTableau() { return radix; };	   
  };
 
-
+ /*
+   Init the vectors of variables.
+ */
 int init()
  {
   VCL.reserve(maxVarSize);
@@ -167,7 +177,9 @@ int init()
    }
   return 0;
 }
-
+/*
+  Add an element to the given vector of the vars
+*/
 int addNewElement(Var& element, vector < vector <Var>>& evector)
  {	
   int type = element.getType();
@@ -176,11 +188,18 @@ int addNewElement(Var& element, vector < vector <Var>>& evector)
   return type;
  }
 
+/*
+Add an element to the vector of consts
+*/
+
 int addNewConst(Var& element)
  {
   return (addNewElement(element, VCL));
  }
 
+/*
+Add an element to the vector of variables
+*/
 int addNewVar(Var& element)
  {
   return (addNewElement(element, VVL));
@@ -199,8 +218,7 @@ int main()
   cout << b.getName() <<","<< b.getType() <<","<< b.getVarType() << endl; 
   cout << x.getName() << "," << x.getType() << "," << x.getVarType() << endl;
   cout << g.getName() << "," << g.getType() << "," << g.getVarType() << endl;
-  cout << h.getName() << "," << h.getType() << "," << h.getVarType() << endl;
-  
+  cout << h.getName() << "," << h.getType() << "," << h.getVarType() << endl;  
   cout << "Testing addNewConst: " << addNewConst(b)<<endl;
   cout<< "--------------------  "<< VCL.at(0).capacity()<<endl;
   cout << "-------------------- " << VCL.at(0).at(0).getName() << endl;
@@ -212,7 +230,8 @@ int main()
   cout << "Atom print: " << (*(atom.getElementAt(1))).getName() << endl;
   if( ((atom.getElementAt(2)))==NULL)
        cout << "Atom print: NULL " << endl;
-
+  Tableau tab( &Node() ); //empty tableau
+  Node* radix=tab.getTableau();
   logFile.close();	
   return 0;
 }
