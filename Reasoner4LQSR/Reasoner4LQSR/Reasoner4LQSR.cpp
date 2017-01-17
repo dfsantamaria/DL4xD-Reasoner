@@ -76,32 +76,6 @@ const int maxOpLen = 4;
  vector< vector <Var> > VCL;
  vector< vector <Var> > VVL;
 
- class Formula
-  {
-   
-  };
-
- class Node
-  {
-   private: 
-	   vector<Formula> setFormula;
-	   Node* leftChild;
-	   Node* rightChild;
-	   Node* father;
-
-   public: 
-	   Node() { leftChild = rightChild = father = NULL; };
-	   Node(vector<Formula>* formula) { setFormula = *formula; leftChild = rightChild = father = NULL; };
-	   Node* getLeftChild() { return leftChild; };
-	   Node* getRightChild() { return rightChild; };
-	   Node* getFather() { return father; }
-	   void setRightChild(Node* child) { rightChild = child; };
-	   void setLeftChild(Node* child) { leftChild = child; };
-	   void setFather(Node* f) { father = f; };
-	   void insertFormula(Formula* f) { setFormula.push_back(*f); };
-	   vector<Formula>* getSetFormulae() { return &setFormula; }
-  };
-
  class Atom
  {
    private:  	       
@@ -151,6 +125,53 @@ const int maxOpLen = 4;
 			 (*getElements()).push_back(&element);
 		   };		  
  };
+
+ class Formula
+ {
+ private:
+	 vector<Var*> quantified;
+	 Atom *atom;
+	 int operand;
+	 Formula *subformula;
+ public:
+	 Formula(Atom *at, int op)
+	 {
+		 setAtom(at);
+		 setOperand(op);
+		 subformula = NULL;
+	 };
+	 vector<Var*>* getQuantifiedSet() { return &quantified; };
+	 Atom* getAtom() { return atom; };
+	 int getOperand() { return operand; };
+	 Formula* getSubformula() { return subformula; };
+	 void setOperand(int op) { op = operand; };
+	 void setAtom(Atom *at) { atom = at; };
+	 void setSubformula(Formula *sub) { subformula = sub; };
+
+ };
+
+
+ class Node
+ {
+ private:
+	 vector<Formula> setFormula;
+	 Node* leftChild;
+	 Node* rightChild;
+	 Node* father;
+
+ public:
+	 Node() { leftChild = rightChild = father = NULL; };
+	 Node(vector<Formula>* formula) { setFormula = *formula; leftChild = rightChild = father = NULL; };
+	 Node* getLeftChild() { return leftChild; };
+	 Node* getRightChild() { return rightChild; };
+	 Node* getFather() { return father; }
+	 void setRightChild(Node* child) { rightChild = child; };
+	 void setLeftChild(Node* child) { leftChild = child; };
+	 void setFather(Node* f) { father = f; };
+	 void insertFormula(Formula* f) { setFormula.push_back(*f); };
+	 vector<Formula>* getSetFormulae() { return &setFormula; }
+ };
+
 
  /*
     The Tableau.
