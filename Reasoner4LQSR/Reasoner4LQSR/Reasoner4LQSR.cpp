@@ -78,12 +78,26 @@ const int maxOpLen = 4;
 
  class Formula
   {
- 
+   
   };
 
  class Node
   {
    private: vector<Formula> setFormula;
+			Node* leftChild;
+			Node* rightChild;
+			Node* father;
+   public: 
+	   Node() { leftChild = rightChild = father = NULL; };
+	   Node(vector<Formula>* formula) { setFormula = *formula; leftChild = rightChild = father = NULL; };
+	   Node* getLeftChild() { return leftChild; };
+	   Node* getRightChild() { return rightChild; };
+	   Node* getFather() { return father; }
+	   void setRightChild(Node* child) { rightChild = child; };
+	   void setLeftChild(Node* child) { leftChild = child; };
+	   void setFather(Node* f) { father = f; };
+	   void insertFormula(Formula* f) { setFormula.push_back(*f); };
+	   vector<Formula>* getSetFormulae() { return &setFormula; }
   };
 
  class Atom
@@ -103,9 +117,9 @@ const int maxOpLen = 4;
 			  components = vec;
 		  };		  
 		 
-		  vector<Var*> getElements()
+		  vector<Var*>* getElements()
 		  {
-			return components;
+			return &components;
 		  };
 
 		  int getAtomOp() 
@@ -131,8 +145,16 @@ const int maxOpLen = 4;
 		  };
 		  */
  };
-// Implementing Tableau as vector. Use index*2 for left child and index*2+1 for right
-vector<Node> Tableau;
+
+ class Tableau
+ {
+   private: Node* radix;
+   public: 
+	   Tableau(Node* initial) { radix = initial; };
+	   Node* getTableau() { return radix; };
+	   
+ };
+
 
 int init()
  {
