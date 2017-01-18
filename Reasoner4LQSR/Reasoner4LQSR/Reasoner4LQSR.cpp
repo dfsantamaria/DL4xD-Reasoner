@@ -128,12 +128,12 @@ const int maxOpLen = 4;
 
  class Formula
  {
- private:
+   private:
 	 vector<Var*> quantified;
 	 Atom *atom;
 	 int operand;
 	 Formula *subformula;
- public:
+   public:
 	 Formula(Atom *at, int op)
 	 {
 		 setAtom(at);
