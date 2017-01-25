@@ -131,40 +131,23 @@ const int maxOpLen = 4;
    private:
 	 vector<Var*> quantified;
 	 Atom *atom;
-	 int operand; //0 forAND, 1 for OR 
-	 Formula *lsubformula;
-	 Formula *rsubformula;
-	 Formula *pformula;
+	 int operand;
+	 Formula *subformula;
    public:
 	 Formula(Atom *at, int op)
 	 {
 		 setAtom(at);
 		 setOperand(op);
-		 lsubformula = NULL;
-		 rsubformula = NULL;
-		 pformula = NULL;
-	 };
-	 Formula(Atom *at, int op, Formula *lf, Formula *rf)
-	 {
-		 setAtom(at);
-		 setOperand(op);
-		 lsubformula = lf;
-		 rsubformula = rf;
-		 (*lsubformula).setPreviousFormula(this);
-		 (*rsubformula).setPreviousFormula(this);
-		 
+		 subformula = NULL;
 	 };
 	 vector<Var*>* getQuantifiedSet() { return &quantified; };
 	 Atom* getAtom() { return atom; };
 	 int getOperand() { return operand; };
-	 Formula* getLSubformula() { return lsubformula; };
-	 Formula* getRSubformula() { return rsubformula; };
-	 Formula* getPreviousformula() { return pformula; };
+	 Formula* getSubformula() { return subformula; };
 	 void setOperand(int op) { op = operand; };
 	 void setAtom(Atom *at) { atom = at; };
-	 void setLSubformula(Formula *sub) { lsubformula = sub; };
-	 void setRSubformula(Formula *sub) { rsubformula = sub; };
-	 void setPreviousFormula(Formula *prev) { pformula = prev; }
+	 void setSubformula(Formula *sub) { subformula = sub; };
+
  };
 
 
