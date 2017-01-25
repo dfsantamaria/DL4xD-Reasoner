@@ -274,3 +274,20 @@ int main()
   return 0;
 }
 
+/*
+\Fa -> ForAll
+\IN -> IN
+\NI -> NOTIN
+\EQ -> =
+\QE -> not =
+\OA -> <
+\AO -> >
+\AD -> AND
+\OR -> OR
+( ) -> ( )
+Ci{name} -> X^i_{name} constant.
+Vi{name} -> X^i_{name} variable
+
+(\FA V0{z})(( ( V0{z} \NI C1{C1})\OR ( V0{z} \NI C1{C2}))\AN(( V0{z} \NI C1{C2})\OR (\V0{z} \IN C1{C2}))) 
+
+*/
