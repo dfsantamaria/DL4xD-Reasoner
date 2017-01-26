@@ -8,6 +8,7 @@
 #include <typeinfo>
 #include <vector>
 #include <array>
+#include <stack>
 
 using namespace std;
 //#define debug
@@ -32,7 +33,7 @@ const int maxOpLen = 4;
    private: 
 		    int type;
 			int var;
-			string name;
+			string name;  // Underscore is allowed to define name with underscore			
 			int isValidType(int _type) { return _type > minVarSize && _type <= maxVarSize; };
 			int isValidVar(int _var) { return _var >= 0 && _var <= 1; };
 			
@@ -72,9 +73,9 @@ const int maxOpLen = 4;
 		    };
   };
 
- // vector of 4LQSR Variables. V stays for variable, C for constant.
- vector< vector <Var> > VCL;
+ // vector of 4LQSR Variables. Q stays for quantified.
  vector< vector <Var> > VVL;
+ vector< vector <Var> > VQL;
 
  class Atom
  {
@@ -87,11 +88,12 @@ const int maxOpLen = 4;
 		   /*
 		       Right Operand is the first element of the vector.
 			   Pair is the second and the third.
+			   COn il vettore consideriamo anche i possibili datatype groups
 		   */
    public: 
-	      Atom(int size, int op, vector<Var*> vec) 
+	      Atom(int op, vector<Var*> vec) 
            {
-			  components.reserve(size);
+			  //components.reserve(size);
 			  setAtomOp(op);
 			  components = vec;
 		   };		  
@@ -126,23 +128,31 @@ const int maxOpLen = 4;
 		   };		  
  };
 
- class Formula
+ class Formula  //struttura più generica da cambiare eventualmente con strutture per CNF
  {
    private:
 	 vector<Var*> quantified;
 	 Atom *atom;
-	 int operand; //0 forAND, 1 for OR 
+	 int operand; //0 forAND, 1 for OR , 2 for NAND, 3 for NOR
 	 Formula *lsubformula;
 	 Formula *rsubformula;
 	 Formula *pformula;
    public:
+	 Formula()
+	   {
+		 setAtom(NULL);
+		 setOperand(-1);
+		 setLSubformula(NULL);
+		 setRSubformula(NULL);
+		 setPreviousFormula(NULL);
+	   };
 	 Formula(Atom *at, int op)
 	 {
 		 setAtom(at);
 		 setOperand(op);
-		 lsubformula = NULL;
-		 rsubformula = NULL;
-		 pformula = NULL;
+		 setLSubformula (NULL);
+		 setRSubformula(NULL);
+		 setPreviousFormula(NULL);
 	 };
 	 Formula(Atom *at, int op, Formula *lf, Formula *rf)
 	 {
@@ -160,7 +170,7 @@ const int maxOpLen = 4;
 	 Formula* getLSubformula() { return lsubformula; };
 	 Formula* getRSubformula() { return rsubformula; };
 	 Formula* getPreviousformula() { return pformula; };
-	 void setOperand(int op) { op = operand; };
+	 void setOperand(int op) { operand = op; };
 	 void setAtom(Atom *at) { atom = at; };
 	 void setLSubformula(Formula *sub) { lsubformula = sub; };
 	 void setRSubformula(Formula *sub) { rsubformula = sub; };
@@ -175,7 +185,8 @@ const int maxOpLen = 4;
 	 Node* leftChild;
 	 Node* rightChild;
 	 Node* father;
-
+	 //flag di fullfilled
+	 //flag di completeness
  public:
 	 Node() { leftChild = rightChild = father = NULL; };
 	 Node(vector<Formula>* formula) { setFormula = *formula; leftChild = rightChild = father = NULL; };
@@ -204,13 +215,13 @@ const int maxOpLen = 4;
  /*
    Init the vectors of variables.
  */
-int init()
+int init() //used to inizialize elements.
  {
-  VCL.reserve(maxVarSize);
+  VQL.reserve(maxVarSize);  //initialize vectors for variables
   VVL.reserve(maxVarSize);		
   for (int i = 0; i < maxVarSize; i++)
    {
-	VCL.push_back(vector<Var>());
+	VQL.push_back(vector<Var>());
 	VVL.push_back(vector<Var>());
    }
   return 0;
@@ -227,21 +238,33 @@ int addNewElement(Var& element, vector < vector <Var>>& evector)
  }
 
 /*
-Add an element to the vector of consts
+Add an element to the vector of quantified variable
 */
 
-int addNewConst(Var& element)
+int addNewQuantifiedVar(Var& element)
  {
-  return (addNewElement(element, VCL));
+  return (addNewElement(element, VQL));
  }
 
 /*
-Add an element to the vector of variables
+Add an element to the vector of (unquantified variables
 */
 int addNewVar(Var& element)
  {
   return (addNewElement(element, VVL));
  }
+/*
+Parse a string representing an internal formula and return the corresponding internal formula
+*/
+int parseInternalFormula(string *inputformula, Formula *outformula)
+{
+	string strformu = *inputformula;
+	stack<string> stackFormula;
+	stackFormula.push(strformu);
+	outformula->setOperand(32);
+	cout << stackFormula.top() << endl;
+	return 0;
+}
 
 int main()
 {  
@@ -257,37 +280,49 @@ int main()
   cout << x.getName() << "," << x.getType() << "," << x.getVarType() << endl;
   cout << g.getName() << "," << g.getType() << "," << g.getVarType() << endl;
   cout << h.getName() << "," << h.getType() << "," << h.getVarType() << endl;  
-  cout << "Testing addNewConst: " << addNewConst(b)<<endl;
-  cout<< "--------------------  "<< VCL.at(0).capacity()<<endl;
-  cout << "-------------------- " << VCL.at(0).at(0).getName() << endl;
+  cout << "Testing addNewConst: " << addNewQuantifiedVar(b)<<endl;
+  cout<< "--------------------  "<< VQL.at(0).capacity()<<endl;
+  cout << "-------------------- " << VQL.at(0).at(0).getName() << endl;
  // cout<<addNewElement(x, VCL)<<endl;
   //cout << VCL.at(0).at(0).getName() << endl;
-  cout << VCL.capacity()<< endl;
-  Atom atom(2, 0, {&b,&h});
-  cout << "Atom print: " <<  (*(atom.getElementAt(0))).getName() << endl;
-  cout << "Atom print: " << (*(atom.getElementAt(1))).getName() << endl;
+  cout << VQL.capacity()<< endl;
+  Atom atom(1, {&b,&h});
+  cout << "Atom print: " <<  atom.getElementAt(0)->getName() << endl;
+  cout << "Atom print: " <<  atom.getElementAt(1)->getName() << endl;
   if( ((atom.getElementAt(2)))==NULL)
        cout << "Atom print: NULL " << endl;
   Tableau tab( &Node() ); //empty tableau
   Node* radix=tab.getTableau();
+  cout << "Stack" << endl;
+  Formula final(NULL,5);
+  string formula = "formula";
+  
+  parseInternalFormula(&formula, &final);
+  cout << "Formula after: " << final.getOperand() << endl;
   logFile.close();	
   return 0;
 }
 
 /*
-\Fa -> ForAll
+Mapping from 4LQSR formulae in semi-internal formulae
+\FA -> ForAll
 \IN -> IN
 \NI -> NOTIN
 \EQ -> =
-\QE -> not =
+\QE -> NOT =
 \OA -> <
 \AO -> >
 \AD -> AND
+\DA -> NOT AND
 \OR -> OR
+\RO -> NOT OR
 ( ) -> ( )
-Ci{name} -> X^i_{name} constant.
 Vi{name} -> X^i_{name} variable
 
-(\FA V0{z})(( ( V0{z} \NI C1{C1})\OR ( V0{z} \NI C1{C2}))\AN(( V0{z} \NI C1{C2})\OR (\V0{z} \IN C1{C2}))) 
+Example of formula
 
+(\FA V0{z})(( ( V0{z} \NI V1{C1})\OR ( V0{z} \NI V1{C2}))\AN(( V0{z} \NI V1{C2})\OR (\V0{z} \IN V1{C2}))) 
+
+Is also allowed the following name convention V1{x_b_3}
+that stays for X^1_{ {x_{b_3} }
 */
