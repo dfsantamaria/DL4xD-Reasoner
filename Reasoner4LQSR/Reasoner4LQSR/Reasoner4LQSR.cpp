@@ -76,7 +76,7 @@ const int maxOpLen = 4;
  // vector of 4LQSR Variables. Q stays for quantified.
  vector< vector <Var> > VVL;
  vector< vector <Var> > VQL;
-
+ string logOp[] = { "$OR","$RO","$AD","$DA" };
  class Atom
  {
    private:  	       
@@ -253,6 +253,32 @@ int addNewVar(Var& element)
  {
   return (addNewElement(element, VVL));
  }
+
+
+int checkLogOp(string *s)
+{
+	for (const string &op : logOp)
+	{
+		if ( op.compare(*s) ==0)
+			return 1;
+	}
+	return 0;
+}
+
+void printStack(stack<string> st)
+{
+	stack<string> out;
+	while (!st.empty())
+	{
+		out.push(st.top());		
+		st.pop();
+	}
+	while (!out.empty())
+	{
+		cout << out.top()<<endl;
+		out.pop();
+	}
+}
 /*
 Parse a string representing an internal formula and return the corresponding internal formula
 */
@@ -261,10 +287,51 @@ int parseInternalFormula(string *inputformula, Formula *outformula)
 	string strformu = *inputformula;
 	stack<string> stackFormula;
 	stackFormula.push(strformu);
-	outformula->setOperand(32);
-	cout << stackFormula.top() << endl;
+	//while (!stackFormula.empty())
+	{
+		string top = stackFormula.top();
+		stackFormula.pop();  //cout << top << endl;
+		string atom=string();
+		string operand=string();	
+		for (int i = 0; i < top.length(); i++)
+		{
+			char c = top.at(i);					 
+			switch (c)
+			{
+			case '(': stackFormula.push(string(1, c)); break;
+			case ')': 
+				if (!atom.empty())
+				{					
+					stackFormula.push(atom);
+					atom.clear();
+				}
+				stackFormula.push(string(1, c));
+				break; 
+			case '$': operand = string(1, c) + string(1, top.at(i + 1)) + string(1, top.at(i + 2));
+				i = i + 2;
+				if (checkLogOp(&operand) != 0)
+				{
+					stackFormula.push(operand);
+				}
+				else
+				{
+					atom.append(operand);
+				}
+				operand.clear();
+				break;
+			case ' ': break;
+			default:	atom.append(string(1, c)); break;
+			}
+
+		}
+	}
+	printStack(stackFormula);
 	return 0;
+	
+		
 }
+
+
 
 int main()
 {  
@@ -295,33 +362,31 @@ int main()
   Node* radix=tab.getTableau();
   cout << "Stack" << endl;
   Formula final(NULL,5);
-  string formula = "formula";
-  
+  string formula = "($FA V0{z})(( ( V0{z} $NI V1{C1})$OR ( V0{z} $NI V1{C2}))$AN(( V0{z} $NI V1{C2})\OR ($V0{z} $IN V1{C2}))) ";  
   parseInternalFormula(&formula, &final);
-  cout << "Formula after: " << final.getOperand() << endl;
   logFile.close();	
   return 0;
 }
 
 /*
 Mapping from 4LQSR formulae in semi-internal formulae
-\FA -> ForAll
-\IN -> IN
-\NI -> NOTIN
-\EQ -> =
-\QE -> NOT =
-\OA -> <
-\AO -> >
-\AD -> AND
-\DA -> NOT AND
-\OR -> OR
-\RO -> NOT OR
+/FA -> ForAll
+/IN -> IN
+/NI -> NOTIN
+/EQ -> =
+/QE -> NOT =
+/OA -> <
+/AO -> >
+/AD -> AND
+/DA -> NOT AND
+/OR -> OR
+/RO -> NOT OR
 ( ) -> ( )
 Vi{name} -> X^i_{name} variable
 
 Example of formula
 
-(\FA V0{z})(( ( V0{z} \NI V1{C1})\OR ( V0{z} \NI V1{C2}))\AN(( V0{z} \NI V1{C2})\OR (\V0{z} \IN V1{C2}))) 
+($FA V0{z})(( ( V0{z} $NI V1{C1})$OR ( V0{z} $NI V1{C2}))$AN(( V0{z} $NI V1{C2})\OR ($V0{z} $IN V1{C2}))) 
 
 Is also allowed the following name convention V1{x_b_3}
 that stays for X^1_{ {x_{b_3} }
