@@ -95,6 +95,16 @@ const int maxOpLen = 4;
  string setOp[] = { "$IN", "$EQ", "$NI", "$QE", "$OA","$AO", "$CO" }; //set operators
  string qutOP[] = {"$FA"};	//quantifiers
 
+ int getSetOpValue(string s)
+ {
+	 for (int i = 0; i < setOp->size(); i++)
+	 {
+		 if (setOp[i].compare(s) == 0)
+			 return i;
+	 }
+	 return -1;
+ }
+
  class Atom
  {
    private:  	       
@@ -144,6 +154,7 @@ const int maxOpLen = 4;
 		   {
 			 (*getElements()).push_back(&element);
 		   };	
+
 		  string print()
 		  {
 			  string out = "(";
@@ -272,42 +283,14 @@ int init() //used to inizialize elements.
    }
   return 0;
 }
-/*
-  Add an element to the given vector of the vars
-
-int addNewElement(Var& element, vector < vector <Var>>& evector)
- {	
-  int type = element.getType();
-  if (element.isValidType()&&element.isValidVar())
-	 (evector.at(type)).push_back(element);
-  return type;
- }
-
-/*
-Add an element to the vector of quantified variable
-
-
-int addNewQuantifiedVar(Var& element)
- {
-  return (addNewElement(element, VQL));
- }
-
-
-Add an element to the vector of (unquantified variables
-
-int addNewVar(Var& element)
- {  
-  return (addNewElement(element, VVL));
- }
-*/
 
 Var* insertSetVar(Var *in, vector<vector<Var>>& vec)
  {  //VVL 
 	vector<Var> *v= &(vec.at(in->getType()));
-	for (Var element : *v)
+	for (int i=0; i< v->size(); i++)
 	{
-		if(element.equal(in)==0)
-		 	return &element;		
+		if( v->at(i).equal(in)==0)
+		 	return &v->at(i);		
 	}	
 	v->push_back(*in);
 	return &(v->back());	
@@ -363,16 +346,25 @@ Var* createNewVar(string input)
 
 int createAtom(string input)
 {
+	Var* v1;
+	Var *v2;
 	if (input.at(0) != '$') //case no pair
 	{
 		int found = input.find("$");
 		if (found != string::npos)
 		{		  		 
-          Var* v=createNewVar(input.substr(0,found));		 
-		  insertVar(*v);		
-		  delete v;
+          v1=createNewVar(input.substr(0,found));		 
+		  v1=insertVar(*v1);
+		  int op =  getSetOpValue(input.substr(found, 3)); 
+		  v2 = createNewVar(input.substr(found + 3, input.size() - 1));
+		  v2 = insertVar(*v2);
+		  Atom atom =  Atom(op, {v2,v1});
+		  cout << "---" << input << endl;
+		  cout << "----"<<atom.getAtomOp() << endl;
+		  cout << "-----" << atom.getElementAt(0)->getName() << endl;
 		}		
-	}
+	} 
+	
 	return 0;
 }
 
@@ -438,6 +430,8 @@ void printVector(vector<Var>& v)
 
 }
 
+
+
 int main()
 {  
   int res=init();
@@ -491,10 +485,10 @@ int main()
   parseInternalFormula(&formula, &final);
   logFile.close();	
   cout << "Check VVL" << endl;
-  insertVar( *createNewVar("V0{CIAO}"));
-  insertVar(*createNewVar("V0{test}"));
-  insertVar(*createNewVar("V1{1CIAO}"));
-  insertVar(*createNewVar("V3{3CIAO}"));
+  //insertVar( *createNewVar("V0{CIAO}"));
+  //insertVar(*createNewVar("V0{test}"));
+  //insertVar(*createNewVar("V1{1CIAO}"));
+  //insertVar(*createNewVar("V3{3CIAO}"));
   cout << "Vector 0" << endl;
   printVector(VVL.at(0));
   cout << "Vector 1" << endl;
