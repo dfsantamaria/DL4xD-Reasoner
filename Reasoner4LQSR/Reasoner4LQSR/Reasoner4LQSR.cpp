@@ -15,7 +15,6 @@ using namespace std;
 std::ofstream logFile;   //log file
 
 /*
--1 is unused
 L0 has type 0
 L1 has type 1
 L2 has type 2
@@ -71,18 +70,37 @@ const int maxOpLen = 4;
 				 var = -1;	
 			   return var;
 		    };
+		   int equal(Var* match)
+		   {
+			   if ((getName().compare(match->getName()) == 0) && (getType() == match->getType()) && (getVarType() == match->getVarType()))
+				   return 0;
+			   return 1;
+		   };
+		   string print()
+		   {
+			   string out = "V";
+			   out.append(to_string(getType()));
+			   out.append("{");
+			   out.append(getName());
+			   out.append("}");
+			   return out;
+		   };
   };
 
  // vector of 4LQSR Variables. Q stays for quantified.
  vector< vector <Var> > VVL;
  vector< vector <Var> > VQL;
- string logOp[] = { "$OR","$RO","$AD","$DA" };
+ //Special chars of a formula
+ string logOp[] = { "$OR","$AD","$RO","$DA" }; //logic operators
+ string setOp[] = { "$IN", "$EQ", "$NI", "$QE", "$OA","$AO", "$CO" }; //set operators
+ string qutOP[] = {"$FA"};	//quantifiers
+
  class Atom
  {
    private:  	       
 		   int atomOp;		  
 		    /*
-			   -1 unsetted; 0 \in ; 1 \notin; 2 \equals; 3 \notequals 
+			   -1 unsetted; 
 			*/
 		   vector<Var*> components;	
 		   /*
@@ -125,7 +143,27 @@ const int maxOpLen = 4;
 		  void addElement(Var& element)
 		   {
 			 (*getElements()).push_back(&element);
-		   };		  
+		   };	
+		  string print()
+		  {
+			  string out = "(";
+			  if (getElements()->size() > 2)
+			  {
+				out.append("$OA ");
+				out.append(getElementAt(1)->print());
+				out.append("$CO "); 
+				out.append(getElementAt(2)->print());
+				out.append("$AO ");
+			  }
+			  else
+				out.append(getElementAt(1)->print());
+			  out.append(" ");			  
+			  out.append(setOp[getAtomOp()]);	
+			  out.append(" ");
+			  out.append(getElementAt(0)->print());
+			  out.append(")");
+			  return out;
+		  };
  };
 
  class Formula  //struttura più generica da cambiare eventualmente con strutture per CNF
@@ -175,6 +213,14 @@ const int maxOpLen = 4;
 	 void setLSubformula(Formula *sub) { lsubformula = sub; };
 	 void setRSubformula(Formula *sub) { rsubformula = sub; };
 	 void setPreviousFormula(Formula *prev) { pformula = prev; }
+	 void print()
+	 { 
+		 /*if (getAtom() != NULL)
+			 cout << getAtom().print();
+		 else
+			 cout << getOperand();
+			 */
+	 }
  };
 
 
@@ -279,6 +325,12 @@ void printStack(stack<string> st)
 		out.pop();
 	}
 }
+
+void visitFormula(Formula *formula)
+{
+	//cout << formula->print()<<endl;
+
+}
 /*
 Parse a string representing an internal formula and return the corresponding internal formula
 */
@@ -340,20 +392,32 @@ int main()
   #ifdef debug  
   #endif // debug
   Var b ("monastero", 0, 0);
-  Var x("cortile", 1, 0);
-  Var g("boh", 2, 1);
+  Var x("livello", 0, 0);
+  Var g("Edificio", 1, 0);
   Var h("haLivello", 3, 0);
+  cout << "b is equal to x: "<< b.equal(&x) <<endl;
   cout << b.getName() <<","<< b.getType() <<","<< b.getVarType() << endl; 
   cout << x.getName() << "," << x.getType() << "," << x.getVarType() << endl;
   cout << g.getName() << "," << g.getType() << "," << g.getVarType() << endl;
-  cout << h.getName() << "," << h.getType() << "," << h.getVarType() << endl;  
+  cout << h.getName() << "," << h.getType() << "," << h.getVarType() << endl; 
+  cout << "Testing print Var" << endl;
+  cout <<  b.print() << endl;
+  cout << x.print() << endl;
+  cout << g.print() << endl;
+  cout << h.print() << endl;
   cout << "Testing addNewConst: " << addNewQuantifiedVar(b)<<endl;
   cout<< "--------------------  "<< VQL.at(0).capacity()<<endl;
   cout << "-------------------- " << VQL.at(0).at(0).getName() << endl;
  // cout<<addNewElement(x, VCL)<<endl;
   //cout << VCL.at(0).at(0).getName() << endl;
   cout << VQL.capacity()<< endl;
-  Atom atom(1, {&b,&h});
+  Atom atom(0, {&h,&b,&x});
+  Atom atom2(0, {&g,&b});
+  Atom atom3(1, { &b,&x });
+  cout << "Testing pring atom:" << endl;
+  cout << atom.print() << endl;
+  cout << atom2.print() << endl;
+  cout << atom3.print() << endl;
   cout << "Atom print: " <<  atom.getElementAt(0)->getName() << endl;
   cout << "Atom print: " <<  atom.getElementAt(1)->getName() << endl;
   if( ((atom.getElementAt(2)))==NULL)
@@ -362,7 +426,7 @@ int main()
   Node* radix=tab.getTableau();
   cout << "Stack" << endl;
   Formula final(NULL,5);
-  string formula = "($FA V0{z})(( ( V0{z} $NI V1{C1})$OR ( V0{z} $NI V1{C2}))$AN(( V0{z} $NI V1{C2})\OR ($V0{z} $IN V1{C2}))) ";  
+  string formula = "($FA V0{z})(( ( V0{z} $NI V1{C1})$OR ( V0{z} $NI V1{C2}))$AD(( V0{z} $NI V1{C2})$OR (V0{z} $IN V1{C2}))) ";  
   parseInternalFormula(&formula, &final);
   logFile.close();	
   return 0;
@@ -386,8 +450,23 @@ Vi{name} -> X^i_{name} variable
 
 Example of formula
 
-($FA V0{z})(( ( V0{z} $NI V1{C1})$OR ( V0{z} $NI V1{C2}))$AN(( V0{z} $NI V1{C2})\OR ($V0{z} $IN V1{C2}))) 
+($FA V0{z})(( ( V0{z} $NI V1{C1})$OR ( V0{z} $NI V1{C2}))$AD(( V0{z} $NI V1{C2})$OR (V0{z} $IN V1{C2}))) 
 
 Is also allowed the following name convention V1{x_b_3}
 that stays for X^1_{ {x_{b_3} }
+*/
+
+
+
+
+
+
+/*
+TO DO LIST
+
+USE A MAP to MAP from string representing operator and integer representing operator
+check brackets; check format of a formula in general as preprocessing
+define special chars from a config file. Setting the size of the special chars and checking for correctness.
+allowing change of the $ char from a config file.
+
 */
