@@ -43,7 +43,7 @@ const int maxOpLen = 4;
 			   setType(_type);
 			   setVarType(_var);
 		   };
-		   		   
+		   ~Var() {};
 		   int isValidType() { return isValidType(type);};
 		   int isValidVar() { return isValidVar(var); };
 		   int getType() { return type; };
@@ -265,7 +265,7 @@ int init() //used to inizialize elements.
  {
   VQL.reserve(maxVarSize);  //initialize vectors for variables
   VVL.reserve(maxVarSize);		
-  for (int i = 0; i < maxVarSize; i++)
+  for (int i = 0; i <= maxVarSize; i++)
    {
 	VQL.push_back(vector<Var>());
 	VVL.push_back(vector<Var>());
@@ -274,7 +274,7 @@ int init() //used to inizialize elements.
 }
 /*
   Add an element to the given vector of the vars
-*/
+
 int addNewElement(Var& element, vector < vector <Var>>& evector)
  {	
   int type = element.getType();
@@ -285,21 +285,43 @@ int addNewElement(Var& element, vector < vector <Var>>& evector)
 
 /*
 Add an element to the vector of quantified variable
-*/
+
 
 int addNewQuantifiedVar(Var& element)
  {
   return (addNewElement(element, VQL));
  }
 
-/*
+
 Add an element to the vector of (unquantified variables
-*/
+
 int addNewVar(Var& element)
- {
+ {  
   return (addNewElement(element, VVL));
  }
+*/
 
+Var* insertSetVar(Var *in, vector<vector<Var>>& vec)
+ {  //VVL 
+	vector<Var> *v= &(vec.at(in->getType()));
+	for (Var element : *v)
+	{
+		if(element.equal(in)==0)
+		 	return &element;		
+	}	
+	v->push_back(*in);
+	return &(v->back());	
+ }
+
+Var* insertVar(Var in)
+{
+	return insertSetVar(&in, VVL);
+}
+
+Var* insertQVar(Var in)
+{
+	return insertSetVar(&in, VQL);
+}
 
 int checkLogOp(string *s)
 {
@@ -331,6 +353,29 @@ void visitFormula(Formula *formula)
 	//cout << formula->print()<<endl;
 
 }
+
+Var* createNewVar(string input)
+{
+	int level = input.at(1)-'0';
+	string name = input.substr(3, (input.find_last_of('}') - 3));	
+	return new Var(name, level, 0);
+}
+
+int createAtom(string input)
+{
+	if (input.at(0) != '$') //case no pair
+	{
+		int found = input.find("$");
+		if (found != string::npos)
+		{		  		 
+          Var* v=createNewVar(input.substr(0,found));		 
+		  insertVar(*v);		
+		  delete v;
+		}		
+	}
+	return 0;
+}
+
 /*
 Parse a string representing an internal formula and return the corresponding internal formula
 */
@@ -355,6 +400,7 @@ int parseInternalFormula(string *inputformula, Formula *outformula)
 				if (!atom.empty())
 				{					
 					stackFormula.push(atom);
+					createAtom(atom); //-----------------------------
 					atom.clear();
 				}
 				stackFormula.push(string(1, c));
@@ -383,7 +429,14 @@ int parseInternalFormula(string *inputformula, Formula *outformula)
 		
 }
 
+void printVector(vector<Var>& v)
+{
+	for (Var element : v)
+	{
+		cout << element.print() << endl;
+	} 
 
+}
 
 int main()
 {  
@@ -392,10 +445,19 @@ int main()
   #ifdef debug  
   #endif // debug
   Var b ("monastero", 0, 0);
+  Var b1("monastero", 0, 0);
   Var x("livello", 0, 0);
+  Var x1("livello", 0, 0);
   Var g("Edificio", 1, 0);
+  Var g1("Edificio", 1, 0);
   Var h("haLivello", 3, 0);
-  cout << "b is equal to x: "<< b.equal(&x) <<endl;
+  Var h1("haLivello", 3, 0);
+  //cout << "Testing Add Var:" << endl;  
+  //cout<<VVL.at(0).size()<<endl;
+  //cout << VVL.at(0).back().print()<<endl;
+  //cout << "----------------------" << endl;    
+  cout << b.print()<<endl;
+  cout << "b is equal to x: "<< b.equal(&b) <<endl;
   cout << b.getName() <<","<< b.getType() <<","<< b.getVarType() << endl; 
   cout << x.getName() << "," << x.getType() << "," << x.getVarType() << endl;
   cout << g.getName() << "," << g.getType() << "," << g.getVarType() << endl;
@@ -404,13 +466,12 @@ int main()
   cout <<  b.print() << endl;
   cout << x.print() << endl;
   cout << g.print() << endl;
-  cout << h.print() << endl;
-  cout << "Testing addNewConst: " << addNewQuantifiedVar(b)<<endl;
-  cout<< "--------------------  "<< VQL.at(0).capacity()<<endl;
-  cout << "-------------------- " << VQL.at(0).at(0).getName() << endl;
+  cout << h.print() << endl;  
+ // cout<< "--------------------  "<< VQL.at(0).capacity()<<endl;
+ // cout << "-------------------- " << VQL.at(0).at(0).getName() << endl;
  // cout<<addNewElement(x, VCL)<<endl;
   //cout << VCL.at(0).at(0).getName() << endl;
-  cout << VQL.capacity()<< endl;
+ // cout << VQL.capacity()<< endl;
   Atom atom(0, {&h,&b,&x});
   Atom atom2(0, {&g,&b});
   Atom atom3(1, { &b,&x });
@@ -429,6 +490,17 @@ int main()
   string formula = "($FA V0{z})(( ( V0{z} $NI V1{C1})$OR ( V0{z} $NI V1{C2}))$AD(( V0{z} $NI V1{C2})$OR (V0{z} $IN V1{C2}))) ";  
   parseInternalFormula(&formula, &final);
   logFile.close();	
+  cout << "Check VVL" << endl;
+  insertVar( *createNewVar("V0{CIAO}"));
+  insertVar(*createNewVar("V0{test}"));
+  insertVar(*createNewVar("V1{1CIAO}"));
+  insertVar(*createNewVar("V3{3CIAO}"));
+  cout << "Vector 0" << endl;
+  printVector(VVL.at(0));
+  cout << "Vector 1" << endl;
+  printVector(VVL.at(1));
+  cout << "Vector 3" << endl;
+  printVector(VVL.at(3));
   return 0;
 }
 
@@ -464,7 +536,8 @@ that stays for X^1_{ {x_{b_3} }
 /*
 TO DO LIST
 
-USE A MAP to MAP from string representing operator and integer representing operator
+USE A MAP to MAP from string representing operator and integer representing operator.
+Check if an atom is built correctly.
 check brackets; check format of a formula in general as preprocessing
 define special chars from a config file. Setting the size of the special chars and checking for correctness.
 allowing change of the $ char from a config file.
