@@ -9,6 +9,7 @@
 #include <vector>
 #include <array>
 #include <stack>
+#include <sstream>
 
 using namespace std;
 //#define debug
@@ -76,6 +77,13 @@ const int maxOpLen = 4;
 				   return 0;
 			   return 1;
 		   };
+
+		   int equal(string _name, int _type, int _varType)
+		   {
+			   if (getName().compare(_name) == 0 && (getType() == _type) && (getVarType() == _varType))
+				   return 0;
+			   return 1;
+		   }
 		   string print()
 		   {
 			   string out = "V";
@@ -162,9 +170,9 @@ const int maxOpLen = 4;
 			  {
 				out.append("$OA ");
 				out.append(getElementAt(1)->print());
-				out.append("$CO "); 
+				out.append(" $CO "); 
 				out.append(getElementAt(2)->print());
-				out.append("$AO ");
+				out.append("$AO");
 			  }
 			  else
 				out.append(getElementAt(1)->print());
@@ -284,7 +292,7 @@ int init() //used to inizialize elements.
   return 0;
 }
 
-Var* insertSetVar(Var *in, vector<vector<Var>>& vec)
+/*Var* insertSetVar(Var *in, vector<vector<Var>>& vec)
  {  //VVL 
 	vector<Var> *v= &(vec.at(in->getType()));
 	for (int i=0; i< v->size(); i++)
@@ -294,16 +302,47 @@ Var* insertSetVar(Var *in, vector<vector<Var>>& vec)
 	}	
 	v->push_back(*in);
 	return &(v->back());	
- }
+ }*/
 
-Var* insertVar(Var in)
+/*Var* insertVar(Var in)
 {
 	return insertSetVar(&in, VVL);
-}
+}*/
 
-Var* insertQVar(Var in)
+/*Var* insertQVar(Var in)
 {
 	return insertSetVar(&in, VQL);
+}*/
+
+Var* insertSetVar(string *name, int *type, int *vartype, vector<vector<Var>>& vec)
+{  //VVL 
+	vector<Var> *v = &(vec.at(*type)); 
+	for (int i = 0; i< v->size(); i++)
+	{
+		if (v->at(i).equal(*name, *type, *vartype) == 0)
+			return &v->at(i); 
+	}
+	string outn = *name;
+	int outt = *type;
+	int outv = *vartype;
+	Var* res = new Var( outn, outt, outv);
+	v->push_back(*res);
+	return res;
+}
+
+/*Var* insertVar(Var in)
+{
+return insertSetVar(&in, VVL);
+}*/
+
+Var* insertQVar(string *name, int *type, int *vartype)
+{
+return insertSetVar(name, type,vartype, VQL);
+}
+
+Var* insertVar(string *name, int *type, int *vartype)
+{
+	return insertSetVar(name, type, vartype, VVL);
 }
 
 int checkLogOp(string *s)
@@ -337,33 +376,57 @@ void visitFormula(Formula *formula)
 
 }
 
-Var* createNewVar(string input)
+Var* createVarFromString(const string input, const int vartype)
 {
 	int level = input.at(1)-'0';
 	string name = input.substr(3, (input.find_last_of('}') - 3));	
-	return new Var(name, level, 0);
+	return insertVar(&name, &level, new int(vartype));
 }
 
+
 int createAtom(string input)
-{
-	Var* v1;
-	Var *v2;
-	if (input.at(0) != '$') //case no pair
+{	
+	Var* var1;
+	Var* var2;
+	Var* var3;
+	if (input[0]=='$') //case pair or quantifier
 	{
-		int found = input.find("$");
-		if (found != string::npos)
-		{		  		 
-          v1=createNewVar(input.substr(0,found));		 
-		  v1=insertVar(*v1);
-		  int op =  getSetOpValue(input.substr(found, 3)); 
-		  v2 = createNewVar(input.substr(found + 3, input.size() - 1));
-		  v2 = insertVar(*v2);
-		  Atom atom =  Atom(op, {v2,v1});
-		  cout << "---" << input << endl;
-		  cout << "----"<<atom.getAtomOp() << endl;
-		  cout << "-----" << atom.getElementAt(0)->getName() << endl;
-		}		
+		string head = input.substr(0, 3); cout << head << endl;	
+		string match = input;
+		if (head.compare("$OA") == 0)  //case  pair
+		{			
+			match = input.substr(3, input.size() - 1);					
+			size_t found = match.find("$");  
+			var1 = createVarFromString(match.substr(0, found),0);
+			//cout << var1->getName() << endl;
+			match = match.substr(found+3, match.size()-1); //here the comma
+			found = match.find("$");
+			var2 = createVarFromString(match.substr(0, found), 0);
+			match = match.substr(found + 3, match.size() - 1); 
+			int op = getSetOpValue(match.substr(0, 3));
+			match = match.substr(3, match.size() - 1);
+            var3 = createVarFromString(match, 0);
+            Atom atom = Atom(op, {var3, var1, var2 });
+			cout << "Atom found: " << atom.print() << endl;
+
+       	
+			
+		}
 	} 
+	else if( input[0]=='V') //case single var
+	{
+      size_t found = input.find("$");//case no pair
+	  if (found != string::npos)
+		{   
+		  
+		  var1= createVarFromString(input.substr(0, found),0);
+		  int op =  getSetOpValue(input.substr(found, 3)); 
+		  var2 = createVarFromString(input.substr(found + 3, input.size() - 1),0);
+		  Atom atom =  Atom(op, {var2,var1});
+		  cout << "Atom found: " << atom.print()<<endl;	 
+		  
+		}
+	}
 	
 	return 0;
 }
@@ -479,12 +542,20 @@ int main()
        cout << "Atom print: NULL " << endl;
   Tableau tab( &Node() ); //empty tableau
   Node* radix=tab.getTableau();
-  cout << "Stack" << endl;
+  cout << "Stack" << endl;  
   Formula final(NULL,5);
-  string formula = "($FA V0{z})(( ( V0{z} $NI V1{C1})$OR ( V0{z} $NI V1{C2}))$AD(( V0{z} $NI V1{C2})$OR (V0{z} $IN V1{C2}))) ";  
+  string formula = " ($FA V0{z})(( ( V0{z} $NI V1{C1})$OR ( V0{z1} $NI V1{C2}))$AD((  $OA V1{z} $CO V1{z1} $AO $NI V1{C2})$OR (V0{z1} $IN V1{C2}))) ";
+	 // ($OA V0{yyy} $CO V0{xxx} $AO $NI V3{C333})";  
   parseInternalFormula(&formula, &final);
   logFile.close();	
-  cout << "Check VVL" << endl;
+  cout << "Check insertSetVar" << endl;
+  
+ /* Var* ddd = insertVar("ciao", 0, 0);
+  Var* daa = insertVar("CAAAAAAo", 0, 0);
+  Var* dad = insertVar("ChhhhhhAo", 0, 0);
+  Atom at = Atom(1, { ddd,daa,dad });
+  cout << ddd->print() << endl; */
+  cout << "Check VVL" << endl;  
   //insertVar( *createNewVar("V0{CIAO}"));
   //insertVar(*createNewVar("V0{test}"));
   //insertVar(*createNewVar("V1{1CIAO}"));
@@ -495,6 +566,8 @@ int main()
   printVector(VVL.at(1));
   cout << "Vector 3" << endl;
   printVector(VVL.at(3));
+  
+
   return 0;
 }
 
