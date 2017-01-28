@@ -314,18 +314,17 @@ int init() //used to inizialize elements.
 	return insertSetVar(&in, VQL);
 }*/
 
-Var* insertSetVar(string *name, int *type, int *vartype, vector<vector<Var>>& vec)
+Var* insertSetVar(string *name, int *type, int vartype, vector<vector<Var>>& vec)
 {  //VVL 
 	vector<Var> *v = &(vec.at(*type)); 
 	for (int i = 0; i< v->size(); i++)
 	{
-		if (v->at(i).equal(*name, *type, *vartype) == 0)
+		if (v->at(i).equal(*name, *type, vartype) == 0)
 			return &v->at(i); 
 	}
 	string outn = *name;
-	int outt = *type;
-	int outv = *vartype;
-	Var* res = new Var( outn, outt, outv);
+	int outt = *type;	
+	Var* res = new Var( outn, outt, vartype);
 	v->push_back(*res);
 	return res;
 }
@@ -335,14 +334,14 @@ Var* insertSetVar(string *name, int *type, int *vartype, vector<vector<Var>>& ve
 return insertSetVar(&in, VVL);
 }*/
 
-Var* insertQVar(string *name, int *type, int *vartype)
+Var* insertQVar(string *name, int *type)
 {
-return insertSetVar(name, type,vartype, VQL);
+return insertSetVar(name, type, 1 , VQL);
 }
 
-Var* insertVar(string *name, int *type, int *vartype)
+Var* insertVar(string *name, int *type)
 {
-	return insertSetVar(name, type, vartype, VVL);
+	return insertSetVar(name, type, 0, VVL);
 }
 
 int checkLogOp(string *s)
@@ -376,11 +375,15 @@ void visitFormula(Formula *formula)
 
 }
 
-Var* createVarFromString(const string input, const int vartype)
+Var* createVarFromString(string input, int vartype)
 {
 	int level = input.at(1)-'0';
-	string name = input.substr(3, (input.find_last_of('}') - 3));	
-	return insertVar(&name, &level, new int(vartype));
+	string name = input.substr(3, (input.find_last_of('}') - 3));
+	if (vartype == 0)
+		return insertVar(&name, &level);
+	else if (vartype==1)
+		return insertQVar(&name, &level);
+	else return NULL;
 }
 
 
@@ -397,7 +400,7 @@ int createAtom(string input)
 		{			
 			match = input.substr(3, input.size() - 1);					
 			size_t found = match.find("$");  
-			var1 = createVarFromString(match.substr(0, found),0);
+			var1 = createVarFromString(match.substr(0, found), 0);
 			//cout << var1->getName() << endl;
 			match = match.substr(found+3, match.size()-1); //here the comma
 			found = match.find("$");
@@ -407,10 +410,7 @@ int createAtom(string input)
 			match = match.substr(3, match.size() - 1);
             var3 = createVarFromString(match, 0);
             Atom atom = Atom(op, {var3, var1, var2 });
-			cout << "Atom found: " << atom.print() << endl;
-
-       	
-			
+			cout << "Atom found: " << atom.print() << endl;			
 		}
 	} 
 	else if( input[0]=='V') //case single var
@@ -544,7 +544,7 @@ int main()
   Node* radix=tab.getTableau();
   cout << "Stack" << endl;  
   Formula final(NULL,5);
-  string formula = " ($FA V0{z})(( ( V0{z} $NI V1{C1})$OR ( V0{z1} $NI V1{C2}))$AD((  $OA V1{z} $CO V1{z1} $AO $NI V1{C2})$OR (V0{z1} $IN V1{C2}))) ";
+  string formula = " ($FA V0{z})( (V0{k} $NI V1{l}) $AD  ( ( V0{z} $NI V1{C1})$OR ( V0{z1} $NI V1{C2}))$AD((  $OA V1{z} $CO V1{z1} $AO $NI V1{C2})$OR (V0{z1} $IN V1{C2}))) ";
 	 // ($OA V0{yyy} $CO V0{xxx} $AO $NI V3{C333})";  
   parseInternalFormula(&formula, &final);
   logFile.close();	
@@ -566,7 +566,15 @@ int main()
   printVector(VVL.at(1));
   cout << "Vector 3" << endl;
   printVector(VVL.at(3));
-  
+
+  cout << "Check VQL" << endl;  
+  cout << "Vector 0" << endl;
+  printVector(VQL.at(0));
+  cout << "Vector 1" << endl;
+  printVector(VQL.at(1));
+  cout << "Vector 3" << endl;
+  printVector(VQL.at(3));
+
 
   return 0;
 }
@@ -608,5 +616,7 @@ Check if an atom is built correctly.
 check brackets; check format of a formula in general as preprocessing
 define special chars from a config file. Setting the size of the special chars and checking for correctness.
 allowing change of the $ char from a config file.
+
+Optimize Atom managment and creation
 
 */
