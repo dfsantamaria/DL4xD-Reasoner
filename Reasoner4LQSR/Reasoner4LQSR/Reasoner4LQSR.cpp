@@ -292,27 +292,10 @@ int init() //used to inizialize elements.
   return 0;
 }
 
-/*Var* insertSetVar(Var *in, vector<vector<Var>>& vec)
- {  //VVL 
-	vector<Var> *v= &(vec.at(in->getType()));
-	for (int i=0; i< v->size(); i++)
-	{
-		if( v->at(i).equal(in)==0)
-		 	return &v->at(i);		
-	}	
-	v->push_back(*in);
-	return &(v->back());	
- }*/
 
-/*Var* insertVar(Var in)
-{
-	return insertSetVar(&in, VVL);
-}*/
-
-/*Var* insertQVar(Var in)
-{
-	return insertSetVar(&in, VQL);
-}*/
+/*
+Create and insert var from the given var name and the var type in the given vector of vector of var
+*/
 
 Var* insertSetVar(string *name, int *type, int vartype, vector<vector<Var>>& vec)
 {  //VVL 
@@ -329,21 +312,28 @@ Var* insertSetVar(string *name, int *type, int vartype, vector<vector<Var>>& vec
 	return res;
 }
 
-/*Var* insertVar(Var in)
-{
-return insertSetVar(&in, VVL);
-}*/
+
+/*
+Create and insert a quatified var from the given var name and the var type
+*/
 
 Var* insertQVar(string *name, int *type)
 {
 return insertSetVar(name, type, 1 , VQL);
 }
 
+/*
+   Create and insert a unquatified var from the given var name and the var type
+*/
+
 Var* insertVar(string *name, int *type)
 {
 	return insertSetVar(name, type, 0, VVL);
 }
 
+/*
+  Return the value of the given string representing a logic operator
+*/
 int checkLogOp(string *s)
 {
 	for (const string &op : logOp)
@@ -354,6 +344,9 @@ int checkLogOp(string *s)
 	return 0;
 }
 
+/*
+   print a stack of string in inverted order
+*/
 void printStack(stack<string> st)
 {
 	stack<string> out;
@@ -375,6 +368,10 @@ void visitFormula(Formula *formula)
 
 }
 
+
+/*
+   Create a Var given a string and an int (1 if it is quantified, 0 otherwhise) 
+*/
 Var* createVarFromString(string input, int vartype)
 {
 	int level = input.at(1)-'0';
@@ -386,6 +383,9 @@ Var* createVarFromString(string input, int vartype)
 	else return NULL;
 }
 
+/*
+  Create an Atom from the given string
+*/
 
 int createAtom(string input)
 {	
