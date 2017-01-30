@@ -368,16 +368,33 @@ void visitFormula(Formula *formula)
 
 }
 
+int containsVariableName(vector<Var>* vect, Var** found, string name, int start)
+{	
+ for (; start < vect->size(); start++)
+	{
+      if( (name.compare( (vect->at(start)).getName())==0 ))
+	  {			  
+		  *found = &(vect->at(start));		  
+		  return 0;
+      }
+	}
+	return -1;
+}
 
 /*
-   Create a Var given a string and an int (1 if it is quantified, 0 otherwhise) 
+   Create a Var given a string 
 */
-Var* createVarFromString(string input, int vartype)
-{
-	int level = input.at(1)-'0';
-	string name = input.substr(3, (input.find_last_of('}') - 3));
+Var* createVarFromString(string name, int level, int vartype, int startVQL)
+{ 
 	if (vartype == 0)
+	{
+		Var* ret = NULL;  
+		if (level==0 && containsVariableName(&VQL.at(level), &ret, name, startVQL) == 0)
+		{		  
+		  return ret;
+		}
 		return insertVar(&name, &level);
+	}
 	else if (vartype==1)
 		return insertQVar(&name, &level);
 	else return NULL;
@@ -387,30 +404,50 @@ Var* createVarFromString(string input, int vartype)
   Create an Atom from the given string
 */
 
-int createAtom(string input)
+int retrieveVarData(string input, string* name, int* level)
+{
+	*level = input.at(1) - '0';
+	*name = input.substr(3, (input.find_last_of('}') - 3));
+	return 0;
+}
+
+int createAtom(string input, int startQuantVect)
 {	
 	Var* var1;
 	Var* var2;
 	Var* var3;
+	string name = string();
+	int level = -1;
 	if (input[0]=='$') //case pair or quantifier
 	{
 		string head = input.substr(0, 3); cout << head << endl;	
-		string match = input;
+		string match = input; 
 		if (head.compare("$OA") == 0)  //case  pair
 		{			
-			match = input.substr(3, input.size() - 1);					
+			match = input.substr(3, input.size() - 1);
 			size_t found = match.find("$");  
-			var1 = createVarFromString(match.substr(0, found), 0);
+			retrieveVarData(match.substr(0, found), &name, &level);
+			var1 = createVarFromString(name, level, 0, startQuantVect);
 			//cout << var1->getName() << endl;
+			cout << "Test2:" << endl;
+			cout << var1->getName() << endl;
+
 			match = match.substr(found+3, match.size()-1); //here the comma
 			found = match.find("$");
-			var2 = createVarFromString(match.substr(0, found), 0);
+			retrieveVarData(match.substr(0, found), &name, &level);
+			var2 = createVarFromString(name, level, 0, startQuantVect);
 			match = match.substr(found + 3, match.size() - 1); 
 			int op = getSetOpValue(match.substr(0, 3));
 			match = match.substr(3, match.size() - 1);
-            var3 = createVarFromString(match, 0);
+			retrieveVarData(match, &name, &level);
+            var3 = createVarFromString(name, level, 0, startQuantVect);
             Atom atom = Atom(op, {var3, var1, var2 });
 			cout << "Atom found: " << atom.print() << endl;			
+		}
+		else if (head.compare("$FA")==0)  //case quantifier
+		{				
+			retrieveVarData(match.substr(3, match.size() - 1), &name, &level);
+			var1 = createVarFromString(name, level, 1, startQuantVect);
 		}
 	} 
 	else if( input[0]=='V') //case single var
@@ -418,10 +455,11 @@ int createAtom(string input)
       size_t found = input.find("$");//case no pair
 	  if (found != string::npos)
 		{   
-		  
-		  var1= createVarFromString(input.substr(0, found),0);
+		  retrieveVarData(input.substr(0, found), &name, &level);
+		  var1= createVarFromString(name,level,0, startQuantVect);
 		  int op =  getSetOpValue(input.substr(found, 3)); 
-		  var2 = createVarFromString(input.substr(found + 3, input.size() - 1),0);
+		  retrieveVarData(input.substr(found + 3, input.size() - 1), &name, &level);
+		  var2 = createVarFromString(name, level,0, startQuantVect);
 		  Atom atom =  Atom(op, {var2,var1});
 		  cout << "Atom found: " << atom.print()<<endl;	 
 		  
@@ -432,9 +470,10 @@ int createAtom(string input)
 }
 
 /*
-Parse a string representing an internal formula and return the corresponding internal formula
+Parse a string representing an internal formula and return the corresponding internal formula.
+Quantification only variables of level 0 is currently allowed.
 */
-int parseInternalFormula(string *inputformula, Formula *outformula)
+int parseInternalFormula(string *inputformula, Formula *outformula, int startQuantVect)
 {
 	string strformu = *inputformula;
 	stack<string> stackFormula;
@@ -455,7 +494,7 @@ int parseInternalFormula(string *inputformula, Formula *outformula)
 				if (!atom.empty())
 				{					
 					stackFormula.push(atom);
-					createAtom(atom); //-----------------------------
+					createAtom(atom, startQuantVect); //-----------------------------
 					atom.clear();
 				}
 				stackFormula.push(string(1, c));
@@ -544,22 +583,15 @@ int main()
   Node* radix=tab.getTableau();
   cout << "Stack" << endl;  
   Formula final(NULL,5);
-  string formula = " ($FA V0{z})( (V0{k} $NI V1{l}) $AD  ( ( V0{z} $NI V1{C1})$OR ( V0{z1} $NI V1{C2}))$AD((  $OA V1{z} $CO V1{z1} $AO $NI V1{C2})$OR (V0{z1} $IN V1{C2}))) ";
-	 // ($OA V0{yyy} $CO V0{xxx} $AO $NI V3{C333})";  
-  parseInternalFormula(&formula, &final);
+  string formula = " ($FA V0{z})( (V0{k} $NI V1{l}) $AD  ( ( V0{z} $NI V1{C1})$OR ( V0{z1} $NI V1{C2}))$AD((  $OA V1{z1} $CO V1{z1} $AO $NI V1{C2})$OR (V0{z1} $IN V1{C2}))) ";
+  //string formula = "($FA V0{z}) ( V0{z} $NI V1{C1})";
+ // ($OA V0{yyy} $CO V0{xxx} $AO $NI V3{C333})";  
+  parseInternalFormula(&formula, &final, VQL.at(0).size());
   logFile.close();	
   cout << "Check insertSetVar" << endl;
-  
- /* Var* ddd = insertVar("ciao", 0, 0);
-  Var* daa = insertVar("CAAAAAAo", 0, 0);
-  Var* dad = insertVar("ChhhhhhAo", 0, 0);
-  Atom at = Atom(1, { ddd,daa,dad });
-  cout << ddd->print() << endl; */
-  cout << "Check VVL" << endl;  
-  //insertVar( *createNewVar("V0{CIAO}"));
-  //insertVar(*createNewVar("V0{test}"));
-  //insertVar(*createNewVar("V1{1CIAO}"));
-  //insertVar(*createNewVar("V3{3CIAO}"));
+  //insertVar(new string("monastero"), new int(0));
+
+  cout << "Check VVL" << endl;   
   cout << "Vector 0" << endl;
   printVector(VVL.at(0));
   cout << "Vector 1" << endl;
@@ -574,8 +606,10 @@ int main()
   printVector(VQL.at(1));
   cout << "Vector 3" << endl;
   printVector(VQL.at(3));
-
-
+  /* Var *av=NULL;
+  createVarFromString("monaster", 0, 0, 0);
+  cout<<containsVariableName(&VVL.at(0), &av, "monaster", 0)<<endl;
+  cout << av->getName() << endl; */
   return 0;
 }
 
@@ -616,7 +650,7 @@ Check if an atom is built correctly.
 check brackets; check format of a formula in general as preprocessing
 define special chars from a config file. Setting the size of the special chars and checking for correctness.
 allowing change of the $ char from a config file.
-
+creating a quantified variable for a formula does not check if it is yet present
 Optimize Atom managment and creation
 
 */
