@@ -103,6 +103,16 @@ const int maxOpLen = 4;
  string setOp[] = { "$IN", "$EQ", "$NI", "$QE", "$OA","$AO", "$CO" }; //set operators
  string qutOP[] = {"$FA"};	//quantifiers
 
+ int getLogOpValue(string s)
+ {
+	 for (int i = 0; i < logOp->size(); i++)
+	 {
+		 if (logOp[i].compare(s) == 0)
+			 return i;
+	 }
+	 return -1;
+ }
+
  int getSetOpValue(string s)
  {
 	 for (int i = 0; i < setOp->size(); i++)
@@ -232,13 +242,21 @@ const int maxOpLen = 4;
 	 void setLSubformula(Formula *sub) { lsubformula = sub; };
 	 void setRSubformula(Formula *sub) { rsubformula = sub; };
 	 void setPreviousFormula(Formula *prev) { pformula = prev; }
-	 void print()
+	 string print()
 	 { 
-		 /*if (getAtom() != NULL)
-			 cout << getAtom().print();
+		 if (getAtom() != NULL)
+			 return (getAtom()->print().append(" "));
 		 else
-			 cout << getOperand();
-			 */
+		 {
+			 string ret = "( ";
+			 ret.append(getLSubformula()->print());
+			 ret.append(" ");
+			 ret.append(logOp[getOperand()]);
+			 ret.append(" ");
+			 ret.append(getRSubformula()->print());
+			 ret.append(")");
+			 return ret;
+		 }			 
 	 }
  };
 
@@ -338,8 +356,8 @@ int checkLogOp(string *s)
 {
 	for (const string &op : logOp)
 	{
-		if ( op.compare(*s) ==0)
-			return 1;
+	 if ( op.compare(*s) ==0)
+	  return 1;
 	}
 	return 0;
 }
@@ -362,12 +380,6 @@ void printStack(stack<string> st)
 	}
 }
 
-void visitFormula(Formula *formula)
-{
-	//cout << formula->print()<<endl;
-
-}
-
 int containsVariableName(vector<Var>* vect, Var** found, string name, int start)
 {	
  for (; start < vect->size(); start++)
@@ -382,28 +394,26 @@ int containsVariableName(vector<Var>* vect, Var** found, string name, int start)
 }
 
 /*
-   Create a Var given a string 
+   Create a Var from the given string, level,  
 */
 Var* createVarFromString(string name, int level, int vartype, int startVQL)
 { 
 	if (vartype == 0)
 	{
-		Var* ret = NULL;  
-		if (containsVariableName(&VQL.at(level), &ret, name, startVQL) == 0)
-		{		  
-		  return ret;
-		}
-		return insertVar(&name, &level);
+	 Var* ret = NULL;  
+	 if (containsVariableName(&VQL.at(level), &ret, name, startVQL) == 0)				  
+	   return ret;		
+	 return insertVar(&name, &level);
 	}
 	else if (vartype==1)
 		return insertQVar(&name, &level);
 	else return NULL;
 }
 
-/*
-  Create an Atom from the given string
-*/
 
+/*
+  Extract from the given string the name and the level of the variable
+*/
 int retrieveVarData(string input, string* name, int* level)
 {
 	*level = input.at(1) - '0';
@@ -411,6 +421,9 @@ int retrieveVarData(string input, string* name, int* level)
 	return 0;
 }
 
+/*
+  Create an Atom from the given string
+*/
 int createAtom(string input, vector<int>* startQuantVect)
 {	
 	Var* var1;
@@ -428,10 +441,6 @@ int createAtom(string input, vector<int>* startQuantVect)
 			size_t found = match.find("$");  
 			retrieveVarData(match.substr(0, found), &name, &level);
 			var1 = createVarFromString(name, level, 0, startQuantVect->at(level));
-			//cout << var1->getName() << endl;
-			cout << "Test2:" << endl;
-			cout << var1->getName() << endl;
-
 			match = match.substr(found+3, match.size()-1); //here the comma
 			found = match.find("$");
 			retrieveVarData(match.substr(0, found), &name, &level);
@@ -444,7 +453,7 @@ int createAtom(string input, vector<int>* startQuantVect)
             Atom atom = Atom(op, {var3, var1, var2 });
 			cout << "Atom found: " << atom.print() << endl;			
 		}
-		else if (head.compare("$FA")==0)  //case quantifier
+		else if (head.compare("$FA")==0)  //case quantified variable
 		{				
 			retrieveVarData(match.substr(3, match.size() - 1), &name, &level);
 			var1 = createVarFromString(name, level, 1, startQuantVect->at(level));
@@ -461,23 +470,21 @@ int createAtom(string input, vector<int>* startQuantVect)
 		  retrieveVarData(input.substr(found + 3, input.size() - 1), &name, &level);
 		  var2 = createVarFromString(name, level,0, startQuantVect->at(level));
 		  Atom atom =  Atom(op, {var2,var1});
-		  cout << "Atom found: " << atom.print()<<endl;	 
-		  
+		  cout << "Atom found: " << atom.print()<<endl;		  
 		}
-	}
-	
+	}	
 	return 0;
 }
 
 /*
-Parse a string representing an internal formula and return the corresponding internal formula.
-Quantification only variables of level 0 is currently allowed.
+Parse a string representing an internal formula and return the corresponding internal formula. 
 */
-int parseInternalFormula(string *inputformula, Formula *outformula, vector<int>* startQuantVect)
+int parseInternalFormula(const string *inputformula, Formula **outformula, vector<int>* startQuantVect)
 {
-	string strformu = *inputformula;
+	//string strformu = *inputformula;
 	stack<string> stackFormula;
-	stackFormula.push(strformu);
+	stack<Formula> formula; //tracking subformulae
+	stackFormula.push(*inputformula);
 	//while (!stackFormula.empty())
 	{
 		string top = stackFormula.top();
@@ -517,12 +524,12 @@ int parseInternalFormula(string *inputformula, Formula *outformula, vector<int>*
 
 		}
 	}
+	*outformula = new Formula(NULL,-1);
 	printStack(stackFormula);
-	return 0;
-	
-		
+	return 0;		
 }
 
+//only for test
 void printVector(vector<Var>& v)
 {
 	for (Var element : v)
@@ -532,9 +539,15 @@ void printVector(vector<Var>& v)
 
 }
 
-
-int insertFormula(string* formula, Formula *ffinal)
+/*
+  Create an object of type Formula  from the given string representing a formula.
+*/
+int insertFormula(string* formula, Formula **ffinal)
 {
+	/*
+	  The following vector of int represents the position of the quantified variables of the current formula.
+	  Initially the vector plainly coincides the the end of the vector modified in the previous execution.
+	*/
  vector<int> vqlsize;
  for (int i = 0; i < VQL.size(); i++)	
   vqlsize.push_back(VQL.at(i).size());
@@ -555,6 +568,7 @@ int main()
   Var g1("Edificio", 1, 0);
   Var h("haLivello", 3, 0);
   Var h1("haLivello", 3, 0);
+  /*
   //cout << "Testing Add Var:" << endl;  
   //cout<<VVL.at(0).size()<<endl;
   //cout << VVL.at(0).back().print()<<endl;
@@ -575,10 +589,15 @@ int main()
  // cout<<addNewElement(x, VCL)<<endl;
   //cout << VCL.at(0).at(0).getName() << endl;
  // cout << VQL.capacity()<< endl;
+ */
   Atom atom(0, {&h,&b,&x});
   Atom atom2(0, {&g,&b});
   Atom atom3(1, { &b,&x });
-  cout << "Testing pring atom:" << endl;
+  Formula af = Formula(NULL, 1, new Formula(&atom, -1), new Formula(&atom2, -1));
+  Formula af2 = Formula(NULL, 0, &af, new Formula(&atom3, -1));
+  cout << af2.print() << endl;
+ /*
+  cout << "Testing print atom:" << endl;
   cout << atom.print() << endl;
   cout << atom2.print() << endl;
   cout << atom3.print() << endl;
@@ -586,17 +605,21 @@ int main()
   cout << "Atom print: " <<  atom.getElementAt(1)->getName() << endl;
   if( ((atom.getElementAt(2)))==NULL)
        cout << "Atom print: NULL " << endl;
+  */
   Tableau tab( &Node() ); //empty tableau
   Node* radix=tab.getTableau();
   cout << "Stack" << endl;  
-  Formula ffinal(NULL,5);
+  Formula* ffinal;
+  //string formula(af2.print());
   string formula = " ($FA V0{z}) ($FA V1{z1}) ( (V0{k} $NI V1{l}) $AD  ( ( V0{z} $NI V1{C1})$OR ( V0{z1} $NI V1{C2}))$AD((  $OA V1{z1} $CO V1{z1} $AO $NI V1{C2})$OR (V0{z1} $IN V1{C2}))) ";
   //string formula = "($FA V0{z}) ( V0{z} $NI V1{C1})";
  // ($OA V0{yyy} $CO V0{xxx} $AO $NI V3{C333})"; 
  
   insertFormula(&formula, &ffinal);
+  //cout << "####" << ffinal->getOperand() << endl;
+  //cout<<ffinal.print()<<endl;
   logFile.close();	
-  cout << "Check insertSetVar" << endl;
+  //cout << "Check insertSetVar" << endl;
   //insertVar(new string("monastero"), new int(0));
 
   cout << "Check VVL" << endl;   
