@@ -243,11 +243,15 @@ const int maxOpLen = 4;
 	 void setRSubformula(Formula *sub) { rsubformula = sub; };
 	 void setPreviousFormula(Formula *prev) { pformula = prev; }
 	 string print()
-	 { 
+	 {
+		
 		 if (getAtom() != NULL)
+		 { 
 			 return (getAtom()->print().append(" "));
-		 else
+		 }
+		 else if (getOperand()>-1 && getLSubformula()!=NULL && getRSubformula() !=NULL)
 		 {
+			 
 			 string ret = "( ";
 			 ret.append(getLSubformula()->print());
 			 ret.append(" ");
@@ -256,7 +260,8 @@ const int maxOpLen = 4;
 			 ret.append(getRSubformula()->print());
 			 ret.append(")");
 			 return ret;
-		 }			 
+		 }	
+		 else return "NULL";
 	 }
  };
 
@@ -365,9 +370,26 @@ int checkLogOp(string *s)
 /*
    print a stack of string in inverted order
 */
+void printStack(stack<Formula> st)
+{
+	stack<Formula> out;
+	cout << "Stack Formula:" << endl;
+	while (!st.empty())
+	{
+		out.push(st.top());
+		st.pop();
+	}
+	while (!out.empty())
+	{
+		cout << out.top().print() << endl;
+		out.pop();
+	}
+}
+
 void printStack(stack<string> st)
 {
 	stack<string> out;
+	cout << "Stack:" << endl;
 	while (!st.empty())
 	{
 		out.push(st.top());		
@@ -424,7 +446,7 @@ int retrieveVarData(string input, string* name, int* level)
 /*
   Create an Atom from the given string
 */
-int createAtom(string input, vector<int>* startQuantVect)
+int createAtom(string input, Formula **formula, vector<int>* startQuantVect)
 {	
 	Var* var1;
 	Var* var2;
@@ -433,7 +455,7 @@ int createAtom(string input, vector<int>* startQuantVect)
 	int level = -1;
 	if (input[0]=='$') //case pair or quantifier
 	{
-		string head = input.substr(0, 3); cout << head << endl;	
+		string head = input.substr(0, 3); //cout << head << endl;	
 		string match = input; 
 		if (head.compare("$OA") == 0)  //case  pair
 		{			
@@ -450,13 +472,15 @@ int createAtom(string input, vector<int>* startQuantVect)
 			match = match.substr(3, match.size() - 1);
 			retrieveVarData(match, &name, &level);
             var3 = createVarFromString(name, level, 0, startQuantVect->at(level));
-            Atom atom = Atom(op, {var3, var1, var2 });
-			cout << "Atom found: " << atom.print() << endl;			
+            Atom* atom = new Atom(op, {var3, var1, var2 });
+			*formula = (new Formula(atom, -1 ));
+			//cout << "Atom found: " << formula->print() << endl;			
 		}
 		else if (head.compare("$FA")==0)  //case quantified variable
 		{				
 			retrieveVarData(match.substr(3, match.size() - 1), &name, &level);
 			var1 = createVarFromString(name, level, 1, startQuantVect->at(level));
+			*formula =  NULL; //var
 		}
 	} 
 	else if( input[0]=='V') //case single var
@@ -469,10 +493,12 @@ int createAtom(string input, vector<int>* startQuantVect)
 		  int op =  getSetOpValue(input.substr(found, 3)); 
 		  retrieveVarData(input.substr(found + 3, input.size() - 1), &name, &level);
 		  var2 = createVarFromString(name, level,0, startQuantVect->at(level));
-		  Atom atom =  Atom(op, {var2,var1});
-		  cout << "Atom found: " << atom.print()<<endl;		  
+		  Atom* atom =  new Atom(op, {var2,var1});
+		  *formula = (new Formula(atom, -1));
+		  //cout << "Atom found: " << atom.print()<<endl;		  
 		}
 	}	
+	
 	return 0;
 }
 
@@ -483,14 +509,15 @@ int parseInternalFormula(const string *inputformula, Formula **outformula, vecto
 {
 	//string strformu = *inputformula;
 	stack<string> stackFormula;
-	stack<Formula> formula; //tracking subformulae
+	stack<Formula> stformula; //tracking subformulae
 	stackFormula.push(*inputformula);
 	//while (!stackFormula.empty())
 	{
 		string top = stackFormula.top();
 		stackFormula.pop();  //cout << top << endl;
 		string atom=string();
-		string operand=string();	
+		string operand=string();
+		Formula* formula=NULL;
 		for (int i = 0; i < top.length(); i++)
 		{
 			char c = top.at(i);					 
@@ -501,7 +528,12 @@ int parseInternalFormula(const string *inputformula, Formula **outformula, vecto
 				if (!atom.empty())
 				{					
 					stackFormula.push(atom);
-					createAtom(atom, startQuantVect); //-----------------------------
+					createAtom(atom, &formula, startQuantVect); //-----------------------------					
+					if (formula != NULL)
+					{
+						cout << "Current formula: "<< formula->print() << endl;
+						stformula.push(*formula);
+					}					
 					atom.clear();
 				}
 				stackFormula.push(string(1, c));
@@ -524,7 +556,8 @@ int parseInternalFormula(const string *inputformula, Formula **outformula, vecto
 
 		}
 	}
-	*outformula = new Formula(NULL,-1);
+
+	printStack(stformula);
 	printStack(stackFormula);
 	return 0;		
 }
@@ -552,6 +585,7 @@ int insertFormula(string* formula, Formula **ffinal)
  for (int i = 0; i < VQL.size(); i++)	
   vqlsize.push_back(VQL.at(i).size());
  parseInternalFormula(formula, ffinal, &vqlsize);
+ return 0;
 }
 
 int main()
@@ -595,7 +629,7 @@ int main()
   Atom atom3(1, { &b,&x });
   Formula af = Formula(NULL, 1, new Formula(&atom, -1), new Formula(&atom2, -1));
   Formula af2 = Formula(NULL, 0, &af, new Formula(&atom3, -1));
-  cout << af2.print() << endl;
+ // cout << af2.print() << endl;
  /*
   cout << "Testing print atom:" << endl;
   cout << atom.print() << endl;
@@ -608,20 +642,21 @@ int main()
   */
   Tableau tab( &Node() ); //empty tableau
   Node* radix=tab.getTableau();
-  cout << "Stack" << endl;  
+  
   Formula* ffinal;
   //string formula(af2.print());
   string formula = " ($FA V0{z}) ($FA V1{z1}) ( (V0{k} $NI V1{l}) $AD  ( ( V0{z} $NI V1{C1})$OR ( V0{z1} $NI V1{C2}))$AD((  $OA V1{z1} $CO V1{z1} $AO $NI V1{C2})$OR (V0{z1} $IN V1{C2}))) ";
+  cout << "Current Formula is: " << formula << endl;
   //string formula = "($FA V0{z}) ( V0{z} $NI V1{C1})";
  // ($OA V0{yyy} $CO V0{xxx} $AO $NI V3{C333})"; 
- 
+ // cout << "Stack" << endl;
   insertFormula(&formula, &ffinal);
   //cout << "####" << ffinal->getOperand() << endl;
   //cout<<ffinal.print()<<endl;
   logFile.close();	
   //cout << "Check insertSetVar" << endl;
   //insertVar(new string("monastero"), new int(0));
-
+   
   cout << "Check VVL" << endl;   
   cout << "Vector 0" << endl;
   printVector(VVL.at(0));
@@ -675,13 +710,13 @@ that stays for X^1_{ {x_{b_3} }
 
 /*
 TO DO LIST
-
+Create doc, in particular UML and separe headers from source.
+insert logging
 USE A MAP to MAP from string representing operator and integer representing operator.
-Check if an atom is built correctly.
-check brackets; check format of a formula in general as preprocessing
+check brackets; check format of a formula in general as preprocessing and Check if an atom is built correctly.
 define special chars from a config file. Setting the size of the special chars and checking for correctness.
 allowing change of the $ char from a config file.
 creating a quantified variable for a formula does not check if it is yet present
-Optimize Atom managment and creation
+Optimize Atom management and creation
 
 */
