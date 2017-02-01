@@ -718,5 +718,5 @@ define special chars from a config file. Setting the size of the special chars a
 allowing change of the $ char from a config file.
 creating a quantified variable for a formula does not check if it is yet present
 Optimize Atom management and creation
-
+Test Cases
 */
