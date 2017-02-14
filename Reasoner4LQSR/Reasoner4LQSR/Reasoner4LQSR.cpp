@@ -84,7 +84,7 @@ const int maxOpLen = 4;
 				   return 0;
 			   return 1;
 		   }
-		   string print()
+		   string toString()
 		   {
 			   string out = "V";
 			   out.append(to_string(getType()));
@@ -173,23 +173,23 @@ const int maxOpLen = 4;
 			 (*getElements()).push_back(&element);
 		   };	
 
-		  string print()
+		  string toString()
 		  {
 			  string out = "(";
 			  if (getElements()->size() > 2)
 			  {
 				out.append("$OA ");
-				out.append(getElementAt(1)->print());
+				out.append(getElementAt(1)->toString());
 				out.append(" $CO "); 
-				out.append(getElementAt(2)->print());
+				out.append(getElementAt(2)->toString());
 				out.append("$AO");
 			  }
 			  else
-				out.append(getElementAt(1)->print());
+				out.append(getElementAt(1)->toString());
 			  out.append(" ");			  
 			  out.append(setOp[getAtomOp()]);	
 			  out.append(" ");
-			  out.append(getElementAt(0)->print());
+			  out.append(getElementAt(0)->toString());
 			  out.append(")");
 			  return out;
 		  };
@@ -242,22 +242,22 @@ const int maxOpLen = 4;
 	 void setLSubformula(Formula *sub) { lsubformula = sub; };
 	 void setRSubformula(Formula *sub) { rsubformula = sub; };
 	 void setPreviousFormula(Formula *prev) { pformula = prev; }
-	 string print()
+	 string toString()
 	 {
 		
 		 if (getAtom() != NULL)
 		 { 
-			 return (getAtom()->print().append(" "));
+			 return (getAtom()->toString().append(" "));
 		 }
 		 else if (getOperand()>-1 && getLSubformula()!=NULL && getRSubformula() !=NULL)
 		 {
 			 
 			 string ret = "( ";
-			 ret.append(getLSubformula()->print());
+			 ret.append(getLSubformula()->toString());
 			 ret.append(" ");
 			 ret.append(logOp[getOperand()]);
 			 ret.append(" ");
-			 ret.append(getRSubformula()->print());
+			 ret.append(getRSubformula()->toString());
 			 ret.append(")");
 			 return ret;
 		 }	
@@ -381,7 +381,7 @@ void printStack(stack<Formula> st)
 	}
 	while (!out.empty())
 	{
-		cout << out.top().print() << endl;
+		cout << out.top().toString() << endl;
 		out.pop();
 	}
 }
@@ -531,7 +531,7 @@ int parseInternalFormula(const string *inputformula, Formula **outformula, vecto
 					createAtom(atom, &formula, startQuantVect); //-----------------------------					
 					if (formula != NULL)
 					{
-						cout << "Current formula: "<< formula->print() << endl;
+						cout << "Current formula: "<< formula->toString() << endl;
 						stformula.push(*formula);
 					}					
 					atom.clear();
@@ -556,7 +556,7 @@ int parseInternalFormula(const string *inputformula, Formula **outformula, vecto
 
 		}
 	}
-
+	*outformula = new Formula();
 	printStack(stformula);
 	printStack(stackFormula);
 	return 0;		
@@ -567,7 +567,7 @@ void printVector(vector<Var>& v)
 {
 	for (Var element : v)
 	{
-		cout << element.print() << endl;
+		cout << element.toString() << endl;
 	} 
 
 }
@@ -640,8 +640,8 @@ int main()
   if( ((atom.getElementAt(2)))==NULL)
        cout << "Atom print: NULL " << endl;
   */
-  Tableau tab( &Node() ); //empty tableau
-  Node* radix=tab.getTableau();
+ // Tableau tab( &Node() ); //empty tableau
+ // Node* radix=tab.getTableau();
   
   Formula* ffinal;
   //string formula(af2.print());
@@ -651,6 +651,9 @@ int main()
  // ($OA V0{yyy} $CO V0{xxx} $AO $NI V3{C333})"; 
  // cout << "Stack" << endl;
   insertFormula(&formula, &ffinal);
+  Tableau tab(&Node()); //empty tableau
+  Node* radix = tab.getTableau();
+  radix->insertFormula(ffinal);
   //cout << "####" << ffinal->getOperand() << endl;
   //cout<<ffinal.print()<<endl;
   logFile.close();	
