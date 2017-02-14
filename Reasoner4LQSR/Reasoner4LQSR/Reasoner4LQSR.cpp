@@ -246,12 +246,12 @@ const int maxOpLen = 4;
 	 {
 		
 		 if (getAtom() != NULL)
-		 { 
+		 {
 			 return (getAtom()->toString().append(" "));
 		 }
-		 else if (getOperand()>-1 && getLSubformula()!=NULL && getRSubformula() !=NULL)
+		 else if (getOperand() > -1 && getLSubformula() != NULL && getRSubformula() != NULL)
 		 {
-			 
+
 			 string ret = "( ";
 			 ret.append(getLSubformula()->toString());
 			 ret.append(" ");
@@ -260,7 +260,9 @@ const int maxOpLen = 4;
 			 ret.append(getRSubformula()->toString());
 			 ret.append(")");
 			 return ret;
-		 }	
+		 }
+		 else if (getOperand() > -1)
+			 return (logOp[getOperand()]);
 		 else return "NULL";
 	 }
  };
@@ -368,21 +370,15 @@ int checkLogOp(string *s)
 }
 
 /*
-   print a stack of string in inverted order
+   print a stack of string 
 */
-void printStack(stack<Formula> st)
+void printStack(stack<Formula*> st)
 {
-	stack<Formula> out;
-	cout << "Stack Formula:" << endl;
+	
 	while (!st.empty())
 	{
-		out.push(st.top());
+		cout << st.top()->toString() << endl;
 		st.pop();
-	}
-	while (!out.empty())
-	{
-		cout << out.top().toString() << endl;
-		out.pop();
 	}
 }
 
@@ -509,7 +505,7 @@ int parseInternalFormula(const string *inputformula, Formula **outformula, vecto
 {
 	//string strformu = *inputformula;
 	stack<string> stackFormula;
-	stack<Formula> stformula; //tracking subformulae
+	stack<Formula*> stformula; //tracking subformulae
 	stackFormula.push(*inputformula);
 	//while (!stackFormula.empty())
 	{
@@ -527,22 +523,47 @@ int parseInternalFormula(const string *inputformula, Formula **outformula, vecto
 			case ')': 
 				if (!atom.empty())
 				{					
-					stackFormula.push(atom);
+					stackFormula.pop();
+					//stackFormula.push(atom);
 					createAtom(atom, &formula, startQuantVect); //-----------------------------					
-					if (formula != NULL)
+					if (formula != NULL) // creation of the formula 
 					{
-						cout << "Current formula: "<< formula->toString() << endl;
-						stformula.push(*formula);
+						//cout << "Current formula: "<< formula->toString() << endl;
+						stformula.push(formula);
+						//cout<< "-------" << stackFormula.top() << endl;						
+						//stackFormula.push(formula->toString()); //
+
 					}					
 					atom.clear();
+
+					
 				}
-				stackFormula.push(string(1, c));
+				else
+				{
+					//cout << "..." << endl;
+					//printStack(stformula);
+					//cout << "..." << endl;
+					Formula *rightf = stformula.top();
+					stformula.pop();
+					Formula *centerf = stformula.top();
+					stformula.pop();
+					Formula *leftf = stformula.top();
+					stformula.pop();
+					centerf->setLSubformula(leftf);
+					centerf->setRSubformula(rightf);
+					stformula.push(centerf);
+					//cout << "-------------" << (stformula.top())->toString() << endl;
+					stackFormula.pop();
+					
+				}
 				break; 
 			case '$': operand = string(1, c) + string(1, top.at(i + 1)) + string(1, top.at(i + 2));
 				i = i + 2;
 				if (checkLogOp(&operand) != 0)
 				{
-					stackFormula.push(operand);
+					stformula.push(new Formula(NULL, getLogOpValue(operand)));
+					//stackFormula.push(to_string(getLogOpValue(operand)));
+
 				}
 				else
 				{
@@ -556,9 +577,19 @@ int parseInternalFormula(const string *inputformula, Formula **outformula, vecto
 
 		}
 	}
-	*outformula = new Formula();
-	printStack(stformula);
-	printStack(stackFormula);
+	//(*outformula)->toString();
+	*outformula = (stformula.top());
+	cout << "FINAL" << endl;
+	//printStack(stformula);
+	//printStack(stackFormula);
+	/*Formula f = stformula.top();
+	cout<< f.getOperand() << endl;
+	Formula* f1 = f.getLSubformula();
+	Formula* f2 = f.getRSubformula();
+	cout<< f1->toString() << endl;
+	cout << (f2->getRSubformula())->toString() << endl;*/
+
+	//cout << f.toString()<< endl;
 	return 0;		
 }
 
@@ -645,12 +676,16 @@ int main()
   
   Formula* ffinal;
   //string formula(af2.print());
-  string formula = " ($FA V0{z}) ($FA V1{z1}) ( (V0{k} $NI V1{l}) $AD  ( ( V0{z} $NI V1{C1})$OR ( V0{z1} $NI V1{C2}))$AD((  $OA V1{z1} $CO V1{z1} $AO $NI V1{C2})$OR (V0{z1} $IN V1{C2}))) ";
+  //string formula = "($FA V0{ z }) ((V0{ z } $NI V1{ C1 })";
+  //string formula = "($FA V0{z}) ( (V0{z} $NI V1{C1}) $AD (  (V0{b} $NI V1{C1}) $AD (V0{b} $NI V1{C1})  ) )";
+  //string formula = "($FA V0{z}) ( (V0{z} $NI V1{C1}) $AD (  (V0{b} $NI V1{C1}) $OR (V0{a} $NI V1{C1}) ) )";
+  string formula = " ($FA V0{z}) ($FA V1{z1}) ( ( (V0{k} $NI V1{l}) $AD  ( ( V0{z} $NI V1{C1})$OR ( V0{z1} $NI V1{C2}))$AD((  $OA V1{z1} $CO V1{z1} $AO $NI V1{C2})$OR (V0{z1} $IN V1{C2})))) ";
   cout << "Current Formula is: " << formula << endl;
-  //string formula = "($FA V0{z}) ( V0{z} $NI V1{C1})";
+  
  // ($OA V0{yyy} $CO V0{xxx} $AO $NI V3{C333})"; 
  // cout << "Stack" << endl;
   insertFormula(&formula, &ffinal);
+  cout<< "Parsed formula: " << ffinal->toString()<<endl;
   Tableau tab(&Node()); //empty tableau
   Node* radix = tab.getTableau();
   radix->insertFormula(ffinal);
