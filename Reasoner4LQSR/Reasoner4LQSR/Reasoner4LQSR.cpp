@@ -326,7 +326,7 @@ int init() //used to inizialize elements.
 /*
 Create and insert var from the given var name and the var type in the given vector of vector of var
 */
-
+/*
 Var* insertSetVar(string *name, int *type, int vartype, vector<vector<Var>>& vec)
 {  //VVL 
 	vector<Var> *v = &(vec.at(*type)); 
@@ -335,33 +335,34 @@ Var* insertSetVar(string *name, int *type, int vartype, vector<vector<Var>>& vec
 		if (v->at(i).equal(*name, *type, vartype) == 0)
 			return &v->at(i); 
 	}
-	string outn = *name;
-	int outt = *type;	
-	Var* res = new Var( outn, outt, vartype);
+	string outn = string( *name);
+	int outt = int(*type);	
+	int vt = vartype;
+	Var* res = new Var( outn, outt, vt);
 	v->push_back(*res);
 	return res;
 }
 
 
-
+*/
 /*
 Create and insert a quatified var from the given var name and the var type
 */
-
+/*
 Var* insertQVar(string *name, int *type)
 {
 return insertSetVar(name, type, 1 , VQL);
 }
-
+*/
 /*
    Create and insert a unquatified var from the given var name and the var type
 */
-
+/*
 Var* insertVar(string *name, int *type)
 {
 	return insertSetVar(name, type, 0, VVL);
 }
-
+*/
 /*
   Return the value of the given string representing a logic operator
 */
@@ -404,7 +405,7 @@ void printStack(stack<string> st)
 	}
 }
 
-int containsVariableName(vector<Var>* vect, Var** found, string name)
+/*int containsVariableName(vector<Var>* vect, Var** found, string name)
 {	
  for (int start =0; start < vect->size(); start++)
 	{
@@ -415,24 +416,25 @@ int containsVariableName(vector<Var>* vect, Var** found, string name)
       }
 	}
 	return -1;
-}
+} */
 
 /*
    Create a Var from the given string, level,  
 */
+/*
 Var* createVarFromString(string name, int level, int vartype)
 { 
 	if (vartype == 0)
 	{
-	 Var* ret = NULL;  
+	 Var* ret = NULL;  //check if
 	 if (containsVariableName(&VQL.at(level), &ret, name) == 0)				  
 	   return ret;		
 	 return insertVar(&name, &level);
 	}
-	else if (vartype==1)
+	else if (vartype==1) //if quantified variable, insert in VQL
 		return insertQVar(&name, &level);
 	else return NULL;
-}
+}*/
 
 
 /*
@@ -444,6 +446,13 @@ int retrieveVarData(string input, string* name, int* level)
 	*name = input.substr(3, (input.find_last_of('}') - 3));
 	return 0;
 }
+
+Var* createVarFromString(string name, int level, int vartype)
+{
+	return new Var(name, level, vartype);
+}
+
+
 
 /*
   Create an Atom from the given string
@@ -475,6 +484,7 @@ int createAtom(string input, Formula **formula, vector<int>* startQuantVect)
 			retrieveVarData(match, &name, &level);
             var3 = createVarFromString(name, level, 0);
             Atom* atom = new Atom(op, {var3, var1, var2 });
+			//Atom* atom = new Atom(0, { new Var(name,level,0), new Var("b1",0,0), new Var("c1",0,0) });
 			*formula = (new Formula(atom, -1 ));
 			//cout << "Atom found: " << formula->print() << endl;			
 		}
@@ -495,7 +505,8 @@ int createAtom(string input, Formula **formula, vector<int>* startQuantVect)
 		  int op =  getSetOpValue(input.substr(found, 3)); 
 		  retrieveVarData(input.substr(found + 3, input.size() - 1), &name, &level);
 		  var2 = createVarFromString(name, level,0);
-		  Atom* atom =  new Atom(op, {var2,var1});
+		  //Atom* atom =  new Atom(op, {var2,var1});
+		  Atom* atom = new Atom(op, { new Var("b2",0,0), new Var("c2",0,0) });
 		  *formula = (new Formula(atom, -1));
 		  //cout << "Atom found: " << atom.print()<<endl;		  
 		}
@@ -676,45 +687,59 @@ int main()
   Formula* ffinal3;
   //string formula(af2.print());
   string formula = "($FA V0{z}) ($OA V0{z} $CO V0{z} $AO $NI V3{C333})";
-  string formula2 = "($FA V0{z1}) ($OA V0{z1} $CO V0{z1} $AO $NI V3{C444})";
+  string formula2 = "($FA V0{z1}) (V0{z1} $IN V1{C444})";
 
  // string formula2 = "($FA V0{ z1 }) (V0{ z1 } $NI V1{ C1 })";
   // string formula = "($FA V0{z})(( ( V0{z} $NI V1{C1})$OR ( V0{z1} $NI V1{C2}))$AD(( V0{z1} $NI V1{C2})$OR (V0{z1} $IN V1{C2})))";
   // string formula2 = "($FA V0{z2}) ( (V0{z2} $NI V1{C1}) $AD (  (V0{b} $NI V1{C1}) $AD (V0{b} $NI V1{C1})  ) )";
- // string formula3 = "($FA V0{z3}) ( (V0{z3} $NI V1{C1}) $AD (  (V0{b} $NI V1{C1}) $OR (V0{a} $NI V1{C1}) ) )";
+  string formula3 = "($FA V0{z3}) ( (V0{z3} $NI V1{C1}) $AD (  (V0{b} $NI V1{C1}) $OR (V0{a} $NI V1{C1}) ) )";
   //string formula = " ($FA V0{z}) ($FA V1{z1}) ( ( (V0{k} $NI V1{l}) $AD  ( ( V0{z} $NI V1{C1})$OR ( V0{z1} $NI V1{C2}))$AD((  $OA V1{z1} $CO V1{z1} $AO $NI V1{C2})$OR (V0{z1} $IN V1{C2})))) ";
  // cout << "Current Formula is: " << formula << endl;
   insertFormula(&formula, &ffinal);  
   cout << "------------" << endl;
-  //insertFormula(&formula2, &ffinal2);  
+  cout << "Parsed formula: " << ffinal->getAtom()->getElementAt(0)->getVarType() << endl;
+  cout << "Parsed formula: " << ffinal->getAtom()->getElementAt(0)->getType() << endl;
+  cout << "Parsed formula: " << ffinal->getAtom()->getElementAt(0)->getName() << endl;
+  cout << "Parsed formula: " << ffinal->getAtom()->getElementAt(1)->getVarType() << endl;
+  cout << "Parsed formula: " << ffinal->getAtom()->getElementAt(1)->getType() << endl;
+  cout << "Parsed formula: " << ffinal->getAtom()->getElementAt(1)->getName() << endl;
+  insertFormula(&formula2, &ffinal2);  
+  insertFormula(&formula3, &ffinal3);
  /* cout << "------------" << endl;
   insertFormula(&formula2, &ffinal3);
   cout << "------------" << endl; */
-  cout << "Parsed formula: " << ffinal->toString() << endl;
+  cout << "Parsed formula: " << ffinal->getAtom()->getElementAt(0)->getVarType() << endl;
+  cout << "Parsed formula: " << ffinal->getAtom()->getElementAt(0)->getType() << endl;
+  cout << "Parsed formula: " << ffinal->getAtom()->getElementAt(0)->getName() << endl;
+  cout << "Parsed formula: " << ffinal->getAtom()->getElementAt(1)->getVarType() << endl;
+  cout << "Parsed formula: " << ffinal->getAtom()->getElementAt(1)->getType() << endl;
+  cout << "Parsed formula: " << ffinal->getAtom()->getElementAt(1)->getName() << endl;
   cout << "------------" << endl;
-  //cout << "Parsed formula: " << ffinal2->toString() << endl;
   /*cout << "------------" << endl;
   cout << "Parsed formula: " << ffinal3->toString() << endl;
   cout << "------------" << endl;*/ 
   //insertFormula(&formula3, &ffinal3);
-
+  cout << "Parsed formula: " << ffinal->toString() << endl;
+  cout << "Parsed formula: " << ffinal2->toString() << endl;
+  cout << "Parsed formula: " << ffinal3->toString() << endl;
   
- /* Tableau tab(&Node()); //empty tableau   
+ Tableau tab(&Node()); //empty tableau   
   Node* radix = tab.getTableau();
   radix->insertFormula(ffinal);
   cout << "------------" << endl;
   radix->insertFormula(ffinal2);
-  cout << "------------" << endl;*/
-  //radix->insertFormula(ffinal3);
+  cout << "------------" << endl;
+  radix->insertFormula(ffinal3);
   
   
 
- /* vector <Formula> *sta =radix->getSetFormulae();
+  vector <Formula> *sta =radix->getSetFormulae();
   cout << "---Radix Content ---" << sta->size() << endl;
-  for (Formula s : *sta)
+  
+ for (int i=0; i< sta->size(); i++)
   {
-	  cout<< (s.toString()) << endl;
-  }*/
+	  cout<< (sta->at(i).toString())<< endl;
+  }
 
 
   logFile.close();	
