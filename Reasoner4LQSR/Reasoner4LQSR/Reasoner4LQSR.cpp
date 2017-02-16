@@ -96,12 +96,76 @@ const int maxVarSize = 3;   //size of variable
   };
 
  // vector of 4LQSR Variables. Q stays for quantified.
- vector< vector <Var> > VVL;
- vector< vector <Var> > VQL;
+ 
+ class VariablesSet
+ {
+   private :
+          vector< vector <Var> > VVL;
+          vector< vector <Var> > VQL;
+   public :
+	     VariablesSet(int maxSize)
+		  {
+			 VQL.reserve(maxVarSize);  //initialize vectors for variables
+			 VVL.reserve(maxVarSize);
+			 for (int i = 0; i <= maxVarSize; i++)
+			 {
+				 VQL.push_back(vector<Var>());
+				 VVL.push_back(vector<Var>());
+			 }
+			 for (int i = 0; i <= maxVarSize; i++)
+			 {
+				 VQL.at(i).reserve(1024);
+				 VVL.at(i).reserve(1024);
+			 }
+
+		  };
+		 vector<Var>* getVVLAt(int level)
+		 {
+			 if (level < VVL.size())
+				 return &VVL.at(level);
+			 return NULL;
+		 };
+
+		 vector<Var>* getVQLAt(int level)
+		{
+			if (level < VQL.size())
+				return &VQL.at(level);
+			return NULL;
+		};
+
+		int VVLPushBack(int inslevel, string name, int level, int vartype)
+		 {
+			if (VVL.at(inslevel).size() < VVL.at(inslevel).capacity())
+			{
+				VVL.at(inslevel).push_back(*new Var(name, level, vartype));
+				return 0;
+			}
+			return 1;
+		 }
+
+		int VQLPushBack(int inslevel, string name, int level, int vartype)
+		{
+			if (VQL.at(inslevel).size() < VQL.at(inslevel).capacity())
+			{
+				VQL.at(inslevel).push_back(*new Var(name, level, vartype));
+				return 0;
+			}
+			return 1;
+		}
+
+		Var* VVLGetBack(int level) { return &VVL.at(level).back(); }
+		Var* VQLGetBack(int level) { return &VQL.at(level).back(); }
+		size_t VVLGetSize() { return VVL.size(); }
+		size_t VQLGetSize() { return VVL.size(); }
+		size_t VVLGetSizeAt(int level) { return VVL.at(level).size(); }		
+		size_t VQLGetSizeAt(int level) { return VQL.at(level).size(); }
+ };
+
  //Special chars of a formula
  string logOp[] = { "$OR","$AD","$RO","$DA" }; //logic operators
  string setOp[] = { "$IN", "$EQ", "$NI", "$QE", "$OA","$AO", "$CO" }; //set operators
  string qutOP[] = {"$FA"};	//quantifiers
+ VariablesSet varSet = VariablesSet(100);
 
  int getLogOpValue(string s)
  {
@@ -322,23 +386,23 @@ const int maxVarSize = 3;   //size of variable
  /*
    Init the vectors of variables.
  */
-int init() //used to inizialize elements.
- {
-  VQL.reserve(maxVarSize);  //initialize vectors for variables
-  VVL.reserve(maxVarSize);		
-  for (int i = 0; i <= maxVarSize; i++)
-   {	  
-	  VQL.push_back(vector<Var>());
-	  VVL.push_back(vector<Var>());
-   }
-  for (int i = 0; i <= maxVarSize; i++)
-  {
-	  VQL.at(i).reserve(1024);
-	  VVL.at(i).reserve(1024);
-  }
-
-  return 0;
-}
+//int init() //used to inizialize elements.
+// {
+//  VQL.reserve(maxVarSize);  //initialize vectors for variables
+//  VVL.reserve(maxVarSize);		
+//  for (int i = 0; i <= maxVarSize; i++)
+//   {	  
+//	  VQL.push_back(vector<Var>());
+//	  VVL.push_back(vector<Var>());
+//   }
+//  for (int i = 0; i <= maxVarSize; i++)
+//  {
+//	  VQL.at(i).reserve(1024);
+//	  VVL.at(i).reserve(1024);
+//  }
+//
+//  return 0;
+//}
 
 /*
   Return the value of the given string representing a logic operator
@@ -382,13 +446,14 @@ void printStack(stack<string> st)
 	}
 }
 
-int containsVariableName(vector<Var>* vect, Var** found, string *name, int *start)
+int containsVariableName(vector<Var>* vect, Var** found, const string *name, const int *start)
 {	
- for (; *start < vect->size(); *start++)
+	cout << "-----------" << vect->size() << "  " << *start << "  " << *name << endl;
+ for (int s=*start; s < vect->size(); s++)
 	{
-      if( (name->compare( (vect->at(*start)).getName())==0 ))
+      if( (name->compare( (vect->at(s)).getName())==0 ))
 	  {			  
-		  *found = &(vect->at(*start));		  
+		  *found = &(vect->at(s));		  
 		  return 0;
       }
 	}
@@ -398,7 +463,7 @@ int containsVariableName(vector<Var>* vect, Var** found, string *name, int *star
 /*
   Extract from the given string the name and the level of the variable
 */
-int retrieveVarData(string input, string* name, int* level)
+int retrieveVarData(const string input, string* name, int* level)
 {
 	*level = input.at(1) - '0';
 	*name = input.substr(3, (input.find_last_of('}') - 3));
@@ -408,32 +473,32 @@ int retrieveVarData(string input, string* name, int* level)
 Var* createVarFromString(string *name, int *level, int *vartype, int *start)
 { 
 	Var* ret;
-	if (containsVariableName(&VVL.at(*level), &ret, name, start) == 0)
+	if (containsVariableName(varSet.getVVLAt(*level), &ret, name, start) == 0)
 	{
 		return ret;
 	}
-	else if (containsVariableName(&VQL.at(*level), &ret, name, start) == 0)
+	else if (containsVariableName(varSet.getVQLAt(*level), &ret, name, start) == 0)
 	{
 		return ret;
 	}
 	else
 	{	 
-	 VVL.at(*level).push_back(*(new Var(string(*name), int(*level), int(*vartype))));
-	 return &(VVL.at(*level).back());
+	  varSet.VVLPushBack(*level, *name,*level,*vartype);
+	 return varSet.VVLGetBack(*level);
 	}
 }
 
 Var* createQVarFromString(string *name, int *level, int *vartype, int *start)
 {
 	Var* ret;
-	if (containsVariableName(&VQL.at(*level), &ret, name, start) == 0)
+	if (containsVariableName(varSet.getVQLAt(*level), &ret, name, start) == 0)
 	{
 		return ret;
 	}
 	else
 	{
-		VQL.at(*level).push_back(*(new Var( string(*name), int(*level), int(*vartype))));
-		return &(VQL.at(*level).back());
+		varSet.VQLPushBack(*level, *name,*level, *vartype);
+		return varSet.VQLGetBack(*level);
 	}
 }
 
@@ -580,15 +645,14 @@ int insertFormula(string* formula, Formula **ffinal)
 	  Initially the vector plainly coincides the the end of the vector modified in the previous execution.
 	*/
  vector<int> vqlsize;
- for (int i = 0; i < VQL.size(); i++)	
-  vqlsize.push_back((int)VQL.at(i).size());
+ for (int i = 0; i < varSet.VQLGetSize(); i++)	
+  vqlsize.push_back((int) varSet.VQLGetSizeAt(i));
  parseInternalFormula(formula, ffinal, &vqlsize); 
  return 0;
 }
 
 int main()
-{  
-  int res=init();
+{   
   std::ofstream logFile("LOG.log");
   #ifdef debug  
   #endif // debug
@@ -639,19 +703,19 @@ int main()
    
   cout << "Check VVL" << endl;   
   cout << "Vector 0" << endl;
-  printVector(VVL.at(0));
+  printVector(*varSet.getVVLAt(0));
   cout << "Vector 1" << endl;
-  printVector(VVL.at(1));
+  printVector(*varSet.getVVLAt(1));
   cout << "Vector 3" << endl;
-  printVector(VVL.at(3));
+  printVector(*varSet.getVVLAt(3));
 
   cout << "Check VQL" << endl;  
   cout << "Vector 0" << endl;
-  printVector(VQL.at(0));
+  printVector(*varSet.getVQLAt(0));
   cout << "Vector 1" << endl;
-  printVector(VQL.at(1));
+  printVector(*varSet.getVQLAt(1));
   cout << "Vector 3" << endl;
-  printVector(VQL.at(3));
+  printVector(*varSet.getVQLAt(3));
   logFile.close(); 
   return 0;
 }
