@@ -13,7 +13,7 @@
 
 using namespace std;
 //#define debug
-std::ofstream logFile;   //log file
+std::ofstream logFile("LOG.log");   //log file
 
 /*
 L0 has type 0
@@ -102,9 +102,11 @@ const int maxVarSize = 3;   //size of variable
    private :
           vector< vector <Var> > VVL;
           vector< vector <Var> > VQL;
+		  int capacity;
    public :
 	     VariablesSet(int maxSize)
 		  {
+			 capacity = maxSize;
 			 VQL.reserve(maxVarSize);  //initialize vectors for variables
 			 VVL.reserve(maxVarSize);
 			 for (int i = 0; i <= maxVarSize; i++)
@@ -652,8 +654,7 @@ int insertFormula(string* formula, Formula **ffinal)
 }
 
 int main()
-{   
-  std::ofstream logFile("LOG.log");
+{    
   #ifdef debug  
   #endif // debug
   Var b ("monastero", 0, 0);
