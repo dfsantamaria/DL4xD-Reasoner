@@ -1,7 +1,7 @@
 // Reasoner4LQSR.cpp : definisce il punto di ingresso dell'applicazione console.
 //
 
-#include "stdafx.h"
+#include "stdafx.h" // only on windows
 #include <fstream>
 #include <string>
 #include <iostream>
