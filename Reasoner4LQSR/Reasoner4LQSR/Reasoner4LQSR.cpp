@@ -24,8 +24,6 @@ L3 as DataProperty has type 4
 */
 const int minVarSize = -1;
 const int maxVarSize = 3;   //size of variable
-//const int maxAtLen = 3;
-//const int maxOpLen = 4;
 
 //Class of the single Var
  class Var
@@ -103,18 +101,20 @@ const int maxVarSize = 3;   //size of variable
           vector< vector <Var> > VVL;
           vector< vector <Var> > VQL;
 		  int capacity;
+		  int nlevel;
    public :
-	     VariablesSet(int maxSize)
+	     VariablesSet(int maxNVariable, int maxSize)
 		  {
+			 nlevel = maxNVariable;
 			 capacity = maxSize;
-			 VQL.reserve(maxVarSize);  //initialize vectors for variables
-			 VVL.reserve(maxVarSize);
-			 for (int i = 0; i <= maxVarSize; i++)
+			 VQL.reserve(nlevel);  //initialize vectors for variables
+			 VVL.reserve(nlevel);
+			 for (int i = 0; i <= nlevel; i++)
 			 {
 				 VQL.push_back(vector<Var>());
 				 VVL.push_back(vector<Var>());
 			 }
-			 for (int i = 0; i <= maxVarSize; i++)
+			 for (int i = 0; i <= nlevel; i++)
 			 {
 				 VQL.at(i).reserve(1024);
 				 VVL.at(i).reserve(1024);
@@ -164,30 +164,82 @@ const int maxVarSize = 3;   //size of variable
  };
 
  //Special chars of a formula
- string logOp[] = { "$OR","$AD","$RO","$DA" }; //logic operators
- string setOp[] = { "$IN", "$EQ", "$NI", "$QE", "$OA","$AO", "$CO" }; //set operators
- string qutOP[] = {"$FA"};	//quantifiers
- VariablesSet varSet = VariablesSet(100);
-
- int getLogOpValue(string s)
+ class Operators
  {
-	 for (int i = 0; i < logOp->size(); i++)
-	 {
-		 if (logOp[i].compare(s) == 0)
-			 return i;
-	 }
-	 return -1;
- }
-
- int getSetOpValue(string s)
- {
-	 for (int i = 0; i < setOp->size(); i++)
+  private :
+            string logOp[4] = { "$OR","$AD","$RO","$DA" }; //logic operators
+            string setOp[7] = { "$IN", "$EQ", "$NI", "$QE", "$OA","$AO", "$CO" }; //set operators
+            string qutOp[1] = {"$FA"};	//quantifiers
+  public :
+	  Operators() {};
+	  size_t getLogOpSize() { return logOp->size(); };
+	  size_t getSetOpSize() { return logOp->size(); };
+	  size_t getQuantiOpSize() { return qutOp->size(); };
+	  int getLogOpValue(string s)
+	  {
+		  for (int i = 0; i < getLogOpSize(); i++)
+		  {
+			  if (logOp[i].compare(s) == 0)
+				  return i;
+		  }
+		  return -1;
+	  };  
+    int getSetOpValue(string s)
+    {
+	 for (int i = 0; i < getSetOpSize(); i++)
 	 {
 		 if (setOp[i].compare(s) == 0)
 			 return i;
 	 }
 	 return -1;
- }
+	};
+	int getQuantiOpValue(string s)
+	{
+		for (int i = 0; i < getQuantiOpSize(); i++)
+		{
+			if (qutOp[i].compare(s) == 0)
+				return i;
+		}
+		return -1;
+	};
+
+	string getLogOpElement(int index)
+	{
+		if (index < getLogOpSize())
+			return logOp[index];
+		return NULL;
+	};
+	string getSetOpElement(int index)
+	{
+		if (index < getSetOpSize())
+			return setOp[index];
+		return NULL;
+	};
+	string getQuantiOpElement(int index)
+	{
+		if (index < getQuantiOpSize())
+			return qutOp[index];
+		return NULL;
+	};
+
+	/*
+	Return the value of the given string representing a logic operator
+	*/
+	int checkLogOp(string *s)
+	{
+		for (const string &op : logOp)
+		{
+			if (op.compare(*s) == 0)
+				return 1;
+		}
+		return 0;
+	}
+ };
+
+ VariablesSet varSet = VariablesSet(3, 100);
+ Operators operators = Operators();
+
+
 
  class Atom
  {
@@ -254,7 +306,7 @@ const int maxVarSize = 3;   //size of variable
 			  else
 				out.append(getElementAt(1)->toString());
 			  out.append(" ");			  
-			  out.append(setOp[getAtomOp()]);	
+			  out.append(operators.getSetOpElement(getAtomOp()));	
 			  out.append(" ");
 			  out.append(getElementAt(0)->toString());
 			  out.append(")");
@@ -334,14 +386,14 @@ const int maxVarSize = 3;   //size of variable
 			 string ret = "( ";
 			 ret.append(getLSubformula()->toString());
 			 ret.append(" ");
-			 ret.append(logOp[getOperand()]);
+			 ret.append(operators.getLogOpElement(getOperand()));
 			 ret.append(" ");
 			 ret.append(getRSubformula()->toString());
 			 ret.append(")");
 			 return ret;
 		 }
 		 else if (getOperand() > -1)
-			 return (logOp[getOperand()]);
+			 return (operators.getLogOpElement(getOperand()));
 		 else return "NULL";
 	 }
  };
@@ -406,18 +458,7 @@ const int maxVarSize = 3;   //size of variable
 //  return 0;
 //}
 
-/*
-  Return the value of the given string representing a logic operator
-*/
-int checkLogOp(string *s)
-{
-	for (const string &op : logOp)
-	{
-	 if ( op.compare(*s) ==0)
-	  return 1;
-	}
-	return 0;
-}
+
 
 /*
    print a stack of string 
@@ -449,8 +490,7 @@ void printStack(stack<string> st)
 }
 
 int containsVariableName(vector<Var>* vect, Var** found, const string *name, const int *start)
-{	
-	cout << "-----------" << vect->size() << "  " << *start << "  " << *name << endl;
+{		
  for (int s=*start; s < vect->size(); s++)
 	{
       if( (name->compare( (vect->at(s)).getName())==0 ))
@@ -529,7 +569,7 @@ int createAtom(string input, Formula **formula, vector<int>* startQuantVect)
 			retrieveVarData(match.substr(0, found), &name, &level);
 			var2 = createVarFromString(&name, &level, new int(0), &startQuantVect->at(level));			
 			match = match.substr(found + 3, match.size() - 1); 
-			int op = getSetOpValue(match.substr(0, 3));
+			int op = operators.getSetOpValue(match.substr(0, 3));
 			match = match.substr(3, match.size() - 1);
 			retrieveVarData(match, &name, &level);
             var3 = createVarFromString(&name, &level, new int(0), &startQuantVect->at(level));
@@ -552,7 +592,7 @@ int createAtom(string input, Formula **formula, vector<int>* startQuantVect)
 		{   
 		  retrieveVarData(input.substr(0, found), &name, &level);
 		  var1= createVarFromString(&name,&level,new int(0), &startQuantVect->at(level));
-		  int op =  getSetOpValue(input.substr(found, 3)); 
+		  int op =  operators.getSetOpValue(input.substr(found, 3)); 
 		  retrieveVarData(input.substr(found + 3, input.size() - 1), &name, &level);
 		  var2 = createVarFromString(&name, &level, new int(0), &startQuantVect->at(level));
 		  Atom* atom =  new Atom(op, {var2, var1} );		  
@@ -609,9 +649,9 @@ int parseInternalFormula(const string *inputformula, Formula **outformula, vecto
 				break; 
 			case '$': operand = string(1, c) + string(1, top.at(i + 1)) + string(1, top.at(i + 2));
 				i = i + 2;
-				if (checkLogOp(&operand) != 0)
+				if (operators.checkLogOp(&operand) != 0)
 				{
-					stformula.push(new Formula(NULL, getLogOpValue(operand)));
+					stformula.push(new Formula(NULL, operators.getLogOpValue(operand)));
 				}
 				else
 				{
