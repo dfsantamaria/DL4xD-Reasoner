@@ -53,6 +53,7 @@ const int maxVarSize = 3;   //size of variable
 			    name = _name; 
 			    return type; 
 		      };
+
 		   int setType(int _type)
 		      { 
 			   if (isValidType(_type))
@@ -61,6 +62,7 @@ const int maxVarSize = 3;   //size of variable
 				  type = -1; 
 			   return type;			   
 		      };
+
 		   int setVarType(int _var)
 		    {
 			   if (isValidVar(_var))
@@ -69,6 +71,7 @@ const int maxVarSize = 3;   //size of variable
 				 var = -1;	
 			   return var;
 		    };
+
 		   int equal(Var* match)
 		   {
 			   if ((getName().compare(match->getName()) == 0) && (getType() == match->getType()) && (getVarType() == match->getVarType()))
@@ -105,38 +108,43 @@ const int maxVarSize = 3;   //size of variable
    public :
 	     VariablesSet(int maxNVariable, int maxSize)
 		  {
-			 nlevel = maxNVariable;
-			 capacity = maxSize;
-			 VQL.reserve(nlevel);  //initialize vectors for variables
-			 VVL.reserve(nlevel);
-			 for (int i = 0; i <= nlevel; i++)
+		   nlevel = maxNVariable;
+		   capacity = maxSize;
+		   VQL.reserve(nlevel);  //initialize vectors for variables
+		   VVL.reserve(nlevel);
+		   for (int i = 0; i <= nlevel; i++)
 			 {
 				 VQL.push_back(vector<Var>());
 				 VVL.push_back(vector<Var>());
 			 }
-			 for (int i = 0; i <= nlevel; i++)
+		   for (int i = 0; i <= nlevel; i++)
 			 {
 				 VQL.at(i).reserve(1024);
 				 VVL.at(i).reserve(1024);
 			 }
-
 		  };
+
 		 vector<Var>* getVVLAt(int level)
-		 {
+		  {
 			 if (level < VVL.size())
 				 return &VVL.at(level);
 			 return NULL;
-		 };
+		  };
 
-		 vector<Var>* getVQLAt(int level)
-		{
+		vector<Var>* getVQLAt(int level)
+		 {
 			if (level < VQL.size())
 				return &VQL.at(level);
 			return NULL;
-		};
+		 };
 
 		int VVLPushBack(int inslevel, string name, int level, int vartype)
 		 {
+           #ifdef debug 
+			logFile << "-----Inserting Data in Variable Set of level: " << inslevel << ". Name: " << name <<". Level: "<< level<<". Type: "<< vartype << endl;
+			logFile << "-----Variable Set of level: " << inslevel << " has size: " << VVL.at(inslevel).size() <<" and capacity: "<< VVL.at(inslevel).capacity() << endl;
+          #endif // debug
+
 			if (VVL.at(inslevel).size() < VVL.at(inslevel).capacity())
 			{
 				VVL.at(inslevel).push_back(*new Var(name, level, vartype));
@@ -147,7 +155,11 @@ const int maxVarSize = 3;   //size of variable
 
 		int VQLPushBack(int inslevel, string name, int level, int vartype)
 		{
-			if (VQL.at(inslevel).size() < VQL.at(inslevel).capacity())
+          #ifdef debug 
+			logFile << "-----Inserting Data in Quantified Variable Set of level: " << inslevel << ". Name: " << name << ". Level: " << level << ". Type: " << vartype << endl;
+			logFile << "-----Quantified Variable Set of level: " << inslevel << " has size: " << VQL.at(inslevel).size() << " and capacity: " << VQL.at(inslevel).capacity() << endl;
+           #endif // debug
+		  if (VQL.at(inslevel).size() < VQL.at(inslevel).capacity())
 			{
 				VQL.at(inslevel).push_back(*new Var(name, level, vartype));
 				return 0;
@@ -184,6 +196,7 @@ const int maxVarSize = 3;   //size of variable
 		  }
 		  return -1;
 	  };  
+
     int getSetOpValue(string s)
     {
 	 for (int i = 0; i < getSetOpSize(); i++)
@@ -193,6 +206,7 @@ const int maxVarSize = 3;   //size of variable
 	 }
 	 return -1;
 	};
+
 	int getQuantiOpValue(string s)
 	{
 		for (int i = 0; i < getQuantiOpSize(); i++)
@@ -209,12 +223,14 @@ const int maxVarSize = 3;   //size of variable
 			return logOp[index];
 		return NULL;
 	};
+
 	string getSetOpElement(int index)
 	{
 		if (index < getSetOpSize())
 			return setOp[index];
 		return NULL;
 	};
+
 	string getQuantiOpElement(int index)
 	{
 		if (index < getQuantiOpSize())
@@ -283,7 +299,9 @@ const int maxVarSize = 3;   //size of variable
 			  return components.at(index);
 			return NULL;			  
 		   }
+
 		  ~Atom() {};
+
 		  /*
 		     Use Carefully. Remember the position of the left/right operand
 		  */
@@ -293,9 +311,9 @@ const int maxVarSize = 3;   //size of variable
 		   };	
 
 		  string toString()
-		  {
-			  string out = "(";
-			  if (getElements()->size() > 2)
+		   {
+			string out = "(";
+			if (getElements()->size() > 2)
 			  {
 				out.append("$OA ");
 				out.append(getElementAt(1)->toString());
@@ -311,7 +329,7 @@ const int maxVarSize = 3;   //size of variable
 			  out.append(getElementAt(0)->toString());
 			  out.append(")");
 			  return out;
-		  };
+		   };
  };
 
  class Formula  //struttura più generica da cambiare eventualmente con strutture per CNF
@@ -343,23 +361,22 @@ const int maxVarSize = 3;   //size of variable
 	 };
 	 Formula(Atom *at, int op)
 	 {
-		 setAtom(at);
-		 setOperand(op);
-		 setLSubformula (NULL);
-		 setRSubformula(NULL);
-		 setPreviousFormula(NULL);
-		 quantified.reserve(1024);
+	   setAtom(at);
+	   setOperand(op);
+	   setLSubformula (NULL);
+	   setRSubformula(NULL);
+	   setPreviousFormula(NULL);
+	   quantified.reserve(1024);
 	 };
 	 Formula(Atom *at, int op, Formula *lf, Formula *rf)
 	 {
-		 setAtom(at);
-		 setOperand(op);
-		 lsubformula = lf;
-		 rsubformula = rf;
-		 quantified.reserve(1024);
-		 (*lsubformula).setPreviousFormula(this);
-		 (*rsubformula).setPreviousFormula(this);
-		 
+	   setAtom(at);
+	   setOperand(op);
+	   lsubformula = lf;
+	   rsubformula = rf;
+	   quantified.reserve(1024);
+	   (*lsubformula).setPreviousFormula(this);
+	   (*rsubformula).setPreviousFormula(this);		 
 	 };
 	 vector<Var*>* getQuantifiedSet() { return &quantified; };
 	 Atom* getAtom() { return atom; };
@@ -374,27 +391,25 @@ const int maxVarSize = 3;   //size of variable
 	 void setPreviousFormula(Formula *prev) { pformula = prev; }
 	 ~Formula() {};
 	 string toString()
-	 {
-		
-		 if (getAtom() != NULL)
-		 {
-			 return (getAtom()->toString().append(" "));
-		 }
-		 else if (getOperand() > -1 && getLSubformula() != NULL && getRSubformula() != NULL)
-		 {
-
-			 string ret = "( ";
-			 ret.append(getLSubformula()->toString());
-			 ret.append(" ");
-			 ret.append(operators.getLogOpElement(getOperand()));
-			 ret.append(" ");
-			 ret.append(getRSubformula()->toString());
-			 ret.append(")");
-			 return ret;
-		 }
-		 else if (getOperand() > -1)
-			 return (operators.getLogOpElement(getOperand()));
-		 else return "NULL";
+	 {		
+	   if (getAtom() != NULL)
+		{
+		 return (getAtom()->toString().append(" "));
+		}
+	   else if (getOperand() > -1 && getLSubformula() != NULL && getRSubformula() != NULL)
+		{
+		 string ret = "( ";
+		 ret.append(getLSubformula()->toString());
+		 ret.append(" ");
+		 ret.append(operators.getLogOpElement(getOperand()));
+		 ret.append(" ");
+		 ret.append(getRSubformula()->toString());
+		 ret.append(")");
+		 return ret;
+	    }
+		else if (getOperand() > -1)
+		 return (operators.getLogOpElement(getOperand()));
+		else return "NULL";
 	 }
  };
 
@@ -507,41 +522,70 @@ int containsVariableName(vector<Var>* vect, Var** found, const string *name, con
 */
 int retrieveVarData(const string input, string* name, int* level)
 {
-	*level = input.at(1) - '0';
-	*name = input.substr(3, (input.find_last_of('}') - 3));
-	return 0;
+  #ifdef debug 
+	logFile << "-----Extracting Data From Var. Input String: " << input << endl;
+  #endif // debug
+  *level = input.at(1) - '0';
+  *name = input.substr(3, (input.find_last_of('}') - 3));
+  #ifdef debug 
+   logFile << "-----Data From Var Computed. Name: " << *name << ". Level:" << *level << endl;
+  #endif // debug
+  return 0;
 }
 
 Var* createVarFromString(string *name, int *level, int *vartype, int *start)
 { 
 	Var* ret;
+    #ifdef debug 
+ 	 logFile << "-----Creating  Variable.  Name:" << *name << ". Level: " << *level << ". Type: " << *vartype << endl;
+    #endif // debug
 	if (containsVariableName(varSet.getVVLAt(*level), &ret, name, start) == 0)
 	{
-		return ret;
+      #ifdef debug 
+		logFile << "-----Variable Found in Set. " << ret->toString() << endl;
+      #endif // debug
+	 return ret;
 	}
 	else if (containsVariableName(varSet.getVQLAt(*level), &ret, name, start) == 0)
 	{
-		return ret;
+      #ifdef debug 
+		logFile << "-----Variable Found in Quantified Set. " << ret->toString() << endl;
+      #endif // debug
+	 return ret;
 	}
 	else
-	{	 
+	{     
 	  varSet.VVLPushBack(*level, *name,*level,*vartype);
-	 return varSet.VVLGetBack(*level);
+	  ret=varSet.VVLGetBack(*level);
+      #ifdef debug 
+	    logFile << "-----Adding Variable to Set. " << ret->toString() << endl;
+      #endif // debug
+	  return ret;
 	}
 }
 
 Var* createQVarFromString(string *name, int *level, int *vartype, int *start)
 {
-	Var* ret;
-	if (containsVariableName(varSet.getVQLAt(*level), &ret, name, start) == 0)
-	{
-	  return ret;
-	}
-	else
-	{
-	 varSet.VQLPushBack(*level, *name,*level, *vartype);
-	 return varSet.VQLGetBack(*level);
-	}
+ #ifdef debug 
+	logFile << "-----Creating Quantified Variable.  Name:" << *name << ". Level: " << *level << ". Type: "<< *vartype << endl;
+ #endif // debug
+ Var* ret;
+ if (containsVariableName(varSet.getVQLAt(*level), &ret, name, start) == 0)
+  {
+   #ifdef debug 
+	 logFile << "-----Quantified Variable Found in Set."<< ret->toString()  << endl;
+   #endif // debug
+   return ret;
+  }
+ else
+  {
+   varSet.VQLPushBack(*level, *name,*level, *vartype);
+   ret=varSet.VQLGetBack(*level);
+   #ifdef debug 
+    logFile << "-----Adding Quantified Variable to Set." << ret->toString() << endl;
+   #endif // debug
+   return ret;
+ }
 }
 
 /*
