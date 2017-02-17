@@ -12,7 +12,7 @@
 #include <sstream>
 
 using namespace std;
-//#define debug
+#define debug
 std::ofstream logFile("LOG.log");   //log file
 
 /*
@@ -535,12 +535,12 @@ Var* createQVarFromString(string *name, int *level, int *vartype, int *start)
 	Var* ret;
 	if (containsVariableName(varSet.getVQLAt(*level), &ret, name, start) == 0)
 	{
-		return ret;
+	  return ret;
 	}
 	else
 	{
-		varSet.VQLPushBack(*level, *name,*level, *vartype);
-		return varSet.VQLGetBack(*level);
+	 varSet.VQLPushBack(*level, *name,*level, *vartype);
+	 return varSet.VQLGetBack(*level);
 	}
 }
 
@@ -549,11 +549,15 @@ Var* createQVarFromString(string *name, int *level, int *vartype, int *start)
 */
 int createAtom(string input, Formula **formula, vector<int>* startQuantVect)
 {	
+  #ifdef debug  
+	logFile << "-----Computing Atom: " <<  input << endl;
+   #endif // debug
 	Var* var1;
 	Var* var2;
 	Var* var3;
 	string name = string();
 	int level = -1;
+	Atom* atom = NULL;
 	if (input[0]=='$') //case pair or quantifier
 	{
 		string head = input.substr(0, 3); //cout << head << endl;	
@@ -573,7 +577,7 @@ int createAtom(string input, Formula **formula, vector<int>* startQuantVect)
 			match = match.substr(3, match.size() - 1);
 			retrieveVarData(match, &name, &level);
             var3 = createVarFromString(&name, &level, new int(0), &startQuantVect->at(level));
-            Atom* atom = new Atom(op, {var3, var1, var2 });
+            atom = new Atom(op, {var3, var1, var2 });
 			//Atom* atom = new Atom(0, { new Var(name,level,0), new Var("b1",0,0), new Var("c1",0,0) });
 			*formula = (new Formula(atom, -1 ));
 			//cout << "Atom found: " << formula->print() << endl;			
@@ -595,11 +599,14 @@ int createAtom(string input, Formula **formula, vector<int>* startQuantVect)
 		  int op =  operators.getSetOpValue(input.substr(found, 3)); 
 		  retrieveVarData(input.substr(found + 3, input.size() - 1), &name, &level);
 		  var2 = createVarFromString(&name, &level, new int(0), &startQuantVect->at(level));
-		  Atom* atom =  new Atom(op, {var2, var1} );		  
+		  atom =  new Atom(op, {var2, var1} );		  
 		  *formula = (new Formula(atom, -1));		 	  
 		}
 	}	
-	
+    #ifdef debug  
+	if(atom !=NULL)
+	  logFile << "-----Atom created: " << atom->toString() << endl;
+    #endif // debug
 	return 0;
 }
 
@@ -608,6 +615,9 @@ Parse a string representing an internal formula and return the corresponding int
 */
 int parseInternalFormula(const string *inputformula, Formula **outformula, vector<int>* startQuantVect)
 {
+    #ifdef debug  
+	   logFile << "-----Analizyng input formula" << endl;
+    #endif // debug
     stack<string> stackFormula;
 	stack<Formula*> stformula; //tracking subformulae
 	stackFormula.push(*inputformula);	
@@ -625,11 +635,14 @@ int parseInternalFormula(const string *inputformula, Formula **outformula, vecto
 			case ')': 
 				if (!atom.empty())
 				{					
-					stackFormula.pop();					
-					createAtom(atom, &formula, startQuantVect); //-----------------------------					
+					stackFormula.pop();	
+                    #ifdef debug  
+					  logFile << "-----Candidate atom found: " << atom << endl;
+                    #endif // debug
+					createAtom(atom, &formula, startQuantVect); 
 					if (formula != NULL) // creation of the formula 
 					{						
-						stformula.push(formula);						
+					  stformula.push(formula);						
 					}					
 					atom.clear();					
 				}
@@ -643,6 +656,9 @@ int parseInternalFormula(const string *inputformula, Formula **outformula, vecto
 					stformula.pop();
 					centerf->setLSubformula(leftf);
 					centerf->setRSubformula(rightf);
+                    #ifdef debug  
+					  logFile << "-----Computing subformula: " << centerf->toString() << endl;
+                     #endif // debug
 					stformula.push(centerf);					
 					stackFormula.pop();
 				 }
@@ -664,6 +680,9 @@ int parseInternalFormula(const string *inputformula, Formula **outformula, vecto
 			}
 		}		
 	*outformula = (stformula.top());
+    #ifdef debug  
+	  logFile << "-----Final Formula: " << (*outformula)->toString() << endl;
+    #endif // debug
 	return 0;		
 }
 
@@ -686,16 +705,23 @@ int insertFormula(string* formula, Formula **ffinal)
 	  The following vector of int represents the position of the quantified variables of the current formula.
 	  Initially the vector plainly coincides the the end of the vector modified in the previous execution.
 	*/
+ #ifdef debug  
+	logFile << "---Formula Inserted: " << *formula << endl;
+ #endif // debug
  vector<int> vqlsize;
  for (int i = 0; i < varSet.VQLGetSize(); i++)	
   vqlsize.push_back((int) varSet.VQLGetSizeAt(i));
  parseInternalFormula(formula, ffinal, &vqlsize); 
+ #ifdef debug  
+   logFile << "---Formula Ended "<< endl;
+ #endif // debug
  return 0;
 }
 
 int main()
 {    
   #ifdef debug  
+	logFile << "Debug Started"<<endl;
   #endif // debug
   Var b ("monastero", 0, 0);
   Var b1("monastero", 0, 0);
