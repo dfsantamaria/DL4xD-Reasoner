@@ -119,8 +119,8 @@ const int maxVarSize = 3;   //size of variable
 			 }
 		   for (int i = 0; i <= nlevel; i++)
 			 {
-				 VQL.at(i).reserve(1024);
-				 VVL.at(i).reserve(1024);
+				 VQL.at(i).reserve(maxSize);
+				 VVL.at(i).reserve(maxSize);
 			 }
 		  };
 
