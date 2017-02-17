@@ -22,8 +22,8 @@ L2 has type 2
 L3 as ObjectProperty has type 3
 L3 as DataProperty has type 4
 */
-const int minVarSize = -1;
-const int maxVarSize = 3;   //size of variable
+//const int minVarSize = -1;
+//const int maxVarSize = 3;   //size of variable
 
 //Class of the single Var
  class Var
@@ -32,19 +32,19 @@ const int maxVarSize = 3;   //size of variable
 		    int type;
 			int var;
 			string name;  // Underscore is allowed to define name with underscore			
-			int isValidType(int _type) { return _type > minVarSize && _type <= maxVarSize; };
-			int isValidVar(int _var) { return _var >= 0 && _var <= 1; };
+			//int isValidType(int _type) { return _type > minVarSize && _type <= maxVarSize; };
+			//int isValidVar(int _var) { return _var >= 0 && _var <= 1; };
 			
    public:
 		   Var(string _name, int _type, int _var)
 		     {
-			  setName( _name);
+			   setName( _name);
 			   setType(_type);
 			   setVarType(_var);
-		   };
+		     };
 		   ~Var() {};
-		   int isValidType() { return isValidType(type);};
-		   int isValidVar() { return isValidVar(var); };
+		   //int isValidType() { return isValidType(type);};
+		   //int isValidVar() { return isValidVar(var); };
 		   int getType() { return type; };
 		   string getName() { return name; };
 		   int getVarType() { return var; };
@@ -54,22 +54,14 @@ const int maxVarSize = 3;   //size of variable
 			    return type; 
 		      };
 
-		   int setType(int _type)
-		      { 
-			   if (isValidType(_type))
-			     type = _type;			    
-			   else			     
-				  type = -1; 
-			   return type;			   
+		   void setType(int _type)
+		      { 			   
+			     type = _type;			   	   
 		      };
 
-		   int setVarType(int _var)
-		    {
-			   if (isValidVar(_var))
-				  var = _var;
-			   else 
-				 var = -1;	
-			   return var;
+		   void setVarType(int _var)
+		    {			   
+			  var = _var;			 
 		    };
 
 		   int equal(Var* match)
@@ -273,7 +265,7 @@ const int maxVarSize = 3;   //size of variable
    public: 
 	      Atom(int op, vector<Var*> vec) 
            {
-			  components.reserve(1024);
+			  //components.reserve(maxVarSize);
 			  setAtomOp(op);
 			  components = vec;
 		   };		  
@@ -335,7 +327,7 @@ const int maxVarSize = 3;   //size of variable
  class Formula  //struttura più generica da cambiare eventualmente con strutture per CNF
  {
    private:
-	 vector<Var*> quantified;
+	 //vector<Var*> quantified;
 	 Atom *atom;
 	 int operand; //0 forAND, 1 for OR , 2 for NAND, 3 for NOR
 	 Formula *lsubformula;
@@ -349,36 +341,25 @@ const int maxVarSize = 3;   //size of variable
 		 setLSubformula(NULL);
 		 setRSubformula(NULL);
 		 setPreviousFormula(NULL);
-	   };
-	 Formula(int size)
-	 {
-		 quantified.reserve(size);
-		 setAtom(NULL);
-		 setOperand(-1);
-		 setLSubformula(NULL);
-		 setRSubformula(NULL);
-		 setPreviousFormula(NULL);		 
-	 };
+	   };	
 	 Formula(Atom *at, int op)
 	 {
 	   setAtom(at);
 	   setOperand(op);
 	   setLSubformula (NULL);
 	   setRSubformula(NULL);
-	   setPreviousFormula(NULL);
-	   quantified.reserve(1024);
-	 };
+	   setPreviousFormula(NULL);	  
+	 };	
 	 Formula(Atom *at, int op, Formula *lf, Formula *rf)
 	 {
 	   setAtom(at);
 	   setOperand(op);
 	   lsubformula = lf;
-	   rsubformula = rf;
-	   quantified.reserve(1024);
+	   rsubformula = rf;	  
 	   (*lsubformula).setPreviousFormula(this);
 	   (*rsubformula).setPreviousFormula(this);		 
 	 };
-	 vector<Var*>* getQuantifiedSet() { return &quantified; };
+	// vector<Var*>* getQuantifiedSet() { return &quantified; };
 	 Atom* getAtom() { return atom; };
 	 int getOperand() { return operand; };
 	 Formula* getLSubformula() { return lsubformula; };
@@ -451,28 +432,6 @@ const int maxVarSize = 3;   //size of variable
 	   Node* getTableau() { return radix; };
 	   ~Tableau() {};
  };
-
- /*
-   Init the vectors of variables.
- */
-//int init() //used to inizialize elements.
-// {
-//  VQL.reserve(maxVarSize);  //initialize vectors for variables
-//  VVL.reserve(maxVarSize);		
-//  for (int i = 0; i <= maxVarSize; i++)
-//   {	  
-//	  VQL.push_back(vector<Var>());
-//	  VVL.push_back(vector<Var>());
-//   }
-//  for (int i = 0; i <= maxVarSize; i++)
-//  {
-//	  VQL.at(i).reserve(1024);
-//	  VVL.at(i).reserve(1024);
-//  }
-//
-//  return 0;
-//}
-
 
 
 /*
