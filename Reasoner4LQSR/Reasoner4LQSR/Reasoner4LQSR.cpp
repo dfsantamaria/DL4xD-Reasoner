@@ -744,12 +744,12 @@ int main()
   Formula* ffinal3;
   Formula* ffinal4; 
   string formula = "($FA V0{z}) ($OA V0{z} $CO V0{z} $AO $NI V3{C333})";
-  string formula2 = "($FA V0{z1}) (V0{z1} $IN V1{C444})";
+  string formula2 = "($FA V0{z1}) ($FA V0{z2}) (V0{z1} $EQ V0{z2})";
  // string formula2 = "($FA V0{ z1 }) (V0{ z1 } $NI V1{ C1 })";
   // string formula = "($FA V0{z})(( ( V0{z} $NI V1{C1})$OR ( V0{z1} $NI V1{C2}))$AD(( V0{z1} $NI V1{C2})$OR (V0{z1} $IN V1{C2})))";
   // string formula2 = "($FA V0{z2}) ( (V0{z2} $NI V1{C1}) $AD (  (V0{b} $NI V1{C1}) $AD (V0{b} $NI V1{C1})  ) )";
   string formula3 = "($FA V0{z3}) ( (V0{z3} $NI V1{C1}) $AD (  (V0{b} $NI V1{C1}) $OR (V0{a} $NI V1{C1}) ) )";
-  string formula4 = " ($FA V0{z}) ($FA V1{z1}) ( ( (V0{k} $NI V1{l}) $AD  ( ( V0{z} $NI V1{C1})$OR ( V0{z1} $NI V1{C2}))$AD((  $OA V1{z1} $CO V1{z1} $AO $NI V1{C2})$OR (V0{z1} $IN V1{C2})))) ";
+  string formula4 = " ($FA V0{z}) ($FA V0{z1}) ( ( (V0{k} $NI V1{l}) $AD  ( ( V0{z} $NI V1{C1})$OR ( V0{z1} $NI V1{C2}))$AD((  $OA V0{z1} $CO V0{z1} $AO $NI V1{C2})$OR (V0{z1} $IN V1{C2})))) ";
  // cout << "Current Formula is: " << formula << endl;
   insertFormula(&formula, &ffinal);   
   insertFormula(&formula2, &ffinal2);  
