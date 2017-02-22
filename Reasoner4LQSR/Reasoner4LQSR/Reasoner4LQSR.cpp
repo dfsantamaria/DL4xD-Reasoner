@@ -98,6 +98,7 @@ L3 as DataProperty has type 4
 		  int capacity;
 		  int nlevel;
    public :
+	     VariablesSet() {};
 	     VariablesSet(int maxNVariable, int maxSize)
 		  {
 		   nlevel = maxNVariable;
@@ -244,11 +245,12 @@ L3 as DataProperty has type 4
 	}
  };
 
- VariablesSet varSet = VariablesSet(3, 100);
- Operators operators = Operators();
+// VariablesSet varSet = VariablesSet(3, 100);
+// Operators operators = Operators();
 
-
-
+ VariablesSet varSet; 
+ Operators operators; 
+ 
  class Atom
  {
    private:  	       
@@ -430,7 +432,8 @@ L3 as DataProperty has type 4
 	   Tableau(Node* initial) { radix = initial; };
 	   Tableau(int size_radix) { radix = new Node(size_radix); };
 	   Node* getTableau() { return radix; };
-	   ~Tableau() {};
+	   int insertFormula(Formula *f) { radix->insertFormula(f);  return 0; };
+	   ~Tableau() {};	   
  };
 
 
@@ -721,49 +724,35 @@ int insertFormula(string* formula, Formula **ffinal)
  return 0;
 }
 
+int insertFormulaKB(string s, Tableau* t)
+{
+	Formula* f;
+	insertFormula(&s, &f);
+	t->insertFormula(f);
+	return 0;
+}
+
+
 int main()
 {    
   #ifdef debug  
 	logFile << "Debug Started"<<endl;
   #endif // debug
-  Var b ("monastero", 0, 0);
-  Var b1("monastero", 0, 0);
-  Var x("livello", 0, 0);
-  Var x1("livello", 0, 0);
-  Var g("Edificio", 1, 0);
-  Var g1("Edificio", 1, 0);
-  Var h("haLivello", 3, 0);
-  Var h1("haLivello", 3, 0); 
-  Atom atom(0, {&h,&b,&x});
-  Atom atom2(0, {&g,&b});
-  Atom atom3(1, { &b,&x });
-  Formula af = Formula(NULL, 1, new Formula(&atom, -1), new Formula(&atom2, -1));
-  Formula af2 = Formula(NULL, 0, &af, new Formula(&atom3, -1));  
-  Formula* ffinal; 
-  Formula* ffinal2;
-  Formula* ffinal3;
-  Formula* ffinal4; 
-  string formula = "($FA V0{z}) ($OA V0{z} $CO V0{z} $AO $NI V3{C333})";
-  string formula2 = "($FA V0{z1}) ($FA V0{z2}) (V0{z1} $EQ V0{z2})";
- // string formula2 = "($FA V0{ z1 }) (V0{ z1 } $NI V1{ C1 })";
-  // string formula = "($FA V0{z})(( ( V0{z} $NI V1{C1})$OR ( V0{z1} $NI V1{C2}))$AD(( V0{z1} $NI V1{C2})$OR (V0{z1} $IN V1{C2})))";
-  // string formula2 = "($FA V0{z2}) ( (V0{z2} $NI V1{C1}) $AD (  (V0{b} $NI V1{C1}) $AD (V0{b} $NI V1{C1})  ) )";
-  string formula3 = "($FA V0{z3}) ( (V0{z3} $NI V1{C1}) $AD (  (V0{b} $NI V1{C1}) $OR (V0{a} $NI V1{C1}) ) )";
-  string formula4 = " ($FA V0{z}) ($FA V0{z1}) ( ( (V0{k} $NI V1{l}) $AD  ( ( V0{z} $NI V1{C1})$OR ( V0{z1} $NI V1{C2}))$AD((  $OA V0{z1} $CO V0{z1} $AO $NI V1{C2})$OR (V0{z1} $IN V1{C2})))) ";
- // cout << "Current Formula is: " << formula << endl;
-  insertFormula(&formula, &ffinal);   
-  insertFormula(&formula2, &ffinal2);  
-  insertFormula(&formula3, &ffinal3);
-  insertFormula(&formula4, &ffinal4);
-  cout << "Parsed formula: " << ffinal->toString() << endl;
-  cout << "Parsed formula: " << ffinal2->toString() << endl;
-  cout << "Parsed formula: " << ffinal3->toString() << endl;  
- Tableau tab(new Node()); //empty tableau   
-   Node* radix = tab.getTableau();
-  radix->insertFormula(ffinal);  
-  radix->insertFormula(ffinal2);  
-  radix->insertFormula(ffinal3);
-  radix->insertFormula(ffinal4);
+   /*
+      Initialization
+   */
+  varSet = VariablesSet(3, 100);
+  operators = Operators();
+  Tableau tab(new Node()); //empty tableau
+  /*
+     Inserting Knowledge Base
+  */
+  insertFormulaKB("($FA V0{z}) ($OA V0{z} $CO V0{z} $AO $NI V3{C333})",&tab);
+  insertFormulaKB("($FA V0{z1}) ($FA V0{z2}) (V0{z1} $EQ V0{z2})", &tab);
+  insertFormulaKB("($FA V0{z3}) ( (V0{z3} $NI V1{C1}) $AD (  (V0{b} $NI V1{C1}) $OR (V0{a} $NI V1{C1}) ) )", &tab);
+  insertFormulaKB(" ($FA V0{z}) ($FA V0{z1}) ( ( (V0{k} $NI V1{l}) $AD  ( ( V0{z} $NI V1{C1})$OR ( V0{z1} $NI V1{C2}))$AD((  $OA V0{z1} $CO V0{z1} $AO $NI V1{C2})$OR (V0{z1} $IN V1{C2}))))", &tab);
+  
+  Node* radix = tab.getTableau();
   vector <Formula> *sta =radix->getSetFormulae();
   cout << "---Radix Content ---" << sta->size() << endl;
   for ( Formula s : *sta)
@@ -829,10 +818,55 @@ Optimize Atom management and creation
 Test Cases
 */
 
+/*
+Formula* ffinal;
+Formula* ffinal2;
+Formula* ffinal3;
+Formula* ffinal4;
+string formula = "($FA V0{z}) ($OA V0{z} $CO V0{z} $AO $NI V3{C333})";
+string formula2 = "($FA V0{z1}) ($FA V0{z2}) (V0{z1} $EQ V0{z2})";
+// string formula2 = "($FA V0{ z1 }) (V0{ z1 } $NI V1{ C1 })";
+// string formula = "($FA V0{z})(( ( V0{z} $NI V1{C1})$OR ( V0{z1} $NI V1{C2}))$AD(( V0{z1} $NI V1{C2})$OR (V0{z1} $IN V1{C2})))";
+// string formula2 = "($FA V0{z2}) ( (V0{z2} $NI V1{C1}) $AD (  (V0{b} $NI V1{C1}) $AD (V0{b} $NI V1{C1})  ) )";
+string formula3 = "($FA V0{z3}) ( (V0{z3} $NI V1{C1}) $AD (  (V0{b} $NI V1{C1}) $OR (V0{a} $NI V1{C1}) ) )";
+string formula4 = " ($FA V0{z}) ($FA V0{z1}) ( ( (V0{k} $NI V1{l}) $AD  ( ( V0{z} $NI V1{C1})$OR ( V0{z1} $NI V1{C2}))$AD((  $OA V0{z1} $CO V0{z1} $AO $NI V1{C2})$OR (V0{z1} $IN V1{C2})))) ";
+// cout << "Current Formula is: " << formula << endl;
+insertFormula(&formula, &ffinal);
+insertFormula(&formula2, &ffinal2);
+insertFormula(&formula3, &ffinal3);
+insertFormula(&formula4, &ffinal4);
+cout << "Parsed formula: " << ffinal->toString() << endl;
+cout << "Parsed formula: " << ffinal2->toString() << endl;
+cout << "Parsed formula: " << ffinal3->toString() << endl;
+Tableau tab(new Node()); //empty tableau
+Node* radix = tab.getTableau();
+radix->insertFormula(ffinal);
+radix->insertFormula(ffinal2);
+radix->insertFormula(ffinal3);
+radix->insertFormula(ffinal4);
+
+
+*/
 
 
 
 
+
+
+
+/*Var b ("monastero", 0, 0);
+Var b1("monastero", 0, 0);
+Var x("livello", 0, 0);
+Var x1("livello", 0, 0);
+Var g("Edificio", 1, 0);
+Var g1("Edificio", 1, 0);
+Var h("haLivello", 3, 0);
+Var h1("haLivello", 3, 0);
+Atom atom(0, {&h,&b,&x});
+Atom atom2(0, {&g,&b});
+Atom atom3(1, { &b,&x });
+Formula af = Formula(NULL, 1, new Formula(&atom, -1), new Formula(&atom2, -1));
+Formula af2 = Formula(NULL, 0, &af, new Formula(&atom3, -1));  */
 
 
 
