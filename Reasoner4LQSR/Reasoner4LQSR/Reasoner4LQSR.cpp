@@ -732,8 +732,20 @@ int insertFormulaKB(string s, Tableau* t)
 	return 0;
 }
 
-int expandKB(vector<Formula> *inpf)
+int instantiateFormula(Formula f, vector<Formula> *destination)
 {
+   #ifdef debug  
+	logFile << "------- Expanding Formula: " << f.toString() << endl;
+   #endif // debug
+	destination->push_back(f);
+	return 0;
+}
+
+int expandKB(vector<Formula> *inpf)
+{ 
+  #ifdef debug  
+		 logFile << "--- Applying Expansion Rule" <<endl;
+  #endif // debug
 	int or = operators.getLogOpValue("$OR");
 	vector <Formula> tmp;
 	vector <Formula> out;
@@ -742,11 +754,15 @@ int expandKB(vector<Formula> *inpf)
 
 	while(!tmp.empty())
 	 {
+       
 		Formula f = tmp.back();
+        #ifdef debug  
+		 logFile << "----- Computing Formula: " << f.toString() << endl;
+        #endif // debug
 		tmp.pop_back();
 		if (f.getAtom() != NULL || f.getOperand()== or)
-		 {
-			out.push_back(f);			
+		 {       
+		   instantiateFormula(f,&out);			
 		 }
 		else
 		{			
@@ -760,6 +776,7 @@ int expandKB(vector<Formula> *inpf)
 
 	return 0;
 }
+
 
 
 int main()
