@@ -331,7 +331,7 @@ L3 as DataProperty has type 4
    private:
 	 //vector<Var*> quantified;
 	 Atom *atom;
-	 int operand; //0 forAND, 1 for OR , 2 for NAND, 3 for NOR
+	 int operand; 
 	 Formula *lsubformula;
 	 Formula *rsubformula;
 	 Formula *pformula;
@@ -732,6 +732,35 @@ int insertFormulaKB(string s, Tableau* t)
 	return 0;
 }
 
+int expandKB(vector<Formula> *inpf)
+{
+	int or = operators.getLogOpValue("$OR");
+	vector <Formula> tmp;
+	vector <Formula> out;
+	for(int i=0; i< inpf->size(); i++)
+	  tmp.push_back(inpf->at(i));
+
+	while(!tmp.empty())
+	 {
+		Formula f = tmp.back();
+		tmp.pop_back();
+		if (f.getAtom() != NULL || f.getOperand()== or)
+		 {
+			out.push_back(f);			
+		 }
+		else
+		{			
+			tmp.push_back(*(f.getLSubformula()));
+			tmp.push_back(*(f.getRSubformula()));			
+		}
+	 }
+	
+	for (int i = 0; i < out.size(); i++)
+		cout<<out.at(i).toString()<<endl;
+
+	return 0;
+}
+
 
 int main()
 {    
@@ -757,9 +786,10 @@ int main()
   cout << "---Radix Content ---" << sta->size() << endl;
   for ( Formula s : *sta)
    {
-	 cout << (s.toString()) << endl;
+	 cout << (s.toString()) << endl;	 
    } 
-   
+
+    
   cout << "Check VVL" << endl;   
   cout << "Vector 0" << endl;
   printVector(*varSet.getVVLAt(0));
@@ -775,6 +805,13 @@ int main()
   printVector(*varSet.getVQLAt(1));
   cout << "Vector 3" << endl;
   printVector(*varSet.getVQLAt(3));
+
+  /*
+  
+  */
+  cout << "Expanding KB" << endl;
+  cout << "First step of expansion" << endl;
+  expandKB(sta);
   logFile.close(); 
   return 0;
 }
