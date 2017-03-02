@@ -763,13 +763,48 @@ Formula* copyFormula(Formula* formula, Formula* father, const string *qvar, Var*
 	return fin;
 }
 
+int containsQVar(Formula *f, string &s)
+{
+	if (f == NULL)
+		return 0;	
+	if (f->getAtom() != NULL)
+	{
+		for (Var* var : *(f->getAtom()->getElements()))
+		{
+			if (var->getVarType() == 1)
+			{
+				s = (var->getName()); 
+				return 1;
+			}
+		}
+	}
+	return (containsQVar(f->getLSubformula(), s) + containsQVar(f->getRSubformula(), s));
+	 
+}
+
 int instantiateFormula(Formula f, vector<Formula> *destination)
 {
    #ifdef debug  
 	logFile << "------- Expanding Formula: " << f.toString() << endl;
    #endif // debug
-	destination->push_back(f);
-	return 0;
+	string s;
+	vector<Formula> tmp;
+	tmp.push_back(f);
+	while (!tmp.empty())
+	{
+	 Formula top=tmp.back();
+	 tmp.pop_back();
+	 if (containsQVar(&top, s))
+	  {		 
+		 for(int i=0; i<varSet.getVVLAt(0)->size(); i++ )
+		 tmp.push_back(*(copyFormula(&top, NULL, &s, &varSet.getVVLAt(0)->at(i) )));
+	  }
+	 else
+	 {		 
+	   destination->push_back(top); }
+	 }
+	
+  return 0;
 }
 
 
@@ -777,7 +812,7 @@ int instantiateFormula(Formula f, vector<Formula> *destination)
 int expandKB(vector<Formula> *inpf)
 { 
   #ifdef debug  
-		 logFile << "--- Applying Expansion Rule" <<endl;
+	logFile << "--- Applying Expansion Rule" <<endl;
   #endif // debug
   int or = operators.getLogOpValue("$OR");
   vector <Formula> tmp;
@@ -794,7 +829,7 @@ int expandKB(vector<Formula> *inpf)
         #endif // debug
 		tmp.pop_back();
 		if (f.getAtom() != NULL || f.getOperand()== or)
-		 {       
+		{			
 		   instantiateFormula(f,&out);			
 		 }
 		else
@@ -830,10 +865,11 @@ int main()
   /*
      Inserting Knowledge Base
   */
+  insertFormulaKB("($OA V0{l} $CO V0{jumbo} $AO $NI V3{C333})", &tab);
   insertFormulaKB("($FA V0{z}) ($OA V0{z} $CO V0{z} $AO $NI V3{C333})",&tab);
-  insertFormulaKB("($FA V0{z1}) ($FA V0{z2}) (V0{z1} $EQ V0{z2})", &tab);
+  insertFormulaKB("($FA V0{z1}) ($FA V0{z2}) (V0{z1} $EQ V0{z2})", &tab);  
   insertFormulaKB("($FA V0{z3}) ( (V0{z3} $NI V1{C1}) $AD (  (V0{b} $NI V1{C1}) $OR (V0{a} $NI V1{C1}) ) )", &tab);
-  insertFormulaKB(" ($FA V0{z}) ($FA V0{z1}) ( ( (V0{k} $NI V1{l}) $AD  ( ( V0{z} $NI V1{C1})$OR ( V0{z1} $NI V1{C2}))$AD((  $OA V0{z1} $CO V0{z1} $AO $NI V1{C2})$OR (V0{z1} $IN V1{C2}))))", &tab);
+  insertFormulaKB(" ($FA V0{z8}) ($FA V0{z9}) ( ( (V0{k} $NI V1{l}) $AD  ( ( V0{z8} $NI V1{C1})$OR ( V0{z9} $NI V1{C2}))$AD((  $OA V0{z9} $CO V0{z9} $AO $NI V1{C2})$OR (V0{z9} $IN V1{C2}))))", &tab);
   
   Node* radix = tab.getTableau();
   vector <Formula> *sta =radix->getSetFormulae();
@@ -858,11 +894,7 @@ int main()
   cout << "Vector 1" << endl;
   printVector(*varSet.getVQLAt(1));
   cout << "Vector 3" << endl;
-  printVector(*varSet.getVQLAt(3));
-
-  /*
-  
-  */
+  printVector(*varSet.getVQLAt(3));  
   cout << "Expanding KB" << endl;
   cout << "First step of expansion" << endl;
   expandKB(sta);
@@ -910,6 +942,12 @@ Optimize Atom management and creation
 Test Cases
 */
 
+
+  /*
+ string s;	 	 
+	 int j=containsQVar(&sta->at(i), s);
+	 cout << "---" << s << "-----" << j << endl;	 
+  */
 
 
 /*
