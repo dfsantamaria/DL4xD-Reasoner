@@ -800,7 +800,10 @@ int instantiateFormula(Formula f, vector<Formula> *destination)
 		 tmp.push_back(*(copyFormula(&top, NULL, &s, &varSet.getVVLAt(0)->at(i) )));
 	  }
 	 else
-	 {		 
+	 {	
+        #ifdef debug  
+		 logFile << "------- Expanded Formula: " << top.toString() << endl;
+        #endif // debug
 	   destination->push_back(top); }
 	 }
 	
@@ -836,6 +839,10 @@ int expandKB(vector<Formula> *inpf)
 		{			
 			f.getLSubformula()->setPreviousFormula(NULL);
 			f.getRSubformula()->setPreviousFormula(NULL);
+            #ifdef debug  
+			  logFile << "----- Obtaining Formula: " << f.getLSubformula()->toString() << endl;
+			  logFile << "----- Obtaining Formula: " << f.getRSubformula()->toString() << endl;
+            #endif // debug
 			tmp.push_back(*(f.getLSubformula()));
 			tmp.push_back(*(f.getRSubformula()));	
 			
@@ -870,7 +877,8 @@ int main()
   insertFormulaKB("($FA V0{z1}) ($FA V0{z2}) (V0{z1} $EQ V0{z2})", &tab);  
   insertFormulaKB("($FA V0{z3}) ( (V0{z3} $NI V1{C1}) $AD (  (V0{b} $NI V1{C1}) $OR (V0{a} $NI V1{C1}) ) )", &tab);
   insertFormulaKB(" ($FA V0{z8}) ($FA V0{z9}) ( ( (V0{k} $NI V1{l}) $AD  ( ( V0{z8} $NI V1{C1})$OR ( V0{z9} $NI V1{C2}))$AD((  $OA V0{z9} $CO V0{z9} $AO $NI V1{C2})$OR (V0{z9} $IN V1{C2}))))", &tab);
-  
+  insertFormulaKB("( ( (V0{k} $NI V1{l}) $AD  ( ( V0{l} $NI V1{C1})$OR ( V0{t} $NI V1{C2})) )", &tab);
+
   Node* radix = tab.getTableau();
   vector <Formula> *sta =radix->getSetFormulae();
   cout << "---Radix Content ---" << sta->size() << endl;  
@@ -895,8 +903,7 @@ int main()
   printVector(*varSet.getVQLAt(1));
   cout << "Vector 3" << endl;
   printVector(*varSet.getVQLAt(3));  
-  cout << "Expanding KB" << endl;
-  cout << "First step of expansion" << endl;
+  cout << "Expanding KB" << endl;  
   expandKB(sta);
   logFile.close(); 
   
@@ -940,6 +947,8 @@ allowing change of the $ char from a config file.
 creating a quantified variable for a formula does not check if it is yet present
 Optimize Atom management and creation
 Test Cases
+Optimize exapandKB
+remove recursion 
 */
 
 
