@@ -253,18 +253,19 @@ L3 as DataProperty has type 4
  
  class Atom
  {
-   private:  	       
-		   int atomOp;		  
-		    /*
-			   -1 unsetted; 
-			*/
-		   vector<Var*> components;	
-		   /*
-		       Right Operand is the first element of the vector.
-			   Pair is the second and the third.
-			   COn il vettore consideriamo anche i possibili datatype groups
-		   */
-   public: 
+ private:
+	 int atomOp;
+	 /*
+		-1 unsetted;
+	 */
+	 vector<Var*> components;
+	 /*
+		 Right Operand is the first element of the vector.
+		 Pair is the second and the third.
+		 COn il vettore consideriamo anche i possibili datatype groups
+	 */
+ public:
+	      Atom() {};
 	      Atom(int op, vector<Var*> vec) 
            {
 			  //components.reserve(maxVarSize);
@@ -299,9 +300,9 @@ L3 as DataProperty has type 4
 		  /*
 		     Use Carefully. Remember the position of the left/right operand
 		  */
-		  void addElement(Var& element)
+		  void addElement(Var* element)
 		   {
-			 (*getElements()).push_back(&element);
+			 (*getElements()).push_back(element);
 		   };	
 
 		  string toString()
@@ -731,6 +732,36 @@ int insertFormulaKB(string s, Tableau* t)
 	t->insertFormula(f);
 	return 0;
 }
+Atom* copyAtom(Atom* atom, const string *qvar, Var* dest)
+{
+	Atom* fin = new Atom();
+	fin->setAtomOp(atom->getAtomOp());
+	for (int i = 0; i < atom->getElements()->size(); i++)
+	{
+		if ( qvar!=NULL && dest !=NULL && ((atom->getElementAt(i)->getName()) == *qvar))
+		 fin->addElement(dest);
+		else
+		 fin->addElement((atom->getElementAt(i)));
+	}
+	return fin;
+}
+
+Formula* copyFormula(Formula* formula, Formula* father, const string *qvar, Var* dest)
+{
+	
+	if (formula == NULL)
+		return NULL;
+	Formula* fin = new Formula();
+	fin->setOperand(formula->getOperand()); 
+	if (formula->getAtom() == NULL)
+	 fin->setAtom(NULL);
+	else		
+	  fin->setAtom(copyAtom(formula->getAtom(), qvar, dest)); 	
+	fin->setPreviousFormula(father);
+	fin->setLSubformula(copyFormula(formula->getLSubformula(), fin, qvar, dest));
+	fin->setRSubformula(copyFormula(formula->getRSubformula(), fin, qvar, dest));
+	return fin;
+}
 
 int instantiateFormula(Formula f, vector<Formula> *destination)
 {
@@ -741,16 +772,18 @@ int instantiateFormula(Formula f, vector<Formula> *destination)
 	return 0;
 }
 
+
+
 int expandKB(vector<Formula> *inpf)
 { 
   #ifdef debug  
 		 logFile << "--- Applying Expansion Rule" <<endl;
   #endif // debug
-	int or = operators.getLogOpValue("$OR");
-	vector <Formula> tmp;
-	vector <Formula> out;
-	for(int i=0; i< inpf->size(); i++)
-	  tmp.push_back(inpf->at(i));
+  int or = operators.getLogOpValue("$OR");
+  vector <Formula> tmp;
+  vector <Formula> out;
+  for(int i=0; i< inpf->size(); i++)
+	tmp.push_back(inpf->at(i));
 
 	while(!tmp.empty())
 	 {
@@ -766,8 +799,12 @@ int expandKB(vector<Formula> *inpf)
 		 }
 		else
 		{			
+			f.getLSubformula()->setPreviousFormula(NULL);
+			f.getRSubformula()->setPreviousFormula(NULL);
 			tmp.push_back(*(f.getLSubformula()));
-			tmp.push_back(*(f.getRSubformula()));			
+			tmp.push_back(*(f.getRSubformula()));	
+			
+			//cout << (f.getOperand()) << endl;
 		}
 	 }
 	
@@ -800,10 +837,10 @@ int main()
   
   Node* radix = tab.getTableau();
   vector <Formula> *sta =radix->getSetFormulae();
-  cout << "---Radix Content ---" << sta->size() << endl;
-  for ( Formula s : *sta)
+  cout << "---Radix Content ---" << sta->size() << endl;  
+  for (int i=0; i< sta->size();i++)
    {
-	 cout << (s.toString()) << endl;	 
+	 cout << (sta->at(i).toString()) << endl;		 
    } 
 
     
@@ -830,6 +867,7 @@ int main()
   cout << "First step of expansion" << endl;
   expandKB(sta);
   logFile.close(); 
+  
   return 0;
 }
 
@@ -871,6 +909,37 @@ creating a quantified variable for a formula does not check if it is yet present
 Optimize Atom management and creation
 Test Cases
 */
+
+
+
+/*
+Var b1("monastero", 0, 0);
+cout << "copyng formula" << endl;
+cout << "Try" << endl;
+cout << copyFormula(&(sta->at(i)), NULL, new string("z"), &b1)->toString() << endl;
+cout << "End Try" << endl;
+*/
+
+
+/*
+
+cout << "Testing copy Atom" << endl;
+Var b1("monastero", 0, 0);
+Var x("livello", 0, 0);
+Var x1("livello9", 0, 0);
+Var g("Edificio", 1, 0);
+Var g1("Edificio", 1, 0);
+Var h("haLivello", 3, 0);
+Var h1("haLivello", 3, 0);
+Atom* atom= new Atom(0, { &h,&b1,&x });
+cout << atom->toString() << endl;
+Atom* c = copyAtom(atom, new string("monastero"), &x1);
+delete (atom);
+//cout << atom->toString() << endl;
+cout << c->toString() << endl;
+
+*/
+
 
 /*
 Formula* ffinal;
