@@ -419,6 +419,7 @@ L3 as DataProperty has type 4
 	 void setFather(Node* f) { father = f; };
 	 void insertFormula(Formula* f) { setFormula.push_back(*f); };
 	 vector<Formula>* getSetFormulae() { return &setFormula; };
+	 void setSetFormulae(vector<Formula> input) { setFormula= (input); };
 	 ~Node() {};
  };
 
@@ -812,14 +813,13 @@ int instantiateFormula(Formula f, vector<Formula> *destination)
 
 
 
-int expandKB(vector<Formula> *inpf)
+int expandKB(vector<Formula> *inpf, vector <Formula> *out)
 { 
   #ifdef debug  
 	logFile << "--- Applying Expansion Rule" <<endl;
   #endif // debug
   int or = operators.getLogOpValue("$OR");
-  vector <Formula> tmp;
-  vector <Formula> out;
+  vector <Formula> tmp;  
   for(int i=0; i< inpf->size(); i++)
 	tmp.push_back(inpf->at(i));
 
@@ -833,7 +833,7 @@ int expandKB(vector<Formula> *inpf)
 		tmp.pop_back();
 		if (f.getAtom() != NULL || f.getOperand()== or)
 		{			
-		   instantiateFormula(f,&out);			
+		   instantiateFormula(f, out);			
 		 }
 		else
 		{			
@@ -850,9 +850,6 @@ int expandKB(vector<Formula> *inpf)
 		}
 	 }
 	
-	for (int i = 0; i < out.size(); i++)
-		cout<<out.at(i).toString()<<endl;
-
 	return 0;
 }
 
@@ -872,21 +869,31 @@ int main()
   /*
      Inserting Knowledge Base
   */
-  insertFormulaKB("($OA V0{l} $CO V0{jumbo} $AO $NI V3{C333})", &tab);
-  insertFormulaKB("($FA V0{z}) ($OA V0{z} $CO V0{z} $AO $NI V3{C333})",&tab);
-  insertFormulaKB("($FA V0{z1}) ($FA V0{z2}) (V0{z1} $EQ V0{z2})", &tab);  
-  insertFormulaKB("($FA V0{z3}) ( (V0{z3} $NI V1{C1}) $AD (  (V0{b} $NI V1{C1}) $OR (V0{a} $NI V1{C1}) ) )", &tab);
-  insertFormulaKB(" ($FA V0{z8}) ($FA V0{z9}) ( ( (V0{k} $NI V1{l}) $AD  ( ( V0{z8} $NI V1{C1})$OR ( V0{z9} $NI V1{C2}))$AD((  $OA V0{z9} $CO V0{z9} $AO $NI V1{C2})$OR (V0{z9} $IN V1{C2}))))", &tab);
-  insertFormulaKB("( ( (V0{k} $NI V1{l}) $AD  ( ( V0{l} $NI V1{C1})$OR ( V0{t} $NI V1{C2})) )", &tab);
+    insertFormulaKB("($OA V0{l} $CO V0{j} $AO $NI V3{C333})", &tab);
+    insertFormulaKB("($FA V0{z}) ($OA V0{z} $CO V0{z} $AO $NI V3{C333})",&tab);
+    insertFormulaKB("($FA V0{z1}) ($FA V0{z2}) (V0{z1} $EQ V0{z2})", &tab);  
+    insertFormulaKB("($FA V0{z3}) ( (V0{z3} $NI V1{C1}) $AD (  (V0{b} $NI V1{C1}) $OR (V0{a} $NI V1{C1}) ) )", &tab);
+    insertFormulaKB(" ($FA V0{z8}) ($FA V0{z9}) ( ( (V0{k} $NI V1{l}) $AD  ( ( V0{z8} $NI V1{C1})$OR ( V0{z9} $NI V1{C2}))$AD((  $OA V0{z9} $CO V0{z9} $AO $NI V1{C2})$OR (V0{z9} $IN V1{C2}))))", &tab);
+    insertFormulaKB("( ( (V0{k} $NI V1{l}) $AD  ( ( V0{l} $NI V1{C1})$OR ( V0{t} $NI V1{C2})) )", &tab);
 
   Node* radix = tab.getTableau();
-  vector <Formula> *sta =radix->getSetFormulae();
+  vector <Formula> *sta =radix->getSetFormulae(); 
   cout << "---Radix Content ---" << sta->size() << endl;  
   for (int i=0; i< sta->size();i++)
    {
 	 cout << (sta->at(i).toString()) << endl;		 
    } 
-
+  vector<Formula> expKB;
+  expandKB(sta, &expKB);
+ // for (int i = 0; i < expKB.size(); i++)
+ //	  cout << expKB.at(i).toString() << endl;
+  delete(radix);
+  radix = new Node(&expKB);
+  cout << "Expanding KB" << endl;
+  for (int i = 0; i< sta->size(); i++)
+  {
+	cout << (sta->at(i).toString()) << endl;
+  }
     
   cout << "Check VVL" << endl;   
   cout << "Vector 0" << endl;
@@ -903,12 +910,12 @@ int main()
   printVector(*varSet.getVQLAt(1));
   cout << "Vector 3" << endl;
   printVector(*varSet.getVQLAt(3));  
-  cout << "Expanding KB" << endl;  
-  expandKB(sta);
-  logFile.close(); 
   
+  logFile.close(); 
+    
   return 0;
 }
+
 
 /*
 Mapping from 4LQSR formulae in semi-internal formulae
@@ -949,6 +956,7 @@ Optimize Atom management and creation
 Test Cases
 Optimize exapandKB
 remove recursion 
+A more efficient expansion function is required.
 */
 
 
