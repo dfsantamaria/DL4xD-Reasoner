@@ -958,9 +958,10 @@ allowing change of the $ char from a config file.
 creating a quantified variable for a formula does not check if it is yet present
 Optimize Atom management and creation
 Test Cases
-Optimize exapandKB
+Optimize expandKB
 remove recursion 
 A more efficient expansion function is required.
+Ensure that a) Vectors on VariableSet are only-read b) coerence of pointer to elements of such vectors.
 */
 
 
