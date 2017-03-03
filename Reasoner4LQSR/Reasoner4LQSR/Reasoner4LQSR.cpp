@@ -273,9 +273,9 @@ L3 as DataProperty has type 4
 			  components = vec;
 		   };		  
 		 
-		  vector<Var*>* getElements()
+		  vector<Var*>& getElements()
 		   {
-			return &components;
+			return components;
 		   };
 
 		  int getAtomOp() 
@@ -302,13 +302,13 @@ L3 as DataProperty has type 4
 		  */
 		  void addElement(Var* element)
 		   {
-			 (*getElements()).push_back(element);
+			 getElements().push_back(element);
 		   };	
 
 		  string toString()
 		   {
 			string out = "(";
-			if (getElements()->size() > 2)
+			if (getElements().size() > 2)
 			  {
 				out.append("$OA ");
 				out.append(getElementAt(1)->toString());
@@ -741,7 +741,7 @@ Atom* copyAtom(Atom* atom, const string *qvar, Var* dest)
 {
 	Atom* fin = new Atom();
 	fin->setAtomOp(atom->getAtomOp());
-	for (int i = 0; i < atom->getElements()->size(); i++)
+	for (int i = 0; i < atom->getElements().size(); i++)
 	{
 		if ( qvar!=NULL && dest !=NULL && ((atom->getElementAt(i)->getName()) == *qvar))
 		 fin->addElement(dest);
@@ -774,7 +774,7 @@ int containsQVar(Formula *f, string &s)
 		return 0;	
 	if (f->getAtom() != NULL)
 	{
-		for (Var* var : *(f->getAtom()->getElements()))
+		for (Var* var : (f->getAtom()->getElements()))
 		{
 			if (var->getVarType() == 1)
 			{
@@ -898,11 +898,7 @@ int main()
   {
 	cout << (expKB.at(i).toString()) << endl;
   }
-  cout << "---Radix Content ---" << endl;
-  for (int i = 0; i< KB.size(); i++)
-  {
-	  cout << KB.at(i).toString() << endl;
-  }
+  
   cout << "Check VVL" << endl;   
   cout << "Vector 0" << endl;
   printVector(*varSet.getVVLAt(0));
