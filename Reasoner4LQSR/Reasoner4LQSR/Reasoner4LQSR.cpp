@@ -556,7 +556,7 @@ Var* createQVarFromString(string *name, int *level, int *vartype, int *start)
 /*
   Create an Atom from the given string
 */
-int createAtom(string input, Formula **formula, vector<int>* startQuantVect)
+int createAtom(string input, Formula **formula, vector<int>& startQuantVect)
 {	
   #ifdef debug  
 	logFile << "-----Computing Atom: " <<  input << endl;
@@ -576,16 +576,16 @@ int createAtom(string input, Formula **formula, vector<int>* startQuantVect)
 			match = input.substr(3, input.size() - 1);
 			size_t found = match.find("$");  
 			retrieveVarData(match.substr(0, found), &name, &level);
-			var1 = createVarFromString(&name, &level, new int(0), &startQuantVect->at(level));
+			var1 = createVarFromString(&name, &level, new int(0), &startQuantVect.at(level));
 			match = match.substr(found+3, match.size()-1); //here the comma
 			found = match.find("$");
 			retrieveVarData(match.substr(0, found), &name, &level);
-			var2 = createVarFromString(&name, &level, new int(0), &startQuantVect->at(level));			
+			var2 = createVarFromString(&name, &level, new int(0), &startQuantVect.at(level));			
 			match = match.substr(found + 3, match.size() - 1); 
 			int op = operators.getSetOpValue(match.substr(0, 3));
 			match = match.substr(3, match.size() - 1);
 			retrieveVarData(match, &name, &level);
-            var3 = createVarFromString(&name, &level, new int(0), &startQuantVect->at(level));
+            var3 = createVarFromString(&name, &level, new int(0), &startQuantVect.at(level));
             atom = new Atom(op, {var3, var1, var2 });
 			//Atom* atom = new Atom(0, { new Var(name,level,0), new Var("b1",0,0), new Var("c1",0,0) });
 			*formula = (new Formula(atom, -1 ));
@@ -594,7 +594,7 @@ int createAtom(string input, Formula **formula, vector<int>* startQuantVect)
 		else if (head.compare("$FA")==0)  //case quantified variable
 		{				
 			retrieveVarData(match.substr(3, match.size() - 1), &name, &level);
-			var1 = createQVarFromString(&name, &level, new int(1), &startQuantVect->at(level));
+			var1 = createQVarFromString(&name, &level, new int(1), &startQuantVect.at(level));
 			*formula =  NULL; //var
 		}
 	} 
@@ -604,10 +604,10 @@ int createAtom(string input, Formula **formula, vector<int>* startQuantVect)
 	  if (found != string::npos)
 		{   
 		  retrieveVarData(input.substr(0, found), &name, &level);
-		  var1= createVarFromString(&name,&level,new int(0), &startQuantVect->at(level));
+		  var1= createVarFromString(&name,&level,new int(0), &startQuantVect.at(level));
 		  int op =  operators.getSetOpValue(input.substr(found, 3)); 
 		  retrieveVarData(input.substr(found + 3, input.size() - 1), &name, &level);
-		  var2 = createVarFromString(&name, &level, new int(0), &startQuantVect->at(level));
+		  var2 = createVarFromString(&name, &level, new int(0), &startQuantVect.at(level));
 		  atom =  new Atom(op, {var2, var1} );		  
 		  *formula = (new Formula(atom, -1));		 	  
 		}
@@ -622,7 +622,7 @@ int createAtom(string input, Formula **formula, vector<int>* startQuantVect)
 /*
 Parse a string representing an internal formula and return the corresponding internal formula. 
 */
-int parseInternalFormula(const string *inputformula, Formula **outformula, vector<int>* startQuantVect)
+int parseInternalFormula(const string *inputformula, Formula **outformula, vector<int>& startQuantVect)
 {
     #ifdef debug  
 	   logFile << "-----Analizyng input formula" << endl;
@@ -721,7 +721,7 @@ int insertFormulaKB(string formula, vector<Formula> &vec)
  vector<int> vqlsize;
  for (int i = 0; i < varSet.VQLGetSize(); i++)	
   vqlsize.push_back((int) varSet.VQLGetSizeAt(i));
- parseInternalFormula(&formula, &ffinal, &vqlsize);
+ parseInternalFormula(&formula, &ffinal, vqlsize);
  vec.push_back(*ffinal);
  #ifdef debug  
    logFile << "---Formula Ended "<< endl;
