@@ -398,7 +398,7 @@ L3 as DataProperty has type 4
  };
 
 
- class Node
+ /*class Node
  {
  private:
 	 vector<Formula> setFormula;
@@ -421,12 +421,13 @@ L3 as DataProperty has type 4
 	 vector<Formula>* getSetFormulae() { return &setFormula; };
 	 void setSetFormulae(vector<Formula> input) { setFormula= (input); };
 	 ~Node() {};
- };
+ };*/
 
 
  /*
     The Tableau.
  */
+ /*
  class Tableau
  {
    private: Node* radix;
@@ -436,7 +437,7 @@ L3 as DataProperty has type 4
 	   Node* getTableau() { return radix; };
 	   int insertFormula(Formula *f) { radix->insertFormula(f);  return 0; };
 	   ~Tableau() {};	   
- };
+ };*/
 
 
 /*
@@ -707,32 +708,35 @@ void printVector(vector<Var>& v)
 /*
   Create an object of type Formula  from the given string representing a formula.
 */
-int insertFormula(string* formula, Formula **ffinal)
+int insertFormulaKB(string formula, vector<Formula> &vec)
 {
 	/*
 	  The following vector of int represents the position of the quantified variables of the current formula.
 	  Initially the vector plainly coincides the the end of the vector modified in the previous execution.
 	*/
  #ifdef debug  
-	logFile << "---Formula Inserted: " << *formula << endl;
+	logFile << "---Formula Inserted: " << formula << endl;
  #endif // debug
+ Formula *ffinal;
  vector<int> vqlsize;
  for (int i = 0; i < varSet.VQLGetSize(); i++)	
   vqlsize.push_back((int) varSet.VQLGetSizeAt(i));
- parseInternalFormula(formula, ffinal, &vqlsize); 
+ parseInternalFormula(&formula, &ffinal, &vqlsize);
+ vec.push_back(*ffinal);
  #ifdef debug  
    logFile << "---Formula Ended "<< endl;
  #endif // debug
  return 0;
 }
 
-int insertFormulaKB(string s, Tableau* t)
+/*int insertFormulaKB(string s, vector<Formula> &t)
 {
 	Formula* f;
 	insertFormula(&s, &f);
-	t->insertFormula(f);
+	t.push_back(*f);
 	return 0;
-}
+} */
+
 Atom* copyAtom(Atom* atom, const string *qvar, Var* dest)
 {
 	Atom* fin = new Atom();
@@ -783,7 +787,7 @@ int containsQVar(Formula *f, string &s)
 	 
 }
 
-int instantiateFormula(Formula f, vector<Formula> *destination)
+int instantiateFormula(Formula f, vector<Formula> &destination)
 {
    #ifdef debug  
 	logFile << "------- Expanding Formula: " << f.toString() << endl;
@@ -805,23 +809,24 @@ int instantiateFormula(Formula f, vector<Formula> *destination)
         #ifdef debug  
 		 logFile << "------- Expanded Formula: " << top.toString() << endl;
         #endif // debug
-	   destination->push_back(top); }
+		 destination.push_back(top); 
 	 }
+  }
 	
   return 0;
 }
 
 
 
-int expandKB(vector<Formula> *inpf, vector <Formula> *out)
+int expandKB(const vector<Formula> &inpf, vector <Formula> &out)
 { 
   #ifdef debug  
 	logFile << "--- Applying Expansion Rule" <<endl;
   #endif // debug
   int or = operators.getLogOpValue("$OR");
   vector <Formula> tmp;  
-  for(int i=0; i< inpf->size(); i++)
-	tmp.push_back(inpf->at(i));
+  for(int i=0; i< inpf.size(); i++)
+	tmp.push_back(inpf.at(i));
 
 	while(!tmp.empty())
 	 {
@@ -833,7 +838,7 @@ int expandKB(vector<Formula> *inpf, vector <Formula> *out)
 		tmp.pop_back();
 		if (f.getAtom() != NULL || f.getOperand()== or)
 		{			
-		   instantiateFormula(f, out);			
+		   instantiateFormula(f, out);		
 		 }
 		else
 		{			
@@ -865,36 +870,39 @@ int main()
    */
   varSet = VariablesSet(3, 100);
   operators = Operators();
-  Tableau tab(new Node()); //empty tableau
+  //Tableau tab(new Node()); //empty tableau
   /*
      Inserting Knowledge Base
   */
-    insertFormulaKB("($OA V0{l} $CO V0{j} $AO $NI V3{C333})", &tab);
-    insertFormulaKB("($FA V0{z}) ($OA V0{z} $CO V0{z} $AO $NI V3{C333})",&tab);
-    insertFormulaKB("($FA V0{z1}) ($FA V0{z2}) (V0{z1} $EQ V0{z2})", &tab);  
-    insertFormulaKB("($FA V0{z3}) ( (V0{z3} $NI V1{C1}) $AD (  (V0{b} $NI V1{C1}) $OR (V0{a} $NI V1{C1}) ) )", &tab);
-    insertFormulaKB(" ($FA V0{z8}) ($FA V0{z9}) ( ( (V0{k} $NI V1{l}) $AD  ( ( V0{z8} $NI V1{C1})$OR ( V0{z9} $NI V1{C2}))$AD((  $OA V0{z9} $CO V0{z9} $AO $NI V1{C2})$OR (V0{z9} $IN V1{C2}))))", &tab);
-    insertFormulaKB("( ( (V0{k} $NI V1{l}) $AD  ( ( V0{l} $NI V1{C1})$OR ( V0{t} $NI V1{C2})) )", &tab);
+    vector<Formula> KB;
+	vector<Formula> expKB;
 
-  Node* radix = tab.getTableau();
-  vector <Formula> *sta =radix->getSetFormulae(); 
-  cout << "---Radix Content ---" << sta->size() << endl;  
-  for (int i=0; i< sta->size();i++)
+    insertFormulaKB("($OA V0{l} $CO V0{j} $AO $NI V3{C333})", KB);
+    insertFormulaKB("($FA V0{z}) ($OA V0{z} $CO V0{z} $AO $NI V3{C333})",KB);
+    insertFormulaKB("($FA V0{z1}) ($FA V0{z2}) (V0{z1} $EQ V0{z2})", KB);  
+    insertFormulaKB("($FA V0{z3}) ( (V0{z3} $NI V1{C1}) $AD (  (V0{b} $NI V1{C1}) $OR (V0{a} $NI V1{C1}) ) )", KB);
+    insertFormulaKB(" ($FA V0{z8}) ($FA V0{z9}) ( ( (V0{k} $NI V1{l}) $AD  ( ( V0{z8} $NI V1{C1})$OR ( V0{z9} $NI V1{C2}))$AD((  $OA V0{z9} $CO V0{z9} $AO $NI V1{C2})$OR (V0{z9} $IN V1{C2}))))", KB);
+    insertFormulaKB("( ( (V0{k} $NI V1{l}) $AD  ( ( V0{l} $NI V1{C1})$OR ( V0{t} $NI V1{C2})) )", KB);
+	
+	
+  cout << "---Radix Content ---" << endl;  
+  for (int i=0; i< KB.size();i++)
    {
-	 cout << (sta->at(i).toString()) << endl;		 
+	 cout << KB.at(i).toString() << endl;		 
    } 
-  vector<Formula> expKB;
-  expandKB(sta, &expKB);
- // for (int i = 0; i < expKB.size(); i++)
- //	  cout << expKB.at(i).toString() << endl;
-  delete(radix);
-  radix = new Node(&expKB);
+  
+  expandKB(KB, expKB);   
+
   cout << "Expanding KB" << endl;
-  for (int i = 0; i< sta->size(); i++)
+  for (int i = 0; i< expKB.size(); i++)
   {
-	cout << (sta->at(i).toString()) << endl;
+	cout << (expKB.at(i).toString()) << endl;
   }
-    
+  cout << "---Radix Content ---" << endl;
+  for (int i = 0; i< KB.size(); i++)
+  {
+	  cout << KB.at(i).toString() << endl;
+  }
   cout << "Check VVL" << endl;   
   cout << "Vector 0" << endl;
   printVector(*varSet.getVVLAt(0));
