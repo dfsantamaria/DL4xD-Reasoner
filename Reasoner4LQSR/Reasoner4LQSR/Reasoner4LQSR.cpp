@@ -923,17 +923,17 @@ int main()
 
 /*
 Mapping from 4LQSR formulae in semi-internal formulae
-/FA -> ForAll
-/IN -> IN
-/NI -> NOTIN
-/EQ -> =
-/QE -> NOT =
-/OA -> <
-/AO -> >
-/AD -> AND
-/DA -> NOT AND
-/OR -> OR
-/RO -> NOT OR
+$FA -> ForAll
+$IN -> IN
+$NI -> NOTIN
+$EQ -> =
+$QE -> NOT =
+$OA -> <
+$AO -> >
+$AD -> AND
+$DA -> NOT AND
+$OR -> OR
+$RO -> NOT OR
 ( ) -> ( )
 Vi{name} -> X^i_{name} variable
 
