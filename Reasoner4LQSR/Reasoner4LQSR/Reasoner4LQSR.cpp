@@ -768,8 +768,8 @@ Formula* copyFormula(Formula* formula, Formula* father, const string *qvar, Var*
 	return fin;
 }
 
-int containsQVar(Formula *f, string &s)
-{
+/*int containsQVar(Formula *f, string &s)
+{	
 	if (f == NULL)
 		return 0;	
 	if (f->getAtom() != NULL)
@@ -778,13 +778,43 @@ int containsQVar(Formula *f, string &s)
 		{
 			if (var->getVarType() == 1)
 			{
-				s = (var->getName()); 
+				s = (var->getName()); 				
 				return 1;
 			}
 		}
 	}
 	return (containsQVar(f->getLSubformula(), s) + containsQVar(f->getRSubformula(), s));
 	 
+}
+*/
+/*
+  Get the first occurence of quantified variable if present
+*/
+int containsQVar(Formula *fr, string &s)
+{
+	vector<Formula*> q = { fr };
+	while (!q.empty())
+	{
+		Formula* f = q.back();	
+		q.pop_back();	
+		if (f != NULL)
+		{
+			if (f->getAtom() != NULL)
+			{
+				for (Var* var : (f->getAtom()->getElements()))
+				{
+					if (var->getVarType() == 1)
+					{
+						s = (var->getName());
+						return 1;
+					}
+				}
+			}
+			q.push_back(f->getLSubformula());
+			q.push_back(f->getRSubformula());
+		}
+	}
+	return 0;
 }
 
 int instantiateFormula(Formula f, vector<Formula> &destination)
@@ -798,7 +828,7 @@ int instantiateFormula(Formula f, vector<Formula> &destination)
 	while (!tmp.empty())
 	{
 	 Formula top=tmp.back();
-	 tmp.pop_back();
+	 tmp.pop_back(); 
 	 if (containsQVar(&top, s))
 	  {		 
 		 for(int i=0; i<varSet.getVVLAt(0)->size(); i++ )
