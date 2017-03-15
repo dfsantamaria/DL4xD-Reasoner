@@ -241,4 +241,4 @@ ModelManifest.xml
 # FAKE - F# Make
 .fake/
 Reasoner4LQSR/Reasoner4LQSR/Reasoner4LQSR.vcxproj
-Reasoner4LQSR/Reasoner4LQSR/Reasoner4LQSR.vcxproj
+Reasoner4LQSR/Reasoner4LQSR/Reasoner4LQSR.vcxproj.filters
