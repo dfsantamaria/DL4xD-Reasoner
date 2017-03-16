@@ -12,7 +12,11 @@
 #include <sstream>
 
 using namespace std;
-#define debug
+//#define debug 
+//#define debugclash
+//#define debugexpand
+//#define debuginsertf
+
 std::ofstream logFile("LOG.log");   //log file
 
 /*
@@ -134,9 +138,11 @@ L3 as DataProperty has type 4
 		int VVLPushBack(int inslevel, string name, int level, int vartype)
 		 {
            #ifdef debug 
+			#ifdef debuginsertf
 			logFile << "-----Inserting Data in Variable Set of level: " << inslevel << ". Name: " << name <<". Level: "<< level<<". Type: "<< vartype << endl;
 			logFile << "-----Variable Set of level: " << inslevel << " has size: " << VVL.at(inslevel).size() <<" and capacity: "<< VVL.at(inslevel).capacity() << endl;
-          #endif // debug
+              #endif
+            #endif // debug
 
 			if (VVL.at(inslevel).size() < VVL.at(inslevel).capacity())
 			{
@@ -149,9 +155,11 @@ L3 as DataProperty has type 4
 		int VQLPushBack(int inslevel, string name, int level, int vartype)
 		{
           #ifdef debug 
+             #ifdef debuginsertf
 			logFile << "-----Inserting Data in Quantified Variable Set of level: " << inslevel << ". Name: " << name << ". Level: " << level << ". Type: " << vartype << endl;
 			logFile << "-----Quantified Variable Set of level: " << inslevel << " has size: " << VQL.at(inslevel).size() << " and capacity: " << VQL.at(inslevel).capacity() << endl;
-           #endif // debug
+              #endif
+            #endif // debug
 		  if (VQL.at(inslevel).size() < VQL.at(inslevel).capacity())
 			{
 				VQL.at(inslevel).push_back(*new Var(name, level, vartype));
@@ -495,12 +503,16 @@ int containsVariableName(vector<Var>* vect, Var** found, const string *name, con
 int retrieveVarData(const string input, string* name, int* level)
 {
   #ifdef debug 
+     #ifdef debuginsertf
 	logFile << "-----Extracting Data From Var. Input String: " << input << endl;
+     #endif
   #endif // debug
   *level = input.at(1) - '0';
   *name = input.substr(3, (input.find_last_of('}') - 3));
   #ifdef debug 
-   logFile << "-----Data From Var Computed. Name: " << *name << ". Level:" << *level << endl;
+     #ifdef debuginsertf
+      logFile << "-----Data From Var Computed. Name: " << *name << ". Level:" << *level << endl;
+    #endif
   #endif // debug
   return 0;
 }
@@ -509,19 +521,25 @@ Var* createVarFromString(string *name, int *level, int *vartype, int *start)
 { 
 	Var* ret;
     #ifdef debug 
+      #ifdef debuginsertf
  	 logFile << "-----Creating  Variable.  Name:" << *name << ". Level: " << *level << ". Type: " << *vartype << endl;
+      #endif
     #endif // debug
 	if (containsVariableName(varSet.getVVLAt(*level), &ret, name, start) == 0)
 	{
       #ifdef debug 
-		logFile << "-----Variable Found in Set. " << ret->toString() << endl;
+         #ifdef debuginsertf
+		  logFile << "-----Variable Found in Set. " << ret->toString() << endl;
+        #endif
       #endif // debug
 	 return ret;
 	}
 	else if (containsVariableName(varSet.getVQLAt(*level), &ret, name, start) == 0)
 	{
-      #ifdef debug 
+      #ifdef debug  
+         #ifdef debuginsertf
 		logFile << "-----Variable Found in Quantified Set. " << ret->toString() << endl;
+         #endif
       #endif // debug
 	 return ret;
 	}
@@ -530,7 +548,9 @@ Var* createVarFromString(string *name, int *level, int *vartype, int *start)
 	  varSet.VVLPushBack(*level, *name,*level,*vartype);
 	  ret=varSet.VVLGetBack(*level);
       #ifdef debug 
+          #ifdef debuginsertf
 	    logFile << "-----Adding Variable to Set. " << ret->toString() << endl;
+        #endif
       #endif // debug
 	  return ret;
 	}
@@ -539,13 +559,17 @@ Var* createVarFromString(string *name, int *level, int *vartype, int *start)
 Var* createQVarFromString(string *name, int *level, int *vartype, int *start)
 {
  #ifdef debug 
+     #ifdef debuginsertf
 	logFile << "-----Creating Quantified Variable.  Name:" << *name << ". Level: " << *level << ". Type: "<< *vartype << endl;
- #endif // debug
+    #endif
+   #endif // debug
  Var* ret;
  if (containsVariableName(varSet.getVQLAt(*level), &ret, name, start) == 0)
   {
    #ifdef debug 
-	 logFile << "-----Quantified Variable Found in Set."<< ret->toString()  << endl;
+     #ifdef debuginsertf
+	   logFile << "-----Quantified Variable Found in Set."<< ret->toString()  << endl;
+     #endif
    #endif // debug
    return ret;
   }
@@ -554,7 +578,9 @@ Var* createQVarFromString(string *name, int *level, int *vartype, int *start)
    varSet.VQLPushBack(*level, *name,*level, *vartype);
    ret=varSet.VQLGetBack(*level);
    #ifdef debug 
-    logFile << "-----Adding Quantified Variable to Set." << ret->toString() << endl;
+     #ifdef debuginsertf
+       logFile << "-----Adding Quantified Variable to Set." << ret->toString() << endl;
+     #endif
    #endif // debug
    return ret;
  }
@@ -567,7 +593,9 @@ int createAtom(string input, Formula **formula, vector<int>& startQuantVect)
 {
 	
   #ifdef debug  
-	logFile << "-----Computing Atom: " <<  input << endl;
+     #ifdef debuginsertf
+	   logFile << "-----Computing Atom: " <<  input << endl;
+     #endif
    #endif // debug
 	Var* var1;
 	Var* var2;
@@ -622,9 +650,11 @@ int createAtom(string input, Formula **formula, vector<int>& startQuantVect)
 		}
 	}	
     #ifdef debug  
-	if(atom !=NULL)
-	  logFile << "-----Atom created: " << atom->toString() << endl;
-    #endif // debug
+      #ifdef debuginsertf
+	      if(atom !=NULL)
+	        logFile << "-----Atom created: " << atom->toString() << endl;
+         #endif
+       #endif // debug
 	return 0;
 }
 
@@ -655,8 +685,10 @@ int parseInternalFormula(const string *inputformula, Formula **outformula, vecto
 				if (!atom.empty())
 				{					
 					stackFormula.pop();	
-                    #ifdef debug  
-					  logFile << "-----Candidate atom found: " << atom << endl;
+                    #ifdef debug 
+                     #ifdef debuginsertf
+					   logFile << "-----Candidate atom found: " << atom << endl;
+                       #endif
                     #endif // debug
 					createAtom(atom, &formula, startQuantVect); 
 					if (formula != NULL) // creation of the formula 
@@ -675,8 +707,10 @@ int parseInternalFormula(const string *inputformula, Formula **outformula, vecto
 					stformula.pop();
 					centerf->setLSubformula(leftf);
 					centerf->setRSubformula(rightf);
-                    #ifdef debug  
-					  logFile << "-----Computing subformula: " << centerf->toString() << endl;
+                    #ifdef debug 
+                      #ifdef debuginsertf
+					    logFile << "-----Computing subformula: " << centerf->toString() << endl;
+                       #endif
                      #endif // debug
 					stformula.push(centerf);					
 					stackFormula.pop();
@@ -848,8 +882,10 @@ int instantiateFormula(Formula f, vector<Formula> &destination)
 	  }
 	 else
 	 {	
-        #ifdef debug  
-		 logFile << "------- Expanded Formula: " << top.toString() << endl;
+        #ifdef debug 
+          #ifdef debugexpand
+		   logFile << "------- Expanded Formula: " << top.toString() << endl;
+          #endif
         #endif // debug		
 		 if (top.getAtom() != NULL)
 			 top.setFulfillness(0);
@@ -877,7 +913,9 @@ int expandKB(const vector<Formula> &inpf, vector <Formula> &out)
        
 		Formula f = tmp.back();
         #ifdef debug  
-		 logFile << "----- Computing Formula: " << f.toString() << endl;
+           #ifdef debugexpand
+		      logFile << "----- Computing Formula: " << f.toString() << endl;
+           #endif
         #endif // debug
 		tmp.pop_back();
 		if (f.getAtom() != NULL || f.getOperand()== or)
@@ -889,8 +927,10 @@ int expandKB(const vector<Formula> &inpf, vector <Formula> &out)
 			f.getLSubformula()->setPreviousFormula(NULL);
 			f.getRSubformula()->setPreviousFormula(NULL);
             #ifdef debug  
+               #ifdef debugexpand
 			  logFile << "----- Obtaining Formula: " << f.getLSubformula()->toString() << endl;
 			  logFile << "----- Obtaining Formula: " << f.getRSubformula()->toString() << endl;
+               #endif
             #endif // debug
 			tmp.push_back(*(f.getLSubformula()));
 			tmp.push_back(*(f.getRSubformula()));	
@@ -898,7 +938,9 @@ int expandKB(const vector<Formula> &inpf, vector <Formula> &out)
 			//cout << (f.getOperand()) << endl;
 		}
 	 }
-	
+    #ifdef debug  
+	  logFile << "--- End Expansion Rule" << endl;
+    #endif // debug
 	return 0;
 }
 
@@ -911,7 +953,11 @@ int checkAtomOpClash(int op1, int op2)
 
 int checkAtomClash(Atom &atom1, Atom &atom2)
 {
-	//cout << "----" << atom1.getElements().size() << "  " << atom2.getElements().size() << endl;
+   #ifdef debug 
+      #ifdef debugclash
+	    logFile << "-----Checking for Clash: " << atom1.toString() <<" and " << atom2.toString() << endl;
+     #endif // debug
+   #endif
 	if (atom1.getElements().size() == atom2.getElements().size())
 	{
 		for (int i = 0; i < atom1.getElements().size(); i++)
@@ -929,6 +975,11 @@ int checkAtomClash(Atom &atom1, Atom &atom2)
 
 int checkAtomClash(Atom &atom)
 {	
+   #ifdef debug
+     #ifdef debugclash
+	  logFile << "-----Checking for Clash: " << atom.toString() << endl;
+     #endif
+   #endif // debug
 	if (atom.getElements().size() == 2 && atom.getAtomOp() == 3 && atom.getElementAt(0)->equal(atom.getElementAt(1))==0)
 		return 0;
 	return 1;
@@ -936,13 +987,18 @@ int checkAtomClash(Atom &atom)
 
 int checkBranchClash(vector<Formula> &formset)
 {
+  #ifdef debug  
+	logFile << "---Checking for Clash in branch" << endl;
+  #endif // debug
  for (int i = 0; i < formset.size(); i++)
 	{
 	 if (formset.at(i).getAtom() != NULL) //atomic formula
 	 {
 		 if (checkAtomClash(*formset.at(i).getAtom()) == 0)  // type a != a
 		 {
-			 cout << "Clash at: " << formset.at(i).getAtom()->toString() << endl;
+            #ifdef debug  
+			 logFile << "-----Clash at: " << formset.at(i).getAtom()->toString() << endl;
+            #endif // debug
 			 return 0;
 		 }
 		 for (int j = i + 1; j < formset.size(); j++)
@@ -951,18 +1007,25 @@ int checkBranchClash(vector<Formula> &formset)
 			 {				 
 				 if (checkAtomClash(*formset.at(j).getAtom()) == 0)
 				 {
-					 cout << "Clash at: " << formset.at(j).getAtom()->toString() << endl;
+                   #ifdef debug  
+					  logFile << "-----Clash at: " << formset.at(j).getAtom()->toString() << endl;
+                   #endif // debug
 					 return 0;
 				 }
 				 if (checkAtomClash(*formset.at(i).getAtom(), *formset.at(j).getAtom()) == 0)
 				 {
-					 cout << "Clash at: " << formset.at(i).getAtom()->toString() << "," << formset.at(j).getAtom()->toString() << endl;
-					 return 0;
+                   #ifdef debug  
+					logFile << "-----Clash at: " << formset.at(i).getAtom()->toString() << "," << formset.at(j).getAtom()->toString() << endl;
+				   #endif // debug
+				   return 0;
 				 }
 			 }
 		 }
 	 }
 	}
+   #ifdef debug  
+     logFile << "---End Check for Clash in branch" << endl;
+    #endif // debug
    return 1;
 }
 
