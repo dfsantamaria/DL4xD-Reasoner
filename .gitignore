@@ -242,3 +242,6 @@ ModelManifest.xml
 .fake/
 Reasoner4LQSR/Reasoner4LQSR/Reasoner4LQSR.vcxproj
 Reasoner4LQSR/Reasoner4LQSR/Reasoner4LQSR.vcxproj.filters
+*.vcxproj
+Reasoner4LQSR/Reasoner4LQSR/Reasoner4LQSR.vcxproj
+Reasoner4LQSR/Reasoner4LQSR/Reasoner4LQSR.vcxproj
