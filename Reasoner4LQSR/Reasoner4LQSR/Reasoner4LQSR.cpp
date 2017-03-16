@@ -172,14 +172,14 @@ L3 as DataProperty has type 4
  class Operators
  {
   private :
-            string logOp[4] = { "$OR","$AD","$RO","$DA" }; //logic operators
-            string setOp[7] = { "$IN", "$EQ", "$NI", "$QE", "$OA","$AO", "$CO" }; //set operators
-            string qutOp[1] = {"$FA"};	//quantifiers
+             vector<string> logOp = { "$OR","$AD","$RO","$DA" }; //logic operators
+			 vector<string> setOp = { "$IN", "$EQ", "$NI", "$QE", "$OA", "$AO", "$CO" }; //set operators
+			 vector<string> qutOp = {"$FA"};	//quantifiers
   public :
 	  Operators() {};
-	  size_t getLogOpSize() { return logOp->size(); };
-	  size_t getSetOpSize() { return logOp->size(); };
-	  size_t getQuantiOpSize() { return qutOp->size(); };
+	  size_t getLogOpSize() { return logOp.size(); };
+	  size_t getSetOpSize() { return setOp.size(); };
+	  size_t getQuantiOpSize() { return qutOp.size(); };
 	  int getLogOpValue(string s)
 	  {
 		  for (int i = 0; i < getLogOpSize(); i++)
@@ -191,12 +191,13 @@ L3 as DataProperty has type 4
 	  };  
 
     int getSetOpValue(string s)
-    {
-	 for (int i = 0; i < getSetOpSize(); i++)
+	{
+		int i = 0;
+	 for (; i < getSetOpSize(); i++)
 	 {
 		 if (setOp[i].compare(s) == 0)
 			 return i;
-	 }
+	 } 
 	 return -1;
 	};
 
@@ -557,7 +558,8 @@ Var* createQVarFromString(string *name, int *level, int *vartype, int *start)
   Create an Atom from the given string
 */
 int createAtom(string input, Formula **formula, vector<int>& startQuantVect)
-{	
+{
+	
   #ifdef debug  
 	logFile << "-----Computing Atom: " <<  input << endl;
    #endif // debug
@@ -572,7 +574,8 @@ int createAtom(string input, Formula **formula, vector<int>& startQuantVect)
 		string head = input.substr(0, 3); //cout << head << endl;	
 		string match = input; 
 		if (head.compare("$OA") == 0)  //case  pair
-		{			
+		{
+			
 			match = input.substr(3, input.size() - 1);
 			size_t found = match.find("$");  
 			retrieveVarData(match.substr(0, found), &name, &level);
@@ -581,7 +584,7 @@ int createAtom(string input, Formula **formula, vector<int>& startQuantVect)
 			found = match.find("$");
 			retrieveVarData(match.substr(0, found), &name, &level);
 			var2 = createVarFromString(&name, &level, new int(0), &startQuantVect.at(level));			
-			match = match.substr(found + 3, match.size() - 1); 
+			match = match.substr(found + 3, match.size() - 1);  
 			int op = operators.getSetOpValue(match.substr(0, 3));
 			match = match.substr(3, match.size() - 1);
 			retrieveVarData(match, &name, &level);
@@ -605,7 +608,11 @@ int createAtom(string input, Formula **formula, vector<int>& startQuantVect)
 		{   
 		  retrieveVarData(input.substr(0, found), &name, &level);
 		  var1= createVarFromString(&name,&level,new int(0), &startQuantVect.at(level));
+
+		
+
 		  int op =  operators.getSetOpValue(input.substr(found, 3)); 
+        cout << op << endl;
 		  retrieveVarData(input.substr(found + 3, input.size() - 1), &name, &level);
 		  var2 = createVarFromString(&name, &level, new int(0), &startQuantVect.at(level));
 		  atom =  new Atom(op, {var2, var1} );		  
@@ -624,6 +631,7 @@ Parse a string representing an internal formula and return the corresponding int
 */
 int parseInternalFormula(const string *inputformula, Formula **outformula, vector<int>& startQuantVect)
 {
+	
     #ifdef debug  
 	   logFile << "-----Analizyng input formula" << endl;
     #endif // debug
@@ -888,7 +896,38 @@ int expandKB(const vector<Formula> &inpf, vector <Formula> &out)
 	return 0;
 }
 
+int checkAtomOpClash(int op1, int op2)
+{
+	if (abs(op1 - op2) == 2)
+		return 0;
+	return 1;
+}
 
+int checkAtomClash(Atom &atom1, Atom &atom2)
+{
+	//cout << "----" << atom1.getElements().size() << "  " << atom2.getElements().size() << endl;
+	if (atom1.getElements().size() == atom2.getElements().size())
+	{
+		for (int i = 0; i < atom1.getElements().size(); i++)
+		{
+			//cout<<atom1.getElementAt(i)->toString()<<endl;
+			//cout << atom2.getElementAt(i)->toString() << endl;
+			//cout << atom1.getElementAt(i)->equal(atom2.getElementAt(i)) << endl;
+			if (atom1.getElementAt(i)->equal(atom2.getElementAt(i)) != 0)
+				return 1;
+		}
+		return checkAtomOpClash(atom1.getAtomOp(), atom2.getAtomOp());
+	}
+	return 1;
+}
+
+int checkAtomClash(Atom &atom)
+{
+	
+	if (atom.getElements().size() == 2 && atom.getAtomOp() == 3 && atom.getElementAt(0)->equal(atom.getElementAt(1))==0)
+		return 0;
+	return 1;
+}
 
 int main()
 {    
@@ -909,7 +948,7 @@ int main()
 
     insertFormulaKB("($OA V0{l} $CO V0{j} $AO $NI V3{C333})", KB);
     insertFormulaKB("($FA V0{z}) ($OA V0{z} $CO V0{z} $AO $NI V3{C333})",KB);
-    insertFormulaKB("($FA V0{z1}) ($FA V0{z2}) (V0{z1} $EQ V0{z2})", KB);  
+    insertFormulaKB("($FA V0{z1}) ($FA V0{z2}) (V0{z1} $QE V0{z2})", KB);  
     insertFormulaKB("($FA V0{z3}) ( (V0{z3} $NI V1{C1}) $AD (  (V0{b} $NI V1{C1}) $OR (V0{a} $NI V1{C1}) ) )", KB);
     insertFormulaKB(" ($FA V0{z8}) ($FA V0{z9}) ( ( (V0{k} $NI V1{l}) $AD  ( ( V0{z8} $NI V1{C1})$OR ( V0{z9} $NI V1{C2}))$AD((  $OA V0{z9} $CO V0{z9} $AO $NI V1{C2})$OR (V0{z9} $IN V1{C2}))))", KB);
     insertFormulaKB("( ( (V0{k} $NI V1{l}) $AD  ( ( V0{l} $NI V1{C1})$OR ( V0{t} $NI V1{C2})) )", KB);
@@ -1151,3 +1190,28 @@ cout << "------------" << endl;*/
 {
 cout<< (sta->at(i).toString())<< endl;
 }*/
+
+
+
+/*
+Atom Clash
+Var b1("monastero", 0, 0);
+Var b("monastero", 0, 0);
+Var x("livello", 0, 0);
+Var x1("livello", 0, 0);
+Var g("Edificio", 1, 0);
+Var g1("Edificio", 1, 0);
+Var h("haLivello", 3, 0);
+Var h1("haLivello", 3, 0);
+Atom* atom = new Atom(0, { &h,&x1, &b});
+Atom* atom1 = new Atom(2, { &h1,&x, &b1 });
+Atom* atom2 = new Atom(3, { &x, &x1 });
+cout << atom->toString() << endl;
+cout << atom1->toString() << endl;
+cout << atom2->toString() << endl;
+cout << checkAtomClash(*atom,*atom1) << endl;
+cout << checkAtomClash(*atom) << endl;
+cout << checkAtomClash(*atom1) << endl;
+cout << checkAtomClash(*atom2) << endl;
+
+*/
