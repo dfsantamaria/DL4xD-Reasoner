@@ -378,7 +378,7 @@ L3 as DataProperty has type 4
 	 void setLSubformula(Formula *sub) { lsubformula = sub; };
 	 void setRSubformula(Formula *sub) { rsubformula = sub; };
 	 void setPreviousFormula(Formula *prev) { pformula = prev; }
-	 void setFulillness(int val) { fulfilled = val; };
+	 void setFulfillness(int val) { fulfilled = val; };
 	 int getFulfillness() { return fulfilled; };
 	 ~Formula() {};
 	 string toString()
@@ -770,9 +770,11 @@ Formula* copyFormula(Formula* formula, Formula* father, const string *qvar, Var*
 	fin->setOperand(formula->getOperand()); 
 	if (formula->getAtom() == NULL)
 	 fin->setAtom(NULL);
-	else		
-	  fin->setAtom(copyAtom(formula->getAtom(), qvar, dest)); 	
-	fin->setPreviousFormula(father);
+	else
+	{
+		fin->setAtom(copyAtom(formula->getAtom(), qvar, dest)); 
+	}
+	fin->setPreviousFormula(father); 
 	fin->setLSubformula(copyFormula(formula->getLSubformula(), fin, qvar, dest));
 	fin->setRSubformula(copyFormula(formula->getRSubformula(), fin, qvar, dest));
 	return fin;
@@ -842,13 +844,15 @@ int instantiateFormula(Formula f, vector<Formula> &destination)
 	 if (containsQVar(&top, s))
 	  {		 
 		 for(int i=0; i<varSet.getVVLAt(0)->size(); i++ )
-		 tmp.push_back(*(copyFormula(&top, NULL, &s, &varSet.getVVLAt(0)->at(i) )));
+		   tmp.push_back(*(copyFormula(&top, NULL, &s, &varSet.getVVLAt(0)->at(i) )));
 	  }
 	 else
 	 {	
         #ifdef debug  
 		 logFile << "------- Expanded Formula: " << top.toString() << endl;
-        #endif // debug
+        #endif // debug		
+		 if (top.getAtom() != NULL)
+			 top.setFulfillness(0);
 		 destination.push_back(top); 
 	 }
   }
@@ -978,17 +982,14 @@ int main()
   */
     vector<Formula> KB;
 	vector<Formula> expKB;
-	/*
+	//insertFormulaKB("( ($OA V0{l} $CO V0{j} $AO $IN V3{C333})  $AD (  ($OA V0{k} $CO V0{t} $AO $IN V3{C333}) $OR ($OA V0{s} $CO V0{v} $AO $IN V3{C333}) ) )", KB);
     insertFormulaKB("($OA V0{l} $CO V0{j} $AO $IN V3{C333})", KB);
     insertFormulaKB("($FA V0{z}) ($OA V0{z} $CO V0{z} $AO $NI V3{C333})",KB);
-    insertFormulaKB("($FA V0{z1}) ($FA V0{z2}) (V0{z1} $QE V0{z2})", KB);  
+    insertFormulaKB("($FA V0{z1}) ($FA V0{z2}) (V0{z1} $EQ V0{z2})", KB);  
     insertFormulaKB("($FA V0{z3}) ( (V0{z3} $NI V1{C1}) $AD (  (V0{b} $NI V1{C1}) $OR (V0{a} $NI V1{C1}) ) )", KB);
     insertFormulaKB(" ($FA V0{z8}) ($FA V0{z9}) ( ( (V0{k} $NI V1{l}) $AD  ( ( V0{z8} $NI V1{C1})$OR ( V0{z9} $NI V1{C2}))$AD((  $OA V0{z9} $CO V0{z9} $AO $NI V1{C2})$OR (V0{z9} $IN V1{C2}))))", KB);
-    insertFormulaKB("( ( (V0{k} $NI V1{l}) $AD  ( ( V0{l} $NI V1{C1})$OR ( V0{t} $NI V1{C2})) )", KB); */
-	insertFormulaKB("($OA V0{l} $CO V0{l}$AO $IN V3{C333})", KB);
-	insertFormulaKB("($FA V0{z}) ($OA V0{z} $CO V0{z} $AO $NI V3{C333})", KB);
-	insertFormulaKB("($OA V0{l} $CO V0{j} $AO $IN V3{C333})", KB);
-	insertFormulaKB("($FA V0{z3}) ( (V0{z3} $NI V1{C1}) $AD (  (V0{b} $NI V1{C1}) $OR (V0{a} $NI V1{C1}) ) )", KB);
+    insertFormulaKB("( ( (V0{k} $NI V1{l}) $AD  ( ( V0{l} $NI V1{C1})$OR ( V0{t} $NI V1{C2})) )", KB); 
+	
 	
   cout << "---Radix Content ---" << endl;  
   for (int i=0; i< KB.size();i++)
@@ -1001,7 +1002,7 @@ int main()
   cout << "Expanding KB" << endl;
   for (int i = 0; i< expKB.size(); i++)
   {
-	cout << (expKB.at(i).toString()) << endl;
+	cout << (expKB.at(i).toString()) << "," << expKB.at(i).getFulfillness()<< endl;
   }
   
   cout << "Check VVL" << endl;   
