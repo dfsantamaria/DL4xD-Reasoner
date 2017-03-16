@@ -12,10 +12,10 @@
 #include <sstream>
 
 using namespace std;
-//#define debug 
-//#define debugclash
-//#define debugexpand
-//#define debuginsertf
+//#define debug                   //debug istructions
+//#define debugclash              //debug istructions for clash checking
+//#define debugexpand             //debug istructions for expansion rule
+//#define debuginsertf            //debug istructions for internal formula translation
 
 std::ofstream logFile("LOG.log");   //log file
 
