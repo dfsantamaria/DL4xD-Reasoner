@@ -608,11 +608,7 @@ int createAtom(string input, Formula **formula, vector<int>& startQuantVect)
 		{   
 		  retrieveVarData(input.substr(0, found), &name, &level);
 		  var1= createVarFromString(&name,&level,new int(0), &startQuantVect.at(level));
-
-		
-
-		  int op =  operators.getSetOpValue(input.substr(found, 3)); 
-        cout << op << endl;
+		  int op =  operators.getSetOpValue(input.substr(found, 3));         
 		  retrieveVarData(input.substr(found + 3, input.size() - 1), &name, &level);
 		  var2 = createVarFromString(&name, &level, new int(0), &startQuantVect.at(level));
 		  atom =  new Atom(op, {var2, var1} );		  
@@ -922,11 +918,42 @@ int checkAtomClash(Atom &atom1, Atom &atom2)
 }
 
 int checkAtomClash(Atom &atom)
-{
-	
+{	
 	if (atom.getElements().size() == 2 && atom.getAtomOp() == 3 && atom.getElementAt(0)->equal(atom.getElementAt(1))==0)
 		return 0;
 	return 1;
+}
+
+int checkBranchClash(vector<Formula> &formset)
+{
+ for (int i = 0; i < formset.size(); i++)
+	{
+	 if (formset.at(i).getAtom() != NULL) //atomic formula
+	 {
+		 if (checkAtomClash(*formset.at(i).getAtom()) == 0)  // type a != a
+		 {
+			 cout << "Clash at: " << formset.at(i).getAtom()->toString() << endl;
+			 return 0;
+		 }
+		 for (int j = i + 1; j < formset.size(); j++)
+		 {
+			 if (formset.at(j).getAtom() != NULL)
+			 {				 
+				 if (checkAtomClash(*formset.at(j).getAtom()) == 0)
+				 {
+					 cout << "Clash at: " << formset.at(j).getAtom()->toString() << endl;
+					 return 0;
+				 }
+				 if (checkAtomClash(*formset.at(i).getAtom(), *formset.at(j).getAtom()) == 0)
+				 {
+					 cout << "Clash at: " << formset.at(i).getAtom()->toString() << "," << formset.at(j).getAtom()->toString() << endl;
+					 return 0;
+				 }
+			 }
+		 }
+	 }
+	}
+   return 1;
 }
 
 int main()
@@ -945,14 +972,17 @@ int main()
   */
     vector<Formula> KB;
 	vector<Formula> expKB;
-
-    insertFormulaKB("($OA V0{l} $CO V0{j} $AO $NI V3{C333})", KB);
+	/*
+    insertFormulaKB("($OA V0{l} $CO V0{j} $AO $IN V3{C333})", KB);
     insertFormulaKB("($FA V0{z}) ($OA V0{z} $CO V0{z} $AO $NI V3{C333})",KB);
     insertFormulaKB("($FA V0{z1}) ($FA V0{z2}) (V0{z1} $QE V0{z2})", KB);  
     insertFormulaKB("($FA V0{z3}) ( (V0{z3} $NI V1{C1}) $AD (  (V0{b} $NI V1{C1}) $OR (V0{a} $NI V1{C1}) ) )", KB);
     insertFormulaKB(" ($FA V0{z8}) ($FA V0{z9}) ( ( (V0{k} $NI V1{l}) $AD  ( ( V0{z8} $NI V1{C1})$OR ( V0{z9} $NI V1{C2}))$AD((  $OA V0{z9} $CO V0{z9} $AO $NI V1{C2})$OR (V0{z9} $IN V1{C2}))))", KB);
-    insertFormulaKB("( ( (V0{k} $NI V1{l}) $AD  ( ( V0{l} $NI V1{C1})$OR ( V0{t} $NI V1{C2})) )", KB);
-	
+    insertFormulaKB("( ( (V0{k} $NI V1{l}) $AD  ( ( V0{l} $NI V1{C1})$OR ( V0{t} $NI V1{C2})) )", KB); */
+	insertFormulaKB("($OA V0{l} $CO V0{l}$AO $IN V3{C333})", KB);
+	insertFormulaKB("($FA V0{z}) ($OA V0{z} $CO V0{z} $AO $NI V3{C333})", KB);
+	insertFormulaKB("($OA V0{l} $CO V0{j} $AO $IN V3{C333})", KB);
+	insertFormulaKB("($FA V0{z3}) ( (V0{z3} $NI V1{C1}) $AD (  (V0{b} $NI V1{C1}) $OR (V0{a} $NI V1{C1}) ) )", KB);
 	
   cout << "---Radix Content ---" << endl;  
   for (int i=0; i< KB.size();i++)
@@ -984,6 +1014,8 @@ int main()
   cout << "Vector 3" << endl;
   printVector(*varSet.getVQLAt(3));  
   
+  cout<<"Clash:"<<checkBranchClash(expKB)<<endl;
+
   logFile.close(); 
     
   return 0;
@@ -1032,6 +1064,22 @@ remove recursion
 A more efficient expansion function is required.
 Ensure that a) Vectors on VariableSet are only-read b) coerence of pointer to elements of such vectors.
 */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
   /*
