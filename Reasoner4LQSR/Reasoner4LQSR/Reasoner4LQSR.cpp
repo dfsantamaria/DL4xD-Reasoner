@@ -334,6 +334,7 @@ L3 as DataProperty has type 4
 	 //vector<Var*> quantified;
 	 Atom *atom;
 	 int operand; 
+	 int fulfilled;
 	 Formula *lsubformula;
 	 Formula *rsubformula;
 	 Formula *pformula;
@@ -342,6 +343,7 @@ L3 as DataProperty has type 4
 	   {
 		 setAtom(NULL);
 		 setOperand(-1);
+		 fulfilled = 1;
 		 setLSubformula(NULL);
 		 setRSubformula(NULL);
 		 setPreviousFormula(NULL);
@@ -350,6 +352,7 @@ L3 as DataProperty has type 4
 	 {
 	   setAtom(at);
 	   setOperand(op);
+	   fulfilled = 1;
 	   setLSubformula (NULL);
 	   setRSubformula(NULL);
 	   setPreviousFormula(NULL);	  
@@ -359,7 +362,8 @@ L3 as DataProperty has type 4
 	   setAtom(at);
 	   setOperand(op);
 	   lsubformula = lf;
-	   rsubformula = rf;	  
+	   rsubformula = rf;
+	   fulfilled = 1;
 	   (*lsubformula).setPreviousFormula(this);
 	   (*rsubformula).setPreviousFormula(this);		 
 	 };
@@ -374,6 +378,8 @@ L3 as DataProperty has type 4
 	 void setLSubformula(Formula *sub) { lsubformula = sub; };
 	 void setRSubformula(Formula *sub) { rsubformula = sub; };
 	 void setPreviousFormula(Formula *prev) { pformula = prev; }
+	 void setFulillness(int val) { fulfilled = val; };
+	 int getFulfillness() { return fulfilled; };
 	 ~Formula() {};
 	 string toString()
 	 {		
