@@ -989,23 +989,25 @@ int checkAtomClash(Atom &atom)
 	return 1;
 }
 
-int checkBranchClash(vector<Formula> &formset)
+/*
+   Check for Clash between the given candidate and a vector of formulae starting from the given index
+*/
+int checkVectorClash(Atom* candidate, vector<Formula> &formset, int start)
 {
   #ifdef debug  
-	logFile << "---Checking for Clash in branch" << endl;
+	logFile << "---Checking for Clash in Vector of Formulae" << endl;
   #endif // debug
- for (int i = 0; i < formset.size(); i++)
-	{
-	 if (formset.at(i).getAtom() != NULL) //atomic formula
+ 
+	 if (candidate != NULL) //atomic formula
 	 {
-		 if (checkAtomClash(*formset.at(i).getAtom()) == 0)  // type a != a
+		 if (checkAtomClash(*candidate) == 0)  // type a != a
 		 {
             #ifdef debug  
-			 logFile << "-----Clash at: " << formset.at(i).getAtom()->toString() << endl;
+			 logFile << "-----Clash at: " << candidate->toString() << endl;
             #endif // debug
 			 return 0;
 		 }
-		 for (int j = i + 1; j < formset.size(); j++)
+		 for (int j = start; j < formset.size(); j++)
 		 {
 			 if (formset.at(j).getAtom() != NULL)
 			 {				 
@@ -1016,22 +1018,35 @@ int checkBranchClash(vector<Formula> &formset)
                    #endif // debug
 					 return 0;
 				 }
-				 if (checkAtomClash(*formset.at(i).getAtom(), *formset.at(j).getAtom()) == 0)
+				 if (checkAtomClash(*candidate, *formset.at(j).getAtom()) == 0)
 				 {
                    #ifdef debug  
-					logFile << "-----Clash at: " << formset.at(i).getAtom()->toString() << "," << formset.at(j).getAtom()->toString() << endl;
+					logFile << "-----Clash at: " << candidate->toString() << "," << formset.at(j).getAtom()->toString() << endl;
 				   #endif // debug
 				   return 0;
 				 }
 			 }
 		 }
-	 }
-	}
+	 }	
    #ifdef debug  
-     logFile << "---End Check for Clash in branch" << endl;
+     logFile << "---End Check for Clash in Vector of Formulae" << endl;
     #endif // debug
    return 1;
 }
+
+/*
+  Check for Clash in a Vector of formulae
+*/
+int checkNodeClash(vector<Formula> &formset)
+{
+	for (int i = 0; i < formset.size()-1; i++)
+	{
+		if (checkVectorClash(formset.at(i).getAtom(), formset, i + 1) == 0)
+			return 0;
+    }
+	return 1;
+}
+
 
 int main()
 {    
@@ -1049,8 +1064,9 @@ int main()
   */
     vector<Formula> KB;
 	vector<Formula> expKB;
-	//insertFormulaKB("( ($OA V0{l} $CO V0{j} $AO $IN V3{C333})  $AD (  ($OA V0{k} $CO V0{t} $AO $IN V3{C333}) $OR ($OA V0{s} $CO V0{v} $AO $IN V3{C333}) ) )", KB);
-    insertFormulaKB("($OA V0{l} $CO V0{j} $AO $IN V3{C333})", KB);
+	insertFormulaKB("( ($OA V0{l} $CO V0{j} $AO $IN V3{C333})  $AD (  ($OA V0{k} $CO V0{t} $AO $IN V3{C333}) $OR ($OA V0{s} $CO V0{v} $AO $IN V3{C333}) ) )", KB);
+    insertFormulaKB("(V0{a} $EQ V0{d})", KB);	
+	insertFormulaKB("($OA V0{l} $CO V0{j} $AO $NI V3{C333})", KB);
     insertFormulaKB("($FA V0{z}) ($OA V0{z} $CO V0{z} $AO $NI V3{C333})",KB);
     insertFormulaKB("($FA V0{z1}) ($FA V0{z2}) (V0{z1} $EQ V0{z2})", KB);  
     insertFormulaKB("($FA V0{z3}) ( (V0{z3} $NI V1{C1}) $AD (  (V0{b} $NI V1{C1}) $OR (V0{a} $NI V1{C1}) ) )", KB);
@@ -1068,7 +1084,7 @@ int main()
   expandKB(KB, expKB); 
   
   Tableau tableau = Tableau( new Node (expKB));  
-  cout<<"Clash:"<<checkBranchClash(tableau.getTableau()->getSetFormulae())<<endl;
+  cout<<"Clash:"<<checkNodeClash(tableau.getTableau()->getSetFormulae())<<endl;
   cout << "Content of Expansion:" << endl;
   for (int i = 0; i< tableau.getTableau()->getSetFormulae().size(); i++)
    {
