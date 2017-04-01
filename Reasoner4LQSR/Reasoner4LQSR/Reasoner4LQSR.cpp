@@ -413,7 +413,7 @@ L3 as DataProperty has type 4
  };
 
 
- /*class Node
+ class Node
  {
  private:
 	 vector<Formula> setFormula;
@@ -425,34 +425,38 @@ L3 as DataProperty has type 4
  public:
 	 Node(int size) { setFormula.reserve(size); leftChild = rightChild = father = NULL; };
 	 Node() { leftChild = rightChild = father = NULL; };
-	 Node(vector<Formula>* formula) { setFormula = *formula; leftChild = rightChild = father = NULL; };
+	 Node(vector<Formula>& formula) { setFormula = formula; leftChild = rightChild = father = NULL; };
 	 Node* getLeftChild() { return leftChild; };
 	 Node* getRightChild() { return rightChild; };
 	 Node* getFather() { return father; }
 	 void setRightChild(Node* child) { rightChild = child; };
 	 void setLeftChild(Node* child) { leftChild = child; };
 	 void setFather(Node* f) { father = f; };
-	 void insertFormula(Formula* f) { setFormula.push_back(*f); };
-	 vector<Formula>* getSetFormulae() { return &setFormula; };
-	 void setSetFormulae(vector<Formula> input) { setFormula= (input); };
+	 void insertFormula(Formula& f) { setFormula.push_back(f); };
+	 vector<Formula>& getSetFormulae() { return setFormula; };
+	 void setSetFormulae(vector<Formula>& input) { setFormula= input; };
 	 ~Node() {};
- };*/
+ };
 
 
  /*
     The Tableau.
  */
- /*
+ 
  class Tableau
- {
+  {
    private: Node* radix;
+   private: vector <Node*> openBranches;
+   private: vector <Node*> closedBranches;
    public: 
 	   Tableau(Node* initial) { radix = initial; };
 	   Tableau(int size_radix) { radix = new Node(size_radix); };
 	   Node* getTableau() { return radix; };
-	   int insertFormula(Formula *f) { radix->insertFormula(f);  return 0; };
+	   int insertFormula(Formula &f) { radix->insertFormula(f);  return 0; };
+	   vector<Node*>& getOpenBranches() { return openBranches; };
+	   vector<Node*>& getClosedBranches() { return closedBranches; };
 	   ~Tableau() {};	   
- };*/
+ };
 
 
 /*
@@ -1059,15 +1063,18 @@ int main()
    {
 	 cout << KB.at(i).toString() << endl;		 
    } 
-  
-  expandKB(KB, expKB);   
 
   cout << "Expanding KB" << endl;
-  for (int i = 0; i< expKB.size(); i++)
-  {
-	cout << (expKB.at(i).toString()) << "," << expKB.at(i).getFulfillness()<< endl;
-  }
+  expandKB(KB, expKB); 
   
+  Tableau tableau = Tableau( new Node (expKB));  
+  cout<<"Clash:"<<checkBranchClash(tableau.getTableau()->getSetFormulae())<<endl;
+  cout << "Content of Expansion:" << endl;
+  for (int i = 0; i< tableau.getTableau()->getSetFormulae().size(); i++)
+   {
+	cout << (tableau.getTableau()->getSetFormulae().at(i).toString()) << "," << tableau.getTableau()->getSetFormulae().at(i).getFulfillness()<< endl;
+   }
+
   cout << "Check VVL" << endl;   
   cout << "Vector 0" << endl;
   printVector(*varSet.getVVLAt(0));
@@ -1084,7 +1091,7 @@ int main()
   cout << "Vector 3" << endl;
   printVector(*varSet.getVQLAt(3));  
   
-  cout<<"Clash:"<<checkBranchClash(expKB)<<endl;
+ 
 
   logFile.close(); 
     
