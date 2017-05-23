@@ -448,6 +448,7 @@ L3 as DataProperty has type 4
    private: Node* radix;
    private: vector <Node*> openBranches;
    private: vector <Node*> closedBranches;
+   private: vector < vector < vector <Atom*> > > EqSet;
    public: 
 	   Tableau(Node* initial) { radix = initial; };
 	   Tableau(int size_radix) { radix = new Node(size_radix); };
