@@ -456,6 +456,7 @@ L3 as DataProperty has type 4
 	   int insertFormula(Formula &f) { radix->insertFormula(f);  return 0; };
 	   vector<Node*>& getOpenBranches() { return openBranches; };
 	   vector<Node*>& getClosedBranches() { return closedBranches; };
+	   vector < vector < vector <Atom*> > >& getEqSet() { return EqSet; }
 	   ~Tableau() {};	   
  };
 
