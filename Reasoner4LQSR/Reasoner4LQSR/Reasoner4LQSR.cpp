@@ -979,7 +979,7 @@ int checkAtomClash(Atom &atom1, Atom &atom2)
 	return 1;
 }
 
-int checkAtomClash(Atom &atom)
+int checkAtomClash(Atom &atom) //0 for clash 1 for no-clash
 {	
    #ifdef debug
      #ifdef debugclash
@@ -1049,6 +1049,33 @@ int checkNodeClash(vector<Formula> &formset)
 	return 1;
 }
 
+/*
+   Chech if in the current node there is a formula that makes the entire branch inconsistent
+
+*/
+
+int checkBranchClash(Node* node, Tableau& tableau)
+{
+ #ifdef debug  
+   logFile << "---Checking for Clash in the Current branch" << endl;
+ #endif // debug
+ vector<Formula>local = node->getSetFormulae(); 
+ Node* iterator = node->getFather(); 
+ while (iterator != NULL)
+ {
+  for (int i = 0; i < local.size(); i++)
+   { 	  
+	  Atom* at = local.at(i).getAtom();
+	  if (at != NULL && (checkVectorClash(at, iterator->getSetFormulae(), 0) == 0))
+	  {
+		  (tableau.getClosedBranches()).push_back(node);
+		  return 0;
+	  }
+   }
+  iterator = iterator->getFather();
+ }
+ return 1;
+}
 
 int main()
 {    
@@ -1066,17 +1093,17 @@ int main()
   */
     vector<Formula> KB;
 	vector<Formula> expKB;
-	insertFormulaKB("( ($OA V0{l} $CO V0{j} $AO $IN V3{C333})  $AD (  ($OA V0{k} $CO V0{t} $AO $IN V3{C333}) $OR ($OA V0{s} $CO V0{v} $AO $IN V3{C333}) ) )", KB);
+//	insertFormulaKB("( ($OA V0{l} $CO V0{j} $AO $IN V3{C333})  $AD (  ($OA V0{k} $CO V0{t} $AO $IN V3{C333}) $OR ($OA V0{s} $CO V0{v} $AO $IN V3{C333}) ) )", KB);
     insertFormulaKB("(V0{a} $EQ V0{d})", KB);	
 	insertFormulaKB("($OA V0{l} $CO V0{j} $AO $NI V3{C333})", KB);
     insertFormulaKB("($FA V0{z}) ($OA V0{z} $CO V0{z} $AO $NI V3{C333})",KB);
     insertFormulaKB("($FA V0{z1}) ($FA V0{z2}) (V0{z1} $EQ V0{z2})", KB);  
+	//insertFormulaKB("($OA V0{l} $CO V0{j} $AO $IN V3{C333})", KB);
     insertFormulaKB("($FA V0{z3}) ( (V0{z3} $NI V1{C1}) $AD (  (V0{b} $NI V1{C1}) $OR (V0{a} $NI V1{C1}) ) )", KB);
     insertFormulaKB(" ($FA V0{z8}) ($FA V0{z9}) ( ( (V0{k} $NI V1{l}) $AD  ( ( V0{z8} $NI V1{C1})$OR ( V0{z9} $NI V1{C2}))$AD((  $OA V0{z9} $CO V0{z9} $AO $NI V1{C2})$OR (V0{z9} $IN V1{C2}))))", KB);
     insertFormulaKB("( ( (V0{k} $NI V1{l}) $AD  ( ( V0{l} $NI V1{C1})$OR ( V0{t} $NI V1{C2})) )", KB); 
 	
-	
-  cout << "---Radix Content ---" << endl;  
+cout << "---Radix Content ---" << endl;  
   for (int i=0; i< KB.size();i++)
    {
 	 cout << KB.at(i).toString() << endl;		 
@@ -1109,7 +1136,23 @@ int main()
   cout << "Vector 3" << endl;
   printVector(*varSet.getVQLAt(3));  
   
- 
+
+
+  /*
+     Test Branch clash
+  */
+  vector<Formula> f;
+  string sf= "($OA V0{l} $CO V0{j} $AO $IN V3{C333})";
+  insertFormulaKB(sf, f); 
+  Node* ntest = new Node(f); 
+  tableau.getTableau()->setLeftChild(ntest);
+  ntest->setFather(tableau.getTableau());
+  //cout << ( (ntest->getFather()->getSetFormulae()).at(0).toString() ) << endl;
+  cout << "Clash on Tableau: " << checkBranchClash(tableau.getTableau()->getLeftChild(), tableau) << endl;
+  cout << "Closed Branch contains: "<< tableau.getClosedBranches().at(0)->getSetFormulae().at(0).toString()<< endl;
+  /* End */
+
+
 
   logFile.close(); 
     
@@ -1146,7 +1189,6 @@ that stays for X^1_{ {x_{b_3} }
 /*
 TO DO LIST
 Create doc, in particular UML and separe headers from source.
-insert logging
 USE A MAP to MAP from string representing operator and integer representing operator.
 check brackets; check format of a formula in general as preprocessing and Check if an atom is built correctly.
 define special chars from a config file. Setting the size of the special chars and checking for correctness.
@@ -1158,6 +1200,7 @@ Optimize expandKB
 remove recursion 
 A more efficient expansion function is required.
 Ensure that a) Vectors on VariableSet are only-read b) coerence of pointer to elements of such vectors.
+When checking clash if a check is formed with an element that is not in VVL than an clash is found.
 */
 
 
