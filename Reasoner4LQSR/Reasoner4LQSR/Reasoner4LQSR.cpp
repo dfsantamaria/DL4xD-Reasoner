@@ -429,8 +429,9 @@ L3 as DataProperty has type 4
 	 Node* getLeftChild() { return leftChild; };
 	 Node* getRightChild() { return rightChild; };
 	 Node* getFather() { return father; }
-	 void setRightChild(Node* child) { rightChild = child; };
-	 void setLeftChild(Node* child) { leftChild = child; };
+	 void setRightChild(Node* child) {		 rightChild = child; child->setFather(this) ;
+	 };
+	 void setLeftChild(Node* child) { leftChild = child; child->setFather(this); };
 	 void setFather(Node* f) { father = f; };
 	 void insertFormula(Formula& f) { setFormula.push_back(f); };
 	 vector<Formula>& getSetFormulae() { return setFormula; };
@@ -1149,7 +1150,8 @@ cout << "---Radix Content ---" << endl;
   ntest->setFather(tableau.getTableau());
   //cout << ( (ntest->getFather()->getSetFormulae()).at(0).toString() ) << endl;
   cout << "Clash on Tableau: " << checkBranchClash(tableau.getTableau()->getLeftChild(), tableau) << endl;
-  cout << "Closed Branch contains: "<< tableau.getClosedBranches().at(0)->getSetFormulae().at(0).toString()<< endl;
+  if(tableau.getClosedBranches().size()>0)
+   cout << "Closed Branch contains: "<< tableau.getClosedBranches().at(0)->getSetFormulae().at(0).toString()<< endl;
   /* End */
 
 
