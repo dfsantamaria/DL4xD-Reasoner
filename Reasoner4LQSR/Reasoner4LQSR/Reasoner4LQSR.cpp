@@ -1078,6 +1078,48 @@ int checkBranchClash(Node* node, Tableau& tableau)
  return 1;
 }
 
+
+void expandTableau(Tableau T)
+{	
+  vector<Node*> nonComBranches = vector<Node*>();
+  nonComBranches.push_back(T.getTableau()); //initially only the root node
+  vector<Formula> fset = T.getTableau()->getSetFormulae();
+  for (int i = 0; i < fset.size(); i++)
+   {
+	  if (fset.at(i).getOperand() == operators.getLogOpValue("$OR"))
+	  {
+
+	  }
+
+   }
+}
+
+/*
+   Return the set of atomic formula contained in a formula.
+*/
+
+void getAtomSet(Formula &f, vector<Atom*> &outf)
+{
+	if (f.getAtom() != NULL)
+		return;
+	stack <Formula*> st;
+	st.push(f.getRSubformula());
+	st.push(f.getLSubformula());	
+	while (!st.empty())
+	{
+		Formula* tmp = st.top();
+		if (tmp->getAtom() != NULL)
+			outf.push_back(tmp->getAtom());                       //There should be only OR because of CNF formula		
+		st.pop();
+		if(tmp->getRSubformula()!=NULL)
+		 st.push(tmp->getRSubformula());
+		if (tmp->getLSubformula() != NULL)
+		 st.push(tmp->getLSubformula());
+	}
+
+}
+
+
 int main()
 {    
   #ifdef debug  
@@ -1140,8 +1182,25 @@ cout << "---Radix Content ---" << endl;
 
 
   /*
+     Test GetAtomSet
+  */
+   /*
+  vector<Formula> f;
+  vector<Atom*> at;
+  string sf = "( ($OA V0{l} $CO V0{j} $AO $IN V3{C333}) $OR ($OA V0{d} $CO V0{f} $AO $IN V3{C333}) )";
+  insertFormulaKB(sf, f);
+  cout << f.at(0).toString() << endl;
+  getAtomSet(f.at(0), at);
+  for (int i = 0; i < at.size(); i++)
+	  cout << at.at(i)->toString() << endl;
+
+  */
+
+  /*
      Test Branch clash
   */
+
+  /*
   vector<Formula> f;
   string sf= "($OA V0{l} $CO V0{j} $AO $IN V3{C333})";
   insertFormulaKB(sf, f); 
@@ -1152,7 +1211,8 @@ cout << "---Radix Content ---" << endl;
   cout << "Clash on Tableau: " << checkBranchClash(tableau.getTableau()->getLeftChild(), tableau) << endl;
   if(tableau.getClosedBranches().size()>0)
    cout << "Closed Branch contains: "<< tableau.getClosedBranches().at(0)->getSetFormulae().at(0).toString()<< endl;
-  /* End */
+  
+  End */
 
 
 
