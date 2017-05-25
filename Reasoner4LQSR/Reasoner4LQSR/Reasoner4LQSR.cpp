@@ -1123,13 +1123,13 @@ void expandTableau(Tableau& T)
 		{
 			vector<Atom*> atomset;
 			getAtomSet(fset.at(i), atomset);
-			
 			vector<Atom*> atoms;
 			for (int j = 0; j < atomset.size(); j++)
 			{
 				if (checkVectorClash(atomset.at(j), fset, 0) == 1)            //looking for non-clashing atoms.
 					atoms.push_back(atomset.at(j));
 			}
+			atomset.clear();
 			cout << atoms.size() << endl;
 			switch (atoms.size())
 			{
@@ -1173,7 +1173,7 @@ int main()
     insertFormulaKB(" ($FA V0{z8}) ($FA V0{z9}) ( ( (V0{k} $NI V1{l}) $AD  ( ( V0{z8} $NI V1{C1})$OR ( V0{z9} $NI V1{C2}))$AD((  $OA V0{z9} $CO V0{z9} $AO $NI V1{C2})$OR (V0{z9} $IN V1{C2}))))", KB);
 */  
 	insertFormulaKB("( ( (V0{k} $NI V1{l}) $AD  ( ( V0{l} $NI V1{C1})$OR ( V0{t} $NI V1{C2})) )", KB); 
-	insertFormulaKB("( V0{l} $IN V1{C1})", KB);	
+	//insertFormulaKB("( V0{l} $IN V1{C1})", KB);	
 	//insertFormulaKB("(V0{ t } $IN V1{ C2 })", KB);
     cout << "---Radix Content ---" << endl;  
   for (int i=0; i< KB.size();i++)
