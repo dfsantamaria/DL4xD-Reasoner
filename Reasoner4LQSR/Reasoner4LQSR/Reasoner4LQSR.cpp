@@ -1079,20 +1079,7 @@ int checkBranchClash(Node* node, Tableau& tableau)
 }
 
 
-void expandTableau(Tableau T)
-{	
-  vector<Node*> nonComBranches = vector<Node*>();
-  nonComBranches.push_back(T.getTableau()); //initially only the root node
-  vector<Formula> fset = T.getTableau()->getSetFormulae();
-  for (int i = 0; i < fset.size(); i++)
-   {
-	  if (fset.at(i).getOperand() == operators.getLogOpValue("$OR"))
-	  {
 
-	  }
-
-   }
-}
 
 /*
    Return the set of atomic formula contained in a formula.
@@ -1115,10 +1102,48 @@ void getAtomSet(Formula &f, vector<Atom*> &outf)
 		 st.push(tmp->getRSubformula());
 		if (tmp->getLSubformula() != NULL)
 		 st.push(tmp->getLSubformula());
-	}
-
+	}	
 }
 
+void closeTableauRoot(Tableau& T)
+{
+	T.getOpenBranches().clear();
+	T.getClosedBranches().clear();
+	T.getClosedBranches().push_back(T.getTableau());
+}
+
+void expandTableau(Tableau& T)
+{
+	vector<Node*> nonComBranches = vector<Node*>();
+	nonComBranches.push_back(T.getTableau()); //initially only the root node
+	vector<Formula> fset = T.getTableau()->getSetFormulae();	
+	for (int i = 0; i < fset.size(); i++)
+	{		
+		if (fset.at(i).getAtom() == NULL)
+		{
+			vector<Atom*> atomset;
+			getAtomSet(fset.at(i), atomset);
+			
+			vector<Atom*> atoms;
+			for (int j = 0; j < atomset.size(); j++)
+			{
+				if (checkVectorClash(atomset.at(j), fset, 0) == 1)            //looking for non-clashing atoms.
+					atoms.push_back(atomset.at(j));
+			}
+			cout << atoms.size() << endl;
+			switch (atoms.size())
+			{
+			case 0:
+			{
+				closeTableauRoot(T);
+				return; break;                                                     //case tableau closed on root. 			      
+			}
+			case 1: break;                           //case of ERULE
+			default: break;                          //case of PBRULE
+			}
+		}
+	}
+}
 
 int main()
 {    
@@ -1137,16 +1162,20 @@ int main()
     vector<Formula> KB;
 	vector<Formula> expKB;
 //	insertFormulaKB("( ($OA V0{l} $CO V0{j} $AO $IN V3{C333})  $AD (  ($OA V0{k} $CO V0{t} $AO $IN V3{C333}) $OR ($OA V0{s} $CO V0{v} $AO $IN V3{C333}) ) )", KB);
-    insertFormulaKB("(V0{a} $EQ V0{d})", KB);	
+
+
+ /*   insertFormulaKB("(V0{a} $EQ V0{d})", KB);	
 	insertFormulaKB("($OA V0{l} $CO V0{j} $AO $NI V3{C333})", KB);
     insertFormulaKB("($FA V0{z}) ($OA V0{z} $CO V0{z} $AO $NI V3{C333})",KB);
     insertFormulaKB("($FA V0{z1}) ($FA V0{z2}) (V0{z1} $EQ V0{z2})", KB);  
 	//insertFormulaKB("($OA V0{l} $CO V0{j} $AO $IN V3{C333})", KB);
     insertFormulaKB("($FA V0{z3}) ( (V0{z3} $NI V1{C1}) $AD (  (V0{b} $NI V1{C1}) $OR (V0{a} $NI V1{C1}) ) )", KB);
     insertFormulaKB(" ($FA V0{z8}) ($FA V0{z9}) ( ( (V0{k} $NI V1{l}) $AD  ( ( V0{z8} $NI V1{C1})$OR ( V0{z9} $NI V1{C2}))$AD((  $OA V0{z9} $CO V0{z9} $AO $NI V1{C2})$OR (V0{z9} $IN V1{C2}))))", KB);
-    insertFormulaKB("( ( (V0{k} $NI V1{l}) $AD  ( ( V0{l} $NI V1{C1})$OR ( V0{t} $NI V1{C2})) )", KB); 
-	
-cout << "---Radix Content ---" << endl;  
+*/  
+	insertFormulaKB("( ( (V0{k} $NI V1{l}) $AD  ( ( V0{l} $NI V1{C1})$OR ( V0{t} $NI V1{C2})) )", KB); 
+	insertFormulaKB("( V0{l} $IN V1{C1})", KB);	
+	//insertFormulaKB("(V0{ t } $IN V1{ C2 })", KB);
+    cout << "---Radix Content ---" << endl;  
   for (int i=0; i< KB.size();i++)
    {
 	 cout << KB.at(i).toString() << endl;		 
@@ -1179,8 +1208,16 @@ cout << "---Radix Content ---" << endl;
   cout << "Vector 3" << endl;
   printVector(*varSet.getVQLAt(3));  
   
+  cout << "Expanding Tableau" << endl;
+  expandTableau(tableau);
+
+  /*for (int i = 0; i < tableau.getClosedBranches().size(); i++)
+  {
+	  cout << tableau.getClosedBranches().at(0)->getSetFormulae().at(0).toString() << endl;
+  }*/
 
 
+  
   /*
      Test GetAtomSet
   */
