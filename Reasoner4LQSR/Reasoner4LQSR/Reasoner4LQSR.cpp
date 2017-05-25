@@ -1112,6 +1112,20 @@ void closeTableauRoot(Tableau& T)
 	T.getClosedBranches().push_back(T.getTableau());
 }
 
+
+void ERule(Atom* atom, Tableau &t, vector <Node*> node)
+{
+  
+
+}
+
+void PBRule(vector<Atom*> atoms, Tableau &t, vector<Node*> node)
+{
+
+
+}
+
+
 void expandTableau(Tableau& T)
 {
 	vector<Node*> nonComBranches = vector<Node*>();
@@ -1138,8 +1152,8 @@ void expandTableau(Tableau& T)
 				closeTableauRoot(T);
 				return; break;                                                     //case tableau closed on root. 			      
 			}
-			case 1: break;                           //case of ERULE
-			default: break;                          //case of PBRULE
+			case 1:  { ERule(atomset.at(0), T, nonComBranches); break; }                           //case of ERULE
+			default: { PBRule(atomset, T, nonComBranches); break; }                             //case of PBRULE
 			}
 		}
 	}
