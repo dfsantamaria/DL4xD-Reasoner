@@ -12,10 +12,10 @@
 #include <sstream>
 
 using namespace std;
-//#define debug                   //debug istructions
-//#define debugclash              //debug istructions for clash checking
-//#define debugexpand             //debug istructions for expansion rule
-//#define debuginsertf            //debug istructions for internal formula translation
+#define debug                   //debug istructions
+#define debugclash              //debug istructions for clash checking
+#define debugexpand             //debug istructions for expansion rule
+#define debuginsertf            //debug istructions for internal formula translation
 
 std::ofstream logFile("LOG.log");   //log file
 
@@ -458,6 +458,7 @@ L3 as DataProperty has type 4
 	   vector<Node*>& getOpenBranches() { return openBranches; };
 	   vector<Node*>& getClosedBranches() { return closedBranches; };
 	   vector < vector < vector <Atom*> > >& getEqSet() { return EqSet; }
+	   void addClosedBranch(Node* node) { getClosedBranches().push_back(node); }
 	   ~Tableau() {};	   
  };
 
@@ -1050,6 +1051,9 @@ int checkNodeClash(vector<Formula> &formset)
 	return 1;
 }
 
+
+
+
 /*
    Chech if in the current node there is a formula that makes the entire branch inconsistent
 
@@ -1069,7 +1073,12 @@ int checkBranchClash(Node* node, Tableau& tableau)
 	  Atom* at = local.at(i).getAtom();
 	  if (at != NULL && (checkVectorClash(at, iterator->getSetFormulae(), 0) == 0))
 	  {
-		  (tableau.getClosedBranches()).push_back(node);
+         #ifdef debug
+         #ifdef debugclash
+		      logFile << "----- Adding Closed Branch to Tableau" << endl;
+          #endif
+         #endif // debug
+		  (tableau.addClosedBranch(node));
 		  return 0;
 	  }
    }
@@ -1107,22 +1116,57 @@ void getAtomSet(Formula &f, vector<Atom*> &outf)
 
 void closeTableauRoot(Tableau& T)
 {
+   #ifdef debug
+   #ifdef debugclash
+  	 logFile << "-----Closed Tableau Found on Tableau Expansion "  << endl;
+   #endif
+   #endif // debug
 	T.getOpenBranches().clear();
 	T.getClosedBranches().clear();
 	T.getClosedBranches().push_back(T.getTableau());
 }
 
 
-void ERule(Atom* atom, Tableau &t, vector <Node*> node)
+Atom* negatedAtom(Atom *input)
 {
-  
+  Atom* out=copyAtom( input, NULL, NULL);
+  int neg = (out->getAtomOp() >= 2 ? -2 : 2);  
+  out->setAtomOp( out->getAtomOp() + neg );
+  return out;
+}
 
+void ERule(Atom* atom, vector <Node*> &node)
+{
+   #ifdef debug  
+	 logFile << "---Applying E-RULE" << endl;
+   #endif // debug		
+   
+   #ifdef debug  
+   #ifdef debugexpand
+      logFile << "----- Computing Atom from E-Rule: " << negatedAtom(atom)->toString() << endl;
+    #endif
+   #endif // debug
+   for(int i=0; i<node.size(); i++)
+     node.at(i)->insertFormula( *(new Formula(negatedAtom(atom), -1)));
 }
 
 void PBRule(vector<Atom*> atoms, Tableau &t, vector<Node*> node)
 {
 
 
+}
+
+
+void checkBranchesClash(vector<Node*> &noncomb, Tableau &T)
+{
+	vector<int> shdelete;
+	for (int i = 0; i < noncomb.size(); i++)
+	{
+		if (checkBranchClash(noncomb.at(i), T)==0)
+			shdelete.push_back(i);
+	}
+	for (int i = 0; i < shdelete.size(); i++)
+	 noncomb.erase(noncomb.begin() + i);	
 }
 
 
@@ -1143,8 +1187,7 @@ void expandTableau(Tableau& T)
 				if (checkVectorClash(atomset.at(j), fset, 0) == 1)            //looking for non-clashing atoms.
 					atoms.push_back(atomset.at(j));
 			}
-			atomset.clear();
-			cout << atoms.size() << endl;
+			atomset.clear();			
 			switch (atoms.size())
 			{
 			case 0:
@@ -1152,7 +1195,12 @@ void expandTableau(Tableau& T)
 				closeTableauRoot(T);
 				return; break;                                                     //case tableau closed on root. 			      
 			}
-			case 1:  { ERule(atomset.at(0), T, nonComBranches); break; }                           //case of ERULE
+			case 1:  {  //case of ERULE
+				ERule(atoms.at(0), nonComBranches); 
+				checkBranchesClash(nonComBranches, T);
+				break;
+				
+			}                          
 			default: { PBRule(atomset, T, nonComBranches); break; }                             //case of PBRULE
 			}
 		}
@@ -1199,11 +1247,13 @@ int main()
   expandKB(KB, expKB); 
   
   Tableau tableau = Tableau( new Node (expKB));  
-  cout<<"Clash:"<<checkNodeClash(tableau.getTableau()->getSetFormulae())<<endl;
+  cout<<"Clash before tableau expansion:"<<checkNodeClash(tableau.getTableau()->getSetFormulae())<<endl;
   cout << "Content of Expansion:" << endl;
+
+
   for (int i = 0; i< tableau.getTableau()->getSetFormulae().size(); i++)
    {
-	cout << (tableau.getTableau()->getSetFormulae().at(i).toString()) << "," << tableau.getTableau()->getSetFormulae().at(i).getFulfillness()<< endl;
+	 cout << (tableau.getTableau()->getSetFormulae().at(i).toString()) << "," << tableau.getTableau()->getSetFormulae().at(i).getFulfillness()<< endl;
    }
 
   cout << "Check VVL" << endl;   
@@ -1225,13 +1275,24 @@ int main()
   cout << "Expanding Tableau" << endl;
   expandTableau(tableau);
 
-  /*for (int i = 0; i < tableau.getClosedBranches().size(); i++)
+  for (int i = 0; i < tableau.getClosedBranches().size(); i++)
   {
-	  cout << tableau.getClosedBranches().at(0)->getSetFormulae().at(0).toString() << endl;
-  }*/
+	  cout << tableau.getClosedBranches().at(0)->getSetFormulae().at(i).toString() << endl;
+  }
 
+  /*
+     Test Negated Atom
+  */
 
-  
+  /*
+  Var b1("monastero", 0, 0);
+  Var x("livello", 0, 0); 
+  Var h("haLivello", 3, 0);  
+  Atom* atom = new Atom(3, { &h,&b1,&x });
+  Atom* atom2 = negatedAtom(atom);
+  cout << atom->toString() << endl;
+  cout << atom2->toString() << endl;
+  */
   /*
      Test GetAtomSet
   */
@@ -1243,7 +1304,7 @@ int main()
   cout << f.at(0).toString() << endl;
   getAtomSet(f.at(0), at);
   for (int i = 0; i < at.size(); i++)
-	  cout << at.at(i)->toString() << endl;
+	 cout << at.at(i)->toString() << endl;
 
   */
 
