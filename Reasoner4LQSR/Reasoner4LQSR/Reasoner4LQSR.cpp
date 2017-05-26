@@ -434,8 +434,7 @@ private:
 				{
 					int j = 0;
 					for (; j < locAt->getElements().size(); j++)
-					{
-						cout << "wee" << j << endl;
+					{						
 						if (locAt->getElementAt(j)->equal(F.getAtom()->getElementAt(j)) != 0)
 							break;
 					}
@@ -1264,8 +1263,7 @@ void chooseRule(Tableau &T, vector<Node*> &nodeSet, Formula &f)
 		for (int j = 0; j < atomset.size(); j++)
 		{
 			if (checkBranchClash(atomset.at(j), nodeSet.at(b)) == 1)
-			{
-				cout << "---" << atomset.at(j)->toString() << endl;
+			{				
 				atoms.push_back(atomset.at(j));
 			}
 		}
@@ -1357,8 +1355,8 @@ int main()
 	//	insertFormulaKB("( ( V0{l} $EQ V0{x}) $OR  ( V0{l} $QE V0{x})  )", KB);
 	insertFormulaKB("( ( V0{l} $NI V1{C1}) $OR ( ( V0{t} $NI V1{C2}) $OR ( V0{x} $NI V1{C2}) ) )", KB);
 	//insertFormulaKB("( ( V0{l} $NI V1{C1}) $OR  ( V0{x} $NI V1{C2}) ) ", KB);
-		insertFormulaKB("( V0{l} $IN V1{C1})", KB);	
-	//	insertFormulaKB("(V0{ t } $IN V1{ C2 })", KB);
+	//	insertFormulaKB("( V0{l} $IN V1{C1})", KB);	
+		insertFormulaKB("(V0{ t } $IN V1{ C2 })", KB);
 	cout << "---Radix Content ---" << endl;
 	for (int i = 0; i< KB.size(); i++)
 	{
