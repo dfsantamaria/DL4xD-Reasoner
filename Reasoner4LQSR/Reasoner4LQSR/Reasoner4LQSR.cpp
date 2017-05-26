@@ -1135,7 +1135,7 @@ Atom* negatedAtom(Atom *input)
   return out;
 }
 
-void ERule(Atom* atom, vector <Node*> &node)
+void ERule(Atom* atom, Node* node)
 {
    #ifdef debug  
 	 logFile << "---Applying E-RULE" << endl;
@@ -1143,32 +1143,83 @@ void ERule(Atom* atom, vector <Node*> &node)
    
    #ifdef debug  
    #ifdef debugexpand
-      logFile << "----- Computing Atom from E-Rule: " << negatedAtom(atom)->toString() << endl;
+      logFile << "----- Computing Atom from E-Rule: " << copyAtom(atom,NULL,NULL)->toString() << endl;
     #endif
    #endif // debug
-   for(int i=0; i<node.size(); i++)
-     node.at(i)->insertFormula( *(new Formula(negatedAtom(atom), -1)));
+   
+   node->insertFormula( *(new Formula(copyAtom(atom, NULL, NULL), -1)));
 }
 
-void PBRule(vector<Atom*> atoms, Tableau &t, vector<Node*> node)
+void PBRule(vector<Atom*> atoms, Node* node, vector<Node*> &nodeSet)
 {
-
-
+	Node* tmp = node;
+	vector<Node*> newNodeSet;
+	for (int i = 0; i < atoms.size()-1; i++)
+  	 {		
+        tmp->setLeftChild(new Node(vector<Formula> {*(new Formula(copyAtom(atoms.at(i), NULL, NULL), -1))}));
+		newNodeSet.push_back(tmp->getLeftChild());
+		tmp->setRightChild(new Node(vector<Formula> {*(new Formula(negatedAtom(atoms.at(i)), -1))}));
+		tmp = tmp->getRightChild();
+	 }
+	tmp->insertFormula(*(new Formula(copyAtom(atoms.at(atoms.size() - 1), NULL, NULL), -1)));
+	newNodeSet.push_back(tmp);
+	nodeSet.insert(nodeSet.end(), newNodeSet.begin(), newNodeSet.end());
 }
 
 
-void checkBranchesClash(vector<Node*> &noncomb, Tableau &T)
-{
-	vector<int> shdelete;
-	for (int i = 0; i < noncomb.size(); i++)
+int checkBranchClash(Atom* atom, Node* node)
+{	
+	Node* iterator = node;
+	while (iterator != NULL)
 	{
-		if (checkBranchClash(noncomb.at(i), T)==0)
-			shdelete.push_back(i);
+	 vector<Formula>local = node->getSetFormulae();
+	 for (int i = 0; i < local.size(); i++)
+		{			
+		 if ( (checkVectorClash(atom, iterator->getSetFormulae(), 0) == 0))
+			return 0;			
+		}
+		iterator = iterator->getFather();
 	}
-	for (int i = 0; i < shdelete.size(); i++)
-	 noncomb.erase(noncomb.begin() + i);	
+	return 1;
 }
 
+
+void chooseRule(Tableau &T, vector<Node*> &nodeSet, Formula &f)
+{
+	vector<Node*> newNodeSet;	
+	for (int b = 0; b < nodeSet.size(); b++)
+	{
+	  vector<Atom*> atomset;
+	  getAtomSet(f, atomset);
+	  vector<Atom*> atoms;
+	  for (int j = 0; j < atomset.size(); j++)
+		{
+		  if (checkBranchClash(atomset.at(j), nodeSet.at(b)) == 1)
+			atoms.push_back(atomset.at(j));
+		}	  
+	  switch (atoms.size())
+	    {
+	      case 0:       //case closed branch. 
+	        {
+		      T.getClosedBranches().push_back(nodeSet.at(b));
+		      break;                                                     			      
+	         }
+	       case 1:  //case of ERULE	
+		     {  
+			   ERule(atoms.at(0), nodeSet.at(b));
+			   newNodeSet.push_back(nodeSet.at(b));   
+		       break;
+		     }
+	       default:  //case of PBRULE
+		   { 
+			   PBRule(atomset, nodeSet.at(b), newNodeSet);
+			   break; 
+		   }                            
+	    }
+
+	}
+	nodeSet = newNodeSet;
+}
 
 void expandTableau(Tableau& T)
 {
@@ -1177,34 +1228,12 @@ void expandTableau(Tableau& T)
 	vector<Formula> fset = T.getTableau()->getSetFormulae();	
 	for (int i = 0; i < fset.size(); i++)
 	{		
-		if (fset.at(i).getAtom() == NULL)
+		if (fset.at(i).getAtom() == NULL)  //OR found
 		{
-			vector<Atom*> atomset;
-			getAtomSet(fset.at(i), atomset);
-			vector<Atom*> atoms;
-			for (int j = 0; j < atomset.size(); j++)
-			{
-				if (checkVectorClash(atomset.at(j), fset, 0) == 1)            //looking for non-clashing atoms.
-					atoms.push_back(atomset.at(j));
-			}
-			atomset.clear();			
-			switch (atoms.size())
-			{
-			case 0:
-			{
-				closeTableauRoot(T);
-				return; break;                                                     //case tableau closed on root. 			      
-			}
-			case 1:  {  //case of ERULE
-				ERule(atoms.at(0), nonComBranches); 
-				checkBranchesClash(nonComBranches, T);
-				break;
-				
-			}                          
-			default: { PBRule(atomset, T, nonComBranches); break; }                             //case of PBRULE
-			}
+		  chooseRule(T, nonComBranches, fset.at(i));
 		}
 	}
+	T.getOpenBranches() = nonComBranches;
 }
 
 int main()
@@ -1233,10 +1262,11 @@ int main()
 	//insertFormulaKB("($OA V0{l} $CO V0{j} $AO $IN V3{C333})", KB);
     insertFormulaKB("($FA V0{z3}) ( (V0{z3} $NI V1{C1}) $AD (  (V0{b} $NI V1{C1}) $OR (V0{a} $NI V1{C1}) ) )", KB);
     insertFormulaKB(" ($FA V0{z8}) ($FA V0{z9}) ( ( (V0{k} $NI V1{l}) $AD  ( ( V0{z8} $NI V1{C1})$OR ( V0{z9} $NI V1{C2}))$AD((  $OA V0{z9} $CO V0{z9} $AO $NI V1{C2})$OR (V0{z9} $IN V1{C2}))))", KB);
-*/  
-	insertFormulaKB("( ( (V0{k} $NI V1{l}) $AD  ( ( V0{l} $NI V1{C1})$OR ( V0{t} $NI V1{C2})) )", KB); 
-	//insertFormulaKB("( V0{l} $IN V1{C1})", KB);	
-	//insertFormulaKB("(V0{ t } $IN V1{ C2 })", KB);
+	insertFormulaKB("( ( (V0{k} $NI V1{l}) $AD  ( ( V0{l} $NI V1{C1})$OR ( V0{t} $NI V1{C2})) )", KB);
+	*/  
+	insertFormulaKB("( ( V0{l} $NI V1{C1})$OR ( V0{t} $NI V1{C2}) )", KB); 
+	//insertFormulaKB("( V0{l} $NI V1{C1})", KB);	
+	//insertFormulaKB("(V0{ t } $NI V1{ C2 })", KB);
     cout << "---Radix Content ---" << endl;  
   for (int i=0; i< KB.size();i++)
    {
@@ -1275,9 +1305,18 @@ int main()
   cout << "Expanding Tableau" << endl;
   expandTableau(tableau);
 
-  for (int i = 0; i < tableau.getClosedBranches().size(); i++)
+  cout << "Printing open branches" << endl;
+  for (int i = 0; i < tableau.getOpenBranches().size(); i++)
   {
-	  cout << tableau.getClosedBranches().at(0)->getSetFormulae().at(i).toString() << endl;
+	  cout << "Branch: " << i << endl;
+	  Node* tmp = tableau.getOpenBranches().at(i);
+	  while (tmp != NULL)
+	   {
+		  for (int j = 0; j < tmp->getSetFormulae().size(); j++)
+			  cout << tmp->getSetFormulae().at(j).toString() << endl;
+		  tmp = tmp->getFather();
+	   } 
+		 
   }
 
   /*
