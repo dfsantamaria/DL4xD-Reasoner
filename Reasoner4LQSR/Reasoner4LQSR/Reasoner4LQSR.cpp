@@ -422,6 +422,31 @@ L3 as DataProperty has type 4
 	 Node* father;
 	 //flag di fullfilled
 	 //flag di completeness
+	 int containsFormula(Formula &F) //to be completed and performed
+	 {
+		
+		 for (int i = 0; i < this->getSetFormulae().size(); i++)
+		 {  			
+			 Atom* locAt = this->getSetFormulae().at(i).getAtom(); 
+			 if ( locAt != NULL && F.getAtom()!=NULL)
+			 {
+				 if (locAt->getElements().size() == F.getAtom()->getElements().size())
+				 {
+					 int j = 0;
+					 for (; j < locAt->getElements().size(); j++)
+					 {
+						 cout << "wee" << j<< endl;
+						 if (locAt->getElementAt(j)->equal(F.getAtom()->getElementAt(j)) != 0)
+							 break;
+					 }
+					 if (j == locAt->getElements().size())
+						 return 0;
+				 }
+			 }
+			 
+		 }
+         return 1;
+	  }
  public:
 	 Node(int size) { setFormula.reserve(size); leftChild = rightChild = father = NULL; };
 	 Node() { leftChild = rightChild = father = NULL; };
@@ -432,7 +457,11 @@ L3 as DataProperty has type 4
 	 void setRightChild(Node* child) { rightChild = child; child->setFather(this) ; };
 	 void setLeftChild(Node* child) { leftChild = child; child->setFather(this); };
 	 void setFather(Node* f) { father = f; };
-	 void insertFormula(Formula& f) { setFormula.push_back(f); };
+	 void insertFormula(Formula& f)
+	 {
+		 if(this->containsFormula(f)==1)
+		   setFormula.push_back(f); 
+	 };
 	 vector<Formula>& getSetFormulae() { return setFormula; };
 	 void setSetFormulae(vector<Formula>& input) { setFormula= input; };
 	 ~Node() {};
@@ -1322,8 +1351,8 @@ int main()
 	insertFormulaKB("( ( (V0{k} $NI V1{l}) $AD  ( ( V0{l} $NI V1{C1})$OR ( V0{t} $NI V1{C2})) )", KB);
 	*/  
 
-	insertFormulaKB("( ( V0{l} $EQ V0{x}) $OR  ( V0{l} $QE V0{x})  )", KB);
-//	insertFormulaKB("( ( V0{l} $NI V1{C1}) $OR ( ( V0{t} $NI V1{C2}) $OR ( V0{x} $NI V1{C2}) ) )", KB);
+//	insertFormulaKB("( ( V0{l} $EQ V0{x}) $OR  ( V0{l} $QE V0{x})  )", KB);
+	insertFormulaKB("( ( V0{l} $NI V1{C1}) $OR ( ( V0{t} $NI V1{C2}) $OR ( V0{x} $NI V1{C2}) ) )", KB);
 //	insertFormulaKB("( ( V0{l} $NI V1{C1}) $OR  ( V0{x} $NI V1{C2}) ) ", KB);
 //	insertFormulaKB("( V0{l} $NI V1{C1})", KB);	
 //	insertFormulaKB("(V0{ t } $IN V1{ C2 })", KB);
