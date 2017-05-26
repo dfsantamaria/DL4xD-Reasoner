@@ -1204,7 +1204,6 @@ void PBRule(vector<Atom*> atoms, Node* node, vector<Node*> &nodeSet)
 	{
 		cout << copyAtom(atoms.at(i), NULL, NULL)->toString() << endl;
 		cout << negatedAtom(atoms.at(i))->toString() << endl;
-
 		Atom* neg = negatedAtom(atoms.at(i));		
 	    tmp->setLeftChild(new Node(vector<Formula> {*(new Formula(copyAtom(atoms.at(i), NULL, NULL), -1))}));
 	    newNodeSet.push_back(tmp->getLeftChild());
@@ -1228,12 +1227,11 @@ void chooseRule(Tableau &T, vector<Node*> &nodeSet, Formula &f)
 	  vector<Atom*> atoms;
 	  vector<Atom*> atomset;
 	  getAtomSet(f, atomset);
-	  if (checkAtomsClash(atomset))
-	  {
-		  cout << "   " << endl;
+	/*  if (checkAtomsClash(atomset))
+	  {		  
 		  T.getClosedBranches().push_back(nodeSet.at(b));
 		  break;
-	  }
+	  } */
 	  for (int j = 0; j < atomset.size(); j++)
 		{
 		  if (checkBranchClash(atomset.at(j), nodeSet.at(b)) == 1)
@@ -1253,7 +1251,7 @@ void chooseRule(Tableau &T, vector<Node*> &nodeSet, Formula &f)
 		       break;
 		     }
 	       default:  //case of PBRULE
-		   { 
+		   {  
 			   PBRule(atomset, nodeSet.at(b), newNodeSet);
 			   break; 
 		   }                            
@@ -1282,8 +1280,8 @@ void expandTableau(Tableau& T)
 
 int checkTableauRootClash(Tableau &T)
 {
-	if(checkNodeClash (T.getTableau()->getSetFormulae())==1)
-		for (int i = 0; i < T.getTableau()->getSetFormulae().size(); i++)
+	return (checkNodeClash(T.getTableau()->getSetFormulae()) == 1);
+	/*	for (int i = 0; i < T.getTableau()->getSetFormulae().size(); i++)
 		{
 			vector<Atom*> atomset;
 			getAtomSet(T.getTableau()->getSetFormulae().at(i), atomset);
@@ -1292,7 +1290,7 @@ int checkTableauRootClash(Tableau &T)
 				return 0;
 			}
 		}	
-	return 1;
+	return 1; */
 }
 
 int main()
@@ -1363,16 +1361,11 @@ int main()
   cout << "Vector 3" << endl;
   printVector(*varSet.getVQLAt(3));  
 
-  cout << "Clash before tableau expansion."<< endl;
-  if (checkTableauRootClash(tableau) == 1)
-  {
-	  cout << "Expanding Tableau" << endl;
-	  expandTableau(tableau);
-  } 
-  else
-  {
-	  tableau.getClosedBranches().push_back(tableau.getTableau());
-  }
+  cout << "Clash before tableau expansion:" << checkNodeClash(tableau.getTableau()->getSetFormulae()) << endl;
+  
+  cout << "Expanding Tableau" << endl;
+  expandTableau(tableau);
+  
  
   cout << "Printing open branches" << endl;
   for (int i = 0; i < tableau.getOpenBranches().size(); i++)
