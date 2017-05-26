@@ -429,8 +429,7 @@ L3 as DataProperty has type 4
 	 Node* getLeftChild() { return leftChild; };
 	 Node* getRightChild() { return rightChild; };
 	 Node* getFather() { return father; }
-	 void setRightChild(Node* child) {		 rightChild = child; child->setFather(this) ;
-	 };
+	 void setRightChild(Node* child) { rightChild = child; child->setFather(this) ; };
 	 void setLeftChild(Node* child) { leftChild = child; child->setFather(this); };
 	 void setFather(Node* f) { father = f; };
 	 void insertFormula(Formula& f) { setFormula.push_back(f); };
@@ -954,7 +953,7 @@ int expandKB(const vector<Formula> &inpf, vector <Formula> &out)
 
 int checkAtomOpClash(int op1, int op2)
 {
-	if (abs(op1 - op2) == 2)
+	if (abs(op1 - op2) == 2) 
 		return 0;
 	return 1;
 }
@@ -992,6 +991,23 @@ int checkAtomClash(Atom &atom) //0 for clash 1 for no-clash
 		return 0;
 	return 1;
 }
+
+int checkAtomsClash(vector<Atom*> &vec)
+{
+
+	for(int i=0; i<vec.size()-1;i++)
+	{
+       #ifdef debug 
+        #ifdef debugclash
+	         logFile << "-----Checking for Clash: " << vec.at(i)->toString() << " and " << vec.at(i+1)->toString() << endl;
+         #endif // debug
+         #endif
+		if (checkAtomClash(*vec.at(i), *vec.at(i + 1)))
+			return 0;
+	}
+	return 1;
+}
+
 
 /*
    Check for Clash between the given candidate and a vector of formulae starting from the given index
@@ -1162,7 +1178,11 @@ void ERule(Atom* atom, Node* node)
     #endif
    #endif // debug
    
-   node->insertFormula( *(new Formula(copyAtom(atom, NULL, NULL), -1)));
+	  Node* tmp = node;
+	  vector<Node*> newNodeSet;
+	  Atom* neg = negatedAtom(atom);
+	  if (checkBranchClash(neg, tmp) == 1)		  //solve thi inefficiency
+		 node->insertFormula( *(new Formula(copyAtom(atom, NULL, NULL), -1)));  
 }
 
 void PBRule(vector<Atom*> atoms, Node* node, vector<Node*> &nodeSet)
@@ -1181,13 +1201,17 @@ void PBRule(vector<Atom*> atoms, Node* node, vector<Node*> &nodeSet)
 	}
 
 	for (int i = 0; i < atoms.size()-1; i++)
-  	 {	       
+	{
+		cout << copyAtom(atoms.at(i), NULL, NULL)->toString() << endl;
+		cout << negatedAtom(atoms.at(i))->toString() << endl;
+
 		Atom* neg = negatedAtom(atoms.at(i));		
 	    tmp->setLeftChild(new Node(vector<Formula> {*(new Formula(copyAtom(atoms.at(i), NULL, NULL), -1))}));
 	    newNodeSet.push_back(tmp->getLeftChild());
 	    tmp->setRightChild(new Node(vector<Formula> {*(new Formula(negatedAtom(atoms.at(i)), -1))}));
 		tmp = tmp->getRightChild();		
 	 }
+	cout << copyAtom(atoms.at(atoms.size() - 1), NULL, NULL)->toString() << "...." << endl;
 	tmp->insertFormula(*(new Formula(copyAtom(atoms.at(atoms.size() - 1), NULL, NULL), -1)));
 	newNodeSet.push_back(tmp);
 	nodeSet.insert(nodeSet.end(), newNodeSet.begin(), newNodeSet.end());
@@ -1200,10 +1224,16 @@ void chooseRule(Tableau &T, vector<Node*> &nodeSet, Formula &f)
 {
 	vector<Node*> newNodeSet;	
 	for (int b = 0; b < nodeSet.size(); b++)
-	{
+	{	 
+	  vector<Atom*> atoms;
 	  vector<Atom*> atomset;
 	  getAtomSet(f, atomset);
-	  vector<Atom*> atoms;
+	  if (checkAtomsClash(atomset))
+	  {
+		  cout << "   " << endl;
+		  T.getClosedBranches().push_back(nodeSet.at(b));
+		  break;
+	  }
 	  for (int j = 0; j < atomset.size(); j++)
 		{
 		  if (checkBranchClash(atomset.at(j), nodeSet.at(b)) == 1)
@@ -1217,7 +1247,7 @@ void chooseRule(Tableau &T, vector<Node*> &nodeSet, Formula &f)
 		      break;                                                     			      
 	         }
 	       case 1:  //case of ERULE	
-		     {  
+		   { 			 
 			   ERule(atoms.at(0), nodeSet.at(b));
 			   newNodeSet.push_back(nodeSet.at(b));   
 		       break;
@@ -1246,6 +1276,23 @@ void expandTableau(Tableau& T)
 		}
 	}
 	T.getOpenBranches() = nonComBranches;
+}
+
+
+
+int checkTableauRootClash(Tableau &T)
+{
+	if(checkNodeClash (T.getTableau()->getSetFormulae())==1)
+		for (int i = 0; i < T.getTableau()->getSetFormulae().size(); i++)
+		{
+			vector<Atom*> atomset;
+			getAtomSet(T.getTableau()->getSetFormulae().at(i), atomset);
+			if (checkAtomsClash(atomset))
+			{				
+				return 0;
+			}
+		}	
+	return 1;
 }
 
 int main()
@@ -1277,11 +1324,11 @@ int main()
 	insertFormulaKB("( ( (V0{k} $NI V1{l}) $AD  ( ( V0{l} $NI V1{C1})$OR ( V0{t} $NI V1{C2})) )", KB);
 	*/  
 
-	//insertFormulaKB("( ( V0{l} $NI V1{C1}) $OR  ( V0{t} $NI V1{C2})  )", KB);
-	insertFormulaKB("( ( V0{l} $NI V1{C1}) $OR ( ( V0{t} $NI V1{C2}) $OR ( V0{x} $NI V1{C2}) ) )", KB);
-	insertFormulaKB("( ( V0{l} $NI V1{C1}) $OR  ( V0{x} $NI V1{C2}) ) ", KB);
+	insertFormulaKB("( ( V0{l} $EQ V0{x}) $OR  ( V0{l} $QE V0{x})  )", KB);
+//	insertFormulaKB("( ( V0{l} $NI V1{C1}) $OR ( ( V0{t} $NI V1{C2}) $OR ( V0{x} $NI V1{C2}) ) )", KB);
+//	insertFormulaKB("( ( V0{l} $NI V1{C1}) $OR  ( V0{x} $NI V1{C2}) ) ", KB);
 //	insertFormulaKB("( V0{l} $NI V1{C1})", KB);	
-	insertFormulaKB("(V0{ t } $IN V1{ C2 })", KB);
+//	insertFormulaKB("(V0{ t } $IN V1{ C2 })", KB);
     cout << "---Radix Content ---" << endl;  
   for (int i=0; i< KB.size();i++)
    {
@@ -1289,17 +1336,16 @@ int main()
    } 
 
   cout << "Expanding KB" << endl;
-  expandKB(KB, expKB); 
-  
+  expandKB(KB, expKB);   
   Tableau tableau = Tableau( new Node (expKB));  
-  cout<<"Clash before tableau expansion:"<<checkNodeClash(tableau.getTableau()->getSetFormulae())<<endl;
   cout << "Content of Expansion:" << endl;
-
-
   for (int i = 0; i< tableau.getTableau()->getSetFormulae().size(); i++)
    {
 	 cout << (tableau.getTableau()->getSetFormulae().at(i).toString()) << "," << tableau.getTableau()->getSetFormulae().at(i).getFulfillness()<< endl;
    }
+
+  
+
 
   cout << "Check VVL" << endl;   
   cout << "Vector 0" << endl;
@@ -1316,10 +1362,18 @@ int main()
   printVector(*varSet.getVQLAt(1));
   cout << "Vector 3" << endl;
   printVector(*varSet.getVQLAt(3));  
-  
-  cout << "Expanding Tableau" << endl;
-  expandTableau(tableau);
 
+  cout << "Clash before tableau expansion."<< endl;
+  if (checkTableauRootClash(tableau) == 1)
+  {
+	  cout << "Expanding Tableau" << endl;
+	  expandTableau(tableau);
+  } 
+  else
+  {
+	  tableau.getClosedBranches().push_back(tableau.getTableau());
+  }
+ 
   cout << "Printing open branches" << endl;
   for (int i = 0; i < tableau.getOpenBranches().size(); i++)
   {
@@ -1329,6 +1383,7 @@ int main()
 	   {
 		  for (int j = 0; j < tmp->getSetFormulae().size(); j++)
 			  cout << tmp->getSetFormulae().at(j).toString() << endl;
+		  cout << "----" << endl;
 		  tmp = tmp->getFather();
 	   } 
 		 
@@ -1343,6 +1398,7 @@ int main()
 	  {
 		  for (int j = 0; j < tmp->getSetFormulae().size(); j++)
 			  cout << tmp->getSetFormulae().at(j).toString() << endl;
+		  cout << "----" << endl;
 		  tmp = tmp->getFather();
 	  }
 
@@ -1395,7 +1451,7 @@ int main()
   
   End */
 
-
+  
 
   logFile.close(); 
     
