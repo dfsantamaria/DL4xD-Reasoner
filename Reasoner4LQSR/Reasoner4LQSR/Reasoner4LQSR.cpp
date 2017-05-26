@@ -1278,8 +1278,9 @@ int main()
 	*/  
 
 	//insertFormulaKB("( ( V0{l} $NI V1{C1}) $OR  ( V0{t} $NI V1{C2})  )", KB);
+	insertFormulaKB("( ( V0{l} $NI V1{C1}) $OR ( ( V0{t} $NI V1{C2}) $OR ( V0{x} $NI V1{C2}) ) )", KB);
 	insertFormulaKB("( ( V0{l} $NI V1{C1}) $OR  ( V0{x} $NI V1{C2}) ) ", KB);
-	insertFormulaKB("( ( V0{l} $NI V1{C1}) $OR ( ( V0{t} $NI V1{C2}) $OR ( V0{x} $NI V1{C2}) ) )", KB); 
+	
 	
 	//insertFormulaKB("( V0{l} $NI V1{C1})", KB);	
 	//insertFormulaKB("(V0{ t } $NI V1{ C2 })", KB);
