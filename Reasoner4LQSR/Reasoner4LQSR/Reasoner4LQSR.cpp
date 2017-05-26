@@ -1088,8 +1088,6 @@ int checkBranchClash(Node* node, Tableau& tableau)
 }
 
 
-
-
 /*
    Return the set of atomic formula contained in a formula.
 */
@@ -1135,6 +1133,23 @@ Atom* negatedAtom(Atom *input)
   return out;
 }
 
+
+int checkBranchClash(Atom* atom, Node* node)
+{
+	Node* iterator = node;
+	while (iterator != NULL)
+	{
+		vector<Formula>local = node->getSetFormulae();
+		for (int i = 0; i < local.size(); i++)
+		{
+			if ((checkVectorClash(atom, iterator->getSetFormulae(), 0) == 0))
+				return 0;
+		}
+		iterator = iterator->getFather();
+	}
+	return 1;
+}
+
 void ERule(Atom* atom, Node* node)
 {
    #ifdef debug  
@@ -1154,12 +1169,24 @@ void PBRule(vector<Atom*> atoms, Node* node, vector<Node*> &nodeSet)
 {
 	Node* tmp = node;
 	vector<Node*> newNodeSet;
+	for (int i = 0; i < atoms.size(); i++)           //solve this inefficiency
+	{
+		Atom* neg = negatedAtom(atoms.at(i));
+		if (checkBranchClash(neg, tmp) == 0)
+		{			
+			newNodeSet.push_back(tmp);
+			nodeSet.insert(nodeSet.end(), newNodeSet.begin(), newNodeSet.end());
+			return;
+		}
+	}
+
 	for (int i = 0; i < atoms.size()-1; i++)
-  	 {		
-        tmp->setLeftChild(new Node(vector<Formula> {*(new Formula(copyAtom(atoms.at(i), NULL, NULL), -1))}));
-		newNodeSet.push_back(tmp->getLeftChild());
-		tmp->setRightChild(new Node(vector<Formula> {*(new Formula(negatedAtom(atoms.at(i)), -1))}));
-		tmp = tmp->getRightChild();
+  	 {	       
+		Atom* neg = negatedAtom(atoms.at(i));		
+	    tmp->setLeftChild(new Node(vector<Formula> {*(new Formula(copyAtom(atoms.at(i), NULL, NULL), -1))}));
+	    newNodeSet.push_back(tmp->getLeftChild());
+	    tmp->setRightChild(new Node(vector<Formula> {*(new Formula(negatedAtom(atoms.at(i)), -1))}));
+		tmp = tmp->getRightChild();		
 	 }
 	tmp->insertFormula(*(new Formula(copyAtom(atoms.at(atoms.size() - 1), NULL, NULL), -1)));
 	newNodeSet.push_back(tmp);
@@ -1167,21 +1194,6 @@ void PBRule(vector<Atom*> atoms, Node* node, vector<Node*> &nodeSet)
 }
 
 
-int checkBranchClash(Atom* atom, Node* node)
-{	
-	Node* iterator = node;
-	while (iterator != NULL)
-	{
-	 vector<Formula>local = node->getSetFormulae();
-	 for (int i = 0; i < local.size(); i++)
-		{			
-		 if ( (checkVectorClash(atom, iterator->getSetFormulae(), 0) == 0))
-			return 0;			
-		}
-		iterator = iterator->getFather();
-	}
-	return 1;
-}
 
 
 void chooseRule(Tableau &T, vector<Node*> &nodeSet, Formula &f)
@@ -1264,7 +1276,11 @@ int main()
     insertFormulaKB(" ($FA V0{z8}) ($FA V0{z9}) ( ( (V0{k} $NI V1{l}) $AD  ( ( V0{z8} $NI V1{C1})$OR ( V0{z9} $NI V1{C2}))$AD((  $OA V0{z9} $CO V0{z9} $AO $NI V1{C2})$OR (V0{z9} $IN V1{C2}))))", KB);
 	insertFormulaKB("( ( (V0{k} $NI V1{l}) $AD  ( ( V0{l} $NI V1{C1})$OR ( V0{t} $NI V1{C2})) )", KB);
 	*/  
-	insertFormulaKB("( ( V0{l} $NI V1{C1})$OR ( V0{t} $NI V1{C2}) )", KB); 
+
+	//insertFormulaKB("( ( V0{l} $NI V1{C1}) $OR  ( V0{t} $NI V1{C2})  )", KB);
+	insertFormulaKB("( ( V0{l} $NI V1{C1}) $OR  ( V0{x} $NI V1{C2}) ) ", KB);
+	insertFormulaKB("( ( V0{l} $NI V1{C1}) $OR ( ( V0{t} $NI V1{C2}) $OR ( V0{x} $NI V1{C2}) ) )", KB); 
+	
 	//insertFormulaKB("( V0{l} $NI V1{C1})", KB);	
 	//insertFormulaKB("(V0{ t } $NI V1{ C2 })", KB);
     cout << "---Radix Content ---" << endl;  
@@ -1318,6 +1334,21 @@ int main()
 	   } 
 		 
   }
+
+  cout << "Printing closed branches" << endl;
+  for (int i = 0; i < tableau.getClosedBranches().size(); i++)
+  {
+	  cout << "Branch: " << i << endl;
+	  Node* tmp = tableau.getClosedBranches().at(i);
+	  while (tmp != NULL)
+	  {
+		  for (int j = 0; j < tmp->getSetFormulae().size(); j++)
+			  cout << tmp->getSetFormulae().at(j).toString() << endl;
+		  tmp = tmp->getFather();
+	  }
+
+  }
+
 
   /*
      Test Negated Atom
@@ -1414,6 +1445,7 @@ remove recursion
 A more efficient expansion function is required.
 Ensure that a) Vectors on VariableSet are only-read b) coerence of pointer to elements of such vectors.
 When checking clash if a check is formed with an element that is not in VVL than an clash is found.
+Solve PBRule inefficiency
 */
 
 
