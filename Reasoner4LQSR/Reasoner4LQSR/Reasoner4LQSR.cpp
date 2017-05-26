@@ -1255,11 +1255,13 @@ void chooseRule(Tableau &T, vector<Node*> &nodeSet, Formula &f)
 		vector<Atom*> atoms;
 		vector<Atom*> atomset;
 		getAtomSet(f, atomset);
-		/*  if (checkAtomsClash(atomset))
+		  if (checkAtomsClash(atomset))
 		{
-		T.getClosedBranches().push_back(nodeSet.at(b));
+			  newNodeSet.push_back(nodeSet.at(b));
+		//T.getClosedBranches().push_back(nodeSet.at(b));
+         
 		break;
-		} */
+		}
 		for (int j = 0; j < atomset.size(); j++)
 		{
 			if (checkBranchClash(atomset.at(j), nodeSet.at(b)) == 1)
@@ -1352,10 +1354,10 @@ int main()
 	insertFormulaKB("( ( (V0{k} $NI V1{l}) $AD  ( ( V0{l} $NI V1{C1})$OR ( V0{t} $NI V1{C2})) )", KB);
 	*/
 
-	//	insertFormulaKB("( ( V0{l} $EQ V0{x}) $OR  ( V0{l} $QE V0{x})  )", KB);
+		insertFormulaKB("( ( V0{l} $EQ V0{x}) $OR  ( V0{l} $QE V0{x})  )", KB);
 	//insertFormulaKB("( ( V0{l} $NI V1{C1}) $OR ( ( V0{t} $NI V1{C2}) $OR ( V0{x} $NI V1{C2}) ) )", KB);
-	insertFormulaKB("( ( V0{l} $NI V1{C1}) $OR  ( V0{x} $NI V1{C2}) ) ", KB);
-		insertFormulaKB("( V0{l} $IN V1{C1})", KB);	
+	//insertFormulaKB("( ( V0{l} $NI V1{C1}) $OR  ( V0{x} $NI V1{C2}) ) ", KB);
+	//	insertFormulaKB("( V0{l} $IN V1{C1})", KB);	
 	//	insertFormulaKB("(V0{ t } $IN V1{ C2 })", KB);
 	cout << "---Radix Content ---" << endl;
 	for (int i = 0; i< KB.size(); i++)
