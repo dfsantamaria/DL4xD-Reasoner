@@ -434,7 +434,7 @@ private:
 				{
 					int j = 0;
 					for (; j < locAt->getElements().size(); j++)
-					{						
+					{
 						if (locAt->getElementAt(j)->equal(F.getAtom()->getElementAt(j)) != 0)
 							break;
 					}
@@ -459,7 +459,7 @@ public:
 	void insertFormula(Formula& f)
 	{
 		//if (this->containsFormula(f) == 1)
-			setFormula.push_back(f);
+		setFormula.push_back(f);
 	};
 	vector<Formula>& getSetFormulae() { return setFormula; };
 	void setSetFormulae(vector<Formula>& input) { setFormula = input; };
@@ -865,7 +865,6 @@ return 1;
 }
 }
 return (containsQVar(f->getLSubformula(), s) + containsQVar(f->getRSubformula(), s));
-
 }
 */
 /*
@@ -1214,31 +1213,47 @@ void ERule(Atom* atom, Node* node)
 
 void PBRule(vector<Atom*> atoms, Node* node, vector<Node*> &nodeSet)
 {
+#ifdef debug  
+	logFile << "---Applying PB-RULE" << endl;
+#endif // debug		
+
+#ifdef debug  
+#ifdef debugexpand
+	logFile << "----- Computing Atom from PB-Rule. " << endl;
+#endif
+#endif // debug
 	Node* tmp = node;
 	vector<Node*> newNodeSet;
-	for (int i = 0; i < atoms.size(); i++)           //solve this inefficiency
+	for (int i = 0; i < atoms.size(); i++)           //solve this inefficiency. Looking for positive in the branch.
 	{
-		Atom* neg = negatedAtom(atoms.at(i));
-		if (checkBranchClash(neg, tmp) == 0)
-		{
-			
-			newNodeSet.push_back(tmp);
-			nodeSet.insert(nodeSet.end(), newNodeSet.begin(), newNodeSet.end());
-			return;
-		}
+	Atom* neg = negatedAtom(atoms.at(i));
+	if (checkBranchClash(neg, tmp) == 0)
+	{
+	newNodeSet.push_back(tmp);
+	nodeSet.insert(nodeSet.end(), newNodeSet.begin(), newNodeSet.end());
+	return;
 	}
+	}  
 
 	for (int i = 0; i < atoms.size() - 1; i++)
 	{
-		//cout << copyAtom(atoms.at(i), NULL, NULL)->toString() << endl;
-		//cout << negatedAtom(atoms.at(i))->toString() << endl;
+#ifdef debug  
+#ifdef debugexpand
+		logFile << "------ Computing Atom from PB-Rule. " << copyAtom(atoms.at(i), NULL, NULL)->toString() << endl;
+		logFile << "------ Computing Atom from PB-Rule. " << (negatedAtom(atoms.at(i)))->toString() << endl;
+#endif
+#endif // debug
 		Atom* neg = negatedAtom(atoms.at(i));
 		tmp->setLeftChild(new Node(vector<Formula> {*(new Formula(copyAtom(atoms.at(i), NULL, NULL), -1))}));
 		newNodeSet.push_back(tmp->getLeftChild());
 		tmp->setRightChild(new Node(vector<Formula> {*(new Formula(negatedAtom(atoms.at(i)), -1))}));
 		tmp = tmp->getRightChild();
 	}
-	
+#ifdef debug  
+#ifdef debugexpand
+	logFile << "------ Computing Atom from PB-Rule. " << (copyAtom(atoms.at(atoms.size() - 1), NULL, NULL))->toString() << endl;
+#endif
+#endif // debug
 	tmp->insertFormula(*(new Formula(copyAtom(atoms.at(atoms.size() - 1), NULL, NULL), -1)));
 	newNodeSet.push_back(tmp);
 	nodeSet.insert(nodeSet.end(), newNodeSet.begin(), newNodeSet.end());
@@ -1255,17 +1270,16 @@ void chooseRule(Tableau &T, vector<Node*> &nodeSet, Formula &f)
 		vector<Atom*> atoms;
 		vector<Atom*> atomset;
 		getAtomSet(f, atomset);
-		  if (checkAtomsClash(atomset))
-		{
-			  newNodeSet.push_back(nodeSet.at(b));
-		//T.getClosedBranches().push_back(nodeSet.at(b));
-         
-		break;
+		if (checkAtomsClash(atomset))
+		{		  
+			newNodeSet.push_back(nodeSet.at(b));
+			//T.getClosedBranches().push_back(nodeSet.at(b));
+			break;
 		}
 		for (int j = 0; j < atomset.size(); j++)
 		{
 			if (checkBranchClash(atomset.at(j), nodeSet.at(b)) == 1)
-			{				
+			{
 				atoms.push_back(atomset.at(j));
 			}
 		}
@@ -1283,7 +1297,7 @@ void chooseRule(Tableau &T, vector<Node*> &nodeSet, Formula &f)
 			break;
 		}
 		default:  //case of PBRULE
-		{ 
+		{
 			PBRule(atoms, nodeSet.at(b), newNodeSet);
 			break;
 		}
@@ -1354,11 +1368,13 @@ int main()
 	insertFormulaKB("( ( (V0{k} $NI V1{l}) $AD  ( ( V0{l} $NI V1{C1})$OR ( V0{t} $NI V1{C2})) )", KB);
 	*/
 
-		insertFormulaKB("( ( V0{l} $EQ V0{x}) $OR  ( V0{l} $QE V0{x})  )", KB);
-	//insertFormulaKB("( ( V0{l} $NI V1{C1}) $OR ( ( V0{t} $NI V1{C2}) $OR ( V0{x} $NI V1{C2}) ) )", KB);
-	//insertFormulaKB("( ( V0{l} $NI V1{C1}) $OR  ( V0{x} $NI V1{C2}) ) ", KB);
-	//	insertFormulaKB("( V0{l} $IN V1{C1})", KB);	
-	//	insertFormulaKB("(V0{ t } $IN V1{ C2 })", KB);
+	//insertFormulaKB("( ( V0{a} $EQ V0{x}) $OR  ( V0{a} $QE V0{x})  )", KB);
+	//insertFormulaKB("( ( V0{v} $EQ V0{g}) $OR  ( V0{v} $QE V0{g})  )", KB);
+	insertFormulaKB("( ( V0{l} $NI V1{C1}) $OR  ( V0{x} $NI V1{C2}) ) ", KB);
+	insertFormulaKB("( ( V0{l} $NI V1{C1}) $OR ( ( V0{t} $NI V1{C2}) $OR ( V0{x} $NI V1{C2}) ) )", KB);
+	
+	insertFormulaKB("( V0{l} $IN V1{C1})", KB);	
+	insertFormulaKB("(V0{ t } $IN V1{ C2 })", KB);
 	cout << "---Radix Content ---" << endl;
 	for (int i = 0; i< KB.size(); i++)
 	{
@@ -1472,7 +1488,6 @@ int main()
 	cout << "Clash on Tableau: " << checkBranchClash(tableau.getTableau()->getLeftChild(), tableau) << endl;
 	if(tableau.getClosedBranches().size()>0)
 	cout << "Closed Branch contains: "<< tableau.getClosedBranches().at(0)->getSetFormulae().at(0).toString()<< endl;
-
 	End */
 
 
