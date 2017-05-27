@@ -442,22 +442,14 @@ private:
 	//flag di completeness
 	int containsFormula(Formula &F) //to be completed and performed
 	{
-
 		for (int i = 0; i < this->getSetFormulae().size(); i++)
 		{
 			Atom* locAt = this->getSetFormulae().at(i).getAtom();
 			if (locAt != NULL && F.getAtom() != NULL)
 			{
-				if (locAt->getElements().size() == F.getAtom()->getElements().size())
-				{
-					int j = 0;
-					for (; j < locAt->getElements().size(); j++)
-					{
-						if (locAt->getElementAt(j)->equal(F.getAtom()->getElementAt(j)) != 0)
-							break;
-					}
-					if (j == locAt->getElements().size())
-						return 0;
+				if (locAt->equals( *(F.getAtom()))==0)
+				{					
+					return 0;
 				}
 			}
 
@@ -475,8 +467,12 @@ public:
 	void setLeftChild(Node* child) { leftChild = child; child->setFather(this); };
 	void setFather(Node* f) { father = f; };
 	void insertFormula(Formula& f)
+	{	 
+		setFormula.push_back(f);
+	};
+	void insertCheckFormula(Formula& f)
 	{
-		//if (this->containsFormula(f) == 1)
+	   if (this->containsFormula(f) == 1)
 		setFormula.push_back(f);
 	};
 	vector<Formula>& getSetFormulae() { return setFormula; };
@@ -1231,15 +1227,15 @@ void ERule(Atom* atom, Node* node)
 
 void PBRule(vector<Atom*> atoms, Node* node, vector<Node*> &nodeSet)
 {
-#ifdef debug  
+ #ifdef debug  
 	logFile << "---Applying PB-RULE" << endl;
-#endif // debug		
+  #endif // debug		
 
-#ifdef debug  
-#ifdef debugexpand
+  #ifdef debug  
+   #ifdef debugexpand
 	logFile << "----- Computing Atom from PB-Rule. " << endl;
-#endif
-#endif // debug
+   #endif
+   #endif // debug
 	Node* tmp = node;
 	vector<Node*> newNodeSet;
 	for (int i = 0; i < atoms.size(); i++)           //solve this inefficiency. Looking for positive in the branch.
@@ -1391,8 +1387,8 @@ int main()
 	insertFormulaKB("( ( V0{l} $NI V1{C1}) $OR  ( V0{x} $NI V1{C2}) ) ", KB);
 	insertFormulaKB("( ( V0{l} $NI V1{C1}) $OR ( ( V0{t} $NI V1{C2}) $OR ( V0{x} $NI V1{C2}) ) )", KB);
 	
-	insertFormulaKB("( V0{l} $IN V1{C1})", KB);	
-	insertFormulaKB("(V0{ t } $IN V1{ C2 })", KB);
+	//insertFormulaKB("( V0{l} $IN V1{C1})", KB);	
+	//insertFormulaKB("(V0{ t } $IN V1{ C2 })", KB);
 	cout << "---Radix Content ---" << endl;
 	for (int i = 0; i< KB.size(); i++)
 	{
