@@ -334,6 +334,24 @@ public:
 		out.append(")");
 		return out;
 	};
+
+	int equals(Atom &atom)
+	{
+		if ((this->getElements().size() == atom.getElements().size()) && (this->getAtomOp() == atom.getAtomOp()))
+		{
+			int j = 0;
+			for (; j < this->getElements().size(); j++)
+			{
+				if (this->getElementAt(j)->equal(atom.getElementAt(j)) != 0)
+					break;
+			}
+			if (j == this->getElements().size())
+			{				
+				return 0;
+			}
+		}
+		return 1;
+	};
 };
 
 class Formula  //struttura più generica da cambiare eventualmente con strutture per CNF
@@ -1489,7 +1507,6 @@ int main()
 	if(tableau.getClosedBranches().size()>0)
 	cout << "Closed Branch contains: "<< tableau.getClosedBranches().at(0)->getSetFormulae().at(0).toString()<< endl;
 	End */
-
 
 
 	logFile.close();
