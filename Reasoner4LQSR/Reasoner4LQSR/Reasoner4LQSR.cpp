@@ -1384,11 +1384,14 @@ int main()
 
 	//insertFormulaKB("( ( V0{a} $EQ V0{x}) $OR  ( V0{a} $QE V0{x})  )", KB);
 	//insertFormulaKB("( ( V0{v} $EQ V0{g}) $OR  ( V0{v} $QE V0{g})  )", KB);
-	insertFormulaKB("( ( V0{l} $NI V1{C1}) $OR  ( V0{x} $NI V1{C2}) ) ", KB);
+	//insertFormulaKB("( ( V0{l} $NI V1{C1}) $OR  ( V0{x} $NI V1{C2}) ) ", KB);	
+//	insertFormulaKB("( ( V0{l} $NI V1{C1}) $OR  ( V0{x} $NI V1{C2}) ) ", KB);
+//	insertFormulaKB("( ( V0{l} $NI V1{C1}) $OR ( ( V0{t} $NI V1{C2}) $OR ( V0{x} $NI V1{C2}) ) )", KB);
+//	insertFormulaKB("( V0{l} $IN V1{C1})", KB);	
+//	insertFormulaKB("(V0{ t } $IN V1{ C2 })", KB);
+	insertFormulaKB("( ( V0{l} $NI V1{C1}) $OR  ( V0{x} $IN V1{C2}) ) ", KB);
 	insertFormulaKB("( ( V0{l} $NI V1{C1}) $OR ( ( V0{t} $NI V1{C2}) $OR ( V0{x} $NI V1{C2}) ) )", KB);
-
-	insertFormulaKB("( V0{l} $IN V1{C1})", KB);	
-	//insertFormulaKB("(V0{ t } $IN V1{ C2 })", KB);
+	//insertFormulaKB("( V0{l} $IN V1{C1})", KB);
 	cout << "---Radix Content ---" << endl;
 	for (int i = 0; i< KB.size(); i++)
 	{
