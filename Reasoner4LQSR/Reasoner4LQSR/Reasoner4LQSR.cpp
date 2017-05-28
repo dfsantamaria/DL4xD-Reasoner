@@ -346,7 +346,7 @@ public:
 					break;
 			}
 			if (j == this->getElements().size())
-			{				
+			{
 				return 0;
 			}
 		}
@@ -447,8 +447,8 @@ private:
 			Atom* locAt = this->getSetFormulae().at(i).getAtom();
 			if (locAt != NULL && F.getAtom() != NULL)
 			{
-				if (locAt->equals( *(F.getAtom()))==0)
-				{					
+				if (locAt->equals(*(F.getAtom())) == 0)
+				{
 					return 0;
 				}
 			}
@@ -467,13 +467,13 @@ public:
 	void setLeftChild(Node* child) { leftChild = child; child->setFather(this); };
 	void setFather(Node* f) { father = f; };
 	void insertFormula(Formula& f)
-	{	 
+	{
 		setFormula.push_back(f);
 	};
 	void insertCheckFormula(Formula& f)
 	{
-	   if (this->containsFormula(f) == 1)
-		setFormula.push_back(f);
+		if (this->containsFormula(f) == 1)
+			setFormula.push_back(f);
 	};
 	vector<Formula>& getSetFormulae() { return setFormula; };
 	void setSetFormulae(vector<Formula>& input) { setFormula = input; };
@@ -1227,27 +1227,27 @@ void ERule(Atom* atom, Node* node)
 
 void PBRule(vector<Atom*> atoms, Node* node, vector<Node*> &nodeSet)
 {
- #ifdef debug  
+#ifdef debug  
 	logFile << "---Applying PB-RULE" << endl;
-  #endif // debug		
+#endif // debug		
 
-  #ifdef debug  
-   #ifdef debugexpand
+#ifdef debug  
+#ifdef debugexpand
 	logFile << "----- Computing Atom from PB-Rule. " << endl;
-   #endif
-   #endif // debug
+#endif
+#endif // debug
 	Node* tmp = node;
 	vector<Node*> newNodeSet;
 	for (int i = 0; i < atoms.size(); i++)           //solve this inefficiency. Looking for positive in the branch.
 	{
-	Atom* neg = negatedAtom(atoms.at(i));
-	if (checkBranchClash(neg, tmp) == 0)
-	{
-	newNodeSet.push_back(tmp);
-	nodeSet.insert(nodeSet.end(), newNodeSet.begin(), newNodeSet.end());
-	return;
+		Atom* neg = negatedAtom(atoms.at(i));
+		if (checkBranchClash(neg, tmp) == 0)
+		{
+			newNodeSet.push_back(tmp);
+			nodeSet.insert(nodeSet.end(), newNodeSet.begin(), newNodeSet.end());
+			return;
+		}
 	}
-	}  
 
 	for (int i = 0; i < atoms.size() - 1; i++)
 	{
@@ -1285,7 +1285,7 @@ void chooseRule(Tableau &T, vector<Node*> &nodeSet, Formula &f)
 		vector<Atom*> atomset;
 		getAtomSet(f, atomset);
 		if (checkAtomsClash(atomset))
-		{		  
+		{
 			newNodeSet.push_back(nodeSet.at(b));
 			//T.getClosedBranches().push_back(nodeSet.at(b));
 			break;
@@ -1386,7 +1386,7 @@ int main()
 	//insertFormulaKB("( ( V0{v} $EQ V0{g}) $OR  ( V0{v} $QE V0{g})  )", KB);
 	insertFormulaKB("( ( V0{l} $NI V1{C1}) $OR  ( V0{x} $NI V1{C2}) ) ", KB);
 	insertFormulaKB("( ( V0{l} $NI V1{C1}) $OR ( ( V0{t} $NI V1{C2}) $OR ( V0{x} $NI V1{C2}) ) )", KB);
-	
+
 	//insertFormulaKB("( V0{l} $IN V1{C1})", KB);	
 	//insertFormulaKB("(V0{ t } $IN V1{ C2 })", KB);
 	cout << "---Radix Content ---" << endl;
