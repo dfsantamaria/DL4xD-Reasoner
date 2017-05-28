@@ -1,0 +1,25 @@
+int checkAtoms(Atom* atom, Node* node)
+{
+	Node* iterator = node;
+	while (iterator != NULL)
+	{
+		vector<Formula>local = node->getSetFormulae();
+		for (int i = 0; i < local.size(); i++)
+		{	
+			if (local.at(i).getAtom() != NULL)
+			{
+				if (local.at(i).getAtom()->equals(*atom) == 0)
+				{					
+					return 1;
+				} 
+				if (checkAtomClash(*(local.at(i).getAtom()), *atom) == 0)
+				{					
+					return 0;
+			    }
+			}
+			
+		}
+		iterator = iterator->getFather();
+	}
+	return 2;
+}
