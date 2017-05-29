@@ -12,10 +12,10 @@
 #include <sstream>
 
 using namespace std;
-#define debug                   //debug istructions
-#define debugclash              //debug istructions for clash checking
-#define debugexpand             //debug istructions for expansion rule
-#define debuginsertf            //debug istructions for internal formula translation
+//#define debug                   //debug istructions
+//#define debugclash              //debug istructions for clash checking
+//#define debugexpand             //debug istructions for expansion rule
+//#define debuginsertf            //debug istructions for internal formula translation
 
 std::ofstream logFile("LOG.log");   //log file
 
@@ -1195,12 +1195,12 @@ int checkBranchClash(Atom* atom, Node* node)
 	Node* iterator = node;
 	while (iterator != NULL)
 	{
-		vector<Formula>local = node->getSetFormulae();
-		for (int i = 0; i < local.size(); i++)
-		{
+	//	vector<Formula>local = node->getSetFormulae();
+	//	for (int i = 0; i < local.size(); i++)
+	//	{
 			if ((checkVectorClash(atom, iterator->getSetFormulae(), 0) == 0))
 				return 0;
-		}
+	//	}
 		iterator = iterator->getFather();
 	}
 	return 1;
@@ -1221,7 +1221,7 @@ void ERule(Atom* atom, Node* node)
 	Node* tmp = node;
 	vector<Node*> newNodeSet;
 	Atom* neg = negatedAtom(atom);
-	if (checkBranchClash(neg, tmp) == 1)		  //solve thi inefficiency
+//	if (checkBranchClash(neg, tmp) == 1)		  //solve thi inefficiency
 		node->insertFormula(*(new Formula(copyAtom(atom, NULL, NULL), -1)));
 }
 
@@ -1238,7 +1238,7 @@ void PBRule(vector<Atom*> atoms, Node* node, vector<Node*> &nodeSet)
 #endif // debug
 	Node* tmp = node;
 	vector<Node*> newNodeSet;
-	for (int i = 0; i < atoms.size(); i++)           //solve this inefficiency. Looking for positive in the branch.
+/*	for (int i = 0; i < atoms.size(); i++)           //solve this inefficiency. Looking for positive in the branch.
 	{
 		Atom* neg = negatedAtom(atoms.at(i));
 		if (checkBranchClash(neg, tmp) == 0)
@@ -1247,7 +1247,7 @@ void PBRule(vector<Atom*> atoms, Node* node, vector<Node*> &nodeSet)
 			nodeSet.insert(nodeSet.end(), newNodeSet.begin(), newNodeSet.end());
 			return;
 		}
-	}
+	} */
 
 	for (int i = 0; i < atoms.size() - 1; i++)
 	{
@@ -1276,6 +1276,29 @@ void PBRule(vector<Atom*> atoms, Node* node, vector<Node*> &nodeSet)
 
 
 
+int checkAtoms(Atom* atom, Node* node)
+{
+	Node* iterator = node;
+	while (iterator != NULL)
+	{
+		for (int i = 0; i < iterator->getSetFormulae().size(); i++)
+		{
+			if (iterator->getSetFormulae().at(i).getAtom() != NULL)
+			{
+				if ((checkAtomClash(*atom, *(iterator->getSetFormulae().at(i).getAtom())) == 0))
+					return 0;
+				if (atom->equals(*(iterator->getSetFormulae().at(i).getAtom())) == 0)
+					return 2;
+
+				
+			}
+		}
+		iterator = iterator->getFather();
+	}
+	return 1;
+}
+
+
 void chooseRule(Tableau &T, vector<Node*> &nodeSet, Formula &f)
 {
 	vector<Node*> newNodeSet;
@@ -1284,19 +1307,28 @@ void chooseRule(Tableau &T, vector<Node*> &nodeSet, Formula &f)
 		vector<Atom*> atoms;
 		vector<Atom*> atomset;
 		getAtomSet(f, atomset);
-		if (checkAtomsClash(atomset))
+	/*	if (checkAtomsClash(atomset)) //tautology
 		{
 			newNodeSet.push_back(nodeSet.at(b));
 			//T.getClosedBranches().push_back(nodeSet.at(b));
 			break;
-		}
+		}*/
+		int check = 0;
 		for (int j = 0; j < atomset.size(); j++)
 		{
-			if (checkBranchClash(atomset.at(j), nodeSet.at(b)) == 1)
+			check = checkAtoms(atomset.at(j), nodeSet.at(b));
+			if (check == 1)
 			{
 				atoms.push_back(atomset.at(j));
 			}
+			else if (check == 2)
+			{
+				newNodeSet.push_back(nodeSet.at(b));
+				break;
+			}
 		}
+		if (check == 2)
+			continue;
 		switch (atoms.size())
 		{
 		case 0:       //case closed branch. 
@@ -1382,17 +1414,18 @@ int main()
 	insertFormulaKB("( ( (V0{k} $NI V1{l}) $AD  ( ( V0{l} $NI V1{C1})$OR ( V0{t} $NI V1{C2})) )", KB);
 	*/
 
-	//insertFormulaKB("( ( V0{a} $EQ V0{x}) $OR  ( V0{a} $QE V0{x})  )", KB);
-	//insertFormulaKB("( ( V0{v} $EQ V0{g}) $OR  ( V0{v} $QE V0{g})  )", KB);
+	insertFormulaKB("( ( V0{a} $EQ V0{x}) $OR  ( V0{a} $QE V0{x})  )", KB);
+	//insertFormulaKB("( ( V0{v} $EQ V0{g}) $OR  ( V0{a} $QE V0{x})  )", KB);
 	//insertFormulaKB("( ( V0{l} $NI V1{C1}) $OR  ( V0{x} $NI V1{C2}) ) ", KB);	
 //	insertFormulaKB("( ( V0{l} $NI V1{C1}) $OR  ( V0{x} $NI V1{C2}) ) ", KB);
 //	insertFormulaKB("( ( V0{l} $NI V1{C1}) $OR ( ( V0{t} $NI V1{C2}) $OR ( V0{x} $NI V1{C2}) ) )", KB);
 //	insertFormulaKB("( V0{l} $IN V1{C1})", KB);	
 //	insertFormulaKB("(V0{ t } $IN V1{ C2 })", KB);
-	insertFormulaKB("( ( V0{l} $NI V1{C1}) $OR  ( V0{x} $IN V1{C2}) ) ", KB);
-	insertFormulaKB("( ( V0{l} $NI V1{C1}) $OR ( ( V0{t} $NI V1{C2}) $OR ( V0{x} $NI V1{C2}) ) )", KB);
-	//insertFormulaKB("( V0{l} $IN V1{C1})", KB);
-	cout << "---Radix Content ---" << endl;
+
+	/* insertFormulaKB("( ( V0{l} $NI V1{C1}) $OR ( ( V0{t} $NI V1{C2}) $OR ( V0{x} $NI V1{C2}) ) )", KB);
+	insertFormulaKB("( ( V0{l} $NI V1{C1}) $OR  ( V0{x} $IN V1{C2}) ) ", KB);	
+	insertFormulaKB("( V0{l} $IN V1{C1})", KB);
+	cout << "---Radix Content ---" << endl; */
 	for (int i = 0; i< KB.size(); i++)
 	{
 		cout << KB.at(i).toString() << endl;
@@ -1463,50 +1496,7 @@ int main()
 	}
 
 
-	/*
-	Test Negated Atom
-	*/
-
-	/*
-	Var b1("monastero", 0, 0);
-	Var x("livello", 0, 0);
-	Var h("haLivello", 3, 0);
-	Atom* atom = new Atom(3, { &h,&b1,&x });
-	Atom* atom2 = negatedAtom(atom);
-	cout << atom->toString() << endl;
-	cout << atom2->toString() << endl;
-	*/
-	/*
-	Test GetAtomSet
-	*/
-	/*
-	vector<Formula> f;
-	vector<Atom*> at;
-	string sf = "( ($OA V0{l} $CO V0{j} $AO $IN V3{C333}) $OR ($OA V0{d} $CO V0{f} $AO $IN V3{C333}) )";
-	insertFormulaKB(sf, f);
-	cout << f.at(0).toString() << endl;
-	getAtomSet(f.at(0), at);
-	for (int i = 0; i < at.size(); i++)
-	cout << at.at(i)->toString() << endl;
-	*/
-
-	/*
-	Test Branch clash
-	*/
-
-	/*
-	vector<Formula> f;
-	string sf= "($OA V0{l} $CO V0{j} $AO $IN V3{C333})";
-	insertFormulaKB(sf, f);
-	Node* ntest = new Node(f);
-	tableau.getTableau()->setLeftChild(ntest);
-	ntest->setFather(tableau.getTableau());
-	//cout << ( (ntest->getFather()->getSetFormulae()).at(0).toString() ) << endl;
-	cout << "Clash on Tableau: " << checkBranchClash(tableau.getTableau()->getLeftChild(), tableau) << endl;
-	if(tableau.getClosedBranches().size()>0)
-	cout << "Closed Branch contains: "<< tableau.getClosedBranches().at(0)->getSetFormulae().at(0).toString()<< endl;
-	End */
-
+	
 
 	logFile.close();
 
@@ -1552,199 +1542,5 @@ remove recursion
 A more efficient expansion function is required.
 Ensure that a) Vectors on VariableSet are only-read b) coerence of pointer to elements of such vectors.
 When checking clash if a check is formed with an element that is not in VVL than an clash is found.
-Solve PBRule inefficiency
-*/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*
-string s;
-int j=containsQVar(&sta->at(i), s);
-cout << "---" << s << "-----" << j << endl;
-*/
-
-
-/*
-Var b1("monastero", 0, 0);
-cout << "copyng formula" << endl;
-cout << "Try" << endl;
-cout << copyFormula(&(sta->at(i)), NULL, new string("z"), &b1)->toString() << endl;
-cout << "End Try" << endl;
-*/
-
-
-/*
-cout << "Testing copy Atom" << endl;
-Var b1("monastero", 0, 0);
-Var x("livello", 0, 0);
-Var x1("livello9", 0, 0);
-Var g("Edificio", 1, 0);
-Var g1("Edificio", 1, 0);
-Var h("haLivello", 3, 0);
-Var h1("haLivello", 3, 0);
-Atom* atom= new Atom(0, { &h,&b1,&x });
-cout << atom->toString() << endl;
-Atom* c = copyAtom(atom, new string("monastero"), &x1);
-delete (atom);
-//cout << atom->toString() << endl;
-cout << c->toString() << endl;
-*/
-
-
-/*
-Formula* ffinal;
-Formula* ffinal2;
-Formula* ffinal3;
-Formula* ffinal4;
-string formula = "($FA V0{z}) ($OA V0{z} $CO V0{z} $AO $NI V3{C333})";
-string formula2 = "($FA V0{z1}) ($FA V0{z2}) (V0{z1} $EQ V0{z2})";
-// string formula2 = "($FA V0{ z1 }) (V0{ z1 } $NI V1{ C1 })";
-// string formula = "($FA V0{z})(( ( V0{z} $NI V1{C1})$OR ( V0{z1} $NI V1{C2}))$AD(( V0{z1} $NI V1{C2})$OR (V0{z1} $IN V1{C2})))";
-// string formula2 = "($FA V0{z2}) ( (V0{z2} $NI V1{C1}) $AD (  (V0{b} $NI V1{C1}) $AD (V0{b} $NI V1{C1})  ) )";
-string formula3 = "($FA V0{z3}) ( (V0{z3} $NI V1{C1}) $AD (  (V0{b} $NI V1{C1}) $OR (V0{a} $NI V1{C1}) ) )";
-string formula4 = " ($FA V0{z}) ($FA V0{z1}) ( ( (V0{k} $NI V1{l}) $AD  ( ( V0{z} $NI V1{C1})$OR ( V0{z1} $NI V1{C2}))$AD((  $OA V0{z1} $CO V0{z1} $AO $NI V1{C2})$OR (V0{z1} $IN V1{C2})))) ";
-// cout << "Current Formula is: " << formula << endl;
-insertFormula(&formula, &ffinal);
-insertFormula(&formula2, &ffinal2);
-insertFormula(&formula3, &ffinal3);
-insertFormula(&formula4, &ffinal4);
-cout << "Parsed formula: " << ffinal->toString() << endl;
-cout << "Parsed formula: " << ffinal2->toString() << endl;
-cout << "Parsed formula: " << ffinal3->toString() << endl;
-Tableau tab(new Node()); //empty tableau
-Node* radix = tab.getTableau();
-radix->insertFormula(ffinal);
-radix->insertFormula(ffinal2);
-radix->insertFormula(ffinal3);
-radix->insertFormula(ffinal4);
-*/
-
-
-
-
-
-
-
-/*Var b ("monastero", 0, 0);
-Var b1("monastero", 0, 0);
-Var x("livello", 0, 0);
-Var x1("livello", 0, 0);
-Var g("Edificio", 1, 0);
-Var g1("Edificio", 1, 0);
-Var h("haLivello", 3, 0);
-Var h1("haLivello", 3, 0);
-Atom atom(0, {&h,&b,&x});
-Atom atom2(0, {&g,&b});
-Atom atom3(1, { &b,&x });
-Formula af = Formula(NULL, 1, new Formula(&atom, -1), new Formula(&atom2, -1));
-Formula af2 = Formula(NULL, 0, &af, new Formula(&atom3, -1));  */
-
-
-
-
-
-
-
-/*
-//cout << "Testing Add Var:" << endl;
-//cout<<VVL.at(0).size()<<endl;
-//cout << VVL.at(0).back().print()<<endl;
-//cout << "----------------------" << endl;
-cout << b.print()<<endl;
-cout << "b is equal to x: "<< b.equal(&b) <<endl;
-cout << b.getName() <<","<< b.getType() <<","<< b.getVarType() << endl;
-cout << x.getName() << "," << x.getType() << "," << x.getVarType() << endl;
-cout << g.getName() << "," << g.getType() << "," << g.getVarType() << endl;
-cout << h.getName() << "," << h.getType() << "," << h.getVarType() << endl;
-cout << "Testing print Var" << endl;
-cout <<  b.print() << endl;
-cout << x.print() << endl;
-cout << g.print() << endl;
-cout << h.print() << endl;
-// cout<< "--------------------  "<< VQL.at(0).capacity()<<endl;
-// cout << "-------------------- " << VQL.at(0).at(0).getName() << endl;
-// cout<<addNewElement(x, VCL)<<endl;
-//cout << VCL.at(0).at(0).getName() << endl;
-// cout << VQL.capacity()<< endl;
-*/
-
-// cout << af2.print() << endl;
-/*
-cout << "Testing print atom:" << endl;
-cout << atom.print() << endl;
-cout << atom2.print() << endl;
-cout << atom3.print() << endl;
-cout << "Atom print: " <<  atom.getElementAt(0)->getName() << endl;
-cout << "Atom print: " <<  atom.getElementAt(1)->getName() << endl;
-if( ((atom.getElementAt(2)))==NULL)
-cout << "Atom print: NULL " << endl;
-*/
-// Tableau tab( &Node() ); //empty tableau
-// Node* radix=tab.getTableau();
-
-/* cout << "------------" << endl;
-cout << "Parsed formula: " << ffinal->getAtom()->getElementAt(0)->getVarType() << endl;
-cout << "Parsed formula: " << ffinal->getAtom()->getElementAt(0)->getType() << endl;
-cout << "Parsed formula: " << ffinal->getAtom()->getElementAt(0)->getName() << endl;
-cout << "Parsed formula: " << ffinal->getAtom()->getElementAt(1)->getVarType() << endl;
-cout << "Parsed formula: " << ffinal->getAtom()->getElementAt(1)->getType() << endl;
-cout << "Parsed formula: " << ffinal->getAtom()->getElementAt(1)->getName() << endl;*/
-
-/* cout << "------------" << endl;
-insertFormula(&formula2, &ffinal3);
-cout << "------------" << endl; */
-/* cout << "Parsed formula: " << ffinal->getAtom()->getElementAt(0)->getVarType() << endl;
-cout << "Parsed formula: " << ffinal->getAtom()->getElementAt(0)->getType() << endl;
-cout << "Parsed formula: " << ffinal->getAtom()->getElementAt(0)->getName() << endl;
-cout << "Parsed formula: " << ffinal->getAtom()->getElementAt(1)->getVarType() << endl;
-cout << "Parsed formula: " << ffinal->getAtom()->getElementAt(1)->getType() << endl;
-cout << "Parsed formula: " << ffinal->getAtom()->getElementAt(1)->getName() << endl;
-cout << "------------" << endl;*/
-/*cout << "------------" << endl;
-cout << "Parsed formula: " << ffinal3->toString() << endl;
-cout << "------------" << endl;*/
-//insertFormula(&formula3, &ffinal3);
-
-/*for (int i=0; i< sta->size(); i++)
-{
-cout<< (sta->at(i).toString())<< endl;
-}*/
-
-
-
-/*
-Atom Clash
-Var b1("monastero", 0, 0);
-Var b("monastero", 0, 0);
-Var x("livello", 0, 0);
-Var x1("livello", 0, 0);
-Var g("Edificio", 1, 0);
-Var g1("Edificio", 1, 0);
-Var h("haLivello", 3, 0);
-Var h1("haLivello", 3, 0);
-Atom* atom = new Atom(0, { &h,&x1, &b});
-Atom* atom1 = new Atom(2, { &h1,&x, &b1 });
-Atom* atom2 = new Atom(3, { &x, &x1 });
-cout << atom->toString() << endl;
-cout << atom1->toString() << endl;
-cout << atom2->toString() << endl;
-cout << checkAtomClash(*atom,*atom1) << endl;
-cout << checkAtomClash(*atom) << endl;
-cout << checkAtomClash(*atom1) << endl;
-cout << checkAtomClash(*atom2) << endl;
+DONE - Solve PBRule inefficiency
 */
