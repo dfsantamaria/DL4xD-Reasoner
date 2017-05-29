@@ -1421,9 +1421,11 @@ int main()
 //	insertFormulaKB("( V0{l} $IN V1{C1})", KB);	
 //	insertFormulaKB("(V0{ t } $IN V1{ C2 })", KB);
 
-    insertFormulaKB("( ( V0{l} $IN V1{C1}) $OR  ( V0{x} $NI V1{C2}) ) ", KB);	
-	 insertFormulaKB("( ( V0{l} $IN V1{C1}) $OR ( ( V0{t} $IN V1{C2}) $OR ( V0{x} $IN V1{C2}) ) )", KB);	
-	insertFormulaKB("( V0{l} $NI V1{C1})", KB);
+    
+	 insertFormulaKB("( ( V0{l} $IN V1{C1}) $OR ( ( V0{t} $IN V1{C2}) $OR ( V0{x} $NI V1{C2}) ) )", KB);	
+	 insertFormulaKB("( (V0{l} $NI V1{C1}) $OR (V0{t} $NI V1{C2} ) )", KB);
+     insertFormulaKB("( ( V0{l} $NI V1{C1}) $OR  ( V0{s} $IN V1{C2}) ) ", KB);
+
 	cout << "---Radix Content ---" << endl; 
 	for (int i = 0; i< KB.size(); i++)
 	{
