@@ -1281,22 +1281,21 @@ int checkAtoms(Atom* atom, Node* node)
 	Node* iterator = node;
 	while (iterator != NULL)
 	{
-		for (int i = 0; i < iterator->getSetFormulae().size(); i++)
+		vector<Formula> vec = iterator->getSetFormulae();
+		for (int i = 0; i < vec.size(); i++)
 		{
-			if (iterator->getSetFormulae().at(i).getAtom() != NULL)
+			if (vec.at(i).getAtom() != NULL)
 			{
-				if ((checkAtomClash(*atom, *(iterator->getSetFormulae().at(i).getAtom())) == 0))
+				if ((checkAtomClash(*atom, *(vec.at(i).getAtom())) == 0))
 					return 0;
-				if (atom->equals(*(iterator->getSetFormulae().at(i).getAtom())) == 0)
-					return 2;
-
-				
+				if (atom->equals(*(vec.at(i).getAtom())) == 0)
+					return 2;			
 			}
 		}
 		iterator = iterator->getFather();
 	}
 	return 1;
-}
+} 
 
 
 void chooseRule(Tableau &T, vector<Node*> &nodeSet, Formula &f)
@@ -1414,7 +1413,7 @@ int main()
 	insertFormulaKB("( ( (V0{k} $NI V1{l}) $AD  ( ( V0{l} $NI V1{C1})$OR ( V0{t} $NI V1{C2})) )", KB);
 	*/
 
-	insertFormulaKB("( ( V0{a} $EQ V0{x}) $OR  ( V0{a} $QE V0{x})  )", KB);
+	//insertFormulaKB("( ( V0{a} $EQ V0{x}) $OR  ( V0{a} $QE V0{x})  )", KB);
 	//insertFormulaKB("( ( V0{v} $EQ V0{g}) $OR  ( V0{a} $QE V0{x})  )", KB);
 	//insertFormulaKB("( ( V0{l} $NI V1{C1}) $OR  ( V0{x} $NI V1{C2}) ) ", KB);	
 //	insertFormulaKB("( ( V0{l} $NI V1{C1}) $OR  ( V0{x} $NI V1{C2}) ) ", KB);
@@ -1422,10 +1421,10 @@ int main()
 //	insertFormulaKB("( V0{l} $IN V1{C1})", KB);	
 //	insertFormulaKB("(V0{ t } $IN V1{ C2 })", KB);
 
-	/* insertFormulaKB("( ( V0{l} $NI V1{C1}) $OR ( ( V0{t} $NI V1{C2}) $OR ( V0{x} $NI V1{C2}) ) )", KB);
-	insertFormulaKB("( ( V0{l} $NI V1{C1}) $OR  ( V0{x} $IN V1{C2}) ) ", KB);	
-	insertFormulaKB("( V0{l} $IN V1{C1})", KB);
-	cout << "---Radix Content ---" << endl; */
+    insertFormulaKB("( ( V0{l} $IN V1{C1}) $OR  ( V0{x} $NI V1{C2}) ) ", KB);	
+	 insertFormulaKB("( ( V0{l} $IN V1{C1}) $OR ( ( V0{t} $IN V1{C2}) $OR ( V0{x} $IN V1{C2}) ) )", KB);	
+	insertFormulaKB("( V0{l} $NI V1{C1})", KB);
+	cout << "---Radix Content ---" << endl; 
 	for (int i = 0; i< KB.size(); i++)
 	{
 		cout << KB.at(i).toString() << endl;
