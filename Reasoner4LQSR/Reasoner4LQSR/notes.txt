@@ -1,6 +1,13 @@
 
 
-
+/*
+	  Test getVarOrder
+	*/
+	Var b1("s", 0, 0);
+	Var b2("p", 0, 0);
+	int ind1 = -1;
+	int ind2 = -1;
+	cout << getVarsOrder(b1, b2, ind1, ind2) << " " << ind1 << " " << ind2 << endl;
 
 
 

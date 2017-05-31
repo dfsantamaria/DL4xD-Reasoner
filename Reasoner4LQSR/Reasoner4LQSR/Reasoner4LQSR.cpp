@@ -490,7 +490,7 @@ class Tableau
 private: Node* radix;
 private: vector <Node*> openBranches;
 private: vector <Node*> closedBranches;
-private: vector < vector < vector <Atom*> > > EqSet;
+private: vector < vector < vector <Var*> > > EqSet;
 public:
 	Tableau(Node* initial) { radix = initial; };
 	Tableau(int size_radix) { radix = new Node(size_radix); };
@@ -498,8 +498,34 @@ public:
 	int insertFormula(Formula &f) { radix->insertFormula(f);  return 0; };
 	vector<Node*>& getOpenBranches() { return openBranches; };
 	vector<Node*>& getClosedBranches() { return closedBranches; };
-	vector < vector < vector <Atom*> > >& getEqSet() { return EqSet; }
+	vector < vector < vector <Var*> > >& getEqSet() { return EqSet; }
 	void addClosedBranch(Node* node) { getClosedBranches().push_back(node); }
+	void buildEqSet()
+	{ 
+		if (getOpenBranches().size() == 0)  //no open branches case
+		   return;	
+
+		for (int i = 0; i < getOpenBranches().size(); i++)
+		{
+			EqSet.push_back(vector< vector<Var*>>());
+			EqSet.at(i).push_back(vector<Var*>{new Var( "s"+to_string(i), 0, 0)});
+		}
+
+
+	/*	for (int i = 0; i < EqSet.size(); i++)
+		{
+			cout << "Branch " << i << endl;
+			for (int j = 0; j < EqSet.at(i).size(); j++)
+			{
+				cout << "EqClass" << endl;
+				for (int s = 0; s < EqSet.at(i).at(j).size(); s++)
+				{
+					cout << EqSet.at(i).at(j).at(s)->toString() << endl;
+				}
+			}
+		}*/
+
+	};
 	~Tableau() {};
 };
 
@@ -1384,6 +1410,36 @@ int checkTableauRootClash(Tableau &T)
 	return 1; */
 }
 
+
+/*
+   Get the index of VVL of the vars given as input and return the element that come first.
+*/
+
+int getVarsOrder(Var &var1, Var &var2, int& index1, int& index2)
+{
+	if (var1.getVarType() != 0 || var2.getVarType() != 0 || var1.getType() != 0 || var2.getType() != 0)
+		return -2;
+
+	index1 = index2 = -1;
+	for (int i = 0; i < varSet.getVVLAt(0)->size(); i++)
+	{
+	  if (var1.getName().compare(varSet.getVVLAt(0)->at(i).getName()) == 0)
+		  index1 = i;
+	  if (var2.getName().compare(varSet.getVVLAt(0)->at(i).getName()) == 0)	  
+		  index2 = i;	  
+	  if (index1 != -1 && index2 != -1)
+		  break;
+	}
+	if (index1 != -1 && index2 != -1)
+	{
+		if (index1 > index2)
+			return 2;
+		else
+			return 1;
+	}
+	else return -1;
+}
+
 int main()
 {
 #ifdef debug  
@@ -1496,7 +1552,8 @@ int main()
 
 	}
 
-
+	cout << "Building EqSet" << endl;
+	tableau.buildEqSet();
 	
 
 	logFile.close();
