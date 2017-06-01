@@ -502,7 +502,7 @@ public:
 	void addClosedBranch(Node* node) { getClosedBranches().push_back(node); }	
 	void areInEqClass(Var& var1, int& varclass1, int& indx1, Var& var2, int& varclass2, int& indx2, int brindx)
 	{
-		for (int i = 0; i < getEqSet().at(brindx).size(); i++)
+	  for (int i = 0; i < getEqSet().at(brindx).size(); i++)
 		{
 			for (int j = 0; j < getEqSet().at(brindx).at(i).size(); j++)
 			{
@@ -522,7 +522,7 @@ public:
 
 	void mergeEqClass(int brindx, int indx1, int indx2)
 	 {		
-	  vector<Var*> acc;
+	  /*vector<Var*> acc;
 	  for (int i = 0; i < getEqSet().at(brindx).at(indx2).size(); i++)
 		{
 		  int j = 0;
@@ -532,8 +532,27 @@ public:
 		  if (j == getEqSet().at(brindx).at(indx1).size())
 			  acc.push_back(getEqSet().at(brindx).at(indx2).at(i));
 		}
-	  getEqSet().at(brindx).at(indx1).insert(getEqSet().at(brindx).at(indx1).end(), acc.begin(),acc.end());
-	 }
+	  getEqSet().at(brindx).at(indx1).insert(getEqSet().at(brindx).at(indx1).end(), acc.begin(),acc.end());*/ 
+		getEqSet().at(brindx).at(indx1).insert(getEqSet().at(brindx).at(indx1).end(), getEqSet().at(brindx).at(indx2).begin(), getEqSet().at(brindx).at(indx2).end());
+        getEqSet().at(brindx).erase(getEqSet().at(brindx).begin() + indx2); 
+	};
+	
+	void mergeEqClass(int brindx, int indx1, Var& var)
+	{	
+		int i = 0;
+		for (; i < getEqSet().at(brindx).at(indx1).size() && (getEqSet().at(brindx).at(indx1).at(i)->equal(&var) == 1); i++)
+			{
+			}
+			if (i == getEqSet().at(brindx).at(indx1).size())
+				getEqSet().at(brindx).at(indx1).push_back(&var);		
+	};
+
+	void mergeEqClass(int brindx, Var& var, int indx1)
+	{
+		getEqSet().at(brindx).at(indx1).insert(getEqSet().at(brindx).at(indx1).begin(), &var);
+			
+	};
+
 	~Tableau() {};
 };
 
@@ -1475,26 +1494,57 @@ void areInEqClass(Var& var1, int& varclass1, int& indx1, Var& var2, int& varclas
 
 void insertVarsEqClass(Var& var1, Var& var2, Tableau& tab, int brindx )
 {
-   int isRepresVar1, isRepresVar2, checkVar1, checkVar2 = -1;
-   tab.areInEqClass(var1, checkVar1, isRepresVar1, var2, checkVar2, isRepresVar2, brindx);
-   if (checkVar1 > -1 && checkVar2 > -1)  //case both vars are in some EqClass
-    {
-	  if (checkVar1 != checkVar2)      //make sure they are not in the same EqClass
-	   {
-		  
+  int isRepresVar1 = -1; int isRepresVar2 = -1; int checkVar1 = -1; int checkVar2 = -1; int ord1 = -1; int ord2 = -1; 
+  tab.areInEqClass(var1, checkVar1, isRepresVar1, var2, checkVar2, isRepresVar2, brindx);
+ // getVarsOrder(var1, var2, ord1, ord2);  
 
-		  tab.mergeEqClass(brindx, checkVar1, checkVar2);
+  if (checkVar1 > -1 && checkVar2 > -1)  //case both vars are in some EqClass
+  {	  
+	  if (checkVar1 != checkVar2)      //make sure they are not in the same EqClass
+	   {		  
+         if (isRepresVar1  != 0 || isRepresVar2 != 0) // one of them is not a representative of a EqClass		 
+		  {	
+			getVarsOrder( *(tab.getEqSet().at(brindx).at(checkVar1).at(0)), *(tab.getEqSet().at(brindx).at(checkVar2).at(0)), ord1, ord2);			
+		  }
+		 else //both representative
+		 {
+		   getVarsOrder(var1, var2, ord1, ord2);
+		 }
+		 if (ord1<ord2)          //Merge the second EqClass in the first
+			 tab.mergeEqClass(brindx, checkVar1, checkVar2);
+		 else        //Merge the first in the second
+			 tab.mergeEqClass(brindx, checkVar2, checkVar1);		   
 	   }
 	  //else do nothing
     }
-	   
-	// isVarInEqClass(var1, represVar1);
-
-/*  for (int i = 0; i < tab.getEqSet().at(brindx).size(); i++)      // EqSet for the current branch
-	{
-
-	}
-	*/
+  else // one of them is nor in some EqClass
+  {	 
+	 
+	  if (checkVar1 == -1 && checkVar2 == -1)
+	  {		
+		  getVarsOrder(var1, var2, ord1, ord2);
+		  if (ord1<ord2)
+		   tab.getEqSet().at(brindx).push_back(vector<Var*>{ &var1, &var2 });
+		  else
+		   tab.getEqSet().at(brindx).push_back(vector<Var*>{ &var2, &var1 });
+	  }
+	  else if (checkVar1 == -1)
+	  {
+		  getVarsOrder(*(tab.getEqSet().at(brindx).at(checkVar2).at(0)), var1, ord1, ord2);
+		  if (ord1 > ord2)
+			  tab.mergeEqClass(brindx, var1, checkVar2);
+		  else
+			  tab.mergeEqClass(brindx, checkVar2, var1);
+	  }
+	  else
+	  {
+		  getVarsOrder(*(tab.getEqSet().at(brindx).at(checkVar1).at(0)), var2, ord1, ord2);
+		  if (ord1 > ord2)
+			  tab.mergeEqClass(brindx, var2, checkVar1);
+		  else
+			  tab.mergeEqClass(brindx, checkVar1, var2);
+	  }	 
+   }
 }
 
 void buildEqSet(Tableau& tab)
@@ -1502,11 +1552,11 @@ void buildEqSet(Tableau& tab)
 	if (tab.getOpenBranches().size() == 0)  //no open branches case
 		return;
 
-	for (int i = 0; i < tab.getOpenBranches().size(); i++)
+	 for (int i = 0; i < tab.getOpenBranches().size(); i++)
 	{
-		tab.getEqSet().push_back(vector< vector<Var*>>());
-		tab.getEqSet().at(i).push_back(vector<Var*>()); //getEqSet().at(i).push_back(vector<Var*>{new Var( "s"+to_string(i), 0, 0)});
-	}
+		tab.getEqSet().push_back(vector< vector<Var*>>());	
+		
+	} 
 	for (int i = 0; i < tab.getOpenBranches().size(); i++)
 	{		
 		Node* node = tab.getOpenBranches().at(i);
@@ -1567,9 +1617,27 @@ int main()
 //	insertFormulaKB("(V0{ t } $IN V1{ C2 })", KB);
 
     
-	 insertFormulaKB("( ( V0{l} $IN V1{C1}) $OR ( ( V0{t} $EQ V0{x}) $OR ( V0{x} $NI V1{C2}) ) )", KB);	
-	 insertFormulaKB("( (V0{l} $NI V1{C1}) $OR (V0{t} $NI V1{C2} ) )", KB);
-     insertFormulaKB("( ( V0{l} $NI V1{C1}) $OR  ( V0{t} $QE V0{x}) ) ", KB);
+  //	 insertFormulaKB("( ( V0{l} $IN V1{C1}) $OR ( ( V0{t} $EQ V0{x}) $OR ( V0{x} $NI V1{C2}) ) )", KB);	
+  //	 insertFormulaKB("( (V0{l} $NI V1{C1}) $OR (V0{t} $NI V1{C2} ) )", KB);
+  //   insertFormulaKB("( ( V0{l} $NI V1{C1}) $OR  ( V0{t} $QE V0{x}) ) ", KB);
+
+	
+	insertFormulaKB("(V0{a} $NI V1{C1})", KB);
+	insertFormulaKB("(V0{x} $NI V1{C1})", KB);
+	insertFormulaKB("(V0{y} $NI V1{C1})", KB);
+	insertFormulaKB("(V0{z} $NI V1{C1})", KB);
+	insertFormulaKB("(V0{t} $NI V1{C1})", KB);
+	insertFormulaKB("(V0{k} $NI V1{C1})", KB);
+	insertFormulaKB("(V0{p} $NI V1{C1})", KB);
+
+	insertFormulaKB("( V0{t} $EQ V0{x})", KB);
+	//insertFormulaKB("( V0{y} $EQ V0{p})", KB);
+	insertFormulaKB("( V0{t} $EQ V0{k})", KB);
+	insertFormulaKB("( V0{p} $EQ V0{y})", KB);
+   // insertFormulaKB("( V0{t} $EQ V0{x})", KB);
+	
+	
+	//insertFormulaKB("( V0{j} $EQ V0{l})", KB);
 
 	cout << "---Radix Content ---" << endl; 
 	for (int i = 0; i< KB.size(); i++)
@@ -1586,9 +1654,7 @@ int main()
 		cout << (tableau.getTableau()->getSetFormulae().at(i).toString()) << "," << tableau.getTableau()->getSetFormulae().at(i).getFulfillness() << endl;
 	}
 
-
-
-
+	
 	cout << "Check VVL" << endl;
 	cout << "Vector 0" << endl;
 	printVector(*varSet.getVVLAt(0));
@@ -1644,6 +1710,20 @@ int main()
 	cout << "Building EqSet" << endl;
 	buildEqSet(tableau);
 	
+	cout << "Printing EqSet" << endl;
+
+	for (int i = 0; i < tableau.getEqSet().size(); i++)
+  	 {
+		cout << "Branch " << i << endl;
+		for (int j = 0; j < tableau.getEqSet().at(i).size(); j++)
+		{
+			cout << "EqClass " << j << endl;
+			for (int k = 0; k < tableau.getEqSet().at(i).at(j).size(); k++)
+			{
+				cout << tableau.getEqSet().at(i).at(j).at(k)->toString() << endl;
+			}
+		}
+	 }
 
 	logFile.close();
 
