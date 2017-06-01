@@ -1630,12 +1630,14 @@ int main()
 	insertFormulaKB("(V0{k} $NI V1{C1})", KB);
 	insertFormulaKB("(V0{p} $NI V1{C1})", KB);
 
-	insertFormulaKB("( V0{t} $EQ V0{x})", KB);
-	//insertFormulaKB("( V0{y} $EQ V0{p})", KB);
-	insertFormulaKB("( V0{t} $EQ V0{k})", KB);
-	insertFormulaKB("( V0{p} $EQ V0{y})", KB);
+	insertFormulaKB("( V0{p} $EQ V0{x})", KB);
+	insertFormulaKB("( V0{k} $EQ V0{a})", KB);
+	insertFormulaKB("( V0{t} $EQ V0{t})", KB);
+	insertFormulaKB("( V0{t} $EQ V0{z})", KB);
+	insertFormulaKB("( V0{z} $EQ V0{a})", KB);
+	insertFormulaKB("( V0{k} $EQ V0{a})", KB);
    // insertFormulaKB("( V0{t} $EQ V0{x})", KB);
-	
+	insertFormulaKB("( V0{k} $EQ V0{a})", KB);
 	
 	//insertFormulaKB("( V0{j} $EQ V0{l})", KB);
 
