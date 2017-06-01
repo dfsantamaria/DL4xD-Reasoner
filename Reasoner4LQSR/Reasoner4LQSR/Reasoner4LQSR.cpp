@@ -1714,7 +1714,7 @@ int main()
 	//	insertFormulaKB("( ($OA V0{l} $CO V0{j} $AO $IN V3{C333})  $AD (  ($OA V0{k} $CO V0{t} $AO $IN V3{C333}) $OR ($OA V0{s} $CO V0{v} $AO $IN V3{C333}) ) )", KB);
 
 
-	/*   insertFormulaKB("(V0{a} $EQ V0{d})", KB);
+	   insertFormulaKB("(V0{a} $EQ V0{d})", KB);
 	insertFormulaKB("($OA V0{l} $CO V0{j} $AO $NI V3{C333})", KB);
 	insertFormulaKB("($FA V0{z}) ($OA V0{z} $CO V0{z} $AO $NI V3{C333})",KB);
 	insertFormulaKB("($FA V0{z1}) ($FA V0{z2}) (V0{z1} $EQ V0{z2})", KB);
@@ -1722,7 +1722,7 @@ int main()
 	insertFormulaKB("($FA V0{z3}) ( (V0{z3} $NI V1{C1}) $AD (  (V0{b} $NI V1{C1}) $OR (V0{a} $NI V1{C1}) ) )", KB);
 	insertFormulaKB(" ($FA V0{z8}) ($FA V0{z9}) ( ( (V0{k} $NI V1{l}) $AD  ( ( V0{z8} $NI V1{C1})$OR ( V0{z9} $NI V1{C2}))$AD((  $OA V0{z9} $CO V0{z9} $AO $NI V1{C2})$OR (V0{z9} $IN V1{C2}))))", KB);
 	insertFormulaKB("( ( (V0{k} $NI V1{l}) $AD  ( ( V0{l} $NI V1{C1})$OR ( V0{t} $NI V1{C2})) )", KB);
-	*/
+	
 
 	//insertFormulaKB("( ( V0{a} $EQ V0{x}) $OR  ( V0{a} $QE V0{x})  )", KB);
 	//insertFormulaKB("( ( V0{v} $EQ V0{g}) $OR  ( V0{a} $QE V0{x})  )", KB);
@@ -1745,7 +1745,6 @@ int main()
 	insertFormulaKB("(V0{t} $NI V1{C1})", KB);
 	insertFormulaKB("(V0{k} $NI V1{C1})", KB);
 	insertFormulaKB("(V0{p} $NI V1{C1})", KB);
-
 	insertFormulaKB("( V0{x} $EQ V0{p})", KB);
 	insertFormulaKB("( V0{z} $EQ V0{t})", KB);
 	insertFormulaKB("( V0{p} $EQ V0{z})", KB);
