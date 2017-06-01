@@ -498,34 +498,42 @@ public:
 	int insertFormula(Formula &f) { radix->insertFormula(f);  return 0; };
 	vector<Node*>& getOpenBranches() { return openBranches; };
 	vector<Node*>& getClosedBranches() { return closedBranches; };
-	vector < vector < vector <Var*> > >& getEqSet() { return EqSet; }
-	void addClosedBranch(Node* node) { getClosedBranches().push_back(node); }
-	void buildEqSet()
-	{ 
-		if (getOpenBranches().size() == 0)  //no open branches case
-		   return;	
-
-		for (int i = 0; i < getOpenBranches().size(); i++)
+	vector < vector < vector <Var*> > >& getEqSet() { return EqSet; }	
+	void addClosedBranch(Node* node) { getClosedBranches().push_back(node); }	
+	void areInEqClass(Var& var1, int& varclass1, int& indx1, Var& var2, int& varclass2, int& indx2, int brindx)
+	{
+		for (int i = 0; i < getEqSet().at(brindx).size(); i++)
 		{
-			EqSet.push_back(vector< vector<Var*>>());
-			EqSet.at(i).push_back(vector<Var*>{new Var( "s"+to_string(i), 0, 0)});
-		}
-
-
-	/*	for (int i = 0; i < EqSet.size(); i++)
-		{
-			cout << "Branch " << i << endl;
-			for (int j = 0; j < EqSet.at(i).size(); j++)
+			for (int j = 0; j < getEqSet().at(brindx).at(i).size(); j++)
 			{
-				cout << "EqClass" << endl;
-				for (int s = 0; s < EqSet.at(i).at(j).size(); s++)
+				if (var1.equal(getEqSet().at(brindx).at(i).at(j)) == 0)
 				{
-					cout << EqSet.at(i).at(j).at(s)->toString() << endl;
+					indx1 = j;
+					varclass1 = i;
+				}
+				if (var2.equal(getEqSet().at(brindx).at(i).at(j)) == 0)
+				{
+					indx2 = j;
+					varclass2 = i;
 				}
 			}
-		}*/
+		}
+	}
 
-	};
+	void mergeEqClass(int brindx, int indx1, int indx2)
+	 {		
+	  vector<Var*> acc;
+	  for (int i = 0; i < getEqSet().at(brindx).at(indx2).size(); i++)
+		{
+		  int j = 0;
+		  for (; j < getEqSet().at(brindx).at(indx1).size() && (getEqSet().at(brindx).at(indx2).at(i)->equal(getEqSet().at(brindx).at(indx1).at(j))==1); j++)
+  		   {             
+		   }
+		  if (j == getEqSet().at(brindx).at(indx1).size())
+			  acc.push_back(getEqSet().at(brindx).at(indx2).at(i));
+		}
+	  getEqSet().at(brindx).at(indx1).insert(getEqSet().at(brindx).at(indx1).end(), acc.begin(),acc.end());
+	 }
 	~Tableau() {};
 };
 
@@ -1440,6 +1448,87 @@ int getVarsOrder(Var &var1, Var &var2, int& index1, int& index2)
 	else return -1;
 }
 
+/*
+   Check if the given vars are in some EqClass end returns the corresponding EqClass index and position.
+*/
+void areInEqClass(Var& var1, int& varclass1, int& indx1, Var& var2, int& varclass2, int& indx2, Tableau& tab, int brindx)
+ {
+	for (int i = 0; i < tab.getEqSet().at(brindx).size(); i++)
+	{
+		for (int j = 0; j < tab.getEqSet().at(brindx).at(i).size(); j++)
+		{
+		  if (var1.equal(tab.getEqSet().at(brindx).at(i).at(j)) == 0)
+			{
+			  indx1 = j;
+			  varclass1 = i;
+			}
+		  if (var2.equal(tab.getEqSet().at(brindx).at(i).at(j)) == 0)
+		  {
+			  indx2 = j;
+			  varclass2 = i;
+		  }
+		}
+	}
+ }
+
+
+
+void insertVarsEqClass(Var& var1, Var& var2, Tableau& tab, int brindx )
+{
+   int isRepresVar1, isRepresVar2, checkVar1, checkVar2 = -1;
+   tab.areInEqClass(var1, checkVar1, isRepresVar1, var2, checkVar2, isRepresVar2, brindx);
+   if (checkVar1 > -1 && checkVar2 > -1)  //case both vars are in some EqClass
+    {
+	  if (checkVar1 != checkVar2)      //make sure they are not in the same EqClass
+	   {
+		  
+
+		  tab.mergeEqClass(brindx, checkVar1, checkVar2);
+	   }
+	  //else do nothing
+    }
+	   
+	// isVarInEqClass(var1, represVar1);
+
+/*  for (int i = 0; i < tab.getEqSet().at(brindx).size(); i++)      // EqSet for the current branch
+	{
+
+	}
+	*/
+}
+
+void buildEqSet(Tableau& tab)
+{
+	if (tab.getOpenBranches().size() == 0)  //no open branches case
+		return;
+
+	for (int i = 0; i < tab.getOpenBranches().size(); i++)
+	{
+		tab.getEqSet().push_back(vector< vector<Var*>>());
+		tab.getEqSet().at(i).push_back(vector<Var*>()); //getEqSet().at(i).push_back(vector<Var*>{new Var( "s"+to_string(i), 0, 0)});
+	}
+	for (int i = 0; i < tab.getOpenBranches().size(); i++)
+	{		
+		Node* node = tab.getOpenBranches().at(i);
+		while (node != NULL)
+		{
+			for (int fcount = 0; fcount<node->getSetFormulae().size(); fcount++)
+			{
+				Formula localf = node->getSetFormulae().at(fcount); 
+				if (localf.getAtom() != NULL && localf.getAtom()->getAtomOp() == operators.getSetOpValue("$EQ")) //find equivalences
+				{
+					Var* var1 = localf.getAtom()->getElements().at(0);
+					Var* var2 = localf.getAtom()->getElements().at(1);
+					insertVarsEqClass(*var1, *var2, tab, i);
+					cout << localf.getAtom()->toString() <<endl;
+					 					
+				}
+			}
+			node = node->getFather();
+		}
+   }
+ }
+
 int main()
 {
 #ifdef debug  
@@ -1553,7 +1642,7 @@ int main()
 	}
 
 	cout << "Building EqSet" << endl;
-	tableau.buildEqSet();
+	buildEqSet(tableau);
 	
 
 	logFile.close();
