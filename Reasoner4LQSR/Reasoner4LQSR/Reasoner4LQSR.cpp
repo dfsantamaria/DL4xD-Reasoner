@@ -1598,7 +1598,9 @@ void buildEqSet(Tableau& tab)
    }
  }
 
- 
+ /*
+   To Complete
+ */
 int checkAtomClashEqSet(Atom &atom1, Atom &atom2, Tableau& t, int& brindx)
 {
  /* #ifdef debug 
@@ -1634,16 +1636,33 @@ int checkAtomClashEqSet(Atom &atom, Tableau& T, int& brindx) //0 for clash 1 for
 #endif
 #endif // debug
 	if (atom.getElements().size() == 2 && atom.getAtomOp() == 3)
-	{
-		cout << "kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk<<" << atom.getElementAt(0)->toString() << " " << atom.getElementAt(1)->toString() << endl;
-		return (T.sameEqClass(*(atom.getElementAt(0)), *(atom.getElementAt(1)), brindx));
+	{		
+	  return (T.sameEqClass(*(atom.getElementAt(0)), *(atom.getElementAt(1)), brindx));
 	}		
 	return 1;
 }
 
-int checkTableauClash(Tableau& T)
+int checkNodeClashEqSet(Atom& atom, Node& node, Tableau& T, int& brind)
 {
-	vector<int> toBeclosed;	
+	Node* tmp = &node;
+	while (tmp != NULL)
+	{
+		for (int j = 0; j < tmp->getSetFormulae().size(); j++)
+		{
+			if (tmp->getSetFormulae().at(j).getAtom() != NULL)
+			{
+				if (checkAtomClashEqSet(atom, *(tmp->getSetFormulae().at(j).getAtom()), T, brind) == 0)
+					return 0;
+			}
+		}
+		tmp = tmp->getFather();
+	}
+	return 1;
+}
+
+void checkTableauClash(Tableau& T)
+{
+	vector<int> toBeclosed;		
 	for (int i = 0; i < T.getOpenBranches().size(); i++)
 	{
 		int tobreak=0;
@@ -1652,12 +1671,11 @@ int checkTableauClash(Tableau& T)
 		for (int j = 0; j < currentNode->getSetFormulae().size()-1; j++)
 		{
 			if (currentNode->getSetFormulae().at(j).getAtom() != NULL)
-			{				
-
-				if (checkAtomClashEqSet(*(currentNode->getSetFormulae().at(j).getAtom()), T, i) == 1 &&
+			{
+			  if (checkAtomClashEqSet(*(currentNode->getSetFormulae().at(j).getAtom()), T, i) == 1 &&
 					checkAtomClashEqSet(*(currentNode->getSetFormulae().at(j).getAtom()), *(currentNode->getSetFormulae().at(j + 1).getAtom()), T, i) == 1)
 				{
-					//additionalcheck
+					tobreak=checkNodeClashEqSet(*(currentNode->getSetFormulae().at(j).getAtom()), *(currentNode->getFather()), T, i);
 				}
 				 
 				if(tobreak==0)
@@ -1667,7 +1685,6 @@ int checkTableauClash(Tableau& T)
 					T.getClosedBranches().push_back(currentNode);
 					break;
 				}
-
 			}
 		}
 
@@ -1675,8 +1692,7 @@ int checkTableauClash(Tableau& T)
 	for (int i = 0; i < toBeclosed.size(); i++) //removing closed branches
 	 {
 		T.getOpenBranches().erase(T.getOpenBranches().begin() + i);
-	 }	
-	return 1;
+	 }		
 }
 
 int main()
@@ -1824,8 +1840,8 @@ int main()
 		}
 	 }
 
-	cout << "Checking Clash: " << checkTableauClash(tableau) << endl;
-
+	cout << "Checking Clash: " << endl;
+	checkTableauClash(tableau);
 	cout << "Printing open branches" << endl;
 	for (int i = 0; i < tableau.getOpenBranches().size(); i++)
 	{
