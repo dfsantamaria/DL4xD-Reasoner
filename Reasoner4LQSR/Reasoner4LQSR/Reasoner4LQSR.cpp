@@ -520,6 +520,25 @@ public:
 		}
 	}
 
+	int sameEqClass(Var& var1, Var& var2, int brindx)
+	{		
+		for (int i = 0; i < getEqSet().at(brindx).size(); i++)
+		{
+			int varclass1 = -1;
+		    int varclass2 = -1;
+			for (int j = 0; j < getEqSet().at(brindx).at(i).size(); j++)
+			{				
+				if (var1.equal(getEqSet().at(brindx).at(i).at(j)) == 0)									
+					varclass1 = i;				
+				if (var2.equal(getEqSet().at(brindx).at(i).at(j)) == 0)					
+					varclass2 = i;
+				if (varclass1 > -1 && varclass2 > -1)
+					return 0;				
+			}
+		}
+		return 1;
+	}
+
 	void mergeEqClass(int brindx, int indx1, int indx2)
 	 {		
 	  /*vector<Var*> acc;
@@ -1579,6 +1598,87 @@ void buildEqSet(Tableau& tab)
    }
  }
 
+ 
+int checkAtomClashEqSet(Atom &atom1, Atom &atom2, Tableau& t, int& brindx)
+{
+ /* #ifdef debug 
+  #ifdef debugclash
+	 logFile << "-----Checking for Clash: " << atom1.toString() << " and " << atom2.toString() << " with Equivalence Classes"<< endl;
+  #endif // debug
+  #endif
+	if (atom1.getElements().size() == atom2.getElements().size())
+	{
+		if (checkAtomOpClash(atom1.getAtomOp(), atom2.getAtomOp()) == 1)
+			return 1;
+
+		for (int i = 0; i < atom1.getElements().size(); i++)
+		{
+			//cout<<atom1.getElementAt(i)->toString()<<endl;
+			//cout << atom2.getElementAt(i)->toString() << endl;
+			//cout << atom1.getElementAt(i)->equal(atom2.getElementAt(i)) << endl;
+			if (atom1.getElementAt(i)->equal(atom2.getElementAt(i)) != 0)
+				return 1;
+		}
+		
+	}*/
+	return 1;
+} 
+
+
+
+int checkAtomClashEqSet(Atom &atom, Tableau& T, int& brindx) //0 for clash 1 for no-clash
+{
+#ifdef debug
+#ifdef debugclash
+	logFile << "-----Checking for Clash: " << atom.toString() << " in EqSet" << endl;
+#endif
+#endif // debug
+	if (atom.getElements().size() == 2 && atom.getAtomOp() == 3)
+	{
+		cout << "kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk<<" << atom.getElementAt(0)->toString() << " " << atom.getElementAt(1)->toString() << endl;
+		return (T.sameEqClass(*(atom.getElementAt(0)), *(atom.getElementAt(1)), brindx));
+	}		
+	return 1;
+}
+
+int checkTableauClash(Tableau& T)
+{
+	vector<int> toBeclosed;	
+	for (int i = 0; i < T.getOpenBranches().size(); i++)
+	{
+		int tobreak=0;
+		Node* currentNode = T.getOpenBranches().at(i);
+		int clash = 1;
+		for (int j = 0; j < currentNode->getSetFormulae().size()-1; j++)
+		{
+			if (currentNode->getSetFormulae().at(j).getAtom() != NULL)
+			{				
+
+				if (checkAtomClashEqSet(*(currentNode->getSetFormulae().at(j).getAtom()), T, i) == 1 &&
+					checkAtomClashEqSet(*(currentNode->getSetFormulae().at(j).getAtom()), *(currentNode->getSetFormulae().at(j + 1).getAtom()), T, i) == 1)
+				{
+					//additionalcheck
+				}
+				 
+				if(tobreak==0)
+				{
+					i = i + 1;
+					toBeclosed.push_back(i);
+					T.getClosedBranches().push_back(currentNode);
+					break;
+				}
+
+			}
+		}
+
+	}
+	for (int i = 0; i < toBeclosed.size(); i++) //removing closed branches
+	 {
+		T.getOpenBranches().erase(T.getOpenBranches().begin() + i);
+	 }	
+	return 1;
+}
+
 int main()
 {
 #ifdef debug  
@@ -1630,14 +1730,11 @@ int main()
 	insertFormulaKB("(V0{k} $NI V1{C1})", KB);
 	insertFormulaKB("(V0{p} $NI V1{C1})", KB);
 
-	insertFormulaKB("( V0{p} $EQ V0{x})", KB);
-	insertFormulaKB("( V0{k} $EQ V0{a})", KB);
-	insertFormulaKB("( V0{t} $EQ V0{t})", KB);
-	insertFormulaKB("( V0{t} $EQ V0{z})", KB);
-	insertFormulaKB("( V0{z} $EQ V0{a})", KB);
-	insertFormulaKB("( V0{k} $EQ V0{a})", KB);
-   // insertFormulaKB("( V0{t} $EQ V0{x})", KB);
-	insertFormulaKB("( V0{k} $EQ V0{a})", KB);
+	insertFormulaKB("( V0{x} $EQ V0{p})", KB);
+	insertFormulaKB("( V0{z} $EQ V0{t})", KB);
+	insertFormulaKB("( V0{p} $EQ V0{z})", KB);
+	insertFormulaKB("( V0{z} $QE V0{x})", KB);
+	
 	
 	//insertFormulaKB("( V0{j} $EQ V0{l})", KB);
 
@@ -1726,6 +1823,38 @@ int main()
 			}
 		}
 	 }
+
+	cout << "Checking Clash: " << checkTableauClash(tableau) << endl;
+
+	cout << "Printing open branches" << endl;
+	for (int i = 0; i < tableau.getOpenBranches().size(); i++)
+	{
+		cout << "Branch: " << i << endl;
+		Node* tmp = tableau.getOpenBranches().at(i);
+		while (tmp != NULL)
+		{
+			for (int j = 0; j < tmp->getSetFormulae().size(); j++)
+				cout << tmp->getSetFormulae().at(j).toString() << endl;
+			cout << "----" << endl;
+			tmp = tmp->getFather();
+		}
+
+	}
+
+	cout << "Printing closed branches" << endl;
+	for (int i = 0; i < tableau.getClosedBranches().size(); i++)
+	{
+		cout << "Branch: " << i << endl;
+		Node* tmp = tableau.getClosedBranches().at(i);
+		while (tmp != NULL)
+		{
+			for (int j = 0; j < tmp->getSetFormulae().size(); j++)
+				cout << tmp->getSetFormulae().at(j).toString() << endl;
+			cout << "----" << endl;
+			tmp = tmp->getFather();
+		}
+
+	}
 
 	logFile.close();
 
