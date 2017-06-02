@@ -12,11 +12,11 @@
 #include <sstream>
 
 using namespace std;
-//#define debug                   //debug istructions
+ //#define debug                   //debug istructions
 //#define debugclash              //debug istructions for clash checking
 //#define debugexpand             //debug istructions for expansion rule
 //#define debuginsertf            //debug istructions for internal formula translation
-
+//#define eqsetdebug                 //debug istructions for computing EqSet
 std::ofstream logFile("LOG.log");   //log file
 
 									/*
@@ -552,12 +552,25 @@ public:
 			  acc.push_back(getEqSet().at(brindx).at(indx2).at(i));
 		}
 	  getEqSet().at(brindx).at(indx1).insert(getEqSet().at(brindx).at(indx1).end(), acc.begin(),acc.end());*/ 
+         #ifdef debug 
+         #ifdef eqsetdebug
+	     	logFile << "------- Merging equivalence classes with representative " << getEqSet().at(brindx).at(indx1).at(0)->toString() << " and " << getEqSet().at(brindx).at(indx2).at(0)->toString() << " in branch " << brindx << endl;
+          #endif
+        #endif // debug
+
 		getEqSet().at(brindx).at(indx1).insert(getEqSet().at(brindx).at(indx1).end(), getEqSet().at(brindx).at(indx2).begin(), getEqSet().at(brindx).at(indx2).end());
         getEqSet().at(brindx).erase(getEqSet().at(brindx).begin() + indx2); 
 	};
 	
 	void mergeEqClass(int brindx, int indx1, Var& var)
 	{	
+        #ifdef debug 
+         #ifdef eqsetdebug
+		 logFile << "------- Merging equivalence class with representative " << getEqSet().at(brindx).at(indx1).at(0)->toString() << " and " << var.toString() << " in branch " << brindx << endl;
+          #endif
+       #endif // debug
+
+
 		int i = 0;
 		for (; i < getEqSet().at(brindx).at(indx1).size() && (getEqSet().at(brindx).at(indx1).at(i)->equal(&var) == 1); i++)
 			{
@@ -568,6 +581,11 @@ public:
 
 	void mergeEqClass(int brindx, Var& var, int indx1)
 	{
+      #ifdef debug 
+       #ifdef eqsetdebug
+		logFile << "------- Merging " << var.toString() << " and equivalence class with representative "<<getEqSet().at(brindx).at(indx1).at(0)->toString() << " in branch " << brindx << endl;
+          #endif
+        #endif // debug
 		getEqSet().at(brindx).at(indx1).insert(getEqSet().at(brindx).at(indx1).begin(), &var);
 			
 	};
@@ -1513,6 +1531,11 @@ void areInEqClass(Var& var1, int& varclass1, int& indx1, Var& var2, int& varclas
 
 void insertVarsEqClass(Var& var1, Var& var2, Tableau& tab, int brindx )
 {
+#ifdef debug 
+#ifdef eqsetdebug
+	logFile << "------- Computing equivalence classes for " << var1.toString() << " and " << var2.toString() << " in branch " << brindx << endl;
+#endif
+#endif // debug
   int isRepresVar1 = -1; int isRepresVar2 = -1; int checkVar1 = -1; int checkVar2 = -1; int ord1 = -1; int ord2 = -1; 
   tab.areInEqClass(var1, checkVar1, isRepresVar1, var2, checkVar2, isRepresVar2, brindx);
  // getVarsOrder(var1, var2, ord1, ord2);  
@@ -1568,6 +1591,12 @@ void insertVarsEqClass(Var& var1, Var& var2, Tableau& tab, int brindx )
 
 void buildEqSet(Tableau& tab)
 {
+#ifdef debug 
+#ifdef eqsetdebug
+	logFile << "----- Computing equivalence classes set "<< endl;	
+#endif
+#endif // debug
+
 	if (tab.getOpenBranches().size() == 0)  //no open branches case
 		return;
 
@@ -1585,13 +1614,18 @@ void buildEqSet(Tableau& tab)
 			{
 				Formula localf = node->getSetFormulae().at(fcount); 
 				if (localf.getAtom() != NULL && localf.getAtom()->getAtomOp() == operators.getSetOpValue("$EQ")) //find equivalences
-				{
+				  if(localf.getAtom()->getElementAt(0)->equal(localf.getAtom()->getElementAt(1))==1)  // ignore the case a=a
+				   {
+                     #ifdef debug 
+                        #ifdef eqsetdebug
+					           logFile << "----- Computing equivalence classes for " <<localf.getAtom()->toString() <<" in branch " << i << endl;
+                        #endif
+                      #endif // debug
+
 					Var* var1 = localf.getAtom()->getElements().at(0);
 					Var* var2 = localf.getAtom()->getElements().at(1);
-					insertVarsEqClass(*var1, *var2, tab, i);
-					
-					 					
-				}
+					insertVarsEqClass(*var1, *var2, tab, i);					 					
+				   }
 			}
 			node = node->getFather();
 		}
@@ -1608,9 +1642,10 @@ int checkAtomClashEqSet(Atom &atom1, Atom &atom2, Tableau& t, int& brindx)
 	 logFile << "-----Checking for Clash: " << atom1.toString() << " and " << atom2.toString() << " with Equivalence Classes"<< endl;
   #endif // debug
   #endif
-    
+	
+
 	if (atom1.getElements().size() == atom2.getElements().size())
-	{
+	{   
 		if (checkAtomOpClash(atom1.getAtomOp(), atom2.getAtomOp()) == 1)
 			return 1;
 
@@ -1640,7 +1675,8 @@ int checkAtomClashEqSet(Atom &atom, Tableau& T, int& brindx) //0 for clash 1 for
 #endif
 #endif // debug
 	if (atom.getElements().size() == 2 && atom.getAtomOp() == 3)
-	{		
+	{
+		//cout << "clash" << atom.toString() << " "<< T.sameEqClass(*(atom.getElementAt(0)), *(atom.getElementAt(1)), brindx) <<endl;
 	  return (T.sameEqClass(*(atom.getElementAt(0)), *(atom.getElementAt(1)), brindx));
 	}		
 	return 1;
@@ -1676,19 +1712,21 @@ void checkTableauClash(Tableau& T)
 		{
 			if (currentNode->getSetFormulae().at(j).getAtom() != NULL)
 			{
+				
 			  if (checkAtomClashEqSet(*(currentNode->getSetFormulae().at(j).getAtom()), T, i) == 1 &&
 					checkAtomClashEqSet(*(currentNode->getSetFormulae().at(j).getAtom()), *(currentNode->getSetFormulae().at(j + 1).getAtom()), T, i) == 1)
 				{
 					tobreak=checkNodeClashEqSet(*(currentNode->getSetFormulae().at(j).getAtom()), *(currentNode->getFather()), T, i);
 				}
-				 
-				if(tobreak==0)
-				{
-					i = i + 1;
-					toBeclosed.push_back(i);
-					T.getClosedBranches().push_back(currentNode);
-					break;
-				}
+			  else tobreak = 0;
+			 
+			  if (tobreak == 0)
+			  {
+				  i = i + 1;
+				  toBeclosed.push_back(i);
+				  T.getClosedBranches().push_back(currentNode);
+				  break;
+			  }
 			}
 		}
 
@@ -1737,9 +1775,9 @@ int main()
 //	insertFormulaKB("(V0{ t } $IN V1{ C2 })", KB);
 
     
-  	 insertFormulaKB("( ( V0{l} $IN V1{C1}) $OR ( ( V0{t} $EQ V0{x}) $OR ( V0{x} $NI V1{C2}) ) )", KB);	
-  	 insertFormulaKB("( (V0{l} $NI V1{C1}) $OR (V0{t} $NI V1{C2} ) )", KB);
-     insertFormulaKB("( ( V0{l} $NI V1{C1}) $OR  ( V0{t} $QE V0{x}) ) ", KB);
+  //	 insertFormulaKB("( ( V0{l} $IN V1{C1}) $OR ( ( V0{t} $EQ V0{x}) $OR ( V0{x} $NI V1{C2}) ) )", KB);	
+  //	 insertFormulaKB("( (V0{l} $NI V1{C1}) $OR (V0{t} $NI V1{C2} ) )", KB);
+  //   insertFormulaKB("( ( V0{l} $NI V1{C1}) $OR  ( V0{t} $QE V0{x}) ) ", KB);
 
 	
 	/*insertFormulaKB("(V0{a} $NI V1{C1})", KB);
@@ -1755,7 +1793,16 @@ int main()
 	insertFormulaKB("( V0{z} $QE V0{x})", KB); */
 	
 	
-	//insertFormulaKB("( V0{j} $EQ V0{l})", KB);
+	
+
+	insertFormulaKB("($OA V0{ a } $CO V0{ b } $AO $IN V3{ C333 })", KB);
+	insertFormulaKB("($OA V0{ c } $CO V0{ d } $AO $NI V3{ C333 })", KB);	
+	insertFormulaKB("( V0{a} $EQ V0{x})", KB);
+	insertFormulaKB("( V0{c} $EQ V0{x})", KB);
+	insertFormulaKB("( V0{b} $EQ V0{y})", KB);
+	insertFormulaKB("( V0{d} $EQ V0{k})", KB);
+	insertFormulaKB("( V0{k} $EQ V0{y})", KB);
+	insertFormulaKB("( V0{c} $EQ V0{c})", KB);
 
 	cout << "---Radix Content ---" << endl; 
 	for (int i = 0; i< KB.size(); i++)
