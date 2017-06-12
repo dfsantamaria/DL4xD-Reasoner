@@ -1890,7 +1890,7 @@ int main()
 			}
 		}
 	 } */
-
+	
 	cout << "Checking Clash: " << endl;
 	checkTableauClash(tableau);
 	cout << "Printing open branches" << endl;
