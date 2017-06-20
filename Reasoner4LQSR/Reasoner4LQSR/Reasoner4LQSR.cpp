@@ -1931,6 +1931,9 @@ int main()
 }
 
 
+
+
+
 /*
 Mapping from 4LQSR formulae in semi-internal formulae
 $FA -> ForAll
