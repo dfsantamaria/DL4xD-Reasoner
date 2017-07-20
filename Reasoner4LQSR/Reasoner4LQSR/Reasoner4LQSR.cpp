@@ -1753,7 +1753,28 @@ int main()
 	vector<Formula> expKB;
 	//	insertFormulaKB("( ($OA V0{l} $CO V0{j} $AO $IN V3{C333})  $AD (  ($OA V0{k} $CO V0{t} $AO $IN V3{C333}) $OR ($OA V0{s} $CO V0{v} $AO $IN V3{C333}) ) )", KB);
 
+    insertFormulaKB(" (V0{Ann} $IN V1{Person}) ", KB);
+	insertFormulaKB(" (V0{Ann} $IN V1{VeryYoung}) ", KB);
+	insertFormulaKB(" ($FA V0{x}) ((V0{x} $NI V1{VeryYoung}) $OR (V0{x} $IN V1{Person}) ", KB);
+	insertFormulaKB(" ($FA V0{y}) ((V0{y} $NI V1{Kid}) $OR (V0{y} $IN V1{VeryYoung})  ", KB);
+	insertFormulaKB(" ($FA V0{z}) (((V0{z} $NI V1{Person}) $OR (V0{z} $NI V1{VeryYoung}) $OR (V0{z} $IN V1{Kid})) ", KB);
+	
 
+	/*
+	insertFormulaKB("($FA V0{x}) ($FA V0{y})( ($OA V0{x} $CO V0{y} $AO $NI V3{hasBrother}) $OR ($OA V0{y} $CO V0{z} $AO $IN V3{hasBrother})) ", KB);
+	insertFormulaKB("(  $OA V0{Ann} $CO V0{Paul} $AO $IN V3{hasParent})", KB);
+	insertFormulaKB("(  $OA V0{John} $CO V0{Ann} $AO $IN V3{hasParent})", KB);
+	insertFormulaKB("(  $OA V0{Paul} $CO V0{Bob} $AO $IN V3{hasBrother})", KB);
+	insertFormulaKB("(  $OA V0{Ann} $CO V0{James} $AO $IN V3{hasBrother})", KB);
+	insertFormulaKB("(  V0{John} $IN V1{Male})", KB);
+	insertFormulaKB("(  V0{Bob} $IN V1{Male})", KB);
+	insertFormulaKB("(  V0{James} $IN V1{Male})", KB);
+	insertFormulaKB("(  V0{Ann} $IN V1{Female})", KB);
+	insertFormulaKB("(  V0{Paul} $IN V1{Male})", KB);
+	*/
+
+
+	/*
 	   insertFormulaKB("(V0{a} $EQ V0{d})", KB);
 	insertFormulaKB("($OA V0{l} $CO V0{j} $AO $NI V3{C333})", KB);
 	insertFormulaKB("($FA V0{z}) ($OA V0{z} $CO V0{z} $AO $NI V3{C333})",KB);
@@ -1762,6 +1783,7 @@ int main()
 	insertFormulaKB("($FA V0{z3}) ( (V0{z3} $NI V1{C1}) $AD (  (V0{b} $NI V1{C1}) $OR (V0{a} $NI V1{C1}) ) )", KB);
 	insertFormulaKB(" ($FA V0{z8}) ($FA V0{z9}) ( ( (V0{k} $NI V1{l}) $AD  ( ( V0{z8} $NI V1{C1})$OR ( V0{z9} $NI V1{C2}))$AD((  $OA V0{z9} $CO V0{z9} $AO $NI V1{C2})$OR (V0{z9} $IN V1{C2}))))", KB);
 	insertFormulaKB("( ( (V0{k} $NI V1{l}) $AD  ( ( V0{l} $NI V1{C1})$OR ( V0{t} $NI V1{C2})) )", KB); 
+	*/
 	
 
 	//insertFormulaKB("( ( V0{a} $EQ V0{x}) $OR  ( V0{a} $QE V0{x})  )", KB);
@@ -1844,7 +1866,7 @@ int main()
 
 
 	cout << "Printing open branches" << endl;
-/*	for (int i = 0; i < tableau.getOpenBranches().size(); i++)
+	for (int i = 0; i < tableau.getOpenBranches().size(); i++)
 	{
 		cout << "Branch: " << i << endl;
 		Node* tmp = tableau.getOpenBranches().at(i);
@@ -1856,10 +1878,10 @@ int main()
 			tmp = tmp->getFather();
 		}
 
-	}*/
+	}
 
 	cout << "Printing closed branches" << endl;
-/*	for (int i = 0; i < tableau.getClosedBranches().size(); i++)
+	for (int i = 0; i < tableau.getClosedBranches().size(); i++)
 	{
 		cout << "Branch: " << i << endl;
 		Node* tmp = tableau.getClosedBranches().at(i);
@@ -1871,14 +1893,14 @@ int main()
 			tmp = tmp->getFather();
 		}
 
-	} */
+	} 
 
 	cout << "Building EqSet" << endl;
 	buildEqSet(tableau);
 	
 	cout << "Printing EqSet" << endl;
 
-	/* for (int i = 0; i < tableau.getEqSet().size(); i++)
+	 for (int i = 0; i < tableau.getEqSet().size(); i++)
   	 {
 		cout << "Branch " << i << endl;
 		for (int j = 0; j < tableau.getEqSet().at(i).size(); j++)
@@ -1889,7 +1911,7 @@ int main()
 				cout << tableau.getEqSet().at(i).at(j).at(k)->toString() << endl;
 			}
 		}
-	 } */
+	 } 
 	
 	cout << "Checking Clash: " << endl;
 	checkTableauClash(tableau);
