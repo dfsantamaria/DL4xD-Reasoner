@@ -1756,7 +1756,7 @@ int main()
 	/*
     insertFormulaKB(" (V0{Ann} $IN V1{Person}) ", KB);
 	//insertFormulaKB(" (V0{Ann} $EQ V0{Anna}) ", KB);
-	insertFormulaKB(" ($FA V0{x}) ((V0{x} $NI V1{VeryYoung}) $OR (V0{x} $IN V1{Person})) ", KB);
+	insertFormulaKB(" ($FA V0{x}) ((V0{x} $NI V1{Kid}) $OR (V0{x} $IN V1{Person})) ", KB);
 	insertFormulaKB(" ($FA V0{y}) ((V0{y} $NI V1{Kid}) $OR (V0{y} $IN V1{VeryYoung}))  ", KB);
 	insertFormulaKB(" ($FA V0{z}) (( (V0{z} $NI V1{Person}) $OR (V0{z} $NI V1{VeryYoung})) $OR (V0{z} $IN V1{Kid})) ", KB);
 	
