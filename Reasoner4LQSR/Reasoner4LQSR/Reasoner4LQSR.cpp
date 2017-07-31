@@ -1753,14 +1753,14 @@ int main()
 	vector<Formula> expKB;
 	//	insertFormulaKB("( ($OA V0{l} $CO V0{j} $AO $IN V3{C333})  $AD (  ($OA V0{k} $CO V0{t} $AO $IN V3{C333}) $OR ($OA V0{s} $CO V0{v} $AO $IN V3{C333}) ) )", KB);
 
-	/*
+	
     insertFormulaKB(" (V0{Ann} $IN V1{Person}) ", KB);
 	//insertFormulaKB(" (V0{Ann} $EQ V0{Anna}) ", KB);
 	insertFormulaKB(" ($FA V0{x}) ((V0{x} $NI V1{Kid}) $OR (V0{x} $IN V1{Person})) ", KB);
 	insertFormulaKB(" ($FA V0{y}) ((V0{y} $NI V1{Kid}) $OR (V0{y} $IN V1{VeryYoung}))  ", KB);
 	insertFormulaKB(" ($FA V0{z}) (( (V0{z} $NI V1{Person}) $OR (V0{z} $NI V1{VeryYoung})) $OR (V0{z} $IN V1{Kid})) ", KB);
 	
-	*/
+	
 
 	/*
 	insertFormulaKB("($FA V0{x}) ($FA V0{y})( ($OA V0{x} $CO V0{y} $AO $NI V3{hasBrother}) $OR ($OA V0{y} $CO V0{z} $AO $IN V3{hasBrother})) ", KB);
@@ -1802,14 +1802,14 @@ int main()
   //   insertFormulaKB("( ( V0{l} $NI V1{C1}) $OR  ( V0{t} $QE V0{x}) ) ", KB);
 
 	
-	insertFormulaKB("(V0{Ann} $IN V1{Person})", KB);
+/*	insertFormulaKB("(V0{Ann} $IN V1{Person})", KB);
 	insertFormulaKB("(V0{Paul} $IN V1{Person})", KB);
 	insertFormulaKB("(V0{John} $IN V1{Person})", KB);
 	insertFormulaKB("(V0{Carl} $IN V1{Person})", KB);	
 	insertFormulaKB("( V0{Carl} $EQ V0{Carlo})", KB);
 	insertFormulaKB("( V0{Paul} $EQ V0{Paolo})", KB);
 	insertFormulaKB("( V0{Ann} $EQ V0{Anna})", KB);
-	insertFormulaKB("( V0{Annet} $QE V0{Anna})", KB); 
+	insertFormulaKB("( V0{Annet} $QE V0{Anna})", KB); */
 	//insertFormulaKB("( V0{Annet} $EQ V0{Ann})", KB);
 	
 	
