@@ -183,7 +183,7 @@ public:
 class Operators
 {
 private:
-	vector<string> logOp = { "$OR","$AD","$RO","$DA" }; //logic operators
+	vector<string> logOp = { "$OR","$AD","$RO","$DA", "$NG" }; //logic operators
 	vector<string> setOp = { "$IN", "$EQ", "$NI", "$QE", "$OA", "$AO", "$CO" }; //set operators
 	vector<string> qutOp = { "$FA" };	//quantifiers
 public:
@@ -1753,79 +1753,15 @@ int main()
 	vector<Formula> expKB;
 	//	insertFormulaKB("( ($OA V0{l} $CO V0{j} $AO $IN V3{C333})  $AD (  ($OA V0{k} $CO V0{t} $AO $IN V3{C333}) $OR ($OA V0{s} $CO V0{v} $AO $IN V3{C333}) ) )", KB);
 
-	
-    insertFormulaKB(" (V0{Ann} $IN V1{Person}) ", KB);
-	//insertFormulaKB(" (V0{Ann} $EQ V0{Anna}) ", KB);
-	insertFormulaKB(" ($FA V0{x}) ((V0{x} $NI V1{Kid}) $OR (V0{x} $IN V1{Person})) ", KB);
-	insertFormulaKB(" ($FA V0{y}) ((V0{y} $NI V1{Kid}) $OR (V0{y} $IN V1{VeryYoung}))  ", KB);
-	insertFormulaKB(" ($FA V0{z}) (( (V0{z} $NI V1{Person}) $OR (V0{z} $NI V1{VeryYoung})) $OR (V0{z} $IN V1{Kid})) ", KB);
-	
-	
-
-	/*
-	insertFormulaKB("($FA V0{x}) ($FA V0{y})( ($OA V0{x} $CO V0{y} $AO $NI V3{hasBrother}) $OR ($OA V0{y} $CO V0{z} $AO $IN V3{hasBrother})) ", KB);
-	insertFormulaKB("(  $OA V0{Ann} $CO V0{Paul} $AO $IN V3{hasParent})", KB);
-	insertFormulaKB("(  $OA V0{John} $CO V0{Ann} $AO $IN V3{hasParent})", KB);
-	insertFormulaKB("(  $OA V0{Paul} $CO V0{Bob} $AO $IN V3{hasBrother})", KB);
-	insertFormulaKB("(  $OA V0{Ann} $CO V0{James} $AO $IN V3{hasBrother})", KB);
-	insertFormulaKB("(  V0{John} $IN V1{Male})", KB);
-	insertFormulaKB("(  V0{Bob} $IN V1{Male})", KB);
-	insertFormulaKB("(  V0{James} $IN V1{Male})", KB);
-	insertFormulaKB("(  V0{Ann} $IN V1{Female})", KB);
-	insertFormulaKB("(  V0{Paul} $IN V1{Male})", KB);
-	*/
-
-
-	/*
-	   insertFormulaKB("(V0{a} $EQ V0{d})", KB);
-	insertFormulaKB("($OA V0{l} $CO V0{j} $AO $NI V3{C333})", KB);
-	insertFormulaKB("($FA V0{z}) ($OA V0{z} $CO V0{z} $AO $NI V3{C333})",KB);
-	insertFormulaKB("($FA V0{z1}) ($FA V0{z2}) (V0{z1} $EQ V0{z2})", KB);
-	//insertFormulaKB("($OA V0{l} $CO V0{j} $AO $IN V3{C333})", KB);
-	insertFormulaKB("($FA V0{z3}) ( (V0{z3} $NI V1{C1}) $AD (  (V0{b} $NI V1{C1}) $OR (V0{a} $NI V1{C1}) ) )", KB);
-	insertFormulaKB(" ($FA V0{z8}) ($FA V0{z9}) ( ( (V0{k} $NI V1{l}) $AD  ( ( V0{z8} $NI V1{C1})$OR ( V0{z9} $NI V1{C2}))$AD((  $OA V0{z9} $CO V0{z9} $AO $NI V1{C2})$OR (V0{z9} $IN V1{C2}))))", KB);
-	insertFormulaKB("( ( (V0{k} $NI V1{l}) $AD  ( ( V0{l} $NI V1{C1})$OR ( V0{t} $NI V1{C2})) )", KB); 
-	*/
-	
-
-	//insertFormulaKB("( ( V0{a} $EQ V0{x}) $OR  ( V0{a} $QE V0{x})  )", KB);
-	//insertFormulaKB("( ( V0{v} $EQ V0{g}) $OR  ( V0{a} $QE V0{x})  )", KB);
-	//insertFormulaKB("( ( V0{l} $NI V1{C1}) $OR  ( V0{x} $NI V1{C2}) ) ", KB);	
-//	insertFormulaKB("( ( V0{l} $NI V1{C1}) $OR  ( V0{x} $NI V1{C2}) ) ", KB);
-//	insertFormulaKB("( ( V0{l} $NI V1{C1}) $OR ( ( V0{t} $NI V1{C2}) $OR ( V0{x} $NI V1{C2}) ) )", KB);
-//	insertFormulaKB("( V0{l} $IN V1{C1})", KB);	
-//	insertFormulaKB("(V0{ t } $IN V1{ C2 })", KB);
-
-    
-  //	 insertFormulaKB("( ( V0{l} $IN V1{C1}) $OR ( ( V0{t} $EQ V0{x}) $OR ( V0{x} $NI V1{C2}) ) )", KB);	
-  //	 insertFormulaKB("( (V0{l} $NI V1{C1}) $OR (V0{t} $NI V1{C2} ) )", KB);
-  //   insertFormulaKB("( ( V0{l} $NI V1{C1}) $OR  ( V0{t} $QE V0{x}) ) ", KB);
-
-	
-/*	insertFormulaKB("(V0{Ann} $IN V1{Person})", KB);
-	insertFormulaKB("(V0{Paul} $IN V1{Person})", KB);
-	insertFormulaKB("(V0{John} $IN V1{Person})", KB);
-	insertFormulaKB("(V0{Carl} $IN V1{Person})", KB);	
-	insertFormulaKB("( V0{Carl} $EQ V0{Carlo})", KB);
-	insertFormulaKB("( V0{Paul} $EQ V0{Paolo})", KB);
-	insertFormulaKB("( V0{Ann} $EQ V0{Anna})", KB);
-	insertFormulaKB("( V0{Annet} $QE V0{Anna})", KB); */
-	//insertFormulaKB("( V0{Annet} $EQ V0{Ann})", KB);
-	
-	
-	
-
-	//insertFormulaKB("($OA V0{ a } $CO V0{ b } $AO $IN V3{ C333 })", KB);
-	//insertFormulaKB("($OA V0{ c } $CO V0{ d } $AO $IN V3{ C333 })", KB);	
-	/*insertFormulaKB("( V0{a} $EQ V0{x})", KB);
-    insertFormulaKB("( V0{k} $EQ V0{y})", KB);
-	insertFormulaKB("( V0{y} $EQ V0{x})", KB);
-
-	insertFormulaKB("( V0{c} $EQ V0{b})", KB);
-	insertFormulaKB("( V0{b} $EQ V0{r})", KB);
-	insertFormulaKB("( V0{d} $EQ V0{b})", KB);
-	
-	insertFormulaKB("( V0{c} $EQ V0{c})", KB);*/
+	std::ifstream file("Example/ex1.txt");
+	std::string str;
+	while (std::getline(file, str))
+	{		
+		if ((str.rfind("//", 0) == 0) || str.empty())
+			continue;
+		cout << str << endl;
+		insertFormulaKB(str, KB);
+	}
 
 	cout << "---Radix Content ---" << endl; 
 	for (int i = 0; i< KB.size(); i++)
