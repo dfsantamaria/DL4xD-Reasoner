@@ -1735,50 +1735,82 @@ void checkTableauClash(Tableau& T)
 	 }		
 }
 
-int main()
+void readFromFile(vector<Formula>& KB, vector<Formula>& expKB)
 {
-#ifdef debug  
-	logFile << "Debug Started" << endl;
-#endif // debug
-	/*
-	Initialization
-	*/
-	varSet = VariablesSet(3, 100);
-	operators = Operators();
-	//Tableau tab(new Node()); //empty tableau
-	/*
-	Inserting Knowledge Base
-	*/
-	vector<Formula> KB;
-	vector<Formula> expKB;
-	//	insertFormulaKB("( ($OA V0{l} $CO V0{j} $AO $IN V3{C333})  $AD (  ($OA V0{k} $CO V0{t} $AO $IN V3{C333}) $OR ($OA V0{s} $CO V0{v} $AO $IN V3{C333}) ) )", KB);
-
 	std::ifstream file("Example/ex1.txt");
 	std::string str;
+	cout << "Knowledge Base" << endl;
 	while (std::getline(file, str))
-	{		
+	{
 		if ((str.rfind("//", 0) == 0) || str.empty())
 			continue;
 		cout << str << endl;
 		insertFormulaKB(str, KB);
 	}
+ 
+}
 
-	cout << "---Radix Content ---" << endl; 
-	for (int i = 0; i< KB.size(); i++)
+
+/*
+  Some printing function
+*/
+void printClosedBranches(Tableau& tableau)
+{
+	cout << "Printing closed branches" << endl;
+	for (int i = 0; i < tableau.getClosedBranches().size(); i++)
+	{
+		cout << "Branch: " << i << endl;
+		Node* tmp = tableau.getClosedBranches().at(i);
+		while (tmp != NULL)
+		{
+			for (int j = 0; j < tmp->getSetFormulae().size(); j++)
+				cout << tmp->getSetFormulae().at(j).toString() << endl;
+			cout << "----" << endl;
+			tmp = tmp->getFather();
+		}
+	}
+}
+
+void printOpenBranches(Tableau& tableau)
+{
+	cout << "Printing open branches" << endl;
+	for (int i = 0; i < tableau.getOpenBranches().size(); i++)
+	{
+		cout << "Branch: " << i << endl;
+		Node* tmp = tableau.getOpenBranches().at(i);
+		while (tmp != NULL)
+		{
+			for (int j = 0; j < tmp->getSetFormulae().size(); j++)
+				cout << tmp->getSetFormulae().at(j).toString() << endl;
+			cout << "----" << endl;
+			tmp = tmp->getFather();
+		}
+
+	}
+}
+
+void printTRadix(vector<Formula>& KB)
+{
+ cout << "---Radix Content ---" << endl;
+ for (int i = 0; i< KB.size(); i++)
 	{
 		cout << KB.at(i).toString() << endl;
 	}
+}
 
-	cout << "Expanding Quantifiers in KB" << endl;
-	expandKB(KB, expKB);
-	Tableau tableau = Tableau(new Node(expKB));
+void printTExpanded(Tableau& tableau)
+{
 	cout << "Content of Expansion:" << endl;
 	for (int i = 0; i< tableau.getTableau()->getSetFormulae().size(); i++)
 	{
 		cout << (tableau.getTableau()->getSetFormulae().at(i).toString()) << "," << tableau.getTableau()->getSetFormulae().at(i).getFulfillness() << endl;
-	}
+    }
 
-	
+}
+
+//content of VarSet
+void printVarSet()
+{
 	cout << "Check VVL" << endl;
 	cout << "Vector 0" << endl;
 	printVector(*varSet.getVVLAt(0));
@@ -1794,50 +1826,13 @@ int main()
 	printVector(*varSet.getVQLAt(1));
 	cout << "Vector 3" << endl;
 	printVector(*varSet.getVQLAt(3));
+}
 
-	cout << "Clash before tableau expansion:" << checkNodeClash(tableau.getTableau()->getSetFormulae()) << endl;
-
-	cout << "Expanding Tableau" << endl;
-	expandTableau(tableau);
-
-
-	cout << "Printing open branches" << endl;
-	for (int i = 0; i < tableau.getOpenBranches().size(); i++)
-	{
-		cout << "Branch: " << i << endl;
-		Node* tmp = tableau.getOpenBranches().at(i);
-		while (tmp != NULL)
-		{
-			for (int j = 0; j < tmp->getSetFormulae().size(); j++)
-				cout << tmp->getSetFormulae().at(j).toString() << endl;
-			cout << "----" << endl;
-			tmp = tmp->getFather();
-		}
-
-	}
-
-	cout << "Printing closed branches" << endl;
-	for (int i = 0; i < tableau.getClosedBranches().size(); i++)
-	{
-		cout << "Branch: " << i << endl;
-		Node* tmp = tableau.getClosedBranches().at(i);
-		while (tmp != NULL)
-		{
-			for (int j = 0; j < tmp->getSetFormulae().size(); j++)
-				cout << tmp->getSetFormulae().at(j).toString() << endl;
-			cout << "----" << endl;
-			tmp = tmp->getFather();
-		}
-
-	} 
-
-	cout << "Building EqSet" << endl;
-	buildEqSet(tableau);
-	
+void printEqSet(Tableau& tableau)
+{
 	cout << "Printing EqSet" << endl;
-
-	 for (int i = 0; i < tableau.getEqSet().size(); i++)
-  	 {
+	for (int i = 0; i < tableau.getEqSet().size(); i++)
+	{
 		cout << "Branch " << i << endl;
 		for (int j = 0; j < tableau.getEqSet().at(i).size(); j++)
 		{
@@ -1847,46 +1842,68 @@ int main()
 				cout << tableau.getEqSet().at(i).at(j).at(k)->toString() << endl;
 			}
 		}
-	 } 
+	}
+
+}
+
+/*
+   End of printing function
+*/
+
+
+int main()
+{
+#ifdef debug  
+	logFile << "Debug Started" << endl;
+#endif // debug
+	/*
+	Initialization
+	*/
+	varSet = VariablesSet(3, 100);
+	operators = Operators();	
+	/*
+	Inserting Knowledge Base
+	*/
+	vector<Formula> KB;
+	vector<Formula> expKB;
+	//	insertFormulaKB("( ($OA V0{l} $CO V0{j} $AO $IN V3{C333})  $AD (  ($OA V0{k} $CO V0{t} $AO $IN V3{C333}) $OR ($OA V0{s} $CO V0{v} $AO $IN V3{C333}) ) )", KB);
+	readFromFile(KB,expKB);
+
+	//print Tableau Radix	
+	printTRadix(KB);
+
+	cout << "Expanding Quantifiers in KB" << endl;
+	expandKB(KB, expKB);
+	Tableau tableau = Tableau(new Node(expKB));
+
+	//Printing result of expansion
+	printTExpanded(tableau);
 	
-	cout << "Checking Clash: " << endl;
-	checkTableauClash(tableau);
-	cout << "Printing open branches" << endl;
+	//Printing content of VVL and VQL
+	printVarSet();
 
-	for (int i = 0; i < tableau.getOpenBranches().size(); i++)
-	{
-		cout << "Branch: " << i << endl;
-		Node* tmp = tableau.getOpenBranches().at(i);
-		while (tmp != NULL)
-		{
-			for (int j = 0; j < tmp->getSetFormulae().size(); j++)
-				cout << tmp->getSetFormulae().at(j).toString() << endl;
-			cout << "----" << endl;
-			tmp = tmp->getFather();
-		}
+	//cout << "Clash before tableau expansion:" << checkNodeClash(tableau.getTableau()->getSetFormulae()) << endl;
 
-	} 
-
-	cout << "Printing closed branches" << endl;
-
-	for (int i = 0; i < tableau.getClosedBranches().size(); i++)
-	{
-		cout << "Branch: " << i << endl;
-		Node* tmp = tableau.getClosedBranches().at(i);
-		while (tmp != NULL)
-		{
-			for (int j = 0; j < tmp->getSetFormulae().size(); j++)
-				cout << tmp->getSetFormulae().at(j).toString() << endl;
-			cout << "----" << endl;
-			tmp = tmp->getFather();
-		}
-
-	} 
+	cout << "Expanding Tableau" << endl;
+	expandTableau(tableau);
+		
+	cout << "Building EqSet" << endl;
+	buildEqSet(tableau);
+	
+	//print EqSet
+	printEqSet(tableau);
+	
+	//print open branches
+	 printOpenBranches(tableau);
+    
+	//print closed branches
+	printClosedBranches(tableau);
 
 	logFile.close();
 
 	return 0;
 }
+
 
 
 
