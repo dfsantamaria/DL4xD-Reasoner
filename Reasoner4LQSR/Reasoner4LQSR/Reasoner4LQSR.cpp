@@ -12,11 +12,11 @@
 #include <sstream>
 
 using namespace std;
- //#define debug                   //debug istructions
-//#define debugclash              //debug istructions for clash checking
-//#define debugexpand             //debug istructions for expansion rule
-//#define debuginsertf            //debug istructions for internal formula translation
-//#define eqsetdebug                 //debug istructions for computing EqSet
+#define debug                   //debug istructions
+#define debugclash              //debug istructions for clash checking
+#define debugexpand             //debug istructions for expansion rule
+#define debuginsertf            //debug istructions for internal formula translation
+#define eqsetdebug                 //debug istructions for computing EqSet
 std::ofstream logFile("LOG.log");   //log file
 
 									/*
@@ -1331,7 +1331,7 @@ void PBRule(vector<Atom*> atoms, Node* node, vector<Node*> &nodeSet)
 		}
 	} */
 
-	for (int i = 0; i < atoms.size() - 1; i++)
+	for (int i = 0; i < atoms.size()- 1; i++)
 	{
 #ifdef debug  
 #ifdef debugexpand
@@ -1388,7 +1388,7 @@ void chooseRule(Tableau &T, vector<Node*> &nodeSet, Formula &f)
 		vector<Atom*> atoms;
 		vector<Atom*> atomset;
 		getAtomSet(f, atomset);
-	/*	if (checkAtomsClash(atomset)) //tautology
+	/*	if (checkAtomsClash(atomset)) 
 		{
 			newNodeSet.push_back(nodeSet.at(b));
 			//T.getClosedBranches().push_back(nodeSet.at(b));
@@ -1443,6 +1443,11 @@ void expandTableau(Tableau& T)
 	{
 		if (fset.at(i).getAtom() == NULL)  //OR found
 		{
+          #ifdef debug  
+          #ifdef debugexpand
+			logFile << "------Fulfilling formula: " << fset.at(i).toString() << endl;
+          #endif
+           #endif // debug
 			chooseRule(T, nonComBranches, fset.at(i));
 		}
 	}
@@ -1735,9 +1740,9 @@ void checkTableauClash(Tableau& T)
 	 }		
 }
 
-void readFromFile(vector<Formula>& KB, vector<Formula>& expKB)
+void readFromFile(string& name, vector<Formula>& KB, vector<Formula>& expKB)
 {
-	std::ifstream file("Example/ex1.txt");
+	std::ifstream file(name);
 	std::string str;
 	cout << "Knowledge Base" << endl;
 	while (std::getline(file, str))
@@ -1867,7 +1872,8 @@ int main()
 	vector<Formula> KB;
 	vector<Formula> expKB;
 	//	insertFormulaKB("( ($OA V0{l} $CO V0{j} $AO $IN V3{C333})  $AD (  ($OA V0{k} $CO V0{t} $AO $IN V3{C333}) $OR ($OA V0{s} $CO V0{v} $AO $IN V3{C333}) ) )", KB);
-	readFromFile(KB,expKB);
+	string name ="Example/bg.txt";
+	readFromFile(name,KB,expKB);
 
 	//print Tableau Radix	
 	printTRadix(KB);
