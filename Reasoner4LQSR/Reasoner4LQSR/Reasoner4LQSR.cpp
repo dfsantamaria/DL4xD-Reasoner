@@ -102,25 +102,29 @@ class VariablesSet
 private:
 	vector< vector <Var> > VVL;
 	vector< vector <Var> > VQL;
+	vector< vector <Var> > QVQL;
 	int capacity;
 	int nlevel;
 public:
 	VariablesSet() {};
-	VariablesSet(int maxNVariable, int maxSize)
+	VariablesSet(int maxNVariable, int maxVSize, int maxQSize, int maxQQSize)
 	{
 		nlevel = maxNVariable;
-		capacity = maxSize;
+		capacity = maxVSize;
 		VQL.reserve(nlevel);  //initialize vectors for variables
+		QVQL.reserve(nlevel);  //initialize vectors for variables
 		VVL.reserve(nlevel);
 		for (int i = 0; i <= nlevel; i++)
 		{
 			VQL.push_back(vector<Var>());
 			VVL.push_back(vector<Var>());
+			QVQL.push_back(vector<Var>());
 		}
 		for (int i = 0; i <= nlevel; i++)
 		{
-			VQL.at(i).reserve(maxSize);
-			VVL.at(i).reserve(maxSize);
+			VQL.at(i).reserve(maxQSize);
+			VVL.at(i).reserve(maxVSize);
+			QVQL.at(i).reserve(maxQQSize);
 		}
 	};
 
@@ -135,6 +139,13 @@ public:
 	{
 		if (level < VQL.size())
 			return &VQL.at(level);
+		return NULL;
+	};
+
+	vector<Var>* getQVQLAt(int level)
+	{
+		if (level < QVQL.size())
+			return &QVQL.at(level);
 		return NULL;
 	};
 
@@ -171,12 +182,31 @@ public:
 		return 1;
 	}
 
+	int QVQLPushBack(int inslevel, string name, int level, int vartype)
+	{
+#ifdef debug 
+#ifdef debuginsertf
+		logFile << "-----Inserting Data in Quantified Variable Set of level: " << inslevel << ". Name: " << name << ". Level: " << level << ". Type: " << vartype << endl;
+		logFile << "-----Quantified Variable Set of level: " << inslevel << " has size: " << QVQL.at(inslevel).size() << " and capacity: " << QVQL.at(inslevel).capacity() << endl;
+#endif
+#endif // debug
+		if (QVQL.at(inslevel).size() < QVQL.at(inslevel).capacity())
+		{
+			QVQL.at(inslevel).push_back(*new Var(name, level, vartype, QVQLGetSizeAt(inslevel)));
+			return 0;
+		}
+		return 1;
+	}
+
 	Var* VVLGetBack(int level) { return &VVL.at(level).back(); }
 	Var* VQLGetBack(int level) { return &VQL.at(level).back(); }
+	Var* QVQLGetBack(int level) { return &QVQL.at(level).back(); }
 	size_t VVLGetSize() { return VVL.size(); }
-	size_t VQLGetSize() { return VVL.size(); }
+	size_t VQLGetSize() { return VQL.size(); }
+	size_t QVQLGetSize() { return QVQL.size(); }
 	size_t VVLGetSizeAt(int level) { return VVL.at(level).size(); }
 	size_t VQLGetSizeAt(int level) { return VQL.at(level).size(); }
+	size_t QVQLGetSizeAt(int level) { return QVQL.at(level).size(); }
 };
 
 //Special chars of a formula
@@ -648,7 +678,8 @@ int retrieveVarData(const string input, string* name, int* level)
 	return 0;
 }
 
-Var* createVarFromString(string *name, int *level, int *vartype, int *start)
+
+Var* createKBVarFromString(string *name, int *level, int *vartype, int *start)
 {
 	Var* ret;
 #ifdef debug 
@@ -687,7 +718,15 @@ Var* createVarFromString(string *name, int *level, int *vartype, int *start)
 	}
 }
 
-Var* createQVarFromString(string *name, int *level, int *vartype, int *start)
+Var* createVarFromString(string *name, int *level, int *vartype, int *start, int typeformula)
+{
+	if (typeformula == 0)
+	{
+		return createKBVarFromString(name, level, vartype, start);
+	}
+}
+
+Var* createKBQVarFromString(string *name, int *level, int *vartype, int *start)
 {
 #ifdef debug 
 #ifdef debuginsertf
@@ -717,10 +756,20 @@ Var* createQVarFromString(string *name, int *level, int *vartype, int *start)
 	}
 }
 
+
+Var* createQVarFromString(string *name, int *level, int *vartype, int *start, int typeformula)
+{
+	if (typeformula == 0)
+	{
+		return createKBQVarFromString(name, level, vartype, start);
+	}
+}
+
+
 /*
 Create an Atom from the given string
 */
-int createAtom(string input, Formula **formula, vector<int>& startQuantVect)
+int createAtom(string input, Formula **formula, vector<int>& startQuantVect, int typeformula)
 {
 
 #ifdef debug  
@@ -744,16 +793,16 @@ int createAtom(string input, Formula **formula, vector<int>& startQuantVect)
 			match = input.substr(3, input.size() - 1);
 			size_t found = match.find("$");
 			retrieveVarData(match.substr(0, found), &name, &level);
-			var1 = createVarFromString(&name, &level, new int(0), &startQuantVect.at(level));
+			var1 = createVarFromString(&name, &level, new int(0), &startQuantVect.at(level), typeformula);
 			match = match.substr(found + 3, match.size() - 1); //here the comma
 			found = match.find("$");
 			retrieveVarData(match.substr(0, found), &name, &level);
-			var2 = createVarFromString(&name, &level, new int(0), &startQuantVect.at(level));
+			var2 = createVarFromString(&name, &level, new int(0), &startQuantVect.at(level), typeformula);
 			match = match.substr(found + 3, match.size() - 1);
 			int op = operators.getSetOpValue(match.substr(0, 3));
 			match = match.substr(3, match.size() - 1);
 			retrieveVarData(match, &name, &level);
-			var3 = createVarFromString(&name, &level, new int(0), &startQuantVect.at(level));
+			var3 = createVarFromString(&name, &level, new int(0), &startQuantVect.at(level), typeformula);
 			atom = new Atom(op, { var3, var1, var2 });
 			//Atom* atom = new Atom(0, { new Var(name,level,0), new Var("b1",0,0), new Var("c1",0,0) });
 			*formula = (new Formula(atom, -1));
@@ -762,7 +811,7 @@ int createAtom(string input, Formula **formula, vector<int>& startQuantVect)
 		else if (head.compare("$FA") == 0)  //case quantified variable
 		{
 			retrieveVarData(match.substr(3, match.size() - 1), &name, &level);
-			var1 = createQVarFromString(&name, &level, new int(1), &startQuantVect.at(level));
+			var1 = createQVarFromString(&name, &level, new int(1), &startQuantVect.at(level), typeformula);
 			*formula = NULL; //var
 		}
 	}
@@ -772,10 +821,10 @@ int createAtom(string input, Formula **formula, vector<int>& startQuantVect)
 		if (found != string::npos)
 		{
 			retrieveVarData(input.substr(0, found), &name, &level);
-			var1 = createVarFromString(&name, &level, new int(0), &startQuantVect.at(level));
+			var1 = createVarFromString(&name, &level, new int(0), &startQuantVect.at(level), typeformula);
 			int op = operators.getSetOpValue(input.substr(found, 3));
 			retrieveVarData(input.substr(found + 3, input.size() - 1), &name, &level);
-			var2 = createVarFromString(&name, &level, new int(0), &startQuantVect.at(level));
+			var2 = createVarFromString(&name, &level, new int(0), &startQuantVect.at(level), typeformula);
 			atom = new Atom(op, { var2, var1 });
 			*formula = (new Formula(atom, -1));
 		}
@@ -792,7 +841,7 @@ int createAtom(string input, Formula **formula, vector<int>& startQuantVect)
 /*
 Parse a string representing an internal formula and return the corresponding internal formula.
 */
-int parseInternalFormula(const string *inputformula, Formula **outformula, vector<int>& startQuantVect)
+int parseInternalFormula(const string *inputformula, Formula **outformula, vector<int>& startQuantVect, int typeformula)
 {
 
 #ifdef debug  
@@ -821,7 +870,7 @@ int parseInternalFormula(const string *inputformula, Formula **outformula, vecto
 				logFile << "-----Candidate atom found: " << atom << endl;
 #endif
 #endif // debug
-				createAtom(atom, &formula, startQuantVect);
+				createAtom(atom, &formula, startQuantVect, typeformula);
 				if (formula != NULL) // creation of the formula 
 				{
 					stformula.push(formula);
@@ -896,7 +945,7 @@ int insertFormulaKB(string formula, vector<Formula> &vec)
 	vector<int> vqlsize;
 	for (int i = 0; i < varSet.VQLGetSize(); i++)
 		vqlsize.push_back((int)varSet.VQLGetSizeAt(i));
-	parseInternalFormula(&formula, &ffinal, vqlsize);
+	parseInternalFormula(&formula, &ffinal, vqlsize, 0);
 	vec.push_back(*ffinal);
 #ifdef debug  
 	logFile << "---Formula Ended " << endl;
@@ -1864,7 +1913,7 @@ int main()
 	/*
 	Initialization
 	*/
-	varSet = VariablesSet(3, 100);
+	varSet = VariablesSet(3, 100, 20, 20);
 	operators = Operators();	
 	/*
 	Inserting Knowledge Base
