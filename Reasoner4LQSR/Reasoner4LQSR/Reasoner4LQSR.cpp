@@ -17,6 +17,7 @@ using namespace std;
 #define debugexpand             //debug istructions for expansion rule
 #define debuginsertf            //debug istructions for internal formula translation
 #define eqsetdebug                 //debug istructions for computing EqSet
+#define debugquery               //debug istructions for query
 std::ofstream logFile("LOG.log");   //log file
 
 									/*
@@ -718,11 +719,61 @@ Var* createKBVarFromString(string *name, int *level, int *vartype, int *start)
 	}
 }
 
+Var* createQueryVarFromString(string *name, int *level, int *vartype, int *start)
+{
+	Var* ret;
+#ifdef debug 
+#ifdef debuginsertf
+#ifdef debugquery
+	logFile << "-----Creating  Variable.  Name:" << *name << ". Level: " << *level << ". Type: " << *vartype << endl;
+#endif
+#endif
+#endif // debug
+	if (containsVariableName(varSet.getVVLAt(*level), &ret, name, start) == 0)
+	{
+#ifdef debug 
+#ifdef debuginsertf
+#ifdef debugquery
+		logFile << "-----Variable Found in Set. " << ret->toString() << endl;
+#endif
+#endif
+#endif // debug
+		return ret;
+	}
+	else if (containsVariableName(varSet.getQVQLAt(*level), &ret, name, start) == 0)
+	{
+#ifdef debug  
+#ifdef debuginsertf
+#ifdef debugquery
+		logFile << "-----Variable Found in Quantified Set. " << ret->toString() << endl;
+#endif
+#endif
+#endif // debug
+		return ret;
+	}
+	else
+	{
+		
+#ifdef debug 
+#ifdef debuginsertf
+#ifdef debugquery
+		logFile << "-----Individual not found in KB" << ret->toString() << endl;
+#endif
+#endif
+#endif // debug
+		return NULL;
+	}
+}
+
 Var* createVarFromString(string *name, int *level, int *vartype, int *start, int typeformula)
 {
 	if (typeformula == 0)
 	{
 		return createKBVarFromString(name, level, vartype, start);
+	}
+	else
+	{
+		return createQueryVarFromString(name, level, vartype, start);
 	}
 }
 
@@ -757,11 +808,53 @@ Var* createKBQVarFromString(string *name, int *level, int *vartype, int *start)
 }
 
 
+Var* createQueryQVarFromString(string *name, int *level, int *vartype, int *start)
+{
+#ifdef debug 
+#ifdef debuginsertf
+#ifdef debugquery
+	logFile << "-----Creating Quantified Variable of Query.  Name:" << *name << ". Level: " << *level << ". Type: " << *vartype << endl;
+#endif
+#endif
+#endif // debug
+	Var* ret;
+	if (containsVariableName(varSet.getQVQLAt(*level), &ret, name, start) == 0)
+	{
+#ifdef debug 
+#ifdef debuginsertf
+#ifdef debugquery
+		logFile << "-----Quantified Variable Found in Set." << ret->toString() << endl;
+#endif
+#endif
+#endif // debug
+		return ret;
+	}
+	else
+	{
+		varSet.QVQLPushBack(*level, *name, *level, *vartype);
+		ret = varSet.QVQLGetBack(*level);
+#ifdef debug 
+#ifdef debuginsertf
+#ifdef debugquery
+		logFile << "-----Adding Quantified Variable to Set." << ret->toString() << endl;
+#endif
+#endif
+#endif // debug
+		return ret;
+	}
+}
+
+
+
 Var* createQVarFromString(string *name, int *level, int *vartype, int *start, int typeformula)
 {
 	if (typeformula == 0)
 	{
 		return createKBQVarFromString(name, level, vartype, start);
+	}
+	else
+	{
+		return createQueryQVarFromString(name, level, vartype, start);
 	}
 }
 
