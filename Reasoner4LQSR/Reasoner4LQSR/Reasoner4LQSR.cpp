@@ -129,6 +129,13 @@ public:
 		}
 	};
 
+	vector<Var>*getAt(vector<vector<Var>>& vec, int level)
+	{
+		if (level < vec.size())
+			return &vec.at(level);
+		return NULL;
+	}
+
 	vector<Var>* getVVLAt(int level)
 	{
 		if (level < VVL.size())
@@ -149,6 +156,17 @@ public:
 			return &QVQL.at(level);
 		return NULL;
 	};
+
+
+	int pushBack(vector<vector <Var>>& vec, int inslevel, string name, int level, int vartype)
+	{
+		if (vec.at(inslevel).size() < vec.at(inslevel).capacity())
+		{
+			vec.at(inslevel).push_back(*new Var(name, level, vartype, getSizeAt(vec,inslevel)));
+			return 0;
+		}
+		return 1;
+	}
 
 	int VVLPushBack(int inslevel, string name, int level, int vartype)
 	{
@@ -199,12 +217,15 @@ public:
 		return 1;
 	}
 
+	Var* getBack(vector<vector <Var>>& vec, int level) { return &vec.at(level).back(); }
 	Var* VVLGetBack(int level) { return &VVL.at(level).back(); }
 	Var* VQLGetBack(int level) { return &VQL.at(level).back(); }
 	Var* QVQLGetBack(int level) { return &QVQL.at(level).back(); }
+	size_t getSize(vector<vector <Var>>& vec) { return vec.size(); }
 	size_t VVLGetSize() { return VVL.size(); }
 	size_t VQLGetSize() { return VQL.size(); }
 	size_t QVQLGetSize() { return QVQL.size(); }
+	size_t getSizeAt(vector<vector <Var>>& vec, int level) { return vec.at(level).size(); }
 	size_t VVLGetSizeAt(int level) { return VVL.at(level).size(); }
 	size_t VQLGetSizeAt(int level) { return VQL.at(level).size(); }
 	size_t QVQLGetSizeAt(int level) { return QVQL.at(level).size(); }
@@ -2094,6 +2115,6 @@ Optimize expandKB
 remove recursion
 A more efficient expansion function is required.
 Ensure that a) Vectors on VariableSet are only-read b) coerence of pointer to elements of such vectors.
-When checking clash if a check is formed with an element that is not in VVL than an clash is found.
+Remove the existence of two functions createQueryVarFromString and createKBVarFromString by generalizing the use of vectors in VarSet. Same thing with
 DONE - Solve PBRule inefficiency
 */
