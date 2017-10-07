@@ -103,29 +103,29 @@ class VariablesSet
 private:
 	vector< vector <Var> > VVL;
 	vector< vector <Var> > VQL;
-	vector< vector <Var> > QVQL;
+	//vector< vector <Var> > QVQL;
 	int capacity;
 	int nlevel;
 public:
 	VariablesSet() {};
-	VariablesSet(int maxNVariable, int maxVSize, int maxQSize, int maxQQSize)
+	VariablesSet(int maxNVariable, int maxVSize, int maxQSize)
 	{
 		nlevel = maxNVariable;
 		capacity = maxVSize;
 		VQL.reserve(nlevel);  //initialize vectors for variables
-		QVQL.reserve(nlevel);  //initialize vectors for variables
+		//QVQL.reserve(nlevel);  //initialize vectors for variables
 		VVL.reserve(nlevel);
 		for (int i = 0; i <= nlevel; i++)
 		{
 			VQL.push_back(vector<Var>());
 			VVL.push_back(vector<Var>());
-			QVQL.push_back(vector<Var>());
+		//	QVQL.push_back(vector<Var>());
 		}
 		for (int i = 0; i <= nlevel; i++)
 		{
 			VQL.at(i).reserve(maxQSize);
 			VVL.at(i).reserve(maxVSize);
-			QVQL.at(i).reserve(maxQQSize);
+		//	QVQL.at(i).reserve(maxQQSize);
 		}
 	};
 
@@ -147,15 +147,15 @@ public:
 	{
 		if (level < VQL.size())
 			return &VQL.at(level);
-		return NULL;
+	 return NULL;
 	};
 
-	vector<Var>* getQVQLAt(int level)
-	{
-		if (level < QVQL.size())
-			return &QVQL.at(level);
-		return NULL;
-	};
+	//vector<Var>* getQVQLAt(int level)
+	//{
+	//	if (level < QVQL.size())
+	//		return &QVQL.at(level);
+	//	return NULL;
+	//};
 
 
 	int pushBack(vector<vector <Var>>& vec, int inslevel, string name, int level, int vartype)
@@ -167,7 +167,7 @@ public:
 		}
 		return 1;
 	}
-
+	
 	int VVLPushBack(int inslevel, string name, int level, int vartype)
 	{
 #ifdef debug 
@@ -185,6 +185,7 @@ public:
 		return 1;
 	}
 
+	/*
 	int VQLPushBack(int inslevel, string name, int level, int vartype)
 	{
 #ifdef debug 
@@ -215,20 +216,22 @@ public:
 			return 0;
 		}
 		return 1;
-	}
+	}*/
+
 	vector<vector <Var>>& getVQL() { return VQL; }
+	vector<vector <Var>>& getVVL() { return VVL; }	
 	Var* getBack(vector<vector <Var>>& vec, int level) { return &vec.at(level).back(); }
 	Var* VVLGetBack(int level) { return &VVL.at(level).back(); }
-	Var* VQLGetBack(int level) { return &VQL.at(level).back(); }
-	Var* QVQLGetBack(int level) { return &QVQL.at(level).back(); }
+//	Var* VQLGetBack(int level) { return &VQL.at(level).back(); }
+//	Var* QVQLGetBack(int level) { return &QVQL.at(level).back(); }
 	size_t getSize(vector<vector <Var>>& vec) { return vec.size(); }
-	size_t VVLGetSize() { return VVL.size(); }
+//	size_t VVLGetSize() { return VVL.size(); }
 	size_t VQLGetSize() { return VQL.size(); }
-	size_t QVQLGetSize() { return QVQL.size(); }
+//	size_t QVQLGetSize() { return QVQL.size(); }
 	size_t getSizeAt(vector<vector <Var>>& vec, int level) { return vec.at(level).size(); }
 	size_t VVLGetSizeAt(int level) { return VVL.at(level).size(); }
 	size_t VQLGetSizeAt(int level) { return VQL.at(level).size(); }
-	size_t QVQLGetSizeAt(int level) { return QVQL.at(level).size(); }
+//	size_t QVQLGetSizeAt(int level) { return QVQL.at(level).size(); }
 };
 
 //Special chars of a formula
@@ -1924,7 +1927,7 @@ int main()
 	/*
 	Initialization
 	*/
-	varSet = VariablesSet(3, 100, 20, 20);
+	varSet = VariablesSet(3, 100, 20);
 	operators = Operators();	
 	/*
 	Inserting Knowledge Base
