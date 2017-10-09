@@ -704,7 +704,7 @@ int retrieveVarData(const string input, string* name, int* level)
 }
 
 
-Var* createVarFromString(vector<vector<Var>>& vec, string *name, int *level, int *vartype, int *start, int *typeformula)
+Var* createVarFromString(vector<vector<Var>>& vec, vector<vector<Var>>& vec2, string *name, int *level, int *vartype, int *start, int *typeformula)
 {
 	Var* ret;
 #ifdef debug 
@@ -712,7 +712,7 @@ Var* createVarFromString(vector<vector<Var>>& vec, string *name, int *level, int
 	logFile << "-----Creating  Variable.  Name:" << *name << ". Level: " << *level << ". Type: " << *vartype << endl;
 #endif
 #endif // debug
-	if (containsVariableName(varSet.getVVLAt(*level), &ret, name, start) == 0)
+	if (containsVariableName(varSet.getAt(vec2, *level), &ret, name, start) == 0)
 	{
 #ifdef debug 
 #ifdef debuginsertf
@@ -731,19 +731,16 @@ Var* createVarFromString(vector<vector<Var>>& vec, string *name, int *level, int
 		return ret;
 	}
 	else
-	{
-		if (*typeformula == 0)
-		{
-			varSet.VVLPushBack(*level, *name, *level, *vartype);
-			ret = varSet.VVLGetBack(*level);
+	{		
+	 varSet.pushBack(vec2,*level, *name, *level, *vartype);
+	 ret = varSet.getBack(vec2,*level);
 #ifdef debug 
 #ifdef debuginsertf
 			logFile << "-----Adding Variable to Set. " << ret->toString() << endl;
 #endif
 #endif // debug
 			return ret;
-		}
-		else return NULL; //case of parsing query
+		
 	}
 }
 
@@ -782,7 +779,7 @@ Var* createQVarFromString(vector<vector<Var>>& vec, string *name, int *level, in
 /*
 Create an Atom from the given string
 */
-int createAtom(vector<vector <Var>>& vec, string input, Formula **formula, vector<int>& startQuantVect, int typeformula)
+int createAtom(vector<vector <Var>>& vec, vector<vector <Var>>& vec2, string input, Formula **formula, vector<int>& startQuantVect, int typeformula)
 {
 
 #ifdef debug  
@@ -806,16 +803,16 @@ int createAtom(vector<vector <Var>>& vec, string input, Formula **formula, vecto
 			match = input.substr(3, input.size() - 1);
 			size_t found = match.find("$");
 			retrieveVarData(match.substr(0, found), &name, &level);
-			var1 = createVarFromString(vec, &name, &level, new int(0), &startQuantVect.at(level), &typeformula);
+			var1 = createVarFromString(vec, vec2, &name, &level, new int(0), &startQuantVect.at(level), &typeformula);
 			match = match.substr(found + 3, match.size() - 1); //here the comma
 			found = match.find("$");
 			retrieveVarData(match.substr(0, found), &name, &level);
-			var2 = createVarFromString(vec, &name, &level, new int(0), &startQuantVect.at(level), &typeformula);
+			var2 = createVarFromString(vec, vec2, &name, &level, new int(0), &startQuantVect.at(level), &typeformula);
 			match = match.substr(found + 3, match.size() - 1);
 			int op = operators.getSetOpValue(match.substr(0, 3));
 			match = match.substr(3, match.size() - 1);
 			retrieveVarData(match, &name, &level);
-			var3 = createVarFromString(vec, &name, &level, new int(0), &startQuantVect.at(level), &typeformula);
+			var3 = createVarFromString(vec, vec2, &name, &level, new int(0), &startQuantVect.at(level), &typeformula);
 			atom = new Atom(op, { var3, var1, var2 });
 			//Atom* atom = new Atom(0, { new Var(name,level,0), new Var("b1",0,0), new Var("c1",0,0) });
 			*formula = (new Formula(atom, -1));
@@ -834,10 +831,10 @@ int createAtom(vector<vector <Var>>& vec, string input, Formula **formula, vecto
 		if (found != string::npos)
 		{
 			retrieveVarData(input.substr(0, found), &name, &level);
-			var1 = createVarFromString(vec,&name, &level, new int(0), &startQuantVect.at(level), &typeformula);
+			var1 = createVarFromString(vec, vec2, &name, &level, new int(0), &startQuantVect.at(level), &typeformula);
 			int op = operators.getSetOpValue(input.substr(found, 3));
 			retrieveVarData(input.substr(found + 3, input.size() - 1), &name, &level);
-			var2 = createVarFromString(vec, &name, &level, new int(0), &startQuantVect.at(level), &typeformula);
+			var2 = createVarFromString(vec, vec2, &name, &level, new int(0), &startQuantVect.at(level), &typeformula);
 			atom = new Atom(op, { var2, var1 });
 			*formula = (new Formula(atom, -1));
 		}
@@ -854,7 +851,7 @@ int createAtom(vector<vector <Var>>& vec, string input, Formula **formula, vecto
 /*
 Parse a string representing an internal formula and return the corresponding internal formula.
 */
-int parseInternalFormula(vector<vector <Var>>& vec,const string *inputformula, Formula **outformula, vector<int>& startQuantVect, int typeformula)
+int parseInternalFormula(vector<vector <Var>>& vec, vector<vector <Var>>& vec2, const string *inputformula, Formula **outformula, vector<int>& startQuantVect, int typeformula)
 {
 
 #ifdef debug  
@@ -883,7 +880,8 @@ int parseInternalFormula(vector<vector <Var>>& vec,const string *inputformula, F
 				logFile << "-----Candidate atom found: " << atom << endl;
 #endif
 #endif // debug
-				createAtom(vec, atom, &formula, startQuantVect, typeformula);
+				
+				createAtom(vec, vec2, atom, &formula, startQuantVect, typeformula);
 				if (formula != NULL) // creation of the formula 
 				{
 					stformula.push(formula);
@@ -945,7 +943,7 @@ void printVector(vector<Var>& v)
 /*
 Create an object of type Formula  from the given string representing a formula.
 */
-int insertFormulaKB(vector<vector <Var>>& varset, string formula, vector<Formula> &vec, int* typeformula)
+int insertFormulaKB(vector<vector <Var>>& varset, vector<vector <Var>>& varset2, string formula, vector<Formula> &vec, int* typeformula)
 {
 	/*
 	The following vector of int represents the position of the quantified variables of the current formula.
@@ -957,8 +955,8 @@ int insertFormulaKB(vector<vector <Var>>& varset, string formula, vector<Formula
 	Formula *ffinal;
 	vector<int> vqlsize;
 	for (int i = 0; i < varSet.VQLGetSize(); i++)
-		vqlsize.push_back((int)varSet.VQLGetSizeAt(i));
-	parseInternalFormula(varset, &formula, &ffinal, vqlsize, *typeformula);
+		vqlsize.push_back((int)varSet.VQLGetSizeAt(i));   
+	parseInternalFormula(varset, varset2, &formula, &ffinal, vqlsize, *typeformula);
 	vec.push_back(*ffinal);
 #ifdef debug  
 	logFile << "---Formula Ended " << endl;
@@ -1813,11 +1811,25 @@ void readKBFromFile(string& name, vector<Formula>& KB)
 		if ((str.rfind("//", 0) == 0) || str.empty())
 			continue;
 		cout << str << endl;
-		insertFormulaKB(varSet.getVQL(),str, KB, &typeformula );
+		insertFormulaKB(varSet.getVQL(), varSet.getVVL(),str, KB, &typeformula );
 	}
  
 }
 
+void readQueryFromFile(vector<vector<Var>>& vec1, vector<vector<Var>>& vec2, string& name, vector<Formula>& KB)
+{
+	std::ifstream file(name);
+	std::string str;
+	cout << "Query" << endl;
+	int typeformula = 1;	
+	while (std::getline(file, str))
+	{
+		if ((str.rfind("//", 0) == 0) || str.empty())
+			continue;
+		cout << str << endl;
+		insertFormulaKB(vec1, vec2, str, KB, &typeformula);
+	}
+}
 
 /*
   Some printing function
@@ -1929,14 +1941,17 @@ int main()
 	*/
 	varSet = VariablesSet(3, 100, 20);
 	operators = Operators();	
+
+
+
 	/*
 	Inserting Knowledge Base
 	*/
 	vector<Formula> KB;
 	vector<Formula> expKB;
 	//	insertFormulaKB("( ($OA V0{l} $CO V0{j} $AO $IN V3{C333})  $AD (  ($OA V0{k} $CO V0{t} $AO $IN V3{C333}) $OR ($OA V0{s} $CO V0{v} $AO $IN V3{C333}) ) )", KB);
-	string name ="Example/bg.txt";
-	readKBFromFile(name, KB);
+	string kbname ="Example/bg.txt";
+	readKBFromFile(kbname, KB);
 
 	//print Tableau Radix	
 	printTRadix(KB);
@@ -1968,6 +1983,37 @@ int main()
 	//print closed branches
 	printClosedBranches(tableau);
 
+
+	/* Query Reading*/
+	cout << "---" << endl;
+	cout << "Reading Query"<<endl;
+	/* Initialization of Variable Vector */
+	vector< vector <Var> > QVQL;
+	vector< vector <Var> > QVVL;
+	int nlevel = 3;
+	int maxQQSize = 50;
+	QVQL.reserve(nlevel);
+	QVVL.reserve(nlevel);
+	for (int i = 0; i <= nlevel; i++)
+	{
+		QVQL.push_back(vector<Var>());
+		QVVL.push_back(vector<Var>());
+	}
+	for (int i = 0; i <= nlevel; i++)
+	{
+		QVVL.at(i).reserve(maxQQSize);
+		QVQL.at(i).reserve(maxQQSize);
+	}
+	/*                                  */
+	string queryname = "Example/query.txt";
+	vector<Formula> querySet;
+	readQueryFromFile(QVQL,QVVL,queryname, querySet);
+	cout << querySet.at(0).toString() << endl;
+	//Printing content of VVL and VQL
+	//printVarSet();
+
+	/* End Query */
+	
 	logFile.close();
 
 	return 0;
