@@ -1839,10 +1839,11 @@ void extractAtoms(Formula& f, vector<Atom*> &atoms)
 	while (!tmp.empty())
 	{  		
 	 Formula* back = tmp.back();
-	 tmp.pop_back();
-	 if (back!=NULL && back->getAtom() != NULL) 
-	  {
-	   atoms.push_back(back->getAtom());
+	 tmp.pop_back(); 
+	 if (back!=NULL) 
+	 {
+		if(back->getAtom()!=NULL)
+	       atoms.push_back(back->getAtom());		   
 	   tmp.push_back(back->getLSubformula());
 	   tmp.push_back(back->getRSubformula());
 	  }
@@ -2026,10 +2027,10 @@ int main()
 	string queryname = "Example/query.txt";
 	vector<Formula> querySet;
 	readQueryFromFile(QVQL,QVVL,queryname, querySet);
-	vector<Atom*> qAtoms;   //cout << querySet.at(0).toString() << endl;
+	vector<Atom*> qAtoms;  //cout << querySet.at(0).toString() << endl;
 	extractAtoms(querySet.at(0), qAtoms);
 	//Print Atoms from Query
-	cout << "Atoms from query" << endl;	
+	cout << "Atoms from query: " << qAtoms.size() << endl;
 	for (Atom* a : qAtoms)
 	  cout<<a->toString()<<endl;
 	
