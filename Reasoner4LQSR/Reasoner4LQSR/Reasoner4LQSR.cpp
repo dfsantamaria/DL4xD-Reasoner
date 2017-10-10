@@ -1831,6 +1831,24 @@ void readQueryFromFile(vector<vector<Var>>& vec1, vector<vector<Var>>& vec2, str
 	}
 }
 
+
+void extractAtoms(Formula& f, vector<Atom*> &atoms)
+{
+	vector<Formula*> tmp;
+	tmp.push_back(&f);  
+	while (!tmp.empty())
+	{  		
+	 Formula* back = tmp.back();
+	 tmp.pop_back();
+	 if (back!=NULL && back->getAtom() != NULL) 
+	  {
+	   atoms.push_back(back->getAtom());
+	   tmp.push_back(back->getLSubformula());
+	   tmp.push_back(back->getRSubformula());
+	  }
+	}	
+}
+
 /*
   Some printing function
 */
@@ -2008,10 +2026,16 @@ int main()
 	string queryname = "Example/query.txt";
 	vector<Formula> querySet;
 	readQueryFromFile(QVQL,QVVL,queryname, querySet);
-	cout << querySet.at(0).toString() << endl;
+	vector<Atom*> qAtoms;   //cout << querySet.at(0).toString() << endl;
+	extractAtoms(querySet.at(0), qAtoms);
+	//Print Atoms from Query
+	cout << "Atoms from query" << endl;	
+	for (Atom* a : qAtoms)
+	  cout<<a->toString()<<endl;
+	
 	//Printing content of VVL and VQL
 	//printVarSet();
-
+	//printVector(QVQL.at(0)); printVector(QVQL.at(1)); printVector(QVQL.at(2));
 	/* End Query */
 	
 	logFile.close();
