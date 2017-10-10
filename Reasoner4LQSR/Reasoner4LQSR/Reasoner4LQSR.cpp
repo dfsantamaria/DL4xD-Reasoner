@@ -1819,8 +1819,7 @@ void readKBFromFile(string& name, vector<Formula>& KB)
 void readQueryFromFile(vector<vector<Var>>& vec1, vector<vector<Var>>& vec2, string& name, vector<Formula>& KB)
 {
 	std::ifstream file(name);
-	std::string str;
-	cout << "Query" << endl;
+	std::string str;	
 	int typeformula = 1;	
 	while (std::getline(file, str))
 	{
@@ -2005,7 +2004,7 @@ int main()
 
 	/* Query Reading*/
 	cout << "---" << endl;
-	cout << "Reading Query"<<endl;
+	cout << "Reading Query:"<<endl;
 	/* Initialization of Variable Vector */
 	vector< vector <Var> > QVQL;
 	vector< vector <Var> > QVVL;
