@@ -940,10 +940,11 @@ void printVector(vector<Var>& v)
 
 }
 
+
 /*
 Create an object of type Formula  from the given string representing a formula.
 */
-int insertFormulaKB(vector<vector <Var>>& varset, vector<vector <Var>>& varset2, string formula, vector<Formula> &vec, int* typeformula)
+int insertFormulaKB(vector<vector <Var>>& varset, vector<vector <Var>>& varset2, string formula, Formula** ffinal, int* typeformula)
 {
 	/*
 	The following vector of int represents the position of the quantified variables of the current formula.
@@ -952,16 +953,25 @@ int insertFormulaKB(vector<vector <Var>>& varset, vector<vector <Var>>& varset2,
 #ifdef debug  
 	logFile << "---Formula Inserted: " << formula << endl;
 #endif // debug
-	Formula *ffinal;
+	//Formula *ffinal;
 	vector<int> vqlsize;
 	for (int i = 0; i < varSet.VQLGetSize(); i++)
 		vqlsize.push_back((int)varSet.VQLGetSizeAt(i));   
-	parseInternalFormula(varset, varset2, &formula, &ffinal, vqlsize, *typeformula);
-	vec.push_back(*ffinal);
+	parseInternalFormula(varset, varset2, &formula, ffinal, vqlsize, *typeformula);
+	//vec.push_back(*ffinal);
 #ifdef debug  
 	logFile << "---Formula Ended " << endl;
 #endif // debug
 	return 0;
+}
+
+int insertFormulaKB(vector<vector <Var>>& varset, vector<vector <Var>>& varset2, string formula, vector<Formula> &vec, int* typeformula)
+{
+	Formula* f = NULL;
+	int res = insertFormulaKB(varset, varset2, formula, &f, typeformula); 
+	vec.push_back(*f);
+	delete(f);
+	return res;
 }
 
 /*int insertFormulaKB(string s, vector<Formula> &t)
@@ -1816,7 +1826,7 @@ void readKBFromFile(string& name, vector<Formula>& KB)
  
 }
 
-void readQueryFromFile(vector<vector<Var>>& vec1, vector<vector<Var>>& vec2, string& name, vector<Formula>& KB)
+void readQueryFromFile(string& name, vector<string>& stringSet)
 {
 #ifdef debug 
 #ifdef debugquery
@@ -1825,17 +1835,12 @@ void readQueryFromFile(vector<vector<Var>>& vec1, vector<vector<Var>>& vec2, str
 #endif // debug
 	std::ifstream file(name);
 	std::string str;	
-	int typeformula = 1;	
+		
 	while (std::getline(file, str))
 	{
 		if ((str.rfind("//", 0) == 0) || str.empty())
 			continue;
-#ifdef debug 
-#ifdef debugquery
-		logFile << "-----Parsing line:" << str << endl;
-#endif
-#endif // debug
-		insertFormulaKB(vec1, vec2, str, KB, &typeformula);
+		stringSet.push_back(str);
 	}
 }
 
@@ -1926,6 +1931,33 @@ public: vector<vector<Var>>& getQVQL() { return QVQL; };
 
 
 };
+
+
+void performQuery(string& str, Formula** formula, Tableau& tableau)
+{
+  QueryManager* queryManager = new QueryManager(5, 50);
+  int typeformula = 1;
+  insertFormulaKB(queryManager->getQVQL(), queryManager->getQVVL(), str, formula, &typeformula);
+  queryManager->executeQuery(**formula, tableau);
+
+  
+}
+
+void performQuerySet(vector<string>& strings, vector<Formula>& formulae, Tableau& tableau)
+{
+	
+#ifdef debug 
+#ifdef debugquery
+	logFile << "-----Parsing line:" << strings.at(0) << endl;
+#endif
+#endif // debug
+ for (string s : strings)
+	{
+	   Formula *f = NULL;
+	   performQuery(s, &f, tableau); 	   
+	   formulae.push_back(*f);
+	}
+}
 
 /*
   Some printing function
@@ -2079,16 +2111,17 @@ int main()
 
 	/* Query Reading*/
 	cout << "---" << endl;
-	cout << "Reading Query"<<endl;
-	
-	/*                                  */
+	cout << "Reading Query"<<endl;	
 	string queryname = "Example/query.txt";
 	vector<Formula> querySet;
-	QueryManager qManager(3,50);
-	readQueryFromFile(qManager.getQVQL(),qManager.getQVVL(),queryname, querySet);
+	vector<string> stringSet;	
+	readQueryFromFile(queryname, stringSet);
 	//vector<Atom*> qAtoms;  //cout << querySet.at(0).toString() << endl;
-	qManager.executeQuery(querySet.at(0), tableau);
-		
+	performQuerySet(stringSet, querySet, tableau);	
+    /*
+	for (Formula f : querySet)
+		cout << f.toString() << endl;
+	                                  */	
 	logFile.close();
 
 	return 0;
