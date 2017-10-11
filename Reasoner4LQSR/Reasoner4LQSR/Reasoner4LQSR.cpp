@@ -1818,6 +1818,11 @@ void readKBFromFile(string& name, vector<Formula>& KB)
 
 void readQueryFromFile(vector<vector<Var>>& vec1, vector<vector<Var>>& vec2, string& name, vector<Formula>& KB)
 {
+#ifdef debug 
+#ifdef debugquery
+	logFile << "-----Reading query file" << endl;
+#endif
+#endif // debug
 	std::ifstream file(name);
 	std::string str;	
 	int typeformula = 1;	
@@ -1825,7 +1830,11 @@ void readQueryFromFile(vector<vector<Var>>& vec1, vector<vector<Var>>& vec2, str
 	{
 		if ((str.rfind("//", 0) == 0) || str.empty())
 			continue;
-		cout << str << endl;
+#ifdef debug 
+#ifdef debugquery
+		logFile << "-----Parsing line:" << str << endl;
+#endif
+#endif // debug
 		insertFormulaKB(vec1, vec2, str, KB, &typeformula);
 	}
 }
@@ -1861,6 +1870,12 @@ class QueryManager
 
 public: void extractAtoms(Formula& f, vector<Atom*> &atoms)
   {
+#ifdef debug 
+#ifdef debugquery
+	logFile << "---Executing Query" << endl;
+	logFile << "----Query selected:"<<f.toString()<<endl;
+#endif
+#endif // debug
 	vector<Formula*> tmp;
 	tmp.push_back(&f);
 	while (!tmp.empty())
@@ -1870,7 +1885,14 @@ public: void extractAtoms(Formula& f, vector<Atom*> &atoms)
 		if (back != NULL)
 		{
 			if (back->getAtom() != NULL)
+			{
 				atoms.push_back(back->getAtom());
+#ifdef debug 
+#ifdef debugquery
+				logFile << "-----Atom computed:" << atoms.back()->toString() << endl;
+#endif
+#endif // debug
+			}
 			tmp.push_back(back->getLSubformula());
 			tmp.push_back(back->getRSubformula());
 		}
@@ -2057,7 +2079,7 @@ int main()
 
 	/* Query Reading*/
 	cout << "---" << endl;
-	cout << "Reading Query:"<<endl;
+	cout << "Reading Query"<<endl;
 	
 	/*                                  */
 	string queryname = "Example/query.txt";
