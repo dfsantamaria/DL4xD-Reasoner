@@ -1831,23 +1831,79 @@ void readQueryFromFile(vector<vector<Var>>& vec1, vector<vector<Var>>& vec2, str
 }
 
 
-void extractAtoms(Formula& f, vector<Atom*> &atoms)
+class QueryManager
 {
-	vector<Formula*> tmp;
-	tmp.push_back(&f);  
-	while (!tmp.empty())
-	{  		
-	 Formula* back = tmp.back();
-	 tmp.pop_back(); 
-	 if (back!=NULL) 
+ private: vector< vector <Var> > QVQL;
+          vector< vector <Var> > QVVL;
+		  vector< pair<Var*, Var*>> Match;
+          Formula formula;
+          int nlevel;
+          int maxQQSize;
+
+ public: QueryManager(int _nlevel, int _maxQQSize)
+  {
+	nlevel = _nlevel;
+	maxQQSize = _maxQQSize;
+	QVQL.reserve(nlevel);
+	QVVL.reserve(nlevel);
+	Match.reserve(maxQQSize);
+	for (int i = 0; i <= nlevel; i++)
 	 {
-		if(back->getAtom()!=NULL)
-	       atoms.push_back(back->getAtom());		   
-	   tmp.push_back(back->getLSubformula());
-	   tmp.push_back(back->getRSubformula());
-	  }
-	}	
-}
+		QVQL.push_back(vector<Var>());
+		QVVL.push_back(vector<Var>());		
+	 }
+	for (int i = 0; i <= nlevel; i++)
+	 {
+		QVVL.at(i).reserve(maxQQSize);
+		QVQL.at(i).reserve(maxQQSize);		
+	 }
+  }
+
+public: void extractAtoms(Formula& f, vector<Atom*> &atoms)
+  {
+	vector<Formula*> tmp;
+	tmp.push_back(&f);
+	while (!tmp.empty())
+	{
+		Formula* back = tmp.back();
+		tmp.pop_back();
+		if (back != NULL)
+		{
+			if (back->getAtom() != NULL)
+				atoms.push_back(back->getAtom());
+			tmp.push_back(back->getLSubformula());
+			tmp.push_back(back->getRSubformula());
+		}
+	}
+  }
+
+public: vector<vector<Var>>& getQVQL() { return QVQL; };
+        vector<vector<Var>>& getQVVL() { return QVVL; };
+		vector<pair<Var*, Var*>>& getMatchSet() { return Match; };
+        void executeQuery(Formula& f, Tableau& tableau)
+         {
+	       vector<Atom*> qAtoms;
+	       formula = f;
+	       extractAtoms(formula, qAtoms);
+	       //Print Atoms from Query
+	       cout << "Atoms from query: " << qAtoms.size() << endl;
+	       for (Atom* a : qAtoms)
+		    cout << a->toString() << endl;
+		   //---------------------------------
+		   for (Node* branch : tableau.getOpenBranches())
+		     {
+			   for (Atom* atom : qAtoms)
+			    {
+				   for (pair<Var*, Var*> matched : getMatchSet())
+				   {
+					   cout << "Running Query" << endl;
+				   }
+			    }
+		     }
+          }
+
+
+};
 
 /*
   Some printing function
@@ -1897,14 +1953,13 @@ void printTRadix(vector<Formula>& KB)
 }
 
 void printTExpanded(Tableau& tableau)
-{
+ {
 	cout << "Content of Expansion:" << endl;
 	for (int i = 0; i< tableau.getTableau()->getSetFormulae().size(); i++)
-	{
-		cout << (tableau.getTableau()->getSetFormulae().at(i).toString()) << "," << tableau.getTableau()->getSetFormulae().at(i).getFulfillness() << endl;
-    }
-
-}
+	 {
+	   cout << (tableau.getTableau()->getSetFormulae().at(i).toString()) << "," << tableau.getTableau()->getSetFormulae().at(i).getFulfillness() << endl;
+     }
+ }
 
 //content of VarSet
 void printVarSet()
@@ -1960,8 +2015,6 @@ int main()
 	varSet = VariablesSet(3, 100, 20);
 	operators = Operators();	
 
-
-
 	/*
 	Inserting Knowledge Base
 	*/
@@ -2005,39 +2058,15 @@ int main()
 	/* Query Reading*/
 	cout << "---" << endl;
 	cout << "Reading Query:"<<endl;
-	/* Initialization of Variable Vector */
-	vector< vector <Var> > QVQL;
-	vector< vector <Var> > QVVL;
-	int nlevel = 3;
-	int maxQQSize = 50;
-	QVQL.reserve(nlevel);
-	QVVL.reserve(nlevel);
-	for (int i = 0; i <= nlevel; i++)
-	{
-		QVQL.push_back(vector<Var>());
-		QVVL.push_back(vector<Var>());
-	}
-	for (int i = 0; i <= nlevel; i++)
-	{
-		QVVL.at(i).reserve(maxQQSize);
-		QVQL.at(i).reserve(maxQQSize);
-	}
+	
 	/*                                  */
 	string queryname = "Example/query.txt";
 	vector<Formula> querySet;
-	readQueryFromFile(QVQL,QVVL,queryname, querySet);
-	vector<Atom*> qAtoms;  //cout << querySet.at(0).toString() << endl;
-	extractAtoms(querySet.at(0), qAtoms);
-	//Print Atoms from Query
-	cout << "Atoms from query: " << qAtoms.size() << endl;
-	for (Atom* a : qAtoms)
-	  cout<<a->toString()<<endl;
-	
-	//Printing content of VVL and VQL
-	//printVarSet();
-	//printVector(QVQL.at(0)); printVector(QVQL.at(1)); printVector(QVQL.at(2));
-	/* End Query */
-	
+	QueryManager qManager(3,50);
+	readQueryFromFile(qManager.getQVQL(),qManager.getQVVL(),queryname, querySet);
+	//vector<Atom*> qAtoms;  //cout << querySet.at(0).toString() << endl;
+	qManager.executeQuery(querySet.at(0), tableau);
+		
 	logFile.close();
 
 	return 0;
