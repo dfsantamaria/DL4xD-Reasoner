@@ -1854,57 +1854,60 @@ class QueryManager
           int nlevel;
           int maxQQSize;
 
- public: QueryManager(int _nlevel, int _maxQQSize)
-  {
-	nlevel = _nlevel;
-	maxQQSize = _maxQQSize;
-	QVQL.reserve(nlevel);
-	QVVL.reserve(nlevel);
-	Match.reserve(maxQQSize);
-	for (int i = 0; i <= nlevel; i++)
-	 {
-		QVQL.push_back(vector<Var>());
-		QVVL.push_back(vector<Var>());		
-	 }
-	for (int i = 0; i <= nlevel; i++)
-	 {
-		QVVL.at(i).reserve(maxQQSize);
-		QVQL.at(i).reserve(maxQQSize);		
-	 }
-  }
+ public: 
+	      QueryManager(int _nlevel, int _maxQQSize)
+            {
+	          nlevel = _nlevel;
+	          maxQQSize = _maxQQSize;
+	          QVQL.reserve(nlevel);
+	          QVVL.reserve(nlevel);
+	          Match.reserve(maxQQSize);
+	         for (int i = 0; i <= nlevel; i++)
+	          {
+	 	       QVQL.push_back(vector<Var>());
+		       QVVL.push_back(vector<Var>());		
+	          }
+	         for (int i = 0; i <= nlevel; i++)
+	          {
+	           QVVL.at(i).reserve(maxQQSize);
+		       QVQL.at(i).reserve(maxQQSize);		
+	          }
+            }
 
-public: void extractAtoms(Formula& f, vector<Atom*> &atoms)
-  {
-#ifdef debug 
-#ifdef debugquery
-	logFile << "---Executing Query" << endl;
-	logFile << "----Query selected:"<<f.toString()<<endl;
-#endif
-#endif // debug
-	vector<Formula*> tmp;
-	tmp.push_back(&f);
-	while (!tmp.empty())
-	{
-		Formula* back = tmp.back();
-		tmp.pop_back();
-		if (back != NULL)
-		{
-			if (back->getAtom() != NULL)
-			{
-				atoms.push_back(back->getAtom());
-#ifdef debug 
-#ifdef debugquery
-				logFile << "-----Atom computed:" << atoms.back()->toString() << endl;
-#endif
-#endif // debug
-			}
-			tmp.push_back(back->getLSubformula());
-			tmp.push_back(back->getRSubformula());
-		}
-	}
-  }
+         void extractAtoms(Formula& f, vector<Atom*> &atoms)
+          {
+            #ifdef debug 
+            #ifdef debugquery
+	         logFile << "---Executing Query" << endl;
+	         logFile << "----Query selected:"<<f.toString()<<endl;
+           #endif
+           #endif // debug
+	       vector<Formula*> tmp;
+	       tmp.push_back(&f);
+	       while (!tmp.empty())
+	        {
+		       Formula* back = tmp.back();
+		       tmp.pop_back();
+		       if (back != NULL)
+		        {
+			      if (back->getAtom() != NULL)
+			       {
+				     atoms.push_back(back->getAtom());
+                     #ifdef debug 
+                     #ifdef debugquery
+			         	logFile << "-----Atom computed:" << atoms.back()->toString() << endl;
+                     #endif
+                     #endif // debug
+					 
+			       }
+			      tmp.push_back(back->getLSubformula());
+			      tmp.push_back(back->getRSubformula());				  
+		        }
+	         }
+           }
 
-public: vector<vector<Var>>& getQVQL() { return QVQL; };
+public: 
+	    vector<vector<Var>>& getQVQL() { return QVQL; };
         vector<vector<Var>>& getQVVL() { return QVVL; };
 		vector<pair<Var*, Var*>>& getMatchSet() { return Match; };
         void executeQuery(Formula& f, Tableau& tableau)
@@ -1928,8 +1931,6 @@ public: vector<vector<Var>>& getQVQL() { return QVQL; };
 			    }
 		     }
           }
-
-
 };
 
 
