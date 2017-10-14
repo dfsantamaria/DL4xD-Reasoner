@@ -982,6 +982,14 @@ t.push_back(*f);
 return 0;
 } */
 
+void copyAtom(Atom* source, Atom* dest)
+{
+	//Atom(int op, vector<Var*> vec)
+	dest->setAtomOp(source->getAtomOp());
+	for (Var* var : source->getElements())	
+	  dest->addElement(var);
+}
+
 Atom* copyAtom(Atom* atom, const string *qvar, Var* dest)
 {
 	Atom* fin = new Atom();
@@ -1849,7 +1857,7 @@ class QueryManager
 {
 private: vector< vector <Var> > QVQL;
 		 vector< vector <Var> > QVVL;
-		 vector< pair<Var*, Var*>> Match;
+		 vector<vector< pair<Var*, Var*>>> Match;
 		 Formula formula;
 		 int nlevel;
 		 int maxQQSize;
@@ -1860,8 +1868,8 @@ public:
 		nlevel = _nlevel;
 		maxQQSize = _maxQQSize;
 		QVQL.reserve(nlevel);
-		QVVL.reserve(nlevel);
-		Match.reserve(maxQQSize);
+		QVVL.reserve(nlevel);		
+		Match.push_back(vector< pair<Var*,Var*>>());
 		for (int i = 0; i <= nlevel; i++)
 		{
 			QVQL.push_back(vector<Var>());
@@ -1871,6 +1879,7 @@ public:
 		{
 			QVVL.at(i).reserve(maxQQSize);
 			QVQL.at(i).reserve(maxQQSize);
+
 		}
 	};
 
@@ -1908,12 +1917,29 @@ public:
 public:
 	vector<vector<Var>>& getQVQL() { return QVQL; };
 	vector<vector<Var>>& getQVVL() { return QVVL; };
-	vector<pair<Var*, Var*>>& getMatchSet() { return Match; };
+	vector<vector<pair<Var*, Var*>>>& getMatchSet() { return Match; };
+
+	/*To Complete*/
+    void findMatch(Atom* queryAtom, Atom* atomTM, vector<vector<pair<Var*,Var*>>>& matchSet)
+     {
+		vector<Var*> toMatch=queryAtom->getElements();
+	    for (vector<pair<Var*, Var*>>& matchSetEntry : getMatchSet()) //iterate over the element of the set of matches
+	    {			
+		  for (pair<Var*, Var*>& match : matchSetEntry) // this is the substitution that should be applied to the atom of query
+			{
+				cout << "Running Query " << matchSetEntry.size() << endl;
+				//apply substitution to q_i
+				//find a match with the given literal and modify the matchSet as required
+			}
+	    }
+	};
+
 	void executeQuery(Formula& f, Tableau& tableau)
 	{
 		vector<Atom*> qAtoms;
 		formula = f;
 		extractAtoms(formula, qAtoms);
+		vector<vector<pair<Var*, Var*>>>& matched = getMatchSet();
 		//Print Atoms from Query
 		cout << "Atoms from query: " << qAtoms.size() << endl;
 		for (Atom* a : qAtoms)
@@ -1921,16 +1947,28 @@ public:
 		//---------------------------------
 		for (Node* branch : tableau.getOpenBranches())
 		{
-			for (Atom* atom : qAtoms)
+			for (Atom* queryAtom : qAtoms)
 			{
-				for (pair<Var*, Var*> matched : getMatchSet())
+				//Atom sAtom = Atom(-1, vector<Var*>());
+				//copyAtom(atom, &sAtom);
+				Node* iterator = branch;
+				while (iterator != NULL)
 				{
-					cout << "Running Query" << endl;
+					for (int i = 0; i < iterator->getSetFormulae().size(); i++)
+					{						
+					  if (iterator->getSetFormulae().at(i).getAtom() != NULL) // iterate over literals
+						{
+                          findMatch(queryAtom, iterator->getSetFormulae().at(i).getAtom(), matched);
+						}
+					}
+					iterator = iterator->getFather();
 				}
+						
 			}
 		}
 	};
 };
+
 
 
 void performQuery(string& str, Formula** formula, Tableau& tableau)
