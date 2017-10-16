@@ -1869,7 +1869,7 @@ public:
 		maxQQSize = _maxQQSize;
 		QVQL.reserve(nlevel);
 		QVVL.reserve(nlevel);		
-		Match.push_back(vector< pair<Var*,Var*>>());
+		Match.reserve(1);
 		for (int i = 0; i <= nlevel; i++)
 		{
 			QVQL.push_back(vector<Var>());
@@ -1879,7 +1879,6 @@ public:
 		{
 			QVVL.at(i).reserve(maxQQSize);
 			QVQL.at(i).reserve(maxQQSize);
-
 		}
 	};
 
@@ -1919,40 +1918,14 @@ public:
 	vector<vector<Var>>& getQVVL() { return QVVL; };
 	vector<vector<pair<Var*, Var*>>>& getMatchSet() { return Match; };
 
-
-    /*To Complete*/
-	void checkMatch(vector<Var*>& toMatch, vector<Var*>& tLiteral, vector<vector<pair<Var*, Var*>>>& matchSet)
-	{
-	  //check if the literal with Sigma applied matches with the literal on the tableau
 	
-	}
-
-	void checkMatch(vector<Var*>& toMatch, vector<Var*>& tLiteral, vector<vector<pair<Var*, Var*>>>& matchSet, vector<pair<Var*, Var*>>& matchSetEntry)
-	{
-		//apply Sigma to the query literal and call checkMatch.
-
-	}
-	
-	
-	//queryLit is the current atom of Query, litTm the current literal on the tableau, matchSet the set of matches found
-    void findMatch(Atom* queryLit, Atom* litTM, vector<vector<pair<Var*,Var*>>>& matchSet)
-     {
-		vector<Var*> toMatch=queryLit->getElements();
-	    for (vector<pair<Var*, Var*>>& matchSetEntry : getMatchSet()) //iterate over the element of the set of matches
-	    {	
-			if (matchSetEntry.empty())			
-			  checkMatch(toMatch, litTM->getElements(), matchSet);			
-			else
-			  checkMatch(toMatch, litTM->getElements(), matchSet, matchSetEntry);
-	    }
-	};
 
 	void executeQuery(Formula& f, Tableau& tableau)
 	{
 		vector<Atom*> qLits;
 		formula = f;
 		extractLiterals(formula, qLits);
-		vector<vector<pair<Var*, Var*>>>& matched = getMatchSet();
+		
 		//Print Atoms from Query
 		cout << "Literals from query: " << qLits.size() << endl;
 		for (Atom* a : qLits)
@@ -1960,23 +1933,37 @@ public:
 		//---------------------------------
 		for (Node* branch : tableau.getOpenBranches())
 		{
-			for (Atom* queryLiteral : qLits)
+			vector<vector<pair<Var*, Var*>>> matchSet(0, vector<pair<Var*,Var*>>(0)); //partial solutions set for the current branch
+		   
+
+            int qIter=0;
+			for (;qIter<qLits.size(); qIter++)
 			{
-				//Atom sAtom = Atom(-1, vector<Var*>());
-				//copyAtom(atom, &sAtom);
-				Node* iterator = branch;
-				while (iterator != NULL)
+				if (qIter == 0)
 				{
-					for (int i = 0; i < iterator->getSetFormulae().size(); i++)
-					{						
-					  if (iterator->getSetFormulae().at(i).getAtom() != NULL) // iterate over literals
-						{
-                          findMatch(queryLiteral, iterator->getSetFormulae().at(i).getAtom(), matched);
-						}
-					}
-					iterator = iterator->getFather();
+					//initialize the Tree 
+					cout << "Initialization" << endl;
 				}
-						
+				else
+				{
+					vector<vector<pair<Var*, Var*>>> localMatched (); //temporay support vector
+					for (int solIter = 0; solIter < matchSet.size(); solIter++) //iterate over partial solutions
+					{
+                        
+					}
+					matchSet.clear();
+					
+				}
+				if (matchSet.size()<0)
+				{
+					// fail for q_i
+					break;
+				}
+
+			}
+			if (qIter == qLits.size()) // solution for the branch
+			{
+				//return the solution
 			}
 		}
 	};
