@@ -944,7 +944,7 @@ void printVector(vector<Var>& v)
 /*
 Create an object of type Formula  from the given string representing a formula.
 */
-int insertFormulaKB(vector<vector <Var>>& varset, vector<vector <Var>>& varset2, string formula, Formula** ffinal, int* typeformula)
+int insertFormulaKB(vector<vector <Var>>& varset1, vector<vector <Var>>& varset2, string formula, Formula** ffinal, int* typeformula)
 {
 	/*
 	The following vector of int represents the position of the quantified variables of the current formula.
@@ -955,9 +955,9 @@ int insertFormulaKB(vector<vector <Var>>& varset, vector<vector <Var>>& varset2,
 #endif // debug
 	//Formula *ffinal;
 	vector<int> vqlsize;
-	for (int i = 0; i < varSet.VQLGetSize(); i++)
-		vqlsize.push_back((int)varSet.VQLGetSizeAt(i));
-	parseInternalFormula(varset, varset2, &formula, ffinal, vqlsize, *typeformula);
+	for (int i = 0; i < varset1.size(); i++)
+		vqlsize.push_back((int)varset1.at(i).size());
+	parseInternalFormula(varset1, varset2, &formula, ffinal, vqlsize, *typeformula);
 	//vec.push_back(*ffinal);
 #ifdef debug  
 	logFile << "---Formula Ended " << endl;
@@ -1843,9 +1843,10 @@ void readQueryFromFile(string& name, vector<string>& stringSet)
 #endif // debug
 	std::ifstream file(name);
 	std::string str;
-
+	
 	while (std::getline(file, str))
 	{
+		
 		if ((str.rfind("//", 0) == 0) || str.empty())
 			continue;
 		stringSet.push_back(str);
@@ -1974,9 +1975,13 @@ public:
 void performQuery(string& str, Formula** formula, Tableau& tableau)
 {
 	QueryManager* queryManager = new QueryManager(5, 50);
-	int typeformula = 1;
+	int typeformula = 1; cout << "---------" << endl; 
 	insertFormulaKB(queryManager->getQVQL(), queryManager->getQVVL(), str, formula, &typeformula);
 	queryManager->executeQuery(**formula, tableau);
+
+	for (vector<Var> i : queryManager->getQVQL())
+		for (Var j : i)
+			cout << j.toString() << endl;
 };
 
 void performQuerySet(vector<string>& strings, vector<Formula>& formulae, Tableau& tableau)
@@ -2145,17 +2150,18 @@ int main()
 
 	/* Query Reading*/
 	cout << "---" << endl;
-	cout << "Reading Query" << endl;
+	cout << "Reading Query ..." << endl;
 	string queryname = "Example/query.txt";
 	vector<Formula> querySet;
-	vector<string> stringSet;
+	vector<string> stringSet=vector<string>(0); 
 	readQueryFromFile(queryname, stringSet);
-	//vector<Atom*> qAtoms;  //cout << querySet.at(0).toString() << endl;
+	//vector<Atom*> qAtoms;  
+	//cout << stringSet.at(0) << endl;
 	performQuerySet(stringSet, querySet, tableau);
 	/*
 	for (Formula f : querySet)
 		cout << f.toString() << endl;
-	*/
+	*/	
 	logFile.close();
 	return 0;
 }
