@@ -1883,7 +1883,7 @@ public:
 		}
 	};
 
-	void extractAtoms(Formula& f, vector<Atom*> &atoms)
+	void extractLiterals(Formula& f, vector<Atom*> &atoms)
 	{
 #ifdef debug 
 #ifdef debugquery
@@ -1919,35 +1919,48 @@ public:
 	vector<vector<Var>>& getQVVL() { return QVVL; };
 	vector<vector<pair<Var*, Var*>>>& getMatchSet() { return Match; };
 
-	/*To Complete*/
-    void findMatch(Atom* queryAtom, Atom* atomTM, vector<vector<pair<Var*,Var*>>>& matchSet)
+
+    /*To Complete*/
+	void checkMatch(vector<Var*>& toMatch, vector<Var*>& tLiteral, vector<vector<pair<Var*, Var*>>>& matchSet)
+	{
+	  //check if the literal with Sigma applied matches with the literal on the tableau
+	
+	}
+
+	void checkMatch(vector<Var*>& toMatch, vector<Var*>& tLiteral, vector<vector<pair<Var*, Var*>>>& matchSet, vector<pair<Var*, Var*>>& matchSetEntry)
+	{
+		//apply Sigma to the query literal and call checkMatch.
+
+	}
+	
+	
+	//queryLit is the current atom of Query, litTm the current literal on the tableau, matchSet the set of matches found
+    void findMatch(Atom* queryLit, Atom* litTM, vector<vector<pair<Var*,Var*>>>& matchSet)
      {
-		vector<Var*> toMatch=queryAtom->getElements();
+		vector<Var*> toMatch=queryLit->getElements();
 	    for (vector<pair<Var*, Var*>>& matchSetEntry : getMatchSet()) //iterate over the element of the set of matches
-	    {			
-		  for (pair<Var*, Var*>& match : matchSetEntry) // this is the substitution that should be applied to the atom of query
-			{
-				cout << "Running Query " << matchSetEntry.size() << endl;
-				//apply substitution to q_i
-				//find a match with the given literal and modify the matchSet as required
-			}
+	    {	
+			if (matchSetEntry.empty())			
+			  checkMatch(toMatch, litTM->getElements(), matchSet);			
+			else
+			  checkMatch(toMatch, litTM->getElements(), matchSet, matchSetEntry);
 	    }
 	};
 
 	void executeQuery(Formula& f, Tableau& tableau)
 	{
-		vector<Atom*> qAtoms;
+		vector<Atom*> qLits;
 		formula = f;
-		extractAtoms(formula, qAtoms);
+		extractLiterals(formula, qLits);
 		vector<vector<pair<Var*, Var*>>>& matched = getMatchSet();
 		//Print Atoms from Query
-		cout << "Atoms from query: " << qAtoms.size() << endl;
-		for (Atom* a : qAtoms)
+		cout << "Literals from query: " << qLits.size() << endl;
+		for (Atom* a : qLits)
 			cout << a->toString() << endl;
 		//---------------------------------
 		for (Node* branch : tableau.getOpenBranches())
 		{
-			for (Atom* queryAtom : qAtoms)
+			for (Atom* queryLiteral : qLits)
 			{
 				//Atom sAtom = Atom(-1, vector<Var*>());
 				//copyAtom(atom, &sAtom);
@@ -1958,7 +1971,7 @@ public:
 					{						
 					  if (iterator->getSetFormulae().at(i).getAtom() != NULL) // iterate over literals
 						{
-                          findMatch(queryAtom, iterator->getSetFormulae().at(i).getAtom(), matched);
+                          findMatch(queryLiteral, iterator->getSetFormulae().at(i).getAtom(), matched);
 						}
 					}
 					iterator = iterator->getFather();
