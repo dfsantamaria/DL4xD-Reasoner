@@ -1869,7 +1869,7 @@ public:
 		maxQQSize = _maxQQSize;
 		QVQL.reserve(nlevel);
 		QVVL.reserve(nlevel);		
-		Match.reserve(1);
+		Match=vector<vector< pair<Var*,Var*>>>(0);
 		for (int i = 0; i <= nlevel; i++)
 		{
 			QVQL.push_back(vector<Var>());
@@ -1959,7 +1959,6 @@ public:
 					// fail for q_i
 					break;
 				}
-
 			}
 			if (qIter == qLits.size()) // solution for the branch
 			{
