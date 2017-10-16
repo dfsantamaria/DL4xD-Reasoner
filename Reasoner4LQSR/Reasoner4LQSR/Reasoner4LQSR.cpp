@@ -1946,13 +1946,13 @@ public:
 				}
 				else
 				{
-					vector<vector<pair<Var*, Var*>>> localMatched (); //temporay support vector
+					vector<vector<pair<Var*, Var*>>> localMatched(0, vector<pair<Var*, Var*>>(0));; //temporay support vector
 					for (int solIter = 0; solIter < matchSet.size(); solIter++) //iterate over partial solutions
 					{
                         
-					}
-					matchSet.clear();
-					
+					}					
+					//matchSet.clear();
+					matchSet = localMatched;
 				}
 				if (matchSet.size()<0)
 				{
