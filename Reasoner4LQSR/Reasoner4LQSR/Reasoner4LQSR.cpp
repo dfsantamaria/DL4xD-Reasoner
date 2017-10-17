@@ -1997,7 +1997,8 @@ public:
 					}
 				 if (matchSet.empty())
 				 {
-					 //fail					 
+					 //fail	
+					 break;
 				 }
 				}
 			 }		
