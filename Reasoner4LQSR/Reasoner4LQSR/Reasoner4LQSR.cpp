@@ -1920,6 +1920,50 @@ public:
 	vector<vector<pair<Var*, Var*>>>& getMatchSet() { return Match; };
 
 	
+	void checkQueryMatchInBranch(Node* branch, Atom* query, vector<pair<Var*, Var*>>& currentMatch,vector<vector<pair<Var*, Var*>>>& matches)
+	{
+		
+		Node* iterator = branch;
+		while (iterator != NULL)
+		{
+			for (Formula formula : iterator->getSetFormulae())
+			{
+				if (formula.getAtom() != NULL)
+				{					
+					if (formula.getAtom()->getElements().size() == query->getElements().size() && formula.getAtom()->getAtomOp() == query->getAtomOp())
+					{
+					 int matchN = 0;
+					  vector<pair<Var*, Var*>> temp = vector<pair<Var*, Var*>>();
+					  for (int varIt=0; varIt < formula.getAtom()->getElements().size(); varIt++)
+						{	
+						  
+						  if(query->getElementAt(varIt)->getVarType() == 0 &&  query->getElementAt(varIt)->equal(formula.getAtom()->getElements().at(varIt))==0)
+						  {
+							 // cout << query->toString() << "++" << formula.getAtom()->toString() << endl;
+							  matchN++;
+						  }
+					     else if (query->getElementAt(varIt)->getVarType() == 1)
+							{
+							 // cout << query->toString() << ".." << formula.getAtom()->toString() << endl;
+							  temp.push_back(pair<Var*, Var*>(query->getElementAt(varIt), formula.getAtom()->getElementAt(varIt)));
+							  matchN++;   
+							 // cout<<temp.back().first->toString() << " pair " << temp.back().second->toString()<< " " <<endl;
+							}
+						}
+					//  cout << "MatchN " << query->toString()<< " " << matchN << " " << temp.size()<<endl; 
+					  
+					  if (matchN == query->getElements().size())
+					  {                      
+						currentMatch.insert(currentMatch.end(), temp.begin(), temp.end());
+						matches.push_back(currentMatch);					
+					  }					 
+					}
+				}
+			}
+			iterator = iterator->getFather();
+		}
+	
+	}
 
 	void executeQuery(Formula& f, Tableau& tableau)
 	{
@@ -1935,8 +1979,6 @@ public:
 		for (Node* branch : tableau.getOpenBranches())
 		{
 			vector<vector<pair<Var*, Var*>>> matchSet(0, vector<pair<Var*,Var*>>(0)); //partial solutions set for the current branch
-		   
-
             int qIter=0;
 			for (;qIter<qLits.size(); qIter++)
 			{
@@ -1944,28 +1986,26 @@ public:
 				{
 					//initialize the Tree 
 					cout << "Initialization" << endl;
+					checkQueryMatchInBranch(branch, qLits.at(qIter), vector<pair<Var*, Var*>>(), matchSet);
 				}
 				else
 				{
-					vector<vector<pair<Var*, Var*>>> localMatched(0, vector<pair<Var*, Var*>>(0));; //temporay support vector
-					for (int solIter = 0; solIter < matchSet.size(); solIter++) //iterate over partial solutions
+				 for (int solIter = 0; solIter < matchSet.size(); solIter++) //iterate over partial solutions
 					{
-                        
-					}					
-					//matchSet.clear();
-					matchSet = localMatched;
+                       //apply partial solution to q_i
+					   //then call checkQueryMatchInbranch wiht signa(q_i) 
+					}
+				 if (matchSet.empty())
+				 {
+					 //fail					 
+				 }
 				}
-				if (matchSet.size()<0)
+			 }		
+			for (vector<pair<Var*, Var*>> ma : matchSet)
+				for (pair<Var*, Var*> la : ma)
 				{
-					// fail for q_i
-					break;
+					cout << la.first->toString() << " " << la.second->toString() << endl;
 				}
-
-			}
-			if (qIter == qLits.size()) // solution for the branch
-			{
-				//return the solution
-			}
 		}
 	};
 };
@@ -1979,9 +2019,9 @@ void performQuery(string& str, Formula** formula, Tableau& tableau)
 	insertFormulaKB(queryManager->getQVQL(), queryManager->getQVVL(), str, formula, &typeformula);
 	queryManager->executeQuery(**formula, tableau);
 
-	for (vector<Var> i : queryManager->getQVQL())
+	/*for (vector<Var> i : queryManager->getQVQL())
 		for (Var j : i)
-			cout << j.toString() << endl;
+			cout << j.toString() << endl;*/
 };
 
 void performQuerySet(vector<string>& strings, vector<Formula>& formulae, Tableau& tableau)

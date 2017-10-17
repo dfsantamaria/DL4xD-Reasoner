@@ -1,1 +1,1 @@
-($FA V0{z}) ($FA V1{Z}) (( (V0{z} $IN V1{Z) $AD (V0{z} $IN V1{VeryYoung})) $AD (V0{z} $IN V1{Kid})) 	
+($FA V0{z}) (( (V0{z} $IN V1{Person}) $AD (V0{z} $IN V1{VeryYoung})) $AD (V0{z} $IN V1{Kid})) 	
