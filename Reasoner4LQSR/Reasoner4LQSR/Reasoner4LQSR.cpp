@@ -1858,7 +1858,7 @@ class QueryManager
 {
 private: vector< vector <Var> > QVQL;
 		 vector< vector <Var> > QVVL;
-		 vector<vector< pair<Var*, Var*>>> Match;
+		 pair <vector<int>, vector<vector<vector<pair<Var*, Var*>>>>> Match;
 		 Formula formula;
 		 int nlevel;
 		 int maxQQSize;
@@ -1870,7 +1870,7 @@ public:
 		maxQQSize = _maxQQSize;
 		QVQL.reserve(nlevel);
 		QVVL.reserve(nlevel);		
-		Match=vector<vector< pair<Var*,Var*>>>(0);
+		Match= pair <vector<int>, vector<vector<vector<pair<Var*, Var*>>>>>(vector<int>(), vector<vector<vector<pair<Var*, Var*>>>>());
 		for (int i = 0; i <= nlevel; i++)
 		{
 			QVQL.push_back(vector<Var>());
@@ -1917,8 +1917,8 @@ public:
 public:
 	vector<vector<Var>>& getQVQL() { return QVQL; };
 	vector<vector<Var>>& getQVVL() { return QVVL; };
-	vector<vector<pair<Var*, Var*>>>& getMatchSet() { return Match; };
-
+	pair <vector<int>, vector<vector<vector<pair<Var*, Var*>>>>>& getMatchSet() { return Match; };
+	void setMatchSet(pair <vector<int>, vector<vector<vector<pair<Var*, Var*>>>>>& input) { Match=input; };
 	
 	void checkQueryMatchInBranch(Node* branch, Atom* query, vector<pair<Var*, Var*>>& currentMatch,vector<vector<pair<Var*, Var*>>>& matches)
 	{
@@ -1965,7 +1965,7 @@ public:
 	
 	}
 
-	void executeQuery(Formula& f, Tableau& tableau)
+	void executeQuery(Formula& f, Tableau& tableau, pair <vector<int>, vector<vector<vector<pair<Var*, Var*>>>>>& result)
 	{
 		vector<Atom*> qLits;
 		formula = f;
@@ -1976,7 +1976,7 @@ public:
 		for (Atom* a : qLits)
 			cout << a->toString() << endl;
 		//---------------------------------
-		for (Node* branch : tableau.getOpenBranches())
+		for (int branchIt=0; branchIt<tableau.getOpenBranches().size();branchIt++)
 		{
 			vector<vector<pair<Var*, Var*>>> matchSet(0, vector<pair<Var*,Var*>>(0)); //partial solutions set for the current branch
             int qIter=0;
@@ -1986,7 +1986,7 @@ public:
 				{
 					//initialize the Tree 
 					cout << "Initialization" << endl;
-					checkQueryMatchInBranch(branch, qLits.at(qIter), vector<pair<Var*, Var*>>(), matchSet);
+					checkQueryMatchInBranch(tableau.getOpenBranches().at(branchIt), qLits.at(qIter), vector<pair<Var*, Var*>>(), matchSet);
 				}
 				else
 				{
@@ -1995,37 +1995,40 @@ public:
                        //apply partial solution to q_i
 					   //then call checkQueryMatchInbranch wiht signa(q_i) 
 					}
-				 if (matchSet.empty())
-				 {
+				
+				}
+				if (matchSet.empty())
+			      {
 					 //fail	
 					 break;
-				 }
-				}
-			 }		
-			for (vector<pair<Var*, Var*>> ma : matchSet)
-				for (pair<Var*, Var*> la : ma)
-				{
-					cout << la.first->toString() << " " << la.second->toString() << endl;
-				}
+				 }	
+			 }	
+			if (!matchSet.empty())
+			{
+				result.first.push_back(branchIt);
+				result.second.push_back(matchSet);
+			}
 		}
 	};
 };
 
 
 
-void performQuery(string& str, Formula** formula, Tableau& tableau)
+QueryManager* performQuery(string& str, Formula** formula, Tableau& tableau)
 {
 	QueryManager* queryManager = new QueryManager(5, 50);
 	int typeformula = 1; cout << "---------" << endl; 
 	insertFormulaKB(queryManager->getQVQL(), queryManager->getQVVL(), str, formula, &typeformula);
-	queryManager->executeQuery(**formula, tableau);
-
+	pair <vector<int>, vector<vector<vector<pair<Var*, Var*>>>>> result(vector<int>(0), vector<vector<vector<pair<Var*, Var*>>>>(0));
+	queryManager->executeQuery(**formula, tableau, result);
+	queryManager->setMatchSet(result);
+	return queryManager;
 	/*for (vector<Var> i : queryManager->getQVQL())
 		for (Var j : i)
 			cout << j.toString() << endl;*/
 };
 
-void performQuerySet(vector<string>& strings, vector<Formula>& formulae, Tableau& tableau)
+QueryManager* performQuerySet(vector<string>& strings, vector<Formula>& formulae, Tableau& tableau)
 {
 #ifdef debug 
 #ifdef debugquery
@@ -2035,8 +2038,9 @@ void performQuerySet(vector<string>& strings, vector<Formula>& formulae, Tableau
 	for (string s : strings)
 	{
 		Formula *f = NULL;
-		performQuery(s, &f, tableau);
+		QueryManager* manager=performQuery(s, &f, tableau);
 		formulae.push_back(*f);
+		return manager;
 	}
 };
 
@@ -2198,7 +2202,23 @@ int main()
 	readQueryFromFile(queryname, stringSet);
 	//vector<Atom*> qAtoms;  
 	//cout << stringSet.at(0) << endl;
-	performQuerySet(stringSet, querySet, tableau);
+	QueryManager* result=performQuerySet(stringSet, querySet, tableau);
+	cout << "Printing query results ..." << endl;
+	for (int i = 0; i < result->getMatchSet().second.size(); i++)
+	{
+		cout << "Tableau branch number: " << result->getMatchSet().first.at(i) << endl;
+		for (int j = 0; j < result->getMatchSet().second.at(i).size(); j++)
+		{
+			cout << "Solution number: " << j << endl;
+			for (int k = 0; k < result->getMatchSet().second.at(i).at(j).size(); k++)
+			{
+				cout << result->getMatchSet().second.at(i).at(j).at(k).first->toString();
+				cout << ",";
+				cout << result->getMatchSet().second.at(i).at(j).at(k).second->toString() <<"; " ;
+			}
+			cout << endl;
+		}
+	}
 	/*
 	for (Formula f : querySet)
 		cout << f.toString() << endl;
