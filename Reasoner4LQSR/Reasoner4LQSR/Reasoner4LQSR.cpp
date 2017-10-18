@@ -1946,7 +1946,6 @@ public:
 						vector<pair<Var*, Var*>> temp = vector<pair<Var*, Var*>>();
 						for (int varIt = 0; varIt < formula.getAtom()->getElements().size(); varIt++)
 						{
-
 							if (query->getElementAt(varIt)->getVarType() == 0 && query->getElementAt(varIt)->equal(formula.getAtom()->getElements().at(varIt)) == 0)
 							{
 								// cout << query->toString() << "++" << formula.getAtom()->toString() << endl;
@@ -1983,7 +1982,7 @@ public:
 	Atom applySubstitution(Atom* result, Atom* query, const vector<pair<Var*,Var*>>& matches)
 	{			
 		copyAtom(query,result);
-		cout << "Q before:" << result->toString() << endl;
+		//cout << "Q before:" << result->toString() << endl;
 		for (int sigIt = 0; sigIt < matches.size(); sigIt++)
 		{
 			for (int i = 0; i < query->getElements().size(); i++)
@@ -1992,11 +1991,11 @@ public:
 				{
 
 					result->setElementAt(i, matches.at(sigIt).second);
-					cout << "replacing..." << result->getElementAt(i)->toString()<<endl;
+					//cout << "replacing..." << result->getElementAt(i)->toString()<<endl;
 				}
 			}
 		}
-		cout << "Query After: " << result->toString() << endl;
+		//cout << "Query After: " << result->toString() << endl;
 		return *result;
 	}
 
@@ -2021,7 +2020,7 @@ public:
 				{
 					//initialize the Tree 
 					cout << "Initialization" << endl;
-					cout << qLits.at(qIter)->toString() << endl;
+					//cout << qLits.at(qIter)->toString() << endl;
 					checkQueryMatchInBranch(tableau.getOpenBranches().at(branchIt), qLits.at(qIter), vector<pair<Var*, Var*>>(), matchSet);
 				}
 				else
@@ -2082,6 +2081,7 @@ QueryManager* performQuerySet(vector<string>& strings, vector<Formula>& formulae
 		formulae.push_back(*f);
 		return manager;
 	}
+	return NULL;
 };
 
 /*
