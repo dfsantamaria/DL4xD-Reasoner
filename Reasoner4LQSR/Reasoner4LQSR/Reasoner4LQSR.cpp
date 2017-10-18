@@ -1943,6 +1943,7 @@ public:
 					if (formula.getAtom()->getElements().size() == query->getElements().size() && formula.getAtom()->getAtomOp() == query->getAtomOp())
 					{
 						int matchN = 0;
+						int noq = 0; //check if the query is a literal and there is a match
 						vector<pair<Var*, Var*>> temp = vector<pair<Var*, Var*>>();
 						for (int varIt = 0; varIt < formula.getAtom()->getElements().size(); varIt++)
 						{
@@ -1950,6 +1951,7 @@ public:
 							{
 								// cout << query->toString() << "++" << formula.getAtom()->toString() << endl;
 								matchN++;
+								noq++;
 							}
 							else if (query->getElementAt(varIt)->getVarType() == 1)
 							{
@@ -1960,6 +1962,12 @@ public:
 							}
 						}
 						//  cout << "MatchN " << query->toString()<< " " << matchN << " " << temp.size()<<endl; 
+						if (noq == query->getElements().size()) // if the query is a literal and a match is found, there is no need to read the entire branch 
+						{
+							if (!currentMatch.empty())
+								matches.push_back(currentMatch);
+							return;
+						}
 
 						if (matchN == query->getElements().size())
 						{
