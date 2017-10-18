@@ -372,6 +372,16 @@ public:
 		getElements().push_back(element);
 	};
 
+	int setElementAt(int index, Var* element)
+	{
+		if (index < components.size())
+		{
+			components.at(index) = element;
+			return 0;
+		}
+		return 1;
+	}
+
 	string toString()
 	{
 		string out = "(";
@@ -1869,8 +1879,8 @@ public:
 		nlevel = _nlevel;
 		maxQQSize = _maxQQSize;
 		QVQL.reserve(nlevel);
-		QVVL.reserve(nlevel);		
-		Match= pair <vector<int>, vector<vector<vector<pair<Var*, Var*>>>>>(vector<int>(), vector<vector<vector<pair<Var*, Var*>>>>());
+		QVVL.reserve(nlevel);
+		Match = pair <vector<int>, vector<vector<vector<pair<Var*, Var*>>>>>(vector<int>(), vector<vector<vector<pair<Var*, Var*>>>>());
 		for (int i = 0; i <= nlevel; i++)
 		{
 			QVQL.push_back(vector<Var>());
@@ -1918,51 +1928,76 @@ public:
 	vector<vector<Var>>& getQVQL() { return QVQL; };
 	vector<vector<Var>>& getQVVL() { return QVVL; };
 	pair <vector<int>, vector<vector<vector<pair<Var*, Var*>>>>>& getMatchSet() { return Match; };
-	void setMatchSet(pair <vector<int>, vector<vector<vector<pair<Var*, Var*>>>>>& input) { Match=input; };
-	
-	void checkQueryMatchInBranch(Node* branch, Atom* query, vector<pair<Var*, Var*>>& currentMatch,vector<vector<pair<Var*, Var*>>>& matches)
+	void setMatchSet(pair <vector<int>, vector<vector<vector<pair<Var*, Var*>>>>>& input) { Match = input; };
+
+	void checkQueryMatchInBranch(Node* branch, Atom* query, vector<pair<Var*, Var*>>& currentMatch, vector<vector<pair<Var*, Var*>>>& matches)
 	{
-		
+
 		Node* iterator = branch;
 		while (iterator != NULL)
 		{
 			for (Formula formula : iterator->getSetFormulae())
 			{
 				if (formula.getAtom() != NULL)
-				{					
+				{
 					if (formula.getAtom()->getElements().size() == query->getElements().size() && formula.getAtom()->getAtomOp() == query->getAtomOp())
 					{
-					 int matchN = 0;
-					  vector<pair<Var*, Var*>> temp = vector<pair<Var*, Var*>>();
-					  for (int varIt=0; varIt < formula.getAtom()->getElements().size(); varIt++)
-						{	
-						  
-						  if(query->getElementAt(varIt)->getVarType() == 0 &&  query->getElementAt(varIt)->equal(formula.getAtom()->getElements().at(varIt))==0)
-						  {
-							 // cout << query->toString() << "++" << formula.getAtom()->toString() << endl;
-							  matchN++;
-						  }
-					     else if (query->getElementAt(varIt)->getVarType() == 1)
+						int matchN = 0;
+						vector<pair<Var*, Var*>> temp = vector<pair<Var*, Var*>>();
+						for (int varIt = 0; varIt < formula.getAtom()->getElements().size(); varIt++)
+						{
+
+							if (query->getElementAt(varIt)->getVarType() == 0 && query->getElementAt(varIt)->equal(formula.getAtom()->getElements().at(varIt)) == 0)
 							{
-							 // cout << query->toString() << ".." << formula.getAtom()->toString() << endl;
-							  temp.push_back(pair<Var*, Var*>(query->getElementAt(varIt), formula.getAtom()->getElementAt(varIt)));
-							  matchN++;   
-							 // cout<<temp.back().first->toString() << " pair " << temp.back().second->toString()<< " " <<endl;
+								// cout << query->toString() << "++" << formula.getAtom()->toString() << endl;
+								matchN++;
+							}
+							else if (query->getElementAt(varIt)->getVarType() == 1)
+							{
+								// cout << query->toString() << ".." << formula.getAtom()->toString() << endl;
+								temp.push_back(pair<Var*, Var*>(query->getElementAt(varIt), formula.getAtom()->getElementAt(varIt)));
+								matchN++;
+								// cout<<temp.back().first->toString() << " pair " << temp.back().second->toString()<< " " <<endl;
 							}
 						}
-					//  cout << "MatchN " << query->toString()<< " " << matchN << " " << temp.size()<<endl; 
-					  
-					  if (matchN == query->getElements().size())
-					  {                      
-						currentMatch.insert(currentMatch.end(), temp.begin(), temp.end());
-						matches.push_back(currentMatch);					
-					  }					 
+						//  cout << "MatchN " << query->toString()<< " " << matchN << " " << temp.size()<<endl; 
+
+						if (matchN == query->getElements().size())
+						{
+							//currentMatch.insert(currentMatch.end(), temp.begin(), temp.end());
+							vector<pair<Var*, Var*>> c = currentMatch;
+							for (pair<Var*, Var*> m : temp)
+							{								
+								c.push_back(m);								
+							}
+							matches.push_back(c);
+						}
 					}
 				}
 			}
 			iterator = iterator->getFather();
 		}
-	
+
+	}
+
+	Atom applySubstitution(Atom* result, Atom* query, const vector<pair<Var*,Var*>>& matches)
+	{			
+		copyAtom(query,result);
+		cout << "Q before:" << result->toString() << endl;
+		for (int sigIt = 0; sigIt < matches.size(); sigIt++)
+		{
+			for (int i = 0; i < query->getElements().size(); i++)
+			{
+				if (query->getElementAt(i)->equal(matches.at(sigIt).first)==0)
+				{
+
+					result->setElementAt(i, matches.at(sigIt).second);
+					cout << "replacing..." << result->getElementAt(i)->toString()<<endl;
+				}
+			}
+		}
+		cout << "Query After: " << result->toString() << endl;
+		return *result;
 	}
 
 	void executeQuery(Formula& f, Tableau& tableau, pair <vector<int>, vector<vector<vector<pair<Var*, Var*>>>>>& result)
@@ -1986,16 +2021,21 @@ public:
 				{
 					//initialize the Tree 
 					cout << "Initialization" << endl;
+					cout << qLits.at(qIter)->toString() << endl;
 					checkQueryMatchInBranch(tableau.getOpenBranches().at(branchIt), qLits.at(qIter), vector<pair<Var*, Var*>>(), matchSet);
 				}
 				else
 				{
+				 vector <vector<pair<Var*, Var*>>> tmp (0);
 				 for (int solIter = 0; solIter < matchSet.size(); solIter++) //iterate over partial solutions
-					{
-                       //apply partial solution to q_i
-					   //then call checkQueryMatchInbranch wiht signa(q_i) 
-					}
-				
+				 {					 
+					  Atom sigq =  Atom(-1, vector<Var*>(0));
+					  applySubstitution(&sigq, qLits.at(qIter), matchSet.at(solIter));
+					  checkQueryMatchInBranch(tableau.getOpenBranches().at(branchIt), &sigq, matchSet.at(solIter), tmp);
+                     // apply partial solution to q_i
+					//then call checkQueryMatchInbranch wiht sigma(q_i) 
+				 }
+				 matchSet = tmp;
 				}
 				if (matchSet.empty())
 			      {
@@ -2211,7 +2251,7 @@ int main()
 		{
 			cout << "Solution number: " << j << endl;
 			for (int k = 0; k < result->getMatchSet().second.at(i).at(j).size(); k++)
-			{
+			{				
 				cout << result->getMatchSet().second.at(i).at(j).at(k).first->toString();
 				cout << ",";
 				cout << result->getMatchSet().second.at(i).at(j).at(k).second->toString() <<"; " ;
