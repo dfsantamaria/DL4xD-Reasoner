@@ -2019,7 +2019,7 @@ public:
 				if (qIter == 0)
 				{
 					//initialize the Tree 
-					cout << "Initialization" << endl;
+					//cout << "Initialization" << endl;
 					//cout << qLits.at(qIter)->toString() << endl;
 					checkQueryMatchInBranch(tableau.getOpenBranches().at(branchIt), qLits.at(qIter), vector<pair<Var*, Var*>>(), matchSet);
 				}
