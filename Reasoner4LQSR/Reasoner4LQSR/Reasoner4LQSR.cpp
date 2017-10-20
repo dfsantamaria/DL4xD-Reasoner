@@ -1933,6 +1933,7 @@ public:
 		}
 	};
 
+
 public:
 	vector<vector<Var>>& getQVQL() { return QVQL; };
 	vector<vector<Var>>& getQVVL() { return QVVL; };
@@ -1956,8 +1957,7 @@ public:
 			}
 			iterator = iterator->getFather();
 		}
-		return 0;
-	
+		return 0;	
 	}
 
 	int checkQueryVariableMatchInBranch(Node* branch, Atom* query, vector<pair<Var*, Var*>>& currentMatch, vector<vector<pair<Var*, Var*>>>& matches)
@@ -2081,8 +2081,7 @@ public:
 			}
 				if (res == 0)
 					break;
-			}	
-			cout << "Result" << res<<endl;
+			}				
 			if (!matchSet.empty())
 			{
 				result.first.push_back(branchIt);
