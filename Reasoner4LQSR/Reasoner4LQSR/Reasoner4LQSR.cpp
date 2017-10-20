@@ -402,6 +402,15 @@ public:
 		out.append(")");
 		return out;
 	};
+	int containsQVariable()
+	{		
+		for (Var* var: getElements())
+		{
+			if (var->getVarType() == 1)
+				return 1;
+		}
+		return 0;
+	}
 
 	int equals(Atom &atom)
 	{
@@ -2032,22 +2041,18 @@ public:
 					checkQueryMatchInBranch(tableau.getOpenBranches().at(branchIt), qLits.at(qIter), vector<pair<Var*, Var*>>(), matchSet);
 				}
 				else
-				{
-				 vector <vector<pair<Var*, Var*>>> tmp (0);
-				 for (int solIter = 0; solIter < matchSet.size(); solIter++) //iterate over partial solutions
-				 {		
-					 if(matchSet.at(solIter).empty())
-						 checkQueryMatchInBranch(tableau.getOpenBranches().at(branchIt), qLits.at(qIter), matchSet.at(solIter), tmp);
-					 else
-					 {
-						 Atom sigq = Atom(-1, vector<Var*>(0));
-						 applySubstitution(&sigq, qLits.at(qIter), matchSet.at(solIter));
-						 checkQueryMatchInBranch(tableau.getOpenBranches().at(branchIt), &sigq, matchSet.at(solIter), tmp);
-						 // apply partial solution to q_i
-						//then call checkQueryMatchInbranch wiht sigma(q_i)
-					 }
-				 }
-				 matchSet = tmp;
+				{					
+					vector <vector<pair<Var*, Var*>>> tmp(0);
+					for (int solIter = 0; solIter < matchSet.size(); solIter++) //iterate over partial solutions
+					{
+							Atom sigq = Atom(-1, vector<Var*>(0));
+							applySubstitution(&sigq, qLits.at(qIter), matchSet.at(solIter));
+							checkQueryMatchInBranch(tableau.getOpenBranches().at(branchIt), &sigq, matchSet.at(solIter), tmp);
+							// apply partial solution to q_i
+						   //then call checkQueryMatchInbranch wiht sigma(q_i)
+
+					}
+					matchSet = tmp;					
 				}
 				if (matchSet.empty())
 			      {
