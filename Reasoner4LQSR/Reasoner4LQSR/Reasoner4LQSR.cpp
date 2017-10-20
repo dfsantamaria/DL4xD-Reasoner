@@ -2054,27 +2054,38 @@ public:
             int qIter=0; 
 			for (; qIter < qLits.size(); qIter++)
 			{
-				    res = 0;	
-					if (matchSet.empty())
-					{						
-						res  = checkQueryMatchInBranch(tableau.getOpenBranches().at(branchIt), qLits.at(qIter), vector<pair<Var*, Var*>>(), matchSet);
-					}
-					else
-					{
-						vector <vector<pair<Var*, Var*>>> tmp(0);
-						for (int solIter = 0; solIter < matchSet.size(); solIter++) //iterate over partial solutions
+				res = 0;
+				if (qLits.at(qIter)->containsQVariable() == 0)
+					res = checkQueryLiteralMatchInBranch(tableau.getOpenBranches().at(branchIt), qLits.at(qIter));
+				else
+				{
+				  if (matchSet.empty())
+				   {
+					res = checkQueryVariableMatchInBranch(tableau.getOpenBranches().at(branchIt), qLits.at(qIter), vector<pair<Var*, Var*>>(), matchSet);
+				    }
+				   else
+				    {
+					 vector <vector<pair<Var*, Var*>>> tmp(0);
+					 for (int solIter = 0; solIter < matchSet.size(); solIter++) //iterate over partial solutions
+					   {
+						Atom sigq = Atom(-1, vector<Var*>(0));
+						applySubstitution(&sigq, qLits.at(qIter), matchSet.at(solIter));
+						if (sigq.containsQVariable() == 0)
 						{
-							Atom sigq = Atom(-1, vector<Var*>(0));
-							applySubstitution(&sigq, qLits.at(qIter), matchSet.at(solIter));
-							checkQueryMatchInBranch(tableau.getOpenBranches().at(branchIt), &sigq, matchSet.at(solIter), tmp);
-							// apply partial solution to q_i
-							//then call checkQueryMatchInbranch wiht sigma(q_i)
+							if (checkQueryLiteralMatchInBranch(tableau.getOpenBranches().at(branchIt), &sigq) == 1)
+								tmp.push_back(matchSet.at(solIter));
 						}
-						matchSet = tmp;
-						if (matchSet.empty())
-							res = 0;
-						else res = 1;					
-				     }
+						else 
+							checkQueryVariableMatchInBranch(tableau.getOpenBranches().at(branchIt), &sigq, matchSet.at(solIter), tmp);
+						// apply partial solution to q_i
+						//then call checkQueryMatchInbranch wiht sigma(q_i)
+					   }
+					matchSet = tmp;
+					if (matchSet.empty())
+						res = 0;
+					else res = 1;
+				}
+			}
 				if (res == 0)
 					break;
 			}	
@@ -2084,7 +2095,7 @@ public:
 				result.first.push_back(branchIt);
 				result.second.push_back(matchSet);
 			}
-
+			cout << "Tableau Branch: " << branchIt << ", Answer: " << res << endl;
 		}
 	};
 };
