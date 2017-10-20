@@ -1939,7 +1939,28 @@ public:
 	pair <vector<int>, vector<vector<vector<pair<Var*, Var*>>>>>& getMatchSet() { return Match; };
 	void setMatchSet(pair <vector<int>, vector<vector<vector<pair<Var*, Var*>>>>>& input) { Match = input; };
 
-	int checkQueryMatchInBranch(Node* branch, Atom* query, vector<pair<Var*, Var*>>& currentMatch, vector<vector<pair<Var*, Var*>>>& matches)
+	int checkQueryLiteralMatchInBranch(Node* branch, Atom* query)
+	{
+		Node* iterator = branch;
+		while (iterator != NULL)
+		{
+			for (Formula formula : iterator->getSetFormulae())
+			{
+				if (formula.getAtom() != NULL)
+				{
+					if (formula.getAtom()->equals( *(query))==0)
+					{						
+						return 1;
+					}
+				}
+			}
+			iterator = iterator->getFather();
+		}
+		return 0;
+	
+	}
+
+	int checkQueryVariableMatchInBranch(Node* branch, Atom* query, vector<pair<Var*, Var*>>& currentMatch, vector<vector<pair<Var*, Var*>>>& matches)
 	{
 		int res = 0;
 		Node* iterator = branch;
@@ -1959,8 +1980,7 @@ public:
 							if (query->getElementAt(varIt)->getVarType() == 0 && query->getElementAt(varIt)->equal(formula.getAtom()->getElements().at(varIt)) == 0)
 							{
 								// cout << query->toString() << "++" << formula.getAtom()->toString() << endl;
-								matchN++;
-								noq++;
+								matchN++;								
 							}
 							else if (query->getElementAt(varIt)->getVarType() == 1)
 							{
@@ -1970,34 +1990,30 @@ public:
 								// cout<<temp.back().first->toString() << " pair " << temp.back().second->toString()<< " " <<endl;
 							}
 						}
-						//  cout << "MatchN " << query->toString()<< " " << matchN << " " << temp.size()<<endl; 
-						//if (noq == query->getElements().size()) // if the query is a literal and a match is found, there is no need to read the entire branch 
-						//{
-						//	if (!currentMatch.empty())
-						//	  matches.push_back(currentMatch);
-						//	//else matches.push_back({pair<Var*,Var*>(NULL,NULL)});							
-						//	return 1; 
-						//}
-
 						if (matchN == query->getElements().size())
 						{
 							//currentMatch.insert(currentMatch.end(), temp.begin(), temp.end());
 							vector<pair<Var*, Var*>> c = currentMatch;
 							for (pair<Var*, Var*> m : temp)
-							{								
-								c.push_back(m);								
+							{
+								c.push_back(m);
 							}
 							matches.push_back(c);
-							res  = 1;
-						}
-						if (noq == query->getElements().size())
-							return 1;
+							res = 1;
+						}						
 					}
 				}
 			}
 			iterator = iterator->getFather();
 		}
 		return res;
+	}
+
+	int checkQueryMatchInBranch(Node* branch, Atom* query, vector<pair<Var*, Var*>>& currentMatch, vector<vector<pair<Var*, Var*>>>& matches)
+	{
+		if (query->containsQVariable() == 0)
+			return checkQueryLiteralMatchInBranch(branch, query);
+		return checkQueryVariableMatchInBranch(branch,query,currentMatch,matches);
 	}
 
 	Atom applySubstitution(Atom* result, Atom* query, const vector<pair<Var*,Var*>>& matches)
@@ -2033,51 +2049,42 @@ public:
 		//---------------------------------
 		for (int branchIt=0; branchIt<tableau.getOpenBranches().size();branchIt++)
 		{
+			int res=0;
 			vector<vector<pair<Var*, Var*>>> matchSet(0, vector<pair<Var*,Var*>>(0)); //partial solutions set for the current branch
-            int qIter=0;
-			for (;qIter<qLits.size(); qIter++)
-			{		
-				int res = 0;
-				if (qIter == 0)
-				{
-					//initialize the Tree 
-					//cout << "Initialization" << endl;
-					//cout << qLits.at(qIter)->toString() << endl;
-					res=checkQueryMatchInBranch(tableau.getOpenBranches().at(branchIt), qLits.at(qIter), vector<pair<Var*, Var*>>(), matchSet);
-				}
-				else
-				{
-					if (qLits.at(qIter)->containsQVariable()==0)
-					 res=checkQueryMatchInBranch(tableau.getOpenBranches().at(branchIt), qLits.at(qIter), vector<pair<Var*, Var*>>(), matchSet);
+            int qIter=0; 
+			for (; qIter < qLits.size(); qIter++)
+			{
+				    res = 0;	
+					if (matchSet.empty())
+					{						
+						res  = checkQueryMatchInBranch(tableau.getOpenBranches().at(branchIt), qLits.at(qIter), vector<pair<Var*, Var*>>(), matchSet);
+					}
 					else
 					{
-					vector <vector<pair<Var*, Var*>>> tmp(0);
-					for (int solIter = 0; solIter < matchSet.size(); solIter++) //iterate over partial solutions
-					{
-						Atom sigq = Atom(-1, vector<Var*>(0));
-						applySubstitution(&sigq, qLits.at(qIter), matchSet.at(solIter));
-						checkQueryMatchInBranch(tableau.getOpenBranches().at(branchIt), &sigq, matchSet.at(solIter), tmp);
-						// apply partial solution to q_i
-					   //then call checkQueryMatchInbranch wiht sigma(q_i)
-
-					}
-					matchSet = tmp;
-					if (tmp.empty())
-						res = 0;
-					else res = 1;
-				}
-				}
-				if (matchSet.empty()||res==0)
-			      {
-					 //fail	
-					 break;
-				 }	
-			 }	
+						vector <vector<pair<Var*, Var*>>> tmp(0);
+						for (int solIter = 0; solIter < matchSet.size(); solIter++) //iterate over partial solutions
+						{
+							Atom sigq = Atom(-1, vector<Var*>(0));
+							applySubstitution(&sigq, qLits.at(qIter), matchSet.at(solIter));
+							checkQueryMatchInBranch(tableau.getOpenBranches().at(branchIt), &sigq, matchSet.at(solIter), tmp);
+							// apply partial solution to q_i
+							//then call checkQueryMatchInbranch wiht sigma(q_i)
+						}
+						matchSet = tmp;
+						if (matchSet.empty())
+							res = 0;
+						else res = 1;					
+				     }
+				if (res == 0)
+					break;
+			}	
+			cout << "Result" << res<<endl;
 			if (!matchSet.empty())
 			{
 				result.first.push_back(branchIt);
 				result.second.push_back(matchSet);
 			}
+
 		}
 	};
 };
