@@ -2008,14 +2008,7 @@ public:
 		}
 		return res;
 	}
-
-	int checkQueryMatchInBranch(Node* branch, Atom* query, vector<pair<Var*, Var*>>& currentMatch, vector<vector<pair<Var*, Var*>>>& matches)
-	{
-		if (query->containsQVariable() == 0)
-			return checkQueryLiteralMatchInBranch(branch, query);
-		return checkQueryVariableMatchInBranch(branch,query,currentMatch,matches);
-	}
-
+	
 	Atom applySubstitution(Atom* result, Atom* query, const vector<pair<Var*,Var*>>& matches)
 	{				
 		copyAtom(query,result);
