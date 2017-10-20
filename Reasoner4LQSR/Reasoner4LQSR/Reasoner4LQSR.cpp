@@ -2043,12 +2043,12 @@ public:
 					//initialize the Tree 
 					//cout << "Initialization" << endl;
 					//cout << qLits.at(qIter)->toString() << endl;
-					checkQueryMatchInBranch(tableau.getOpenBranches().at(branchIt), qLits.at(qIter), vector<pair<Var*, Var*>>(), matchSet);
+					res=checkQueryMatchInBranch(tableau.getOpenBranches().at(branchIt), qLits.at(qIter), vector<pair<Var*, Var*>>(), matchSet);
 				}
 				else
 				{
 					if (qLits.at(qIter)->containsQVariable()==0)
-					 checkQueryMatchInBranch(tableau.getOpenBranches().at(branchIt), qLits.at(qIter), vector<pair<Var*, Var*>>(), matchSet);
+					 res=checkQueryMatchInBranch(tableau.getOpenBranches().at(branchIt), qLits.at(qIter), vector<pair<Var*, Var*>>(), matchSet);
 					else
 					{
 					vector <vector<pair<Var*, Var*>>> tmp(0);
@@ -2062,9 +2062,12 @@ public:
 
 					}
 					matchSet = tmp;
+					if (tmp.empty())
+						res = 0;
+					else res = 1;
 				}
 				}
-				if (matchSet.empty())
+				if (matchSet.empty()||res==0)
 			      {
 					 //fail	
 					 break;
