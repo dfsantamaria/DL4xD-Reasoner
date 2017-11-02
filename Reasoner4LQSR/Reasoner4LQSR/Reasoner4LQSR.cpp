@@ -1877,6 +1877,7 @@ class QueryManager
 {
 private: vector< vector <Var> > QVQL;
 		 vector< vector <Var> > QVVL;
+		 vector < int > ynAnswer;
 		 pair <vector<int>, vector<vector<vector<pair<Var*, Var*>>>>> Match;
 		 Formula formula;
 		 int nlevel;
@@ -1890,6 +1891,7 @@ public:
 		QVQL.reserve(nlevel);
 		QVVL.reserve(nlevel);
 		Match = pair <vector<int>, vector<vector<vector<pair<Var*, Var*>>>>>(vector<int>(), vector<vector<vector<pair<Var*, Var*>>>>());
+		ynAnswer = vector<int>();
 		for (int i = 0; i <= nlevel; i++)
 		{
 			QVQL.push_back(vector<Var>());
@@ -1937,9 +1939,10 @@ public:
 public:
 	vector<vector<Var>>& getQVQL() { return QVQL; };
 	vector<vector<Var>>& getQVVL() { return QVVL; };
+	vector<int>& getAnswerSet() { return ynAnswer; };
 	pair <vector<int>, vector<vector<vector<pair<Var*, Var*>>>>>& getMatchSet() { return Match; };
 	void setMatchSet(pair <vector<int>, vector<vector<vector<pair<Var*, Var*>>>>>& input) { Match = input; };
-
+	void setAnswerSet(vector<int> input) { ynAnswer = input; };
 	int checkQueryLiteralMatchInBranch(Node* branch, Atom* query)
 	{
 		Node* iterator = branch;
@@ -2029,7 +2032,7 @@ public:
 		return *result;
 	}
 
-	void executeQuery(Formula& f, Tableau& tableau, pair <vector<int>, vector<vector<vector<pair<Var*, Var*>>>>>& result)
+	void executeQuery(Formula& f, Tableau& tableau, pair <vector<int>, vector<vector<vector<pair<Var*, Var*>>>>>& result, int YN, vector<int>& ynAnswer)
 	{
 		vector<Atom*> qLits;
 		formula = f;
@@ -2087,21 +2090,29 @@ public:
 				result.first.push_back(branchIt);
 				result.second.push_back(matchSet);
 			}
-			cout << "Tableau Branch: " << branchIt << ", Answer: " << res << endl;
+			//cout << "Tableau Branch: " << branchIt << ", Answer: " << res << endl;
+			if(YN==1)
+			 ynAnswer.at(branchIt)=res;
 		}
 	};
 };
 
 
 
-QueryManager* performQuery(string& str, Formula** formula, Tableau& tableau)
+QueryManager* performQuery(string& str, Formula** formula, Tableau& tableau, int yn)
 {
 	QueryManager* queryManager = new QueryManager(5, 50);
 	int typeformula = 1; cout << "---------" << endl; 
 	insertFormulaKB(queryManager->getQVQL(), queryManager->getQVVL(), str, formula, &typeformula);
 	pair <vector<int>, vector<vector<vector<pair<Var*, Var*>>>>> result(vector<int>(0), vector<vector<vector<pair<Var*, Var*>>>>(0));
-	queryManager->executeQuery(**formula, tableau, result);
+	vector<int> ynanswer;
+	if (yn == 0)
+		ynanswer = vector<int>(0);
+	else
+		ynanswer = vector<int>(tableau.getOpenBranches().size());
+	queryManager->executeQuery(**formula, tableau, result, yn, ynanswer);
 	queryManager->setMatchSet(result);
+	queryManager->setAnswerSet(ynanswer);
 	return queryManager;
 	/*for (vector<Var> i : queryManager->getQVQL())
 		for (Var j : i)
@@ -2115,10 +2126,10 @@ QueryManager* performQuerySet(vector<string>& strings, vector<Formula>& formulae
 	logFile << "-----Parsing line:" << strings.at(0) << endl;
 #endif
 #endif // debug
-	for (string s : strings)
+	for (string s : strings) // Manage multiple query
 	{
 		Formula *f = NULL;
-		QueryManager* manager=performQuery(s, &f, tableau);
+		QueryManager* manager=performQuery(s, &f, tableau, 1);
 		formulae.push_back(*f);
 		return manager;
 	}
@@ -2299,6 +2310,11 @@ int main()
 			}
 			cout << endl;
 		}
+	}
+	cout << "Printing Y/N results ..." << endl;
+	for (int i=0; i < result->getAnswerSet().size(); i++)
+	{
+		cout << "Branch number: " << i << " Answer:" << result->getAnswerSet().at(i) << endl;
 	}
 	/*
 	for (Formula f : querySet)
