@@ -894,11 +894,11 @@ int parseInternalFormula(vector<vector <Var>>& vec, vector<vector <Var>>& vec2, 
 			if (!atom.empty())
 			{
 				stackFormula.pop();
-#ifdef debug 
-#ifdef debuginsertf
-				logFile << "-----Candidate atom found: " << atom << endl;
-#endif
-#endif // debug
+                 #ifdef debug 
+                   #ifdef debuginsertf
+				     logFile << "-----Candidate atom found: " << atom << endl;
+                   #endif
+                 #endif // debug
 
 				createAtom(vec, vec2, atom, &formula, startQuantVect, typeformula);
 				if (formula != NULL) // creation of the formula 
