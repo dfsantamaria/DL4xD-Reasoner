@@ -2161,12 +2161,14 @@ void convertToCNF(Formula* formula)
 {
  vector<Formula*> stack;
  stack.push_back(formula);
- while (stack.empty())
+ while (!stack.empty())
  {
+	
 	 Formula* current = stack.back();
 	 stack.pop_back();
 	 if (current->getOperand() == 0)
-	 {
+	 { 
+		 cout << "CNF" << endl;
 		 Formula* fswitch = NULL;
 		 Formula* base = NULL;
 		 int lr = 0;
@@ -2185,21 +2187,32 @@ void convertToCNF(Formula* formula)
 		 if (fswitch != NULL)
 		 {
 			 current->setOperand(1);
-			 fswitch->setOperand(0);
-			 Formula* move = fswitch->getLSubformula();
-			 fswitch->setLSubformula(copyFormula(base, fswitch));
+			 fswitch->setOperand(0);			 
+			 Formula* move = fswitch->getRSubformula();
+			 fswitch->setRSubformula(copyFormula(base, fswitch));
 			
-				 Formula* child = new Formula();
-				 child->setOperand(0); 
-				 if (lr == 0)			 
-					 current->setLSubformula(child);
-				 else current->setRSubformula(child);
-				 child->setLSubformula(move);
-				 child->setRSubformula(base);
-				 stack.push_back(current);
+			 Formula* child = new Formula();
+			 child->setOperand(0);
+			 if (lr == 0)
+				 current->setRSubformula(child);
+			 else
+				 current->setLSubformula(child);
+			 child->setPreviousFormula(current);
+
+			 child->setLSubformula(move);
+			 child->setRSubformula(base);
+
+			 move->setPreviousFormula(child);
+			 base->setPreviousFormula(child);
+			 
+
+			 if(current->getPreviousformula()!=NULL)
+			  stack.push_back(current->getPreviousformula());
 		 }
-		 stack.push_back(current->getLSubformula());
-		 stack.push_back(current->getRSubformula());
+		 if(current->getLSubformula()!=NULL)
+		   stack.push_back(current->getLSubformula());
+		 if(current->getRSubformula()!=NULL)
+		   stack.push_back(current->getRSubformula());
 	 }
   } 
 }
@@ -2389,11 +2402,13 @@ int main()
 	for (Formula f : querySet)
 		cout << f.toString() << endl;
 	*/	
-	/*vector<Formula> KB2; int typeformula = 0;
-	insertFormulaKB(varSet.getVQL(), varSet.getVVL(), "($FA V0{z8}) ($FA V0{z9}) ( ( (V0{k} $NI V1{l}) $AD  ( ( V0{z8} $NI V1{C1})$OR ( V0{z9} $NI V1{C2}))$AD((  $OA V0{z9} $CO V0{z9} $AO $NI V1{C2})$OR (V0{z9} $IN V1{C2}))))", KB2, &typeformula);
-	cout << KB2.at(0).toString() << endl;
+	vector<Formula> KB2; int typeformula = 0;
+	insertFormulaKB(varSet.getVQL(), varSet.getVVL(), "($FA V0{k}) ( (V0{k} $NI V1{C2})  $OR  (  (V0{k} $NI V1{l}) $AD ( V0{k} $NI V1{C1}) ) )", KB2, &typeformula);
+	cout << KB2.at(0).toString() << endl;		
 	Formula* out= copyFormula(&KB2.at(0), NULL);
-	cout << out->toString() << endl;*/
+	KB2.clear();
+	convertToCNF(out);
+	cout << out->toString() << endl;
 	logFile.close();
 	return 0;
 }
