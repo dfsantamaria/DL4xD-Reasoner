@@ -329,7 +329,7 @@ private:
 	/*
 	Right Operand is the first element of the vector.
 	Pair is the second and the third.
-	COn il vettore consideriamo anche i possibili datatype groups
+	Con il vettore consideriamo anche i possibili datatype groups
 	*/
 public:
 	Atom() {};
@@ -1039,6 +1039,27 @@ Formula* copyFormula(Formula* formula, Formula* father, const string *qvar, Var*
 	fin->setPreviousFormula(father);
 	fin->setLSubformula(copyFormula(formula->getLSubformula(), fin, qvar, dest));
 	fin->setRSubformula(copyFormula(formula->getRSubformula(), fin, qvar, dest));
+	return fin;
+}
+
+Formula* copyFormula(Formula* formula, Formula* father)
+{
+
+	if (formula == NULL)
+		return NULL;
+	Formula* fin = new Formula();
+	fin->setOperand(formula->getOperand());
+	if (formula->getAtom() == NULL)
+		fin->setAtom(NULL);
+	else
+	{
+		Atom* atomf = new Atom();
+		copyAtom(formula->getAtom(), atomf);
+		fin->setAtom(atomf);
+	}
+	fin->setPreviousFormula(father);
+	fin->setLSubformula(copyFormula(formula->getLSubformula(), fin));
+	fin->setRSubformula(copyFormula(formula->getRSubformula(), fin));
 	return fin;
 }
 
@@ -2136,6 +2157,53 @@ QueryManager* performQuerySet(vector<string>& strings, vector<Formula>& formulae
 	return NULL;
 };
 
+void convertToCNF(Formula* formula)
+{
+ vector<Formula*> stack;
+ stack.push_back(formula);
+ while (stack.empty())
+ {
+	 Formula* current = stack.back();
+	 stack.pop_back();
+	 if (current->getOperand() == 0)
+	 {
+		 Formula* fswitch = NULL;
+		 Formula* base = NULL;
+		 int lr = 0;
+		 if (current->getLSubformula()->getOperand() == 1)
+		 {
+			 fswitch = current->getLSubformula();
+			 base = current->getRSubformula();
+			 
+		 }
+		 else if (current->getRSubformula()->getOperand() == 1)
+		 {
+			 fswitch = current->getRSubformula(); 
+			 base =	 current->getLSubformula();		
+			 lr = 1;
+		 }
+		 if (fswitch != NULL)
+		 {
+			 current->setOperand(1);
+			 fswitch->setOperand(0);
+			 Formula* move = fswitch->getLSubformula();
+			 fswitch->setLSubformula(copyFormula(base, fswitch));
+			
+				 Formula* child = new Formula();
+				 child->setOperand(0); 
+				 if (lr == 0)			 
+					 current->setLSubformula(child);
+				 else current->setRSubformula(child);
+				 child->setLSubformula(move);
+				 child->setRSubformula(base);
+				 stack.push_back(current);
+		 }
+		 stack.push_back(current->getLSubformula());
+		 stack.push_back(current->getRSubformula());
+	 }
+  } 
+}
+
 /*
   Some printing function
 */
@@ -2232,6 +2300,7 @@ void printEqSet(Tableau& tableau)
 /*
    End of printing function
 */
+
 
 
 int main()
