@@ -2389,6 +2389,11 @@ int main()
 	for (Formula f : querySet)
 		cout << f.toString() << endl;
 	*/	
+	/*vector<Formula> KB2; int typeformula = 0;
+	insertFormulaKB(varSet.getVQL(), varSet.getVVL(), "($FA V0{z8}) ($FA V0{z9}) ( ( (V0{k} $NI V1{l}) $AD  ( ( V0{z8} $NI V1{C1})$OR ( V0{z9} $NI V1{C2}))$AD((  $OA V0{z9} $CO V0{z9} $AO $NI V1{C2})$OR (V0{z9} $IN V1{C2}))))", KB2, &typeformula);
+	cout << KB2.at(0).toString() << endl;
+	Formula* out= copyFormula(&KB2.at(0), NULL);
+	cout << out->toString() << endl;*/
 	logFile.close();
 	return 0;
 }
