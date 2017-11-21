@@ -18,6 +18,7 @@ using namespace std;
 #define debuginsertf            //debug istructions for internal formula translation
 #define eqsetdebug                 //debug istructions for computing EqSet
 #define debugquery               //debug istructions for query
+#define debugcnf                    //debug for CNF converter
 std::ofstream logFile("LOG.log");   //log file
 
 									/*
@@ -2161,22 +2162,26 @@ void convertToCNF(Formula* formula)
 {
  vector<Formula*> stack;
  stack.push_back(formula);
+#ifdef debug
+#ifdef debugcnf
+ logFile << "-----Converting formula in CNF:" << endl;
+ logFile <<"-----"<< formula->toString() << endl;
+#endif
+#endif // debug
  while (!stack.empty())
- {
-	
+ {	
 	 Formula* current = stack.back();
 	 stack.pop_back();
+	 int lr = -1;
 	 if (current->getOperand() == 0)
 	 { 
-		 cout << "CNF" << endl;
 		 Formula* fswitch = NULL;
-		 Formula* base = NULL;
-		 int lr = 0;
+		 Formula* base = NULL;		 
 		 if (current->getLSubformula()->getOperand() == 1)
 		 {
 			 fswitch = current->getLSubformula();
 			 base = current->getRSubformula();
-			 
+			 lr = 0;
 		 }
 		 else if (current->getRSubformula()->getOperand() == 1)
 		 {
@@ -2203,18 +2208,27 @@ void convertToCNF(Formula* formula)
 			 child->setRSubformula(base);
 
 			 move->setPreviousFormula(child);
-			 base->setPreviousFormula(child);
-			 
-
-			 if(current->getPreviousformula()!=NULL)
-			  stack.push_back(current->getPreviousformula());
+			 base->setPreviousFormula(child);			 
+			 		
 		 }
-		 if(current->getLSubformula()!=NULL)
-		   stack.push_back(current->getLSubformula());
-		 if(current->getRSubformula()!=NULL)
-		   stack.push_back(current->getRSubformula());
+		 
 	 }
-  } 
+	 if (lr > -1 && current->getPreviousformula() != NULL)
+	  stack.push_back(current->getPreviousformula());
+	 else
+		 {
+			 if (current->getLSubformula() != NULL)
+				 stack.push_back(current->getLSubformula());
+			 if (current->getRSubformula() != NULL)
+				 stack.push_back(current->getRSubformula());
+		 }
+   } 
+#ifdef debug
+#ifdef debugcnf
+ logFile << "-----Resulting CNF formula:" << endl;
+ logFile << "-----"<< formula->toString() << endl;
+#endif
+#endif // debug
 }
 
 /*
@@ -2403,8 +2417,12 @@ int main()
 		cout << f.toString() << endl;
 	*/	
 	vector<Formula> KB2; int typeformula = 0;
+	//insertFormulaKB(varSet.getVQL(), varSet.getVVL(), 
+	//	"($FA V0{k}) ( (V0{k} $NI V1{C2})  $OR (  (  (V0{k} $NI V1{l}) $AD ( V0{k} $NI V1{C1}) ) $OR (V0{k} $NI V1{C3})))", KB2, &typeformula);
+	
 	insertFormulaKB(varSet.getVQL(), varSet.getVVL(), 
-		"($FA V0{k}) ( (V0{k} $NI V1{C2})  $OR (  (  (V0{k} $NI V1{l}) $AD ( V0{k} $NI V1{C1}) ) $OR (V0{k} $NI V1{C3})))", KB2, &typeformula);
+	"($FA V0{z}) ($FA V1{z1})(( (V0{Annetta} $IN V1{Person}) $AD (V0{z} $IN V1{VeryYoung})) $OR (V0{z} $IN V1{z1}))", KB2, &typeformula);
+
 	cout << KB2.at(0).toString() << endl;		
 	Formula* out= copyFormula(&KB2.at(0), NULL);
 	KB2.clear();
