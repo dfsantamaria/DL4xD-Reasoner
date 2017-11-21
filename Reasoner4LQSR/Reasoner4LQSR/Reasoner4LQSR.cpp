@@ -2403,7 +2403,8 @@ int main()
 		cout << f.toString() << endl;
 	*/	
 	vector<Formula> KB2; int typeformula = 0;
-	insertFormulaKB(varSet.getVQL(), varSet.getVVL(), "($FA V0{k}) ( (V0{k} $NI V1{C2})  $OR  (  (V0{k} $NI V1{l}) $AD ( V0{k} $NI V1{C1}) ) )", KB2, &typeformula);
+	insertFormulaKB(varSet.getVQL(), varSet.getVVL(), 
+		"($FA V0{k}) ( (V0{k} $NI V1{C2})  $OR (  (  (V0{k} $NI V1{l}) $AD ( V0{k} $NI V1{C1}) ) $OR (V0{k} $NI V1{C3})))", KB2, &typeformula);
 	cout << KB2.at(0).toString() << endl;		
 	Formula* out= copyFormula(&KB2.at(0), NULL);
 	KB2.clear();
