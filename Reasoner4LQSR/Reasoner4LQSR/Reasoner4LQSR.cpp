@@ -960,54 +960,12 @@ void printVector(vector<Var>& v)
 
 }
 
-
-/*
-Create an object of type Formula  from the given string representing a formula.
-*/
-int insertFormulaKB(vector<vector <Var>>& varset1, vector<vector <Var>>& varset2, string formula, Formula** ffinal, int* typeformula)
-{
-	/*
-	The following vector of int represents the position of the quantified variables of the current formula.
-	Initially the vector plainly coincides the the end of the vector modified in the previous execution.
-	*/
-#ifdef debug  
-	logFile << "---Formula Inserted: " << formula << endl;
-#endif // debug
-	//Formula *ffinal;
-	vector<int> vqlsize;
-	for (int i = 0; i < varset1.size(); i++)
-		vqlsize.push_back((int)varset1.at(i).size());
-	parseInternalFormula(varset1, varset2, &formula, ffinal, vqlsize, *typeformula);
-	//vec.push_back(*ffinal);
-#ifdef debug  
-	logFile << "---Formula Ended " << endl;
-#endif // debug
-	return 0;
-}
-
-int insertFormulaKB(vector<vector <Var>>& varset, vector<vector <Var>>& varset2, string formula, vector<Formula> &vec, int* typeformula)
-{
-	Formula* f = NULL;
-	int res = insertFormulaKB(varset, varset2, formula, &f, typeformula);
-	vec.push_back(*f);
-	delete(f);
-	return res;
-}
-
-/*int insertFormulaKB(string s, vector<Formula> &t)
-{
-Formula* f;
-insertFormula(&s, &f);
-t.push_back(*f);
-return 0;
-} */
-
 void copyAtom(Atom* source, Atom* dest)
 {
 	//Atom(int op, vector<Var*> vec)
 	dest->setAtomOp(source->getAtomOp());
-	for (Var* var : source->getElements())	
-	  dest->addElement(var);
+	for (Var* var : source->getElements())
+		dest->addElement(var);
 }
 
 Atom* copyAtom(Atom* atom, const string *qvar, Var* dest)
@@ -1064,24 +1022,113 @@ Formula* copyFormula(Formula* formula, Formula* father)
 	return fin;
 }
 
-/*int containsQVar(Formula *f, string &s)
+void convertToCNF(Formula* formula)
 {
-if (f == NULL)
-return 0;
-if (f->getAtom() != NULL)
-{
-for (Var* var : (f->getAtom()->getElements()))
-{
-if (var->getVarType() == 1)
-{
-s = (var->getName());
-return 1;
+	vector<Formula*> stack;
+	stack.push_back(formula);
+#ifdef debug
+#ifdef debugcnf
+	logFile << "-----Converting formula in CNF:" << endl;
+	logFile << "-----" << formula->toString() << endl;
+#endif
+#endif // debug
+	while (!stack.empty())
+	{
+		Formula* current = stack.back();
+		stack.pop_back();
+		int lr = -1;
+		if (current->getOperand() == 0)
+		{
+			Formula* fswitch = NULL;
+			Formula* base = NULL;
+			if (current->getLSubformula()->getOperand() == 1)
+			{
+				fswitch = current->getLSubformula();
+				base = current->getRSubformula();
+				lr = 0;
+			}
+			else if (current->getRSubformula()->getOperand() == 1)
+			{
+				fswitch = current->getRSubformula();
+				base = current->getLSubformula();
+				lr = 1;
+			}
+			if (fswitch != NULL)
+			{
+				current->setOperand(1);
+				fswitch->setOperand(0);
+				Formula* move = fswitch->getRSubformula();
+				fswitch->setRSubformula(copyFormula(base, fswitch));
+
+				Formula* child = new Formula();
+				child->setOperand(0);
+				if (lr == 0)
+					current->setRSubformula(child);
+				else
+					current->setLSubformula(child);
+				child->setPreviousFormula(current);
+
+				child->setLSubformula(move);
+				child->setRSubformula(base);
+
+				move->setPreviousFormula(child);
+				base->setPreviousFormula(child);
+
+			}
+
+		}
+		if (lr > -1 && current->getPreviousformula() != NULL)
+			stack.push_back(current->getPreviousformula());
+		else
+		{
+			if (current->getLSubformula() != NULL)
+				stack.push_back(current->getLSubformula());
+			if (current->getRSubformula() != NULL)
+				stack.push_back(current->getRSubformula());
+		}
+	}
+#ifdef debug
+#ifdef debugcnf
+	logFile << "-----Resulting CNF formula:" << endl;
+	logFile << "-----" << formula->toString() << endl;
+#endif
+#endif // debug
 }
-}
-}
-return (containsQVar(f->getLSubformula(), s) + containsQVar(f->getRSubformula(), s));
-}
+
+/*
+Create an object of type Formula  from the given string representing a formula.
 */
+int insertFormulaKB(vector<vector <Var>>& varset1, vector<vector <Var>>& varset2, string formula, Formula** ffinal, int* typeformula)
+{
+	/*
+	The following vector of int represents the position of the quantified variables of the current formula.
+	Initially the vector plainly coincides the the end of the vector modified in the previous execution.
+	*/
+#ifdef debug  
+	logFile << "---Formula Inserted: " << formula << endl;
+#endif // debug
+	//Formula *ffinal;
+	vector<int> vqlsize;
+	for (int i = 0; i < varset1.size(); i++)
+		vqlsize.push_back((int)varset1.at(i).size());
+	parseInternalFormula(varset1, varset2, &formula, ffinal, vqlsize, *typeformula);
+	//vec.push_back(*ffinal);
+#ifdef debug  
+	logFile << "---Formula Ended " << endl;
+#endif // debug
+	convertToCNF(*ffinal);
+	return 0;
+}
+
+int insertFormulaKB(vector<vector <Var>>& varset, vector<vector <Var>>& varset2, string formula, vector<Formula> &vec, int* typeformula)
+{
+	Formula* f = NULL;
+	int res = insertFormulaKB(varset, varset2, formula, &f, typeformula);
+	vec.push_back(*f);
+	delete(f);
+	return res;
+}
+
 /*
 Get the first occurence of quantified variable if present
 */
@@ -1872,7 +1919,6 @@ void readKBFromFile(string& name, vector<Formula>& KB)
 		cout << str << endl;
 		insertFormulaKB(varSet.getVQL(), varSet.getVVL(), str, KB, &typeformula);
 	}
-
 }
 
 void readQueryFromFile(string& name, vector<string>& stringSet)
@@ -2124,8 +2170,8 @@ public:
 QueryManager* performQuery(string& str, Formula** formula, Tableau& tableau, int yn)
 {
 	QueryManager* queryManager = new QueryManager(5, 50);
-	int typeformula = 1; cout << "---------" << endl; 
-	insertFormulaKB(queryManager->getQVQL(), queryManager->getQVVL(), str, formula, &typeformula);
+	int typeformula = 1;
+	insertFormulaKB(queryManager->getQVQL(), queryManager->getQVVL(), str, formula, &typeformula);	
 	pair <vector<int>, vector<vector<vector<pair<Var*, Var*>>>>> result(vector<int>(0), vector<vector<vector<pair<Var*, Var*>>>>(0));
 	vector<int> ynanswer;
 	if (yn == 0)
@@ -2158,78 +2204,6 @@ QueryManager* performQuerySet(vector<string>& strings, vector<Formula>& formulae
 	return NULL;
 };
 
-void convertToCNF(Formula* formula)
-{
- vector<Formula*> stack;
- stack.push_back(formula);
-#ifdef debug
-#ifdef debugcnf
- logFile << "-----Converting formula in CNF:" << endl;
- logFile <<"-----"<< formula->toString() << endl;
-#endif
-#endif // debug
- while (!stack.empty())
- {	
-	 Formula* current = stack.back();
-	 stack.pop_back();
-	 int lr = -1;
-	 if (current->getOperand() == 0)
-	 { 
-		 Formula* fswitch = NULL;
-		 Formula* base = NULL;		 
-		 if (current->getLSubformula()->getOperand() == 1)
-		 {
-			 fswitch = current->getLSubformula();
-			 base = current->getRSubformula();
-			 lr = 0;
-		 }
-		 else if (current->getRSubformula()->getOperand() == 1)
-		 {
-			 fswitch = current->getRSubformula(); 
-			 base =	 current->getLSubformula();		
-			 lr = 1;
-		 }
-		 if (fswitch != NULL)
-		 {
-			 current->setOperand(1);
-			 fswitch->setOperand(0);			 
-			 Formula* move = fswitch->getRSubformula();
-			 fswitch->setRSubformula(copyFormula(base, fswitch));
-			
-			 Formula* child = new Formula();
-			 child->setOperand(0);
-			 if (lr == 0)
-				 current->setRSubformula(child);
-			 else
-				 current->setLSubformula(child);
-			 child->setPreviousFormula(current);
-
-			 child->setLSubformula(move);
-			 child->setRSubformula(base);
-
-			 move->setPreviousFormula(child);
-			 base->setPreviousFormula(child);			 
-			 		
-		 }
-		 
-	 }
-	 if (lr > -1 && current->getPreviousformula() != NULL)
-	  stack.push_back(current->getPreviousformula());
-	 else
-		 {
-			 if (current->getLSubformula() != NULL)
-				 stack.push_back(current->getLSubformula());
-			 if (current->getRSubformula() != NULL)
-				 stack.push_back(current->getRSubformula());
-		 }
-   } 
-#ifdef debug
-#ifdef debugcnf
- logFile << "-----Resulting CNF formula:" << endl;
- logFile << "-----"<< formula->toString() << endl;
-#endif
-#endif // debug
-}
 
 /*
   Some printing function
@@ -2416,6 +2390,8 @@ int main()
 	for (Formula f : querySet)
 		cout << f.toString() << endl;
 	*/	
+
+	/*
 	vector<Formula> KB2; int typeformula = 0;
 	//insertFormulaKB(varSet.getVQL(), varSet.getVVL(), 
 	//	"($FA V0{k}) ( (V0{k} $NI V1{C2})  $OR (  (  (V0{k} $NI V1{l}) $AD ( V0{k} $NI V1{C1}) ) $OR (V0{k} $NI V1{C3})))", KB2, &typeformula);
@@ -2428,6 +2404,7 @@ int main()
 	KB2.clear();
 	convertToCNF(out);
 	cout << out->toString() << endl;
+	*/
 	logFile.close();
 	return 0;
 }
