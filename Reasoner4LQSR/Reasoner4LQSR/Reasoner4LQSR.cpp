@@ -1098,7 +1098,7 @@ void convertToCNF(Formula* formula)
 /*
 Create an object of type Formula  from the given string representing a formula.
 */
-int insertFormulaKB(vector<vector <Var>>& varset1, vector<vector <Var>>& varset2, string formula, Formula** ffinal, int* typeformula)
+int insertFormulaKB(int keepQ,vector<vector <Var>>& varset1, vector<vector <Var>>& varset2, string formula, Formula** ffinal, int* typeformula)
 {
 	/*
 	The following vector of int represents the position of the quantified variables of the current formula.
@@ -1109,11 +1109,16 @@ int insertFormulaKB(vector<vector <Var>>& varset1, vector<vector <Var>>& varset2
 #endif // debug
 	//Formula *ffinal;
 	vector<int> vqlsize;
-	for (int i = 0; i < varset1.size(); i++)
-		//Use The following line instead of the second if you want that each formula doesn't share its
-		//quantified variables.
-		//vqlsize.push_back((int)varset1.at(i).size());
-		vqlsize.push_back(0); //formulas share quantified variables
+	if (keepQ == 0)
+	{
+		for (int i = 0; i < varset1.size(); i++)
+		 vqlsize.push_back(0); //formulas share quantified variables
+	}
+	else
+	{
+		for (int i = 0; i < varset1.size(); i++)
+			vqlsize.push_back((int)varset1.at(i).size());
+	}
 	parseInternalFormula(varset1, varset2, &formula, ffinal, vqlsize, *typeformula);
 	//vec.push_back(*ffinal);
 #ifdef debug  
@@ -1123,10 +1128,10 @@ int insertFormulaKB(vector<vector <Var>>& varset1, vector<vector <Var>>& varset2
 	return 0;
 }
 
-int insertFormulaKB(vector<vector <Var>>& varset, vector<vector <Var>>& varset2, string formula, vector<Formula> &vec, int* typeformula)
+int insertFormulaKB(int keepQ,vector<vector <Var>>& varset, vector<vector <Var>>& varset2, string formula, vector<Formula> &vec, int* typeformula)
 {
 	Formula* f = NULL;
-	int res = insertFormulaKB(varset, varset2, formula, &f, typeformula);
+	int res = insertFormulaKB(keepQ, varset, varset2, formula, &f, typeformula);
 	vec.push_back(*f);
 	delete(f);
 	return res;
@@ -1920,7 +1925,7 @@ void readKBFromFile(string& name, vector<Formula>& KB)
 		if ((str.rfind("//", 0) == 0) || str.empty())
 			continue;
 		cout << str << endl;
-		insertFormulaKB(varSet.getVQL(), varSet.getVVL(), str, KB, &typeformula);
+		insertFormulaKB(0,varSet.getVQL(), varSet.getVVL(), str, KB, &typeformula);
 	}
 	//Converting to CNF;
 	for (int i = 0; i < KB.size(); i++)
@@ -2179,7 +2184,7 @@ QueryManager* performQuery(string& str, Formula** formula, Tableau& tableau, int
 {
 	QueryManager* queryManager = new QueryManager(5, 50);
 	int typeformula = 1;
-	insertFormulaKB(queryManager->getQVQL(), queryManager->getQVVL(), str, formula, &typeformula);	
+	insertFormulaKB(0,queryManager->getQVQL(), queryManager->getQVVL(), str, formula, &typeformula);	
 	pair <vector<int>, vector<vector<vector<pair<Var*, Var*>>>>> result(vector<int>(0), vector<vector<vector<pair<Var*, Var*>>>>(0));
 	vector<int> ynanswer;
 	if (yn == 0)
@@ -2452,7 +2457,6 @@ USE A MAP to MAP from string representing operator and integer representing oper
 check brackets; check format of a formula in general as preprocessing and Check if an atom is built correctly.
 define special chars from a config file. Setting the size of the special chars and checking for correctness.
 allowing change of the $ char from a config file.
-creating a quantified variable for a formula does not check if it is yet present
 Optimize Atom management and creation
 Test Cases
 Optimize expandKB
