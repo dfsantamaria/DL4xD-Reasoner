@@ -1119,7 +1119,7 @@ int insertFormulaKB(vector<vector <Var>>& varset1, vector<vector <Var>>& varset2
 #ifdef debug  
 	logFile << "---Formula Ended " << endl;
 #endif // debug
-	convertToCNF(*ffinal);
+	//convertToCNF(*ffinal);
 	return 0;
 }
 
@@ -1922,6 +1922,11 @@ void readKBFromFile(string& name, vector<Formula>& KB)
 		cout << str << endl;
 		insertFormulaKB(varSet.getVQL(), varSet.getVVL(), str, KB, &typeformula);
 	}
+	//Converting to CNF;
+	for (int i = 0; i < KB.size(); i++)
+	{		
+		convertToCNF(&KB.at(i));
+	}
 }
 
 void readQueryFromFile(string& name, vector<string>& stringSet)
@@ -2324,7 +2329,7 @@ int main()
 	vector<Formula> KB;
 	vector<Formula> expKB;
 	//	insertFormulaKB("( ($OA V0{l} $CO V0{j} $AO $IN V3{C333})  $AD (  ($OA V0{k} $CO V0{t} $AO $IN V3{C333}) $OR ($OA V0{s} $CO V0{v} $AO $IN V3{C333}) ) )", KB);
-	string kbname = "Example/bg.txt";
+	string kbname = "Example/bg2.txt";
 	readKBFromFile(kbname, KB);
 
 	//print Tableau Radix	
