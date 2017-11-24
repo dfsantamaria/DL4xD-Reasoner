@@ -1110,7 +1110,10 @@ int insertFormulaKB(vector<vector <Var>>& varset1, vector<vector <Var>>& varset2
 	//Formula *ffinal;
 	vector<int> vqlsize;
 	for (int i = 0; i < varset1.size(); i++)
-		vqlsize.push_back((int)varset1.at(i).size());
+		//Use The following line instead of the second if you want that each formula doesn't share its
+		//quantified variables.
+		//vqlsize.push_back((int)varset1.at(i).size());
+		vqlsize.push_back(0); //formulas share quantified variables
 	parseInternalFormula(varset1, varset2, &formula, ffinal, vqlsize, *typeformula);
 	//vec.push_back(*ffinal);
 #ifdef debug  
