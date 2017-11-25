@@ -57,7 +57,8 @@ public:
 	int getType() { return type; };
 	string getName() { return name; };
 	int getVarType() { return var; };
-	int getIndex() { return index; }
+	int getIndex() { return index; };
+	void setIndex(int _index) { index = _index; }
 	int setName(string _name)
 	{
 		name = _name;
@@ -1915,6 +1916,56 @@ void checkTableauClash(Tableau& T)
 	}
 }
 
+void renameQVariables(Formula* formula, vector<vector <Var>>& varset1)
+{
+	vector<int> npos;
+	for (int i = 0; i < varset1.size(); i++)
+	{
+		npos.push_back(varset1.at(i).size());
+		
+	}
+	
+	vector<Formula*> stackformula;
+	stackformula.push_back(formula);
+	while (!stackformula.empty())
+	{
+		Formula* tmp = stackformula.back();
+		stackformula.pop_back();
+		if (tmp->getAtom() != NULL)
+		{
+			Atom* atm = tmp->getAtom();
+			for (int i = 0; i < atm->getElements().size(); i++)
+			{
+				if (atm->getElementAt(i)->getVarType() == 1)
+				{
+					
+					int vecpos = atm->getElementAt(i)->getType(); 
+					int position = npos.at(vecpos);					
+					int j = position; 
+					for (; j < varset1.at(vecpos).size(); j++)
+					{
+						if ( (atm->getElementAt(i)->equal(&varset1.at(vecpos).at(j))) == 0)
+						{							
+							atm->setElementAt(i, &varset1.at(vecpos).at(j));
+							break;
+						}
+					}
+					if (j == varset1.at(vecpos).size())
+					{ 						
+						varset1.at(vecpos).push_back(*atm->getElementAt(i));
+						varset1.at(vecpos).back().setIndex(j);
+						atm->setElementAt(i, &varset1.at(vecpos).back());
+					}
+				}
+			}
+		}
+		if( tmp->getLSubformula()!= NULL)
+		  stackformula.push_back(tmp->getLSubformula());
+		if(tmp->getRSubformula()!=NULL)
+			stackformula.push_back(tmp->getRSubformula());
+	}
+}
+
 void moveQuantifier(int qFlag, Formula* formula, vector<vector <Var>>& varset1, vector<Formula>& data)
 {
 #ifdef debug 
@@ -1936,16 +1987,17 @@ void moveQuantifier(int qFlag, Formula* formula, vector<vector <Var>>& varset1, 
 		Formula* current = tmp.back();
 		tmp.pop_back();
 		
-		if (current->getOperand() == 1)
+		if (current->getOperand() == 1) //AND found
 		{
 			inside.push_back(current->getLSubformula());
+			if (qFlag == 1)
+			  renameQVariables(current->getRSubformula(), varset1);
 			inside.push_back(current->getRSubformula());
 			while (!inside.empty())
 			{
 				Formula* local = inside.back();
 				inside.pop_back();
-				local->setPreviousFormula(NULL);
-				//here manage case qFlag==1
+				local->setPreviousFormula(NULL);				
 				tmp.push_back(local);
 			}			
 		}
