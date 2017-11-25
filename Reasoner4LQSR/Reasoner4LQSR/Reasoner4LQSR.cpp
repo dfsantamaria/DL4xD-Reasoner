@@ -19,6 +19,7 @@ using namespace std;
 #define eqsetdebug                 //debug istructions for computing EqSet
 #define debugquery               //debug istructions for query
 #define debugcnf                    //debug for CNF converter
+#define debugmvq                    //debug for moving quantifiers 
 std::ofstream logFile("LOG.log");   //log file
 
 									/*
@@ -1914,7 +1915,55 @@ void checkTableauClash(Tableau& T)
 	}
 }
 
-void readKBFromFile(string& name, vector<Formula>& KB)
+void moveQuantifier(int qFlag, Formula* formula, vector<vector <Var>>& varset1, vector<Formula>& data)
+{
+#ifdef debug 
+#ifdef debugmvq
+	logFile << "---Moving quantifiers in formula: " << endl;
+	logFile << "-----"<<formula->toString()<< endl;	
+#endif
+#endif // debug
+	if (formula->getOperand() != 1)
+	{
+		data.push_back(*formula);
+		return;
+	}
+	vector<Formula*> tmp;
+	vector<Formula*> inside;
+	tmp.push_back(formula);
+	while (!tmp.empty())
+	{
+		Formula* current = tmp.back();
+		tmp.pop_back();
+		
+		if (current->getOperand() == 1)
+		{
+			inside.push_back(current->getLSubformula());
+			inside.push_back(current->getRSubformula());
+			while (!inside.empty())
+			{
+				Formula* local = inside.back();
+				inside.pop_back();
+				local->setPreviousFormula(NULL);
+				//here manage case qFlag==1
+				tmp.push_back(local);
+			}			
+		}
+		else
+		{
+			data.push_back(*current);
+             #ifdef debug 
+             #ifdef debugmvq			     
+		         logFile << "-----Formula inserted: " << current->toString() << endl;
+            #endif
+            #endif // debug
+		}
+	}
+	
+	return;
+}
+
+void readKBFromFile(int qflag, string& name, vector<Formula>& KB)
 {
 	std::ifstream file(name);
 	std::string str;
@@ -1925,13 +1974,23 @@ void readKBFromFile(string& name, vector<Formula>& KB)
 		if ((str.rfind("//", 0) == 0) || str.empty())
 			continue;
 		cout << str << endl;
-		insertFormulaKB(0,varSet.getVQL(), varSet.getVVL(), str, KB, &typeformula);
+		insertFormulaKB( qflag,varSet.getVQL(), varSet.getVVL(), str, KB, &typeformula);
 	}
 	//Converting to CNF;
 	for (int i = 0; i < KB.size(); i++)
 	{		
 		convertToCNF(&KB.at(i));
 	}
+	vector<Formula> KBf;
+	while(!KB.empty())
+	{
+	  moveQuantifier(qflag, &KB.back(), varSet.getVQL(), KBf); 		
+	  KB.back().setLSubformula(NULL);
+	  KB.back().setRSubformula(NULL);
+	  KB.back().~Formula();
+	  KB.pop_back();
+	}
+	KB = KBf;
 }
 
 void readQueryFromFile(string& name, vector<string>& stringSet)
@@ -2335,7 +2394,7 @@ int main()
 	vector<Formula> expKB;
 	//	insertFormulaKB("( ($OA V0{l} $CO V0{j} $AO $IN V3{C333})  $AD (  ($OA V0{k} $CO V0{t} $AO $IN V3{C333}) $OR ($OA V0{s} $CO V0{v} $AO $IN V3{C333}) ) )", KB);
 	string kbname = "Example/bg2.txt";
-	readKBFromFile(kbname, KB);
+	readKBFromFile(0,kbname, KB);
 
 	//print Tableau Radix	
 	printTRadix(KB);
