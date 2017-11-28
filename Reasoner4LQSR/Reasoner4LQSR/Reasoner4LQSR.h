@@ -10,6 +10,8 @@
 
 using namespace std;
 
+// VariablesSet varSet = VariablesSet(3, 100);
+// Operators operators = Operators();
 
 class Var
 {
@@ -232,3 +234,70 @@ public:
 	Atom applySubstitution(Atom* result, Atom* query, const vector<pair<Var*, Var*>>& matches);
 	void executeQuery(Formula& f, Tableau& tableau, pair <vector<int>, vector<vector<vector<pair<Var*, Var*>>>>>& result, int YN, vector<int>& ynAnswer);
 };
+
+
+
+void areInEqClass(Var& var1, int& varclass1, int& indx1, Var& var2, int& varclass2, int& indx2, Tableau& tab, int brindx);
+void buildEqSet(Tableau& tab);
+int checkAtomClash(Atom &atom); //0 for clash 1 for no-clash
+int checkAtomClash(Atom &atom1, Atom &atom2);
+int checkAtomClashEqSet(Atom &atom, Tableau& T, int& brindx); //0 for clash 1 for no-clash
+int checkAtomClashEqSet(Atom &atom1, Atom &atom2, Tableau& t, int& brindx);
+int checkAtomOpClash(int op1, int op2);
+int checkAtoms(Atom* atom, Node* node);
+int checkAtomsClash(vector<Atom*> &vec);
+int checkBranchClash(Atom* atom, Node* node);
+int checkBranchClash(Node* node, Tableau& tableau);
+int checkNodeClash(vector<Formula> &formset);
+int checkNodeClashEqSet(Atom& atom, Node& node, Tableau& T, int& brind);
+void checkTableauClash(Tableau& T);
+int checkTableauRootClash(Tableau &T);
+int checkVectorClash(Atom* candidate, vector<Formula> &formset, int start);
+void chooseRule(Tableau &T, vector<Node*> &nodeSet, Formula &f);
+void closeTableauRoot(Tableau& T);
+int containsQVar(Formula *fr, string &s);
+int containsVariableName(vector<Var>* vect, Var** found, const string *name, const int *start);
+void convertToCNF(Formula* formula);
+Atom* copyAtom(Atom* atom, const string *qvar, Var* dest);
+void copyAtom(Atom* source, Atom* dest);
+Formula* copyFormula(Formula* formula, Formula* father);
+Formula* copyFormula(Formula* formula, Formula* father, const string *qvar, Var* dest);
+int createAtom(vector<vector <Var>>& vec, vector<vector <Var>>& vec2, string input, Formula **formula, vector<int>& startQuantVect, int typeformula);
+Var* createQVarFromString(vector<vector<Var>>& vec, string *name, int *level, int *vartype, int *start);
+Var* createVarFromString(vector<vector<Var>>& vec, vector<vector<Var>>& vec2, string *name, int *level, int *vartype, int *start, int *typeformula);
+void ERule(Atom* atom, Node* node);
+int expandKB(const vector<Formula> &inpf, vector <Formula> &out);
+void expandTableau(Tableau& T);
+void getAtomSet(Formula &f, vector<Atom*> &outf);
+int getVarsOrder(Var &var1, Var &var2);
+int insertFormulaKB(int keepQ, vector<vector <Var>>& varset, vector<vector <Var>>& varset2, string formula, vector<Formula> &vec, int* typeformula);
+int insertFormulaKB(int keepQ, vector<vector <Var>>& varset1, vector<vector <Var>>& varset2, string formula, Formula** ffinal, int* typeformula);
+void insertVarsEqClass(Var& var1, Var& var2, Tableau& tab, int brindx);
+int instantiateFormula(Formula f, vector<Formula> &destination);
+void moveQuantifier(int qFlag, Formula* formula, vector<vector <Var>>& varset1, vector<Formula>& data);
+Atom* negatedAtom(Atom *input);
+int parseInternalFormula(vector<vector <Var>>& vec, vector<vector <Var>>& vec2, const string *inputformula, Formula **outformula, vector<int>& startQuantVect, int typeformula);
+void PBRule(vector<Atom*> atoms, Node* node, vector<Node*> &nodeSet);
+QueryManager* performQuery(string& str, Formula** formula, Tableau& tableau, int yn);
+void performQuerySet(vector<QueryManager>& results, vector<string>& strings, vector<Formula>& formulae, Tableau& tableau);
+void readKBFromFile(int qflag, string &name, vector<Formula>& KB);
+void readKBFromStrings(int qflag, vector<string>&names, vector<Formula>& KB);
+void readQueryFromFile(string& name, vector<string>& stringSet);
+void renameQVariables(Formula* formula, vector<vector <Var>>& varset1);
+int retrieveVarData(const string input, string* name, int* level);
+void debugStart();
+void debugEnd();
+void InitializeReasoner(int sizeV, int sizeQ, int sizet);
+
+//Printing Function;
+void printClosedBranches(Tableau& tableau);
+void printEqSet(Tableau& tableau);
+void printOpenBranches(Tableau& tableau);
+void printStack(stack<Formula*> st);
+void printStack(stack<string> st);
+void printTExpanded(Tableau& tableau);
+void printTRadix(vector<Formula>& KB);
+void printVarSet();
+void printVector(vector<Var>& v);
+
+

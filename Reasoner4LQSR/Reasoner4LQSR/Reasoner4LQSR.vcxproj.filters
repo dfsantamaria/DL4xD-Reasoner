@@ -44,6 +44,9 @@
     <ClCompile Include="XMLparser.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram.cd" />
