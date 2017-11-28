@@ -32,6 +32,9 @@
     <ClCompile Include="Reasoner4LQSR.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
+    <ClCompile Include="thirdparts\pugixml\src\pugixml.cpp">
+      <Filter>File di origine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram.cd" />

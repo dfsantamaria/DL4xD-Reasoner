@@ -10,6 +10,8 @@
 #include <array>
 #include <stack>
 #include <sstream>
+#include "thirdparts/pugixml/src/pugixml.hpp"
+
 
 using namespace std;
 #define debug                   //debug istructions
@@ -2311,21 +2313,20 @@ QueryManager* performQuery(string& str, Formula** formula, Tableau& tableau, int
 			cout << j.toString() << endl;*/
 };
 
-QueryManager* performQuerySet(vector<string>& strings, vector<Formula>& formulae, Tableau& tableau)
+void performQuerySet(vector<QueryManager>& results,vector<string>& strings, vector<Formula>& formulae, Tableau& tableau)
 {
 #ifdef debug 
 #ifdef debugquery
 	logFile << "-----Parsing line:" << strings.at(0) << endl;
 #endif
-#endif // debug
+#endif // debug	
 	for (string s : strings) // Manage multiple query
 	{
 		Formula *f = NULL;
 		QueryManager* manager=performQuery(s, &f, tableau, 1);
 		formulae.push_back(*f);
-		return manager;
-	}
-	return NULL;
+		results.push_back(*manager); //Multiple query to be managed
+	}	
 };
 
 
@@ -2445,7 +2446,7 @@ int main()
 	vector<Formula> KB;
 	vector<Formula> expKB;
 	//	insertFormulaKB("( ($OA V0{l} $CO V0{j} $AO $IN V3{C333})  $AD (  ($OA V0{k} $CO V0{t} $AO $IN V3{C333}) $OR ($OA V0{s} $CO V0{v} $AO $IN V3{C333}) ) )", KB);
-	string kbname = "Example/bg2.txt";
+	string kbname = "Example/bg.txt";
 	readKBFromFile(0,kbname, KB);
 
 	//print Tableau Radix	
@@ -2488,27 +2489,28 @@ int main()
 	readQueryFromFile(queryname, stringSet);
 	//vector<Atom*> qAtoms;  
 	//cout << stringSet.at(0) << endl;
-	QueryManager* result=performQuerySet(stringSet, querySet, tableau);
+	vector<QueryManager> results;
+	performQuerySet(results, stringSet, querySet, tableau);
 	cout << "Printing query results ..." << endl;
-	for (int i = 0; i < result->getMatchSet().second.size(); i++)
+	for (int i = 0; i < results.at(0).getMatchSet().second.size(); i++)
 	{
-		cout << "Tableau branch number: " << result->getMatchSet().first.at(i) << endl;
-		for (int j = 0; j < result->getMatchSet().second.at(i).size(); j++)
+		cout << "Tableau branch number: " << results.at(0).getMatchSet().first.at(i) << endl;
+		for (int j = 0; j < results.at(0).getMatchSet().second.at(i).size(); j++)
 		{
 			cout << "Solution number: " << j << endl;
-			for (int k = 0; k < result->getMatchSet().second.at(i).at(j).size(); k++)
+			for (int k = 0; k < results.at(0).getMatchSet().second.at(i).at(j).size(); k++)
 			{				
-				cout << result->getMatchSet().second.at(i).at(j).at(k).first->toString();
+				cout << results.at(0).getMatchSet().second.at(i).at(j).at(k).first->toString();
 				cout << ",";
-				cout << result->getMatchSet().second.at(i).at(j).at(k).second->toString() <<"; " ;
+				cout << results.at(0).getMatchSet().second.at(i).at(j).at(k).second->toString() <<"; " ;
 			}
 			cout << endl;
 		}
 	}
 	cout << "Printing Y/N results ..." << endl;
-	for (int i=0; i < result->getAnswerSet().size(); i++)
+	for (int i=0; i < results.at(0).getAnswerSet().size(); i++)
 	{
-		cout << "Branch number: " << i << " Answer:" << result->getAnswerSet().at(i) << endl;
+		cout << "Branch number: " << i << " Answer:" << results.at(0).getAnswerSet().at(i) << endl;
 	}
 	/*
 	for (Formula f : querySet)
