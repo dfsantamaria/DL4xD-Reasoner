@@ -109,6 +109,7 @@ int main()
 	convertToCNF(out);
 	cout << out->toString() << endl;
 	*/
+	readOWLXMLOntology("Example/monastero.owl");
 	debugEnd();
 	return 0;
 }

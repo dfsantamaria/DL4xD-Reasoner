@@ -10,6 +10,7 @@
 
 using namespace std;
 
+
 // VariablesSet varSet = VariablesSet(3, 100);
 // Operators operators = Operators();
 
