@@ -10,8 +10,8 @@
 #include <array>
 #include <stack>
 #include <sstream>
-#include "thirdparts/pugixml/src/pugixml.hpp"
-
+#include "Reasoner4LQSR.h"
+#include "XMLparser.h"
 
 using namespace std;
 #define debug                   //debug istructions
@@ -24,6 +24,10 @@ using namespace std;
 #define debugmvq                    //debug for moving quantifiers 
 std::ofstream logFile("LOG.log");   //log file
 
+// VariablesSet varSet = VariablesSet(3, 100);
+// Operators operators = Operators();
+VariablesSet varSet;
+Operators operators;
 									/*
 									L0 has type 0
 									L1 has type 1
@@ -34,63 +38,55 @@ std::ofstream logFile("LOG.log");   //log file
 									//const int minVarSize = -1;
 									//const int maxVarSize = 3;   //size of variable
 
-									//Class of the single Var
-class Var
-{
-private:
-	int type;
-	int var;
-	int index;
-	string name;  // Underscore is allowed to define name with underscore			
-				  //int isValidType(int _type) { return _type > minVarSize && _type <= maxVarSize; };
-				  //int isValidVar(int _var) { return _var >= 0 && _var <= 1; };
 
-public:
-	Var(string _name, int _type, int _var, int _index)
+
+//Class of the single Var
+/*
+ Start Var
+*/
+Var::Var(string _name, int _type, int _var, int _index)
 	{
 		setName(_name);
 		setType(_type);
 		setVarType(_var);
 		index = _index;
 	};
-	~Var() {};
+Var::~Var() {};
 	//int isValidType() { return isValidType(type);};
 	//int isValidVar() { return isValidVar(var); };
-	int getType() { return type; };
-	string getName() { return name; };
-	int getVarType() { return var; };
-	int getIndex() { return index; };
-	void setIndex(int _index) { index = _index; }
-	int setName(string _name)
+int Var::getType() { return type; };
+string Var::getName() { return name; };
+int Var::getVarType() { return var; };
+int Var::getIndex() { return index; };
+void Var::setIndex(int _index) { index = _index; }
+int Var::setName(string _name)
 	{
 		name = _name;
 		return type;
 	};
-
-	void setType(int _type)
+void Var::setType(int _type)
 	{
 		type = _type;
 	};
 
-	void setVarType(int _var)
+void Var::setVarType(int _var)
 	{
 		var = _var;
 	};
 
-	int equal(Var* match)
+int Var::equal(Var* match)
 	{
 		if ((getName().compare(match->getName()) == 0) && (getType() == match->getType()) && (getVarType() == match->getVarType()))
 			return 0;
 		return 1;
 	};
-
-	int equal(string _name, int _type, int _varType)
+int Var::equal(string _name, int _type, int _varType)
 	{
 		if (getName().compare(_name) == 0 && (getType() == _type) && (getVarType() == _varType))
 			return 0;
 		return 1;
 	}
-	string toString()
+string Var::toString()
 	{
 		string out = "V";
 		out.append(to_string(getType()));
@@ -99,21 +95,20 @@ public:
 		out.append("}");
 		return out;
 	};
-};
+
+/*
+  End Var
+*/
+
+
+
 
 // vector of 4LQSR Variables. Q stays for quantified.
-
-class VariablesSet
-{
-private:
-	vector< vector <Var> > VVL;
-	vector< vector <Var> > VQL;
-	//vector< vector <Var> > QVQL;
-	int capacity;
-	int nlevel;
-public:
-	VariablesSet() {};
-	VariablesSet(int maxNVariable, int maxVSize, int maxQSize)
+/*
+  Start Variable Set
+*/
+VariablesSet::VariablesSet() {};
+VariablesSet::VariablesSet(int maxNVariable, int maxVSize, int maxQSize)
 	{
 		nlevel = maxNVariable;
 		capacity = maxVSize;
@@ -134,21 +129,21 @@ public:
 		}
 	};
 
-	vector<Var>*getAt(vector<vector<Var>>& vec, int level)
+vector<Var>* VariablesSet::getAt(vector<vector<Var>>& vec, int level)
 	{
 		if (level < vec.size())
 			return &vec.at(level);
 		return NULL;
-	}
+};
 
-	vector<Var>* getVVLAt(int level)
+vector<Var>* VariablesSet::getVVLAt(int level)
 	{
 		if (level < VVL.size())
 			return &VVL.at(level);
 		return NULL;
 	};
 
-	vector<Var>* getVQLAt(int level)
+vector<Var>* VariablesSet::getVQLAt(int level)
 	{
 		if (level < VQL.size())
 			return &VQL.at(level);
@@ -161,9 +156,7 @@ public:
 	//		return &QVQL.at(level);
 	//	return NULL;
 	//};
-
-
-	int pushBack(vector<vector <Var>>& vec, int inslevel, string name, int level, int vartype)
+int VariablesSet::pushBack(vector<vector <Var>>& vec, int inslevel, string name, int level, int vartype)
 	{
 		if (vec.at(inslevel).size() < vec.at(inslevel).capacity())
 		{
@@ -171,9 +164,9 @@ public:
 			return 0;
 		}
 		return 1;
-	}
+};
 
-	int VVLPushBack(int inslevel, string name, int level, int vartype)
+int VariablesSet::VVLPushBack(int inslevel, string name, int level, int vartype)
 	{
 #ifdef debug 
 #ifdef debuginsertf
@@ -188,7 +181,7 @@ public:
 			return 0;
 		}
 		return 1;
-	}
+};
 
 	/*
 	int VQLPushBack(int inslevel, string name, int level, int vartype)
@@ -223,35 +216,34 @@ public:
 		return 1;
 	}*/
 
-	vector<vector <Var>>& getVQL() { return VQL; }
-	vector<vector <Var>>& getVVL() { return VVL; }
-	Var* getBack(vector<vector <Var>>& vec, int level) { return &vec.at(level).back(); }
-	Var* VVLGetBack(int level) { return &VVL.at(level).back(); }
+vector<vector <Var>>& VariablesSet::getVQL() { return VQL; };
+vector<vector <Var>>& VariablesSet::getVVL() { return VVL; };
+Var* VariablesSet::getBack(vector<vector <Var>>& vec, int level) { return &vec.at(level).back(); };
+Var* VariablesSet::VVLGetBack(int level) { return &VVL.at(level).back(); };
 	//	Var* VQLGetBack(int level) { return &VQL.at(level).back(); }
 	//	Var* QVQLGetBack(int level) { return &QVQL.at(level).back(); }
-	size_t getSize(vector<vector <Var>>& vec) { return vec.size(); }
+size_t VariablesSet::getSize(vector<vector <Var>>& vec) { return vec.size(); };
 	//	size_t VVLGetSize() { return VVL.size(); }
-	size_t VQLGetSize() { return VQL.size(); }
+size_t VariablesSet::VQLGetSize() { return VQL.size(); };
 	//	size_t QVQLGetSize() { return QVQL.size(); }
-	size_t getSizeAt(vector<vector <Var>>& vec, int level) { return vec.at(level).size(); }
-	size_t VVLGetSizeAt(int level) { return VVL.at(level).size(); }
-	size_t VQLGetSizeAt(int level) { return VQL.at(level).size(); }
+size_t VariablesSet::getSizeAt(vector<vector <Var>>& vec, int level) { return vec.at(level).size(); };
+size_t VariablesSet::VVLGetSizeAt(int level) { return VVL.at(level).size(); };
+size_t VariablesSet::VQLGetSizeAt(int level) { return VQL.at(level).size(); };
 	//	size_t QVQLGetSizeAt(int level) { return QVQL.at(level).size(); }
-};
+
+/*
+End VariableSet
+*/
 
 //Special chars of a formula
-class Operators
-{
-private:
-	vector<string> logOp = { "$OR","$AD","$RO","$DA", "$NG" }; //logic operators
-	vector<string> setOp = { "$IN", "$EQ", "$NI", "$QE", "$OA", "$AO", "$CO" }; //set operators
-	vector<string> qutOp = { "$FA" };	//quantifiers
-public:
-	Operators() {};
-	size_t getLogOpSize() { return logOp.size(); };
-	size_t getSetOpSize() { return setOp.size(); };
-	size_t getQuantiOpSize() { return qutOp.size(); };
-	int getLogOpValue(string s)
+/*
+Start Operators
+*/
+Operators::Operators() {};
+size_t Operators::getLogOpSize() { return logOp.size(); };
+size_t Operators::getSetOpSize() { return setOp.size(); };
+size_t Operators::getQuantiOpSize() { return qutOp.size(); };
+int Operators::getLogOpValue(string s)
 	{
 		for (int i = 0; i < getLogOpSize(); i++)
 		{
@@ -261,7 +253,7 @@ public:
 		return -1;
 	};
 
-	int getSetOpValue(string s)
+int Operators::getSetOpValue(string s)
 	{
 		int i = 0;
 		for (; i < getSetOpSize(); i++)
@@ -272,7 +264,7 @@ public:
 		return -1;
 	};
 
-	int getQuantiOpValue(string s)
+int Operators::getQuantiOpValue(string s)
 	{
 		for (int i = 0; i < getQuantiOpSize(); i++)
 		{
@@ -282,21 +274,21 @@ public:
 		return -1;
 	};
 
-	string getLogOpElement(int index)
+string Operators::getLogOpElement(int index)
 	{
 		if (index < getLogOpSize())
 			return logOp[index];
 		return NULL;
 	};
 
-	string getSetOpElement(int index)
+string Operators::getSetOpElement(int index)
 	{
 		if (index < getSetOpSize())
 			return setOp[index];
 		return NULL;
 	};
 
-	string getQuantiOpElement(int index)
+string Operators::getQuantiOpElement(int index)
 	{
 		if (index < getQuantiOpSize())
 			return qutOp[index];
@@ -306,7 +298,7 @@ public:
 	/*
 	Return the value of the given string representing a logic operator
 	*/
-	int checkLogOp(string *s)
+int Operators::checkLogOp(string *s)
 	{
 		for (const string &op : logOp)
 		{
@@ -315,69 +307,57 @@ public:
 		}
 		return 0;
 	}
-};
 
-// VariablesSet varSet = VariablesSet(3, 100);
-// Operators operators = Operators();
+/**
+   End Operators
+*/
 
-VariablesSet varSet;
-Operators operators;
 
-class Atom
-{
-private:
-	int atomOp;
-	/*
-	-1 unsetted;
-	*/
-	vector<Var*> components;
-	/*
-	Right Operand is the first element of the vector.
-	Pair is the second and the third.
-	Con il vettore consideriamo anche i possibili datatype groups
-	*/
-public:
-	Atom() {};
-	Atom(int op, vector<Var*> vec)
+/**
+  Start Atom
+*/
+Atom::Atom() {};
+
+Atom::Atom(int op, vector<Var*> vec)
 	{
 		//components.reserve(maxVarSize);
 		setAtomOp(op);
 		components = vec;
 	};
 
-	vector<Var*>& getElements()
+vector<Var*>& Atom::getElements()
 	{
 		return components;
 	};
 
-	int getAtomOp()
+int Atom::getAtomOp()
 	{
 		return atomOp;
 	};
 
-	void setAtomOp(int value)
+void Atom::setAtomOp(int value)
 	{
 		atomOp = value;
 	};
 
-	Var* getElementAt(int index)
+Var* Atom::getElementAt(int index)
 	{
 		if (index < components.size())
 			return components.at(index);
 		return NULL;
 	}
 
-	~Atom() {};
+Atom::~Atom() {};
 
 	/*
 	Use Carefully. Remember the position of the left/right operand
 	*/
-	void addElement(Var* element)
+void Atom::addElement(Var* element)
 	{
 		getElements().push_back(element);
 	};
 
-	int setElementAt(int index, Var* element)
+int Atom::setElementAt(int index, Var* element)
 	{
 		if (index < components.size())
 		{
@@ -385,9 +365,9 @@ public:
 			return 0;
 		}
 		return 1;
-	}
+     };
 
-	string toString()
+string Atom::toString()
 	{
 		string out = "(";
 		if (getElements().size() > 2)
@@ -407,7 +387,8 @@ public:
 		out.append(")");
 		return out;
 	};
-	int containsQVariable()
+
+int Atom::containsQVariable()
 	{		
 		for (Var* var: getElements())
 		{
@@ -415,9 +396,9 @@ public:
 				return 1;
 		}
 		return 0;
-	}
+};
 
-	int equals(Atom &atom)
+int Atom::equals(Atom &atom)
 	{
 		if ((this->getElements().size() == atom.getElements().size()) && (this->getAtomOp() == atom.getAtomOp()))
 		{
@@ -434,20 +415,15 @@ public:
 		}
 		return 1;
 	};
-};
+/**
+End Atom
+*/
 
-class Formula  //struttura più generica da cambiare eventualmente con strutture per CNF
-{
-private:
-	//vector<Var*> quantified;
-	Atom *atom;
-	int operand;
-	int fulfilled;
-	Formula *lsubformula;
-	Formula *rsubformula;
-	Formula *pformula;
-public:
-	Formula()
+
+/**
+  Start Formula
+*/
+Formula::Formula()
 	{
 		setAtom(NULL);
 		setOperand(-1);
@@ -456,7 +432,8 @@ public:
 		setRSubformula(NULL);
 		setPreviousFormula(NULL);
 	};
-	Formula(Atom *at, int op)
+
+Formula::Formula(Atom *at, int op)
 	{
 		setAtom(at);
 		setOperand(op);
@@ -465,7 +442,8 @@ public:
 		setRSubformula(NULL);
 		setPreviousFormula(NULL);
 	};
-	Formula(Atom *at, int op, Formula *lf, Formula *rf)
+
+Formula::Formula(Atom *at, int op, Formula *lf, Formula *rf)
 	{
 		setAtom(at);
 		setOperand(op);
@@ -475,21 +453,22 @@ public:
 		(*lsubformula).setPreviousFormula(this);
 		(*rsubformula).setPreviousFormula(this);
 	};
-	// vector<Var*>* getQuantifiedSet() { return &quantified; };
-	Atom* getAtom() { return atom; };
-	int getOperand() { return operand; };
-	Formula* getLSubformula() { return lsubformula; };
-	Formula* getRSubformula() { return rsubformula; };
-	Formula* getPreviousformula() { return pformula; };
-	void setOperand(int op) { operand = op; };
-	void setAtom(Atom *at) { atom = at; };
-	void setLSubformula(Formula *sub) { lsubformula = sub; };
-	void setRSubformula(Formula *sub) { rsubformula = sub; };
-	void setPreviousFormula(Formula *prev) { pformula = prev; }
-	void setFulfillness(int val) { fulfilled = val; };
-	int getFulfillness() { return fulfilled; };
-	~Formula() {};
-	string toString()
+
+// vector<Var*>* getQuantifiedSet() { return &quantified; };
+Atom* Formula::getAtom() { return atom; };
+int Formula::getOperand() { return operand; };
+Formula* Formula::getLSubformula() { return lsubformula; };
+Formula* Formula::getRSubformula() { return rsubformula; };
+Formula* Formula::getPreviousformula() { return pformula; };
+void Formula::setOperand(int op) { operand = op; };
+void Formula::setAtom(Atom *at) { atom = at; };
+void Formula::setLSubformula(Formula *sub) { lsubformula = sub; };
+void Formula::setRSubformula(Formula *sub) { rsubformula = sub; };
+void Formula::setPreviousFormula(Formula *prev) { pformula = prev; };
+void Formula::setFulfillness(int val) { fulfilled = val; };
+int Formula::getFulfillness() { return fulfilled; };
+Formula::~Formula() {};
+string Formula::toString()
 	{
 		if (getAtom() != NULL)
 		{
@@ -509,20 +488,18 @@ public:
 		else if (getOperand() > -1)
 			return (operators.getLogOpElement(getOperand()));
 		else return "NULL";
-	}
 };
 
+/**
+End Formula
+*/
 
-class Node
-{
-private:
-	vector<Formula> setFormula;
-	Node* leftChild;
-	Node* rightChild;
-	Node* father;
-	//flag di fullfilled
-	//flag di completeness
-	int containsFormula(Formula &F) //to be completed and performed
+
+/**
+  Start Node
+*/
+
+int Node::containsFormula(Formula &F) //to be completed and performed
 	{
 		for (int i = 0; i < this->getSetFormulae().size(); i++)
 		{
@@ -537,52 +514,46 @@ private:
 
 		}
 		return 1;
-	}
-public:
-	Node(int size) { setFormula.reserve(size); leftChild = rightChild = father = NULL; };
-	Node() { leftChild = rightChild = father = NULL; };
-	Node(vector<Formula>& formula) { setFormula = formula; leftChild = rightChild = father = NULL; };
-	Node* getLeftChild() { return leftChild; };
-	Node* getRightChild() { return rightChild; };
-	Node* getFather() { return father; }
-	void setRightChild(Node* child) { rightChild = child; child->setFather(this); };
-	void setLeftChild(Node* child) { leftChild = child; child->setFather(this); };
-	void setFather(Node* f) { father = f; };
-	void insertFormula(Formula& f)
+};
+
+Node::Node(int size) { setFormula.reserve(size); leftChild = rightChild = father = NULL; };
+Node::Node() { leftChild = rightChild = father = NULL; };
+Node::Node(vector<Formula>& formula) { setFormula = formula; leftChild = rightChild = father = NULL; };
+Node* Node::getLeftChild() { return leftChild; };
+Node* Node::getRightChild() { return rightChild; };
+Node* Node::getFather() { return father; };
+void Node::setRightChild(Node* child) { rightChild = child; child->setFather(this); };
+void Node::setLeftChild(Node* child) { leftChild = child; child->setFather(this); };
+void Node::setFather(Node* f) { father = f; };
+void Node::insertFormula(Formula& f)
 	{
 		setFormula.push_back(f);
 	};
-	void insertCheckFormula(Formula& f)
+void Node::insertCheckFormula(Formula& f)
 	{
 		if (this->containsFormula(f) == 1)
 			setFormula.push_back(f);
 	};
-	vector<Formula>& getSetFormulae() { return setFormula; };
-	void setSetFormulae(vector<Formula>& input) { setFormula = input; };
-	~Node() {};
-};
+vector<Formula>& Node::getSetFormulae() { return setFormula; };
+void Node::setSetFormulae(vector<Formula>& input) { setFormula = input; };
+Node::~Node() {};
+/**
+End Node
+*/
 
 
 /*
-The Tableau.
+Start Tableau
 */
-
-class Tableau
-{
-private: Node* radix;
-private: vector <Node*> openBranches;
-private: vector <Node*> closedBranches;
-private: vector < vector < vector <Var*> > > EqSet;
-public:
-	Tableau(Node* initial) { radix = initial; };
-	Tableau(int size_radix) { radix = new Node(size_radix); };
-	Node* getTableau() { return radix; };
-	int insertFormula(Formula &f) { radix->insertFormula(f);  return 0; };
-	vector<Node*>& getOpenBranches() { return openBranches; };
-	vector<Node*>& getClosedBranches() { return closedBranches; };
-	vector < vector < vector <Var*> > >& getEqSet() { return EqSet; }
-	void addClosedBranch(Node* node) { getClosedBranches().push_back(node); }
-	void areInEqClass(Var& var1, int& varclass1, int& indx1, Var& var2, int& varclass2, int& indx2, int brindx)
+Tableau::Tableau(Node* initial) { radix = initial; };
+Tableau::Tableau(int size_radix) { radix = new Node(size_radix); };
+Node* Tableau::getTableau() { return radix; };
+int Tableau::insertFormula(Formula &f) { radix->insertFormula(f);  return 0; };
+vector<Node*>& Tableau::getOpenBranches() { return openBranches; };
+vector<Node*>& Tableau::getClosedBranches() { return closedBranches; };
+vector < vector < vector <Var*> > >& Tableau::getEqSet() { return EqSet; };
+void Tableau::addClosedBranch(Node* node) { getClosedBranches().push_back(node); };
+void Tableau::areInEqClass(Var& var1, int& varclass1, int& indx1, Var& var2, int& varclass2, int& indx2, int brindx)
 	{
 		for (int i = 0; i < getEqSet().at(brindx).size(); i++)
 		{
@@ -600,9 +571,9 @@ public:
 				}
 			}
 		}
-	}
+};
 
-	int sameEqClass(Var& var1, Var& var2, int brindx)
+int Tableau::sameEqClass(Var& var1, Var& var2, int brindx)
 	{
 		for (int i = 0; i < getEqSet().at(brindx).size(); i++)
 		{
@@ -619,9 +590,9 @@ public:
 			}
 		}
 		return 1;
-	}
+};
 
-	void mergeEqClass(int brindx, int indx1, int indx2)
+void Tableau::mergeEqClass(int brindx, int indx1, int indx2)
 	{
 #ifdef debug 
 #ifdef eqsetdebug
@@ -633,7 +604,7 @@ public:
 		getEqSet().at(brindx).erase(getEqSet().at(brindx).begin() + indx2);
 	};
 
-	void mergeEqClass(int brindx, int indx1, Var& var)
+void Tableau::mergeEqClass(int brindx, int indx1, Var& var)
 	{
 #ifdef debug 
 #ifdef eqsetdebug
@@ -650,7 +621,7 @@ public:
 			getEqSet().at(brindx).at(indx1).push_back(&var);
 	};
 
-	void mergeEqClass(int brindx, Var& var, int indx1)
+void Tableau::mergeEqClass(int brindx, Var& var, int indx1)
 	{
 #ifdef debug 
 #ifdef eqsetdebug
@@ -660,9 +631,12 @@ public:
 		getEqSet().at(brindx).at(indx1).insert(getEqSet().at(brindx).at(indx1).begin(), &var);
 
 	};
+Tableau::~Tableau() {};
+/*
+  End Tableau
+*/
 
-	~Tableau() {};
-};
+
 
 
 /*
@@ -2017,13 +1991,13 @@ void moveQuantifier(int qFlag, Formula* formula, vector<vector <Var>>& varset1, 
 	return;
 }
 
-void readKBFromFile(int qflag, string& name, vector<Formula>& KB)
-{
-	std::ifstream file(name);
-	std::string str;
+
+
+void readKBFromStrings(int qflag, vector<string>&names, vector<Formula>& KB)
+{	
 	cout << "Knowledge Base" << endl;
 	int typeformula = 0;
-	while (std::getline(file, str))
+	for(string str: names)
 	{
 		if ((str.rfind("//", 0) == 0) || str.empty())
 			continue;
@@ -2047,19 +2021,30 @@ void readKBFromFile(int qflag, string& name, vector<Formula>& KB)
 	KB = KBf;
 }
 
-void readQueryFromFile(string& name, vector<string>& stringSet)
+void readKBFromFile(int qflag, string &name, vector<Formula>& KB)
 {
-#ifdef debug 
-#ifdef debugquery
-	logFile << "-----Reading query file" << endl;
-#endif
-#endif // debug
 	std::ifstream file(name);
 	std::string str;
-	
+	cout << "Knowledge Base" << endl;	
+	vector<string> lines;
 	while (std::getline(file, str))
 	{
-		
+		lines.push_back(str);
+	}
+	readKBFromStrings(qflag, lines, KB);
+}
+
+void readQueryFromFile(string& name, vector<string>& stringSet)
+{
+  #ifdef debug 
+  #ifdef debugquery
+	logFile << "-----Reading query file" << endl;
+  #endif
+  #endif // debug
+	std::ifstream file(name);
+	std::string str;	
+	while (std::getline(file, str))
+	{		
 		if ((str.rfind("//", 0) == 0) || str.empty())
 			continue;
 		stringSet.push_back(str);
@@ -2067,18 +2052,11 @@ void readQueryFromFile(string& name, vector<string>& stringSet)
 }
 
 
-class QueryManager
-{
-private: vector< vector <Var> > QVQL;
-		 vector< vector <Var> > QVVL;
-		 vector < int > ynAnswer;
-		 pair <vector<int>, vector<vector<vector<pair<Var*, Var*>>>>> Match;
-		 Formula formula;
-		 int nlevel;
-		 int maxQQSize;
+/**
+Start QueryManager
+*/
 
-public:
-	QueryManager(int _nlevel, int _maxQQSize)
+QueryManager::QueryManager(int _nlevel, int _maxQQSize)
 	{
 		nlevel = _nlevel;
 		maxQQSize = _maxQQSize;
@@ -2098,7 +2076,7 @@ public:
 		}
 	};
 
-	void extractLiterals(Formula& f, vector<Atom*> &atoms)
+void QueryManager::extractLiterals(Formula& f, vector<Atom*> &atoms)
 	{
 #ifdef debug 
 #ifdef debugquery
@@ -2130,14 +2108,13 @@ public:
 	};
 
 
-public:
-	vector<vector<Var>>& getQVQL() { return QVQL; };
-	vector<vector<Var>>& getQVVL() { return QVVL; };
-	vector<int>& getAnswerSet() { return ynAnswer; };
-	pair <vector<int>, vector<vector<vector<pair<Var*, Var*>>>>>& getMatchSet() { return Match; };
-	void setMatchSet(pair <vector<int>, vector<vector<vector<pair<Var*, Var*>>>>>& input) { Match = input; };
-	void setAnswerSet(vector<int> input) { ynAnswer = input; };
-	int checkQueryLiteralMatchInBranch(Node* branch, Atom* query)
+vector<vector<Var>>& QueryManager::getQVQL() { return QVQL; };
+vector<vector<Var>>& QueryManager::getQVVL() { return QVVL; };
+vector<int>& QueryManager::getAnswerSet() { return ynAnswer; };
+pair <vector<int>, vector<vector<vector<pair<Var*, Var*>>>>>& QueryManager::getMatchSet() { return Match; };
+void QueryManager::setMatchSet(pair <vector<int>, vector<vector<vector<pair<Var*, Var*>>>>>& input) { Match = input; };
+void QueryManager::setAnswerSet(vector<int> input) { ynAnswer = input; };
+int QueryManager::checkQueryLiteralMatchInBranch(Node* branch, Atom* query)
 	{
 		Node* iterator = branch;
 		while (iterator != NULL)
@@ -2155,9 +2132,9 @@ public:
 			iterator = iterator->getFather();
 		}
 		return 0;	
-	}
+};
 
-	int checkQueryVariableMatchInBranch(Node* branch, Atom* query, vector<pair<Var*, Var*>>& currentMatch, vector<vector<pair<Var*, Var*>>>& matches)
+int QueryManager::checkQueryVariableMatchInBranch(Node* branch, Atom* query, vector<pair<Var*, Var*>>& currentMatch, vector<vector<pair<Var*, Var*>>>& matches)
 	{
 		int res = 0;
 		Node* iterator = branch;
@@ -2204,9 +2181,9 @@ public:
 			iterator = iterator->getFather();
 		}
 		return res;
-	}
+};
 	
-	Atom applySubstitution(Atom* result, Atom* query, const vector<pair<Var*,Var*>>& matches)
+Atom QueryManager::applySubstitution(Atom* result, Atom* query, const vector<pair<Var*,Var*>>& matches)
 	{				
 		copyAtom(query,result);
 		//cout << "Q before:" << result->toString() << endl;		
@@ -2224,9 +2201,9 @@ public:
 		}
 		//cout << "Query After: " << result->toString() << endl;
 		return *result;
-	}
+};
 
-	void executeQuery(Formula& f, Tableau& tableau, pair <vector<int>, vector<vector<vector<pair<Var*, Var*>>>>>& result, int YN, vector<int>& ynAnswer)
+void QueryManager::executeQuery(Formula& f, Tableau& tableau, pair <vector<int>, vector<vector<vector<pair<Var*, Var*>>>>>& result, int YN, vector<int>& ynAnswer)
 	{
 		vector<Atom*> qLits;
 		formula = f;
@@ -2289,8 +2266,10 @@ public:
 			 ynAnswer.at(branchIt)=res;
 		}
 	};
-};
 
+/**
+End QueryManager
+*/
 
 
 QueryManager* performQuery(string& str, Formula** formula, Tableau& tableau, int yn)
