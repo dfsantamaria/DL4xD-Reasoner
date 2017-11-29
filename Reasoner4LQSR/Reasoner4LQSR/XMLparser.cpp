@@ -36,11 +36,11 @@ void parseDeclaration(std::string& entry, pugi::xml_node_iterator& it)
 	string name = node.name();
 	string irival = node.attribute("IRI").as_string();
 	if (name=="Class")	
-	 entry = "(V1{" + irival.substr(irival.find("#") + 1) + "})";
+	 entry = "V1{" + irival.substr(irival.find("#") + 1) + "}";
 	else if (name=="ObjectProperty")
-	 entry = "(V3{" + irival.substr(irival.find("#") + 1) + "})";
+	 entry = "V3{" + irival.substr(irival.find("#") + 1) + "}";
 	else if (name=="NamedIndividual")
-	 entry = "(V0{" + irival.substr(irival.find("#") + 1) + "})";
+	 entry = "V0{" + irival.substr(irival.find("#") + 1) + "}";
 };
 
 void readOWLXMLOntology(string filename, vector<pair<string, string>>& ontNamespaces, vector<string>& formulae)
