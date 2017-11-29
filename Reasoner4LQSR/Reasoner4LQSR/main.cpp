@@ -24,7 +24,7 @@ int main()
 	vector<Formula> KB;
 	vector<Formula> expKB;
 	//	insertFormulaKB("( ($OA V0{l} $CO V0{j} $AO $IN V3{C333})  $AD (  ($OA V0{k} $CO V0{t} $AO $IN V3{C333}) $OR ($OA V0{s} $CO V0{v} $AO $IN V3{C333}) ) )", KB);
-	string kbname = "Example/bg.txt";
+	string kbname = "Example/bg2.txt";
 	readKBFromFile(0, kbname, KB);
 
 	//print Tableau Radix	
@@ -109,7 +109,17 @@ int main()
 	convertToCNF(out);
 	cout << out->toString() << endl;
 	*/
-	readOWLXMLOntology("Example/monastero.owl");
+	vector<pair<string, string>> ontNamespaces;	
+	vector<string> formulae;
+	cout << "Reading OWL File" << endl;
+	readOWLXMLOntology("Example/monastero.owl", ontNamespaces, formulae);
+	cout << "Printing ontology namespaces" << endl;
+	for (pair<string, string> p : ontNamespaces)
+		cout << p.first << " " << p.second << endl;
+	cout << "Printing formulae" << endl;
+	for (string p : formulae)
+		cout << p << endl;
+
 	debugEnd();
 	return 0;
 }

@@ -12,9 +12,9 @@
 #include "thirdparts/pugixml/src/pugixml.hpp"
 
 using namespace std;
-vector<pair<string,string>> ontNamespaces;
 
-void buildNamespace(pugi::xml_document& xmldocument)
+
+void buildNamespace(pugi::xml_document& xmldocument, vector<pair<string, string>>& ontNamespaces)
 {	
  for (pugi::xml_node_iterator it = xmldocument.begin(); it != xmldocument.end(); ++it)
 	{
@@ -30,19 +30,41 @@ void buildNamespace(pugi::xml_document& xmldocument)
 	}	
 };
 
-void readOWLXMLOntology(string filename)
+void parseDeclaration(std::string& entry, pugi::xml_node_iterator& it)
+{
+	pugi::xml_node node = it->first_child();
+	string name = node.name();
+	string irival = node.attribute("IRI").as_string();
+	if (name=="Class")	
+	 entry = "(V1{" + irival.substr(irival.find("#") + 1) + "})";
+	else if (name=="ObjectProperty")
+	 entry = "(V3{" + irival.substr(irival.find("#") + 1) + "})";
+	else if (name=="NamedIndividual")
+	 entry = "(V0{" + irival.substr(irival.find("#") + 1) + "})";
+};
+
+void readOWLXMLOntology(string filename, vector<pair<string, string>>& ontNamespaces, vector<string>& formulae)
 {
 	pugi::xml_document doc;
 	pugi::xml_parse_result result = doc.load_file(filename.data());
 	//building namespace
-	buildNamespace(doc);
+	buildNamespace(doc, ontNamespaces);
 	//std::cout << "Load result: " << result.description() << ", mesh name: " << doc.child("mesh").attribute("name").value() << std::endl;
 	pugi::xml_node tools = doc.first_child();
-
+	
 	for (pugi::xml_node_iterator it = tools.begin(); it != tools.end(); ++it)
 	{
-		//cout << it->name() << ":" << endl;
-		string irival = it->first_child().attribute("IRI").as_string();
+		string entry = "";		
+		string name = it->name();
+		if (name == "Declaration")
+		{
+			parseDeclaration(entry, it);
+		}
+		 
+		if (!entry.empty())
+			formulae.push_back(entry);
+		
+		//cout << irival << endl;
 		//cout << irival.substr(irival.find("#") + 1) << endl;
 	}
 
