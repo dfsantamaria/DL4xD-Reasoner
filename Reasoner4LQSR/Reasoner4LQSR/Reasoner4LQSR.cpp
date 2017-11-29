@@ -854,6 +854,16 @@ int createAtom(vector<vector <Var>>& vec, vector<vector <Var>>& vec2, string inp
 			atom = new Atom(op, { var2, var1 });
 			*formula = (new Formula(atom, -1));
 		}
+		else
+		{
+		  retrieveVarData(input.substr(0, found), &name, &level);
+		  var1=createVarFromString(vec, vec2, &name, &level, new int(0), &startQuantVect.at(level), &typeformula);
+          #ifdef debug  
+            #ifdef debuginsertf		 
+			  logFile << "-----Declaration Found: " << var1->toString() << endl;
+              #endif
+            #endif // debug
+		}
 	}
 #ifdef debug  
 #ifdef debuginsertf
@@ -890,22 +900,22 @@ int parseInternalFormula(vector<vector <Var>>& vec, vector<vector <Var>>& vec2, 
 		case ')':
 			if (!atom.empty())
 			{
-				stackFormula.pop();
+				if (!stackFormula.empty())
+				 stackFormula.pop();
                  #ifdef debug 
                    #ifdef debuginsertf
 				     logFile << "-----Candidate atom found: " << atom << endl;
                    #endif
-                 #endif // debug
-
-				createAtom(vec, vec2, atom, &formula, startQuantVect, typeformula);
+                 #endif // debug                
+				createAtom(vec, vec2, atom, &formula, startQuantVect, typeformula);				
 				if (formula != NULL) // creation of the formula 
-				{
+				{					
 					stformula.push(formula);
-				}
+				}				
 				atom.clear();
 			}
 			else
-			{
+			{				
 				Formula *rightf = stformula.top();
 				stformula.pop();
 				Formula *centerf = stformula.top();
@@ -920,7 +930,8 @@ int parseInternalFormula(vector<vector <Var>>& vec, vector<vector <Var>>& vec2, 
 #endif
 #endif // debug
 				stformula.push(centerf);
-				stackFormula.pop();
+				if (!stackFormula.empty())
+				 stackFormula.pop();
 			}
 			break;
 		case '$': operand = string(1, c) + string(1, top.at(i + 1)) + string(1, top.at(i + 2));
@@ -935,15 +946,25 @@ int parseInternalFormula(vector<vector <Var>>& vec, vector<vector <Var>>& vec2, 
 			}
 			operand.clear();
 			break;
-		case ' ': break;
+		case ' ': break; case '\f': break; case '\n': break;  case '\r': break;  case '\t': break; case '\v': break;
 		default:	atom.append(string(1, c)); break;
 		}
 	}
-	*outformula = (stformula.top());
-#ifdef debug  
-	logFile << "-----Final Formula: " << (*outformula)->toString() << endl;
-#endif // debug
-	return 0;
+	
+	if (!atom.empty())
+	{
+		createAtom(vec, vec2, atom, &formula, startQuantVect, typeformula);
+		return 0;
+	}
+
+	if (!stformula.empty())
+	{
+		*outformula = (stformula.top());
+           #ifdef debug  
+		         logFile << "-----Final Formula: " << (*outformula)->toString() << endl;
+          #endif // debug
+	}
+	return 1;
 }
 
 //only for test
@@ -1115,21 +1136,24 @@ int insertFormulaKB(int keepQ,vector<vector <Var>>& varset1, vector<vector <Var>
 		for (int i = 0; i < varset1.size(); i++)
 			vqlsize.push_back((int)varset1.at(i).size());
 	}
-	parseInternalFormula(varset1, varset2, &formula, ffinal, vqlsize, *typeformula);
+	int res=parseInternalFormula(varset1, varset2, &formula, ffinal, vqlsize, *typeformula);
 	//vec.push_back(*ffinal);
 #ifdef debug  
 	logFile << "---Formula Ended " << endl;
 #endif // debug
 	//convertToCNF(*ffinal);
-	return 0;
+	return res;
 }
 
 int insertFormulaKB(int keepQ,vector<vector <Var>>& varset, vector<vector <Var>>& varset2, string formula, vector<Formula> &vec, int* typeformula)
 {
 	Formula* f = NULL;
 	int res = insertFormulaKB(keepQ, varset, varset2, formula, &f, typeformula);
-	vec.push_back(*f);
-	delete(f);
+	if ( res == 1)
+	{
+		vec.push_back(*f);
+		delete(f);
+	}
 	return res;
 }
 
@@ -2043,7 +2067,7 @@ void readKBFromFile(int qflag, string &name, vector<Formula>& KB)
 {
 	std::ifstream file(name);
 	std::string str;
-	cout << "Knowledge Base" << endl;	
+	cout << "Reading From Files" << endl;	
 	vector<string> lines;
 	while (std::getline(file, str))
 	{
@@ -2295,13 +2319,14 @@ QueryManager* performQuery(string& str, Formula** formula, Tableau& tableau, int
 	QueryManager* queryManager = new QueryManager(5, 50);
 	int typeformula = 1;
 	insertFormulaKB(0,queryManager->getQVQL(), queryManager->getQVVL(), str, formula, &typeformula);	
+	
 	pair <vector<int>, vector<vector<vector<pair<Var*, Var*>>>>> result(vector<int>(0), vector<vector<vector<pair<Var*, Var*>>>>(0));
 	vector<int> ynanswer;
 	if (yn == 0)
 		ynanswer = vector<int>(0);
 	else
 		ynanswer = vector<int>(tableau.getOpenBranches().size());
-	queryManager->executeQuery(**formula, tableau, result, yn, ynanswer);
+	queryManager->executeQuery(**formula, tableau, result, yn, ynanswer); 
 	queryManager->setMatchSet(result);
 	queryManager->setAnswerSet(ynanswer);
 	return queryManager;
@@ -2319,8 +2344,8 @@ void performQuerySet(vector<QueryManager>& results,vector<string>& strings, vect
 #endif // debug	
 	for (string s : strings) // Manage multiple query
 	{
-		Formula *f = NULL;
-		QueryManager* manager=performQuery(s, &f, tableau, 1);
+		Formula *f = NULL;  
+		QueryManager* manager=performQuery(s, &f, tableau, 1); 
 		formulae.push_back(*f);
 		results.push_back(*manager); //Multiple query to be managed
 	}	

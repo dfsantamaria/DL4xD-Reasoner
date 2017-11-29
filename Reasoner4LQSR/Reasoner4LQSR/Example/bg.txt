@@ -1,6 +1,6 @@
 
 //(V0{Ann} $EQ V0{Anna})
-
+V0{Annetta}
 ($FA V0{y}) (( (V0{y} $NI V1{Person}) $OR (V0{y} $NI V1{VeryYoung})) $OR (V0{y} $IN V1{Kid})) 
 ($FA V0{z}) ((V0{z} $IN V1{Person}) $OR (V0{z} $NI V1{Kid})  )
 ($FA V0{x}) ( (V0{x} $IN V1{VeryYoung}) $OR  (V0{x} $NI V1{Kid})  )
