@@ -797,7 +797,7 @@ Create an Atom from the given string
 */
 int createAtom(vector<vector <Var>>& vec, vector<vector <Var>>& vec2, string input, Formula **formula, vector<int>& startQuantVect, int typeformula)
 {
-
+	cout << "----" << input <<"----"<< endl;
 #ifdef debug  
 #ifdef debuginsertf
 	logFile << "-----Computing Atom: " << input << endl;
@@ -949,22 +949,25 @@ int parseInternalFormula(vector<vector <Var>>& vec, vector<vector <Var>>& vec2, 
 		case ' ': break; case '\f': break; case '\n': break;  case '\r': break;  case '\t': break; case '\v': break;
 		default:	atom.append(string(1, c)); break;
 		}
-	}
+	}	
+
 	
 	if (!atom.empty())
-	{
-		createAtom(vec, vec2, atom, &formula, startQuantVect, typeformula);
-		return 0;
+	{ 		
+		createAtom(vec, vec2, atom, &formula, startQuantVect, typeformula);		
+		if (formula != NULL)
+			stformula.push(formula);		
 	}
-
+    
 	if (!stformula.empty())
 	{
 		*outformula = (stformula.top());
            #ifdef debug  
 		         logFile << "-----Final Formula: " << (*outformula)->toString() << endl;
           #endif // debug
+				 return 1;
 	}
-	return 1;
+	return 0;
 }
 
 //only for test

@@ -43,6 +43,48 @@ void parseDeclaration(std::string& entry, pugi::xml_node_iterator& it)
 	 entry = "V0{" + irival.substr(irival.find("#") + 1) + "}";
 };
 
+void parseClassAssertion(std::string& entry, pugi::xml_node_iterator& it)
+{
+	for (pugi::xml_node_iterator node = it->begin(); node != it->end(); ++node)
+	{
+      string name = node->name();
+	  string irival = node->attribute("IRI").as_string();
+	  if (irival.empty())
+		  return;
+	  if (name == "Class")
+	    entry = "V1{" + irival.substr(irival.find("#") + 1) + "}";
+	  else if (name == "NamedIndividual")
+	    entry = "V0{" + irival.substr(irival.find("#") + 1) + "} $IN "+entry;
+	}	
+};
+
+void parseObjectPropertyAssertion(std::string& entry, pugi::xml_node_iterator& it)
+{
+	pugi::xml_node_iterator node = it->first_child();
+	string irival = node->attribute("IRI").as_string();
+	entry = "} $AO $IN V3{" + irival.substr(irival.find("#") + 1) + "}";
+	node = node->next_sibling();
+	string acc = "$OA V0{";
+	irival = node->attribute("IRI").as_string();
+	acc.append(irival.substr(irival.find("#") + 1)).append("} $CO V0{");
+	node = node->next_sibling();
+	irival = node->attribute("IRI").as_string();
+	acc.append(irival.substr(irival.find("#") + 1));
+	entry = acc + entry;	
+};
+
+void parseSameIndividual(std::string& entry, pugi::xml_node_iterator& it)
+{
+	pugi::xml_node_iterator node = it->first_child();
+	string irival = node->attribute("IRI").as_string();
+	entry = "V0{" + irival.substr(irival.find("#") + 1) + "} $EQ";
+	node = node->next_sibling();
+	irival = node->attribute("IRI").as_string();
+	entry = entry + " V0{" + irival.substr(irival.find("#") + 1) + "}";
+};
+
+// $OA V0{Ann} $CO V0{Paul} $AO $IN V3{hasParent})
+
 void readOWLXMLOntology(string filename, vector<pair<string, string>>& ontNamespaces, vector<string>& formulae)
 {
 	pugi::xml_document doc;
@@ -57,10 +99,14 @@ void readOWLXMLOntology(string filename, vector<pair<string, string>>& ontNamesp
 		string entry = "";		
 		string name = it->name();
 		if (name == "Declaration")
-		{
 			parseDeclaration(entry, it);
-		}
-		 
+		else if (name == "ClassAssertion")
+			parseClassAssertion(entry, it);
+		else if (name == "ObjectPropertyAssertion")
+			parseObjectPropertyAssertion(entry, it);
+		else if (name == "SameIndividual")
+			parseSameIndividual(entry, it);
+
 		if (!entry.empty())
 			formulae.push_back(entry);
 		

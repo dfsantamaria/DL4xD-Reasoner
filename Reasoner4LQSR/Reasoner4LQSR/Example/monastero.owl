@@ -1,3 +1,4 @@
+<?xml version="1.0"?>
 <Ontology xmlns="http://www.w3.org/2002/07/owl#"
      xml:base="http://www.semanticweb.org/mariannanicolosi/ontologies/2017/5/untitled-ontology-129"
      xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
@@ -13,6 +14,9 @@
     <Prefix name="rdfs" IRI="http://www.w3.org/2000/01/rdf-schema#"/>
     <Declaration>
         <Class IRI="#Chamber"/>
+    </Declaration>
+    <Declaration>
+        <ObjectProperty IRI="#TEST"/>
     </Declaration>
     <Declaration>
         <Class IRI="#CellarLarder"/>
@@ -54,10 +58,10 @@
         <Class IRI="#MonkBrewHouse"/>
     </Declaration>
     <Declaration>
-        <Class IRI="#GoatStable"/>
+        <Class IRI="#SmithWorkshop"/>
     </Declaration>
     <Declaration>
-        <Class IRI="#SmithWorkshop"/>
+        <Class IRI="#GoatStable"/>
     </Declaration>
     <Declaration>
         <ObjectProperty IRI="#directlyOnSouthEastOf"/>
@@ -69,13 +73,16 @@
         <Class IRI="#Food"/>
     </Declaration>
     <Declaration>
+        <NamedIndividual IRI="#A"/>
+    </Declaration>
+    <Declaration>
         <Class IRI="#Crib"/>
     </Declaration>
     <Declaration>
-        <Class IRI="#AttendantChamber"/>
+        <Class IRI="#FruitPlant"/>
     </Declaration>
     <Declaration>
-        <Class IRI="#FruitPlant"/>
+        <Class IRI="#AttendantChamber"/>
     </Declaration>
     <Declaration>
         <ObjectProperty IRI="#hasPassageTo"/>
@@ -105,13 +112,16 @@
         <Class IRI="#Currier"/>
     </Declaration>
     <Declaration>
+        <Class IRI="#Mill"/>
+    </Declaration>
+    <Declaration>
         <Class IRI="#HouseSwine"/>
     </Declaration>
     <Declaration>
         <Class IRI="#HorseKeeper"/>
     </Declaration>
     <Declaration>
-        <Class IRI="#Mill"/>
+        <NamedIndividual IRI="#B"/>
     </Declaration>
     <Declaration>
         <Class IRI="#Granary"/>
@@ -306,16 +316,16 @@
         <Class IRI="#SmallChamber"/>
     </Declaration>
     <Declaration>
-        <Class IRI="#Peppermint"/>
-    </Declaration>
-    <Declaration>
         <Class IRI="#SanGabrielTower"/>
     </Declaration>
     <Declaration>
-        <Class IRI="#Screen"/>
+        <Class IRI="#Peppermint"/>
     </Declaration>
     <Declaration>
         <Class IRI="#Mortar"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Screen"/>
     </Declaration>
     <Declaration>
         <Class IRI="#StLawrenceAltar"/>
@@ -333,10 +343,10 @@
         <Class IRI="#Rose"/>
     </Declaration>
     <Declaration>
-        <Class IRI="#Parlour"/>
+        <Class IRI="http://www.unict.dmidisum.it/Benedettini/DocumentiAF.owl#MonasticBuilding"/>
     </Declaration>
     <Declaration>
-        <Class IRI="http://www.unict.dmidisum.it/Benedettini/DocumentiAF.owl#MonasticBuilding"/>
+        <Class IRI="#Parlour"/>
     </Declaration>
     <Declaration>
         <Class IRI="#StJohnBaptistAltar"/>
@@ -354,10 +364,10 @@
         <Class IRI="#NorthArea"/>
     </Declaration>
     <Declaration>
-        <Class IRI="#SanMichaelTower"/>
+        <Class IRI="#SizeOfSouthTransept"/>
     </Declaration>
     <Declaration>
-        <Class IRI="#SizeOfSouthTransept"/>
+        <Class IRI="#SanMichaelTower"/>
     </Declaration>
     <Declaration>
         <Class IRI="#DoctorHouse"/>
@@ -390,10 +400,10 @@
         <Class IRI="#Servant"/>
     </Declaration>
     <Declaration>
-        <Class IRI="#BuildingForTheSickandInfirm"/>
+        <Class IRI="#Provision"/>
     </Declaration>
     <Declaration>
-        <Class IRI="#Provision"/>
+        <Class IRI="#BuildingForTheSickandInfirm"/>
     </Declaration>
     <Declaration>
         <Class IRI="#StPhilipAltar"/>
@@ -420,10 +430,10 @@
         <Class IRI="#Rosemary"/>
     </Declaration>
     <Declaration>
-        <Class IRI="#HospitiumDistinguishedGuests"/>
+        <Class IRI="#InfirmaryCloister"/>
     </Declaration>
     <Declaration>
-        <Class IRI="#InfirmaryCloister"/>
+        <Class IRI="#HospitiumDistinguishedGuests"/>
     </Declaration>
     <Declaration>
         <Class IRI="#MonksKitchen"/>
@@ -432,13 +442,13 @@
         <Class IRI="#SwineKeeperRoom"/>
     </Declaration>
     <Declaration>
+        <Class IRI="#PoorBakeHouse"/>
+    </Declaration>
+    <Declaration>
         <Class IRI="#Kitchen"/>
     </Declaration>
     <Declaration>
         <Class IRI="#DangerousIllnessChamber"/>
-    </Declaration>
-    <Declaration>
-        <Class IRI="#PoorBakeHouse"/>
     </Declaration>
     <Declaration>
         <Class IRI="#GreekCrossShape"/>
@@ -465,13 +475,13 @@
         <Class IRI="#CateringDistinguishedGuests"/>
     </Declaration>
     <Declaration>
-        <Class IRI="#Door"/>
-    </Declaration>
-    <Declaration>
         <Class IRI="#UpperStory"/>
     </Declaration>
     <Declaration>
         <Class IRI="#HenHouse"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#Door"/>
     </Declaration>
     <Declaration>
         <ObjectProperty IRI="#onSouthOf"/>
@@ -591,10 +601,10 @@
         <Class IRI="#Bench"/>
     </Declaration>
     <Declaration>
-        <Class IRI="#ClosedPortico"/>
+        <Class IRI="#Vegetable"/>
     </Declaration>
     <Declaration>
-        <Class IRI="#Vegetable"/>
+        <Class IRI="#ClosedPortico"/>
     </Declaration>
     <Declaration>
         <Class IRI="#CurrierWorkshop"/>
@@ -630,13 +640,13 @@
         <Class IRI="#NorthVestibuleForDistinguishedGuests"/>
     </Declaration>
     <Declaration>
-        <Class IRI="#NoviceMasterChamber"/>
-    </Declaration>
-    <Declaration>
         <Class IRI="#NoviceRefectory"/>
     </Declaration>
     <Declaration>
         <Class IRI="#HeadMasterSchoolResidence"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#NoviceMasterChamber"/>
     </Declaration>
     <Declaration>
         <Class IRI="#BuildingForEducation"/>
@@ -780,10 +790,10 @@
         <Class IRI="#Span"/>
     </Declaration>
     <Declaration>
-        <ObjectProperty IRI="#decoratedWith"/>
+        <Class IRI="#HighAltar"/>
     </Declaration>
     <Declaration>
-        <Class IRI="#HighAltar"/>
+        <ObjectProperty IRI="#decoratedWith"/>
     </Declaration>
     <Declaration>
         <Class IRI="#EastVestibulePoorHospitium"/>
@@ -1122,10 +1132,10 @@
         <Class IRI="#WindingStaircase"/>
     </Declaration>
     <Declaration>
-        <Class IRI="#ServantChamber"/>
+        <Class IRI="#MortarBuilding"/>
     </Declaration>
     <Declaration>
-        <Class IRI="#MortarBuilding"/>
+        <Class IRI="#ServantChamber"/>
     </Declaration>
     <Declaration>
         <ObjectProperty IRI="#isContainedIn"/>
@@ -1209,10 +1219,10 @@
         <Class IRI="#TrencherMaker"/>
     </Declaration>
     <Declaration>
-        <Class IRI="#StMauritiusAltar"/>
+        <Class IRI="#LatinCrossShape"/>
     </Declaration>
     <Declaration>
-        <Class IRI="#LatinCrossShape"/>
+        <Class IRI="#StMauritiusAltar"/>
     </Declaration>
     <Declaration>
         <Class IRI="#ShoeMakerWorkshop"/>
@@ -1278,10 +1288,10 @@
         <Class IRI="#SanMichaelAltar"/>
     </Declaration>
     <Declaration>
-        <Class IRI="#HouseForLettingBlood"/>
+        <Class IRI="#Laurel"/>
     </Declaration>
     <Declaration>
-        <Class IRI="#Laurel"/>
+        <Class IRI="#HouseForLettingBlood"/>
     </Declaration>
     <Declaration>
         <Class IRI="#DrugAndMedicament"/>
@@ -1314,10 +1324,10 @@
         <AnnotationProperty IRI="#LatinNotation"/>
     </Declaration>
     <Declaration>
-        <Class IRI="#Barn"/>
+        <Class IRI="#Desk"/>
     </Declaration>
     <Declaration>
-        <Class IRI="#Desk"/>
+        <Class IRI="#Barn"/>
     </Declaration>
     <Declaration>
         <Class IRI="#School"/>
@@ -1383,13 +1393,13 @@
         <Class IRI="#DuckKeeperRoom"/>
     </Declaration>
     <Declaration>
+        <Class IRI="#OxenStable"/>
+    </Declaration>
+    <Declaration>
         <Class IRI="#BakeHouse"/>
     </Declaration>
     <Declaration>
         <Class IRI="#Garden"/>
-    </Declaration>
-    <Declaration>
-        <Class IRI="#OxenStable"/>
     </Declaration>
     <Declaration>
         <Class IRI="#Walk"/>
@@ -8183,6 +8193,14 @@
         <Class IRI="#SouthTransept"/>
     </DisjointClasses>
     <ClassAssertion>
+        <Class abbreviatedIRI="owl:Thing"/>
+        <NamedIndividual IRI="#A"/>
+    </ClassAssertion>
+    <ClassAssertion>
+        <Class abbreviatedIRI="owl:Thing"/>
+        <NamedIndividual IRI="#B"/>
+    </ClassAssertion>
+    <ClassAssertion>
         <Class IRI="#CentralPosition"/>
         <NamedIndividual IRI="#Centre"/>
     </ClassAssertion>
@@ -8253,6 +8271,11 @@
         <NamedIndividual IRI="#SouthWest"/>
         <NamedIndividual IRI="#West"/>
     </DifferentIndividuals>
+    <ObjectPropertyAssertion>
+        <ObjectProperty IRI="#TEST"/>
+        <NamedIndividual IRI="#A"/>
+        <NamedIndividual IRI="#B"/>
+    </ObjectPropertyAssertion>
     <SubObjectPropertyOf>
         <ObjectProperty IRI="#consistsOf"/>
         <ObjectProperty IRI="#contains"/>
