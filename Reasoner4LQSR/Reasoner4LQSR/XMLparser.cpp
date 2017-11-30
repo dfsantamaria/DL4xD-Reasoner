@@ -59,31 +59,145 @@ void parseClassAssertion(std::string& entry, pugi::xml_node_iterator& it)
 };
 
 void parseObjectPropertyAssertion(std::string& entry, pugi::xml_node_iterator& it)
-{
-	pugi::xml_node_iterator node = it->first_child();
-	string irival = node->attribute("IRI").as_string();
+{	
+	pugi::xml_node node = it->first_child();
+	string irival = node.attribute("IRI").as_string();
 	entry = "} $AO $IN V3{" + irival.substr(irival.find("#") + 1) + "}";
-	node = node->next_sibling();
+	node = node.next_sibling();
 	string acc = "$OA V0{";
-	irival = node->attribute("IRI").as_string();
+	irival = node.attribute("IRI").as_string();
 	acc.append(irival.substr(irival.find("#") + 1)).append("} $CO V0{");
-	node = node->next_sibling();
-	irival = node->attribute("IRI").as_string();
+	node = node.next_sibling();
+	irival = node.attribute("IRI").as_string();
 	acc.append(irival.substr(irival.find("#") + 1));
 	entry = acc + entry;	
 };
 
+void parseNegativeObjectPropertyAssertion(std::string& entry, pugi::xml_node_iterator& it)
+{
+	pugi::xml_node node = it->first_child();
+	string irival = node.attribute("IRI").as_string();
+	entry = "} $AO $NI V3{" + irival.substr(irival.find("#") + 1) + "}";
+	node = node.next_sibling();
+	string acc = "$OA V0{";
+	irival = node.attribute("IRI").as_string();
+	acc.append(irival.substr(irival.find("#") + 1)).append("} $CO V0{");
+	node = node.next_sibling();
+	irival = node.attribute("IRI").as_string();
+	acc.append(irival.substr(irival.find("#") + 1));
+	entry = acc + entry;
+};
+
 void parseSameIndividual(std::string& entry, pugi::xml_node_iterator& it)
 {
-	pugi::xml_node_iterator node = it->first_child();
-	string irival = node->attribute("IRI").as_string();
+	pugi::xml_node node = it->first_child();
+	string irival = node.attribute("IRI").as_string();
 	entry = "V0{" + irival.substr(irival.find("#") + 1) + "} $EQ";
-	node = node->next_sibling();
-	irival = node->attribute("IRI").as_string();
+	node = node.next_sibling();
+	irival = node.attribute("IRI").as_string();
 	entry = entry + " V0{" + irival.substr(irival.find("#") + 1) + "}";
 };
 
-// $OA V0{Ann} $CO V0{Paul} $AO $IN V3{hasParent})
+void parseDifferentIndividuals(std::string& entry, pugi::xml_node_iterator& it)
+{
+	pugi::xml_node node = it->first_child();
+	string irival = node.attribute("IRI").as_string();
+	entry = "V0{" + irival.substr(irival.find("#") + 1) + "} $QE";
+	node = node.next_sibling();
+	irival = node.attribute("IRI").as_string();
+	entry = entry + " V0{" + irival.substr(irival.find("#") + 1) + "}";
+};
+
+void parseFunctionalObjectProperty(std::string& entry, pugi::xml_node_iterator& it)
+{	
+	pugi::xml_node node = it->first_child();	
+	if ( string(node.name()) == "ObjectProperty")
+	{	
+		string irival = node.attribute("IRI").as_string();
+        cout << "----------------"<<irival << endl;
+		irival = irival.substr(irival.find("#") + 1);
+		irival = "V3{" + irival + "}";
+		entry = "($FA V0{z})($FA V0{z1})($FA V0{z2})";
+		entry.append("((($OA V0{z} $CO V0{z1} $AO $NI ");
+		entry.append(irival);
+		entry.append(")$OR($OA V0{z} $CO V0{z2} $AO $NI ");
+		entry.append(irival);
+		entry.append("))$OR( V0{z1} $EQ V0{z2}))");
+	}	
+};
+
+void parseInverseFunctionalObjectProperty(std::string& entry, pugi::xml_node_iterator& it)
+{
+	pugi::xml_node node = it->first_child();
+	if (string(node.name()) == "ObjectProperty")
+	{
+		string irival = node.attribute("IRI").as_string();
+		cout << "----------------" << irival << endl;
+		irival = irival.substr(irival.find("#") + 1);
+		irival = "V3{" + irival + "}";
+		entry = "($FA V0{z})($FA V0{z1})($FA V0{z2})";
+		entry.append("((($OA V0{z} $CO V0{z1} $AO $NI ");
+		entry.append(irival);
+		entry.append(")$OR($OA V0{z2} $CO V0{z1} $AO $NI ");
+		entry.append(irival);
+		entry.append("))$OR( V0{z} $EQ V0{z2}))");
+	}
+};
+
+void parseReflexiveObjectProperty(std::string& entry, pugi::xml_node_iterator& it)
+{
+	pugi::xml_node node = it->first_child();
+	if (string(node.name()) == "ObjectProperty")
+	{
+		string irival = node.attribute("IRI").as_string();		
+		irival = irival.substr(irival.find("#") + 1);
+		irival = "V3{" + irival + "}";
+		entry = "($FA V0{z})";
+		entry.append("($OA V0{z} $CO V0{z} $AO $IN ");
+		entry.append(irival);
+		entry.append(")");
+	}
+};
+
+void parseIrreflexiveObjectProperty(std::string& entry, pugi::xml_node_iterator& it)
+{
+	pugi::xml_node node = it->first_child();
+	if (string(node.name()) == "ObjectProperty")
+	{
+		string irival = node.attribute("IRI").as_string();
+		irival = irival.substr(irival.find("#") + 1);
+		irival = "V3{" + irival + "}";
+		entry = "($FA V0{z})";
+		entry.append("($OA V0{z} $CO V0{z} $AO $NI ");
+		entry.append(irival);
+		entry.append(")");
+	}
+};
+
+
+
+void parseTransitiveObjectProperty(std::string& entry, pugi::xml_node_iterator& it)
+{
+	pugi::xml_node node = it->first_child();
+	if (string(node.name()) == "ObjectProperty")
+	{
+		string irival = node.attribute("IRI").as_string();
+		irival = irival.substr(irival.find("#") + 1);
+		irival = "V3{" + irival + "}";
+		entry = "($FA V0{z}) ($FA V0{z1}) ($FA V0{z2}) ( (";
+		entry.append("($OA V0{z} $CO V0{z1} $AO $NI ");
+		entry.append(irival);
+		entry.append(") $OR ");
+
+		entry.append("($OA V0{z1} $CO V0{z2} $AO $NI ");
+		entry.append(irival);
+		entry.append(") ) $OR ");
+
+		entry.append("($OA V0{z} $CO V0{z2} $AO $IN ");
+		entry.append(irival);
+		entry.append("))");
+	}
+};
 
 void readOWLXMLOntology(string filename, vector<pair<string, string>>& ontNamespaces, vector<string>& formulae)
 {
@@ -104,9 +218,22 @@ void readOWLXMLOntology(string filename, vector<pair<string, string>>& ontNamesp
 			parseClassAssertion(entry, it);
 		else if (name == "ObjectPropertyAssertion")
 			parseObjectPropertyAssertion(entry, it);
+		else if (name == "NegativeObjectPropertyAssertion")
+			parseNegativeObjectPropertyAssertion(entry, it);
 		else if (name == "SameIndividual")
 			parseSameIndividual(entry, it);
-
+		else if (name == "DifferentIndividuals")
+			parseDifferentIndividuals(entry, it);
+		else if (name == "FunctionalObjectProperty")
+		  parseFunctionalObjectProperty(entry, it);
+		else if (name == "InverseFunctionalObjectProperty")
+			parseInverseFunctionalObjectProperty(entry, it);
+		else if (name == "ReflexiveObjectProperty")
+			parseReflexiveObjectProperty(entry, it);
+		else if (name == "IrreflexiveObjectProperty")
+			parseIrreflexiveObjectProperty(entry, it);	
+		else if (name == "TransitiveObjectProperty")
+			parseTransitiveObjectProperty(entry, it);
 		if (!entry.empty())
 			formulae.push_back(entry);
 		

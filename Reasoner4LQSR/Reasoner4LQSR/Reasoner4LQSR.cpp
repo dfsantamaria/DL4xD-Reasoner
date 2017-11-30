@@ -796,8 +796,7 @@ Var* createQVarFromString(vector<vector<Var>>& vec, string *name, int *level, in
 Create an Atom from the given string
 */
 int createAtom(vector<vector <Var>>& vec, vector<vector <Var>>& vec2, string input, Formula **formula, vector<int>& startQuantVect, int typeformula)
-{
-	cout << "----" << input <<"----"<< endl;
+{	
 #ifdef debug  
 #ifdef debuginsertf
 	logFile << "-----Computing Atom: " << input << endl;

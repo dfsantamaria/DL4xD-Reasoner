@@ -112,11 +112,11 @@ int main()
 	vector<pair<string, string>> ontNamespaces;	
 	vector<string> formulae;
 	cout << "Reading OWL File" << endl;
-	readOWLXMLOntology("Example/monastero.owl", ontNamespaces, formulae);
+	readOWLXMLOntology("Example/yy.owl", ontNamespaces, formulae);
 	cout << "Printing ontology namespaces" << endl;
 	for (pair<string, string> p : ontNamespaces)
 		cout << p.first << " " << p.second << endl;
-	cout << "Printing formulae" << endl;
+	cout << "Printing formulae: " << formulae.size()<< endl;
 	for (string p : formulae)
 		cout << p << endl;
 

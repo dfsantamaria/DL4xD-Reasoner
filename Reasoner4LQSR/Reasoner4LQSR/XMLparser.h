@@ -15,4 +15,11 @@ void readOWLXMLOntology(std::string filename, vector<pair<std::string, std::stri
 void buildNamespace(pugi::xml_document& xmldocument, vector<pair<std::string, std::string>>& ontNamespaces);
 void parseClassAssertion(std::string& entry, pugi::xml_node_iterator& it);
 void parseObjectPropertyAssertion(std::string& entry, pugi::xml_node_iterator& it);
+void parseNegativeObjectPropertyAssertion(std::string& entry, pugi::xml_node_iterator& it);
 void parseSameIndividual(std::string& entry, pugi::xml_node_iterator& it);
+void parseDifferentIndividuals(std::string& entry, pugi::xml_node_iterator& it);
+void parseFunctionalObjectProperty(std::string& entry, pugi::xml_node_iterator& it);
+void parseInverseFunctionalObjectProperty(std::string& entry, pugi::xml_node_iterator& it);
+void parseReflexiveObjectProperty(std::string& entry, pugi::xml_node_iterator& it);
+void parseIrreflexiveObjectProperty(std::string& entry, pugi::xml_node_iterator& it);
+void parseTransitiveObjectProperty(std::string& entry, pugi::xml_node_iterator& it);
