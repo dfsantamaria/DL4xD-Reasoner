@@ -199,6 +199,42 @@ void parseTransitiveObjectProperty(std::string& entry, pugi::xml_node_iterator& 
 	}
 };
 
+void parseSymmetricObjectProperty(std::string& entry, pugi::xml_node_iterator& it)
+{
+	pugi::xml_node node = it->first_child();
+	if (string(node.name()) == "ObjectProperty")
+	{
+		string irival = node.attribute("IRI").as_string();
+		irival = irival.substr(irival.find("#") + 1);
+		irival = "V3{" + irival + "}";
+		entry = "($FA V0{z})($FA V0{z1})(";
+		entry.append("($OA V0{z} $CO V0{z1} $AO $NI ");
+		entry.append(irival);
+		entry.append(") $OR");
+		entry.append("($OA V0{z1} $CO V0{z} $AO $IN ");
+		entry.append(irival);
+		entry.append("))");
+	}
+};
+
+void parseAsymmetricObjectProperty(std::string& entry, pugi::xml_node_iterator& it)
+{
+	pugi::xml_node node = it->first_child();
+	if (string(node.name()) == "ObjectProperty")
+	{
+		string irival = node.attribute("IRI").as_string();
+		irival = irival.substr(irival.find("#") + 1);
+		irival = "V3{" + irival + "}";
+		entry = "($FA V0{z})($FA V0{z1})(";
+		entry.append("($OA V0{z} $CO V0{z1} $AO $NI ");
+		entry.append(irival);
+		entry.append(") $OR");
+		entry.append("($OA V0{z1} $CO V0{z} $AO $NI ");
+		entry.append(irival);
+		entry.append("))");
+	}
+};
+
 void readOWLXMLOntology(string filename, vector<pair<string, string>>& ontNamespaces, vector<string>& formulae)
 {
 	pugi::xml_document doc;
@@ -234,6 +270,10 @@ void readOWLXMLOntology(string filename, vector<pair<string, string>>& ontNamesp
 			parseIrreflexiveObjectProperty(entry, it);	
 		else if (name == "TransitiveObjectProperty")
 			parseTransitiveObjectProperty(entry, it);
+		else if (name == "SymmetricObjectProperty")
+			parseSymmetricObjectProperty(entry, it);
+		else if (name == "AsymmetricObjectProperty")
+			parseAsymmetricObjectProperty(entry, it);
 		if (!entry.empty())
 			formulae.push_back(entry);
 		

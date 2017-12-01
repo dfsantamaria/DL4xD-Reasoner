@@ -23,3 +23,5 @@ void parseInverseFunctionalObjectProperty(std::string& entry, pugi::xml_node_ite
 void parseReflexiveObjectProperty(std::string& entry, pugi::xml_node_iterator& it);
 void parseIrreflexiveObjectProperty(std::string& entry, pugi::xml_node_iterator& it);
 void parseTransitiveObjectProperty(std::string& entry, pugi::xml_node_iterator& it);
+void SymmetricObjectProperty(std::string& entry, pugi::xml_node_iterator& it);
+void AsymmetricObjectProperty(std::string& entry, pugi::xml_node_iterator& it);
