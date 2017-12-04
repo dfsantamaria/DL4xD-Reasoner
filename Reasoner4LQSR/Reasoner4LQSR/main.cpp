@@ -111,6 +111,7 @@ int main()
 	*/
 	vector<pair<string, string>> ontNamespaces;	
 	vector<string> formulae;
+	vector<Formula> KB2;
 	cout << "Reading OWL File" << endl;
 	readOWLXMLOntology("Example/yy.owl", ontNamespaces, formulae);
 	cout << "Printing ontology namespaces" << endl;
@@ -119,7 +120,8 @@ int main()
 	cout << "Printing formulae: " << formulae.size()<< endl;
 	for (string p : formulae)
 		cout << p << endl;
-
+	readKBFromStrings(0, formulae, KB2);
+	printTRadix(KB2);
 	debugEnd();
 	return 0;
 }
