@@ -10,9 +10,9 @@
 #include <sstream>
 #include "XMLparser.h"
 #include "thirdparts/pugixml/src/pugixml.hpp"
+#include "log.h"
 
 using namespace std;
-
 
 void buildNamespace(pugi::xml_document& xmldocument, vector<pair<string, string>>& ontNamespaces)
 {	
@@ -22,6 +22,11 @@ void buildNamespace(pugi::xml_document& xmldocument, vector<pair<string, string>
 		{
 			string name = ait->name();
 			string value = ait->value();
+#ifdef debug 
+#ifdef debugparseXML
+			logFile << "-----Namespace found: " << name << " " << value << "." << endl;
+#endif
+#endif // debug
 			if (name == "xml:base")
 				ontNamespaces.insert(ontNamespaces.begin(), make_pair(name, value));
 			else
@@ -32,6 +37,11 @@ void buildNamespace(pugi::xml_document& xmldocument, vector<pair<string, string>
 
 void parseDeclaration(std::string& entry, pugi::xml_node_iterator& it)
 {
+#ifdef debug 
+#ifdef debugparseXML
+	logFile << "-----Found declaration. " << endl;
+#endif
+#endif // debug
 	pugi::xml_node node = it->first_child();
 	string name = node.name();
 	string irival = node.attribute("IRI").as_string();
@@ -45,6 +55,11 @@ void parseDeclaration(std::string& entry, pugi::xml_node_iterator& it)
 
 void parseClassAssertion(std::string& entry, pugi::xml_node_iterator& it)
 {
+#ifdef debug 
+#ifdef debugparseXML
+	logFile << "-----Found class assertion. " << endl;
+#endif
+#endif // debug
 	for (pugi::xml_node_iterator node = it->begin(); node != it->end(); ++node)
 	{
       string name = node->name();
@@ -60,6 +75,11 @@ void parseClassAssertion(std::string& entry, pugi::xml_node_iterator& it)
 
 void parseObjectPropertyAssertion(std::string& entry, pugi::xml_node_iterator& it)
 {	
+#ifdef debug 
+#ifdef debugparseXML
+	logFile << "-----Found object-property assertion. " << endl;
+#endif
+#endif // debug
 	pugi::xml_node node = it->first_child();
 	string irival = node.attribute("IRI").as_string();
 	entry = "} $AO $IN V3{" + irival.substr(irival.find("#") + 1) + "}";
@@ -75,6 +95,11 @@ void parseObjectPropertyAssertion(std::string& entry, pugi::xml_node_iterator& i
 
 void parseNegativeObjectPropertyAssertion(std::string& entry, pugi::xml_node_iterator& it)
 {
+#ifdef debug 
+#ifdef debugparseXML
+	logFile << "-----Found negative object-property assertion. " << endl;
+#endif
+#endif // debug
 	pugi::xml_node node = it->first_child();
 	string irival = node.attribute("IRI").as_string();
 	entry = "} $AO $NI V3{" + irival.substr(irival.find("#") + 1) + "}";
@@ -90,6 +115,11 @@ void parseNegativeObjectPropertyAssertion(std::string& entry, pugi::xml_node_ite
 
 void parseSameIndividual(std::string& entry, pugi::xml_node_iterator& it)
 {
+#ifdef debug 
+#ifdef debugparseXML
+	logFile << "-----Found same individuals. " << endl;
+#endif
+#endif // debug
 	pugi::xml_node node = it->first_child();
 	string irival = node.attribute("IRI").as_string();
 	entry = "V0{" + irival.substr(irival.find("#") + 1) + "} $EQ";
@@ -100,6 +130,11 @@ void parseSameIndividual(std::string& entry, pugi::xml_node_iterator& it)
 
 void parseDifferentIndividuals(std::string& entry, pugi::xml_node_iterator& it)
 {
+#ifdef debug 
+#ifdef debugparseXML
+	logFile << "-----Found different individuals. " << endl;
+#endif
+#endif // debug
 	pugi::xml_node node = it->first_child();
 	string irival = node.attribute("IRI").as_string();
 	entry = "V0{" + irival.substr(irival.find("#") + 1) + "} $QE";
@@ -110,6 +145,11 @@ void parseDifferentIndividuals(std::string& entry, pugi::xml_node_iterator& it)
 
 void parseFunctionalObjectProperty(std::string& entry, pugi::xml_node_iterator& it)
 {	
+#ifdef debug 
+#ifdef debugparseXML
+	logFile << "-----Found functional object-property. " << endl;
+#endif
+#endif // debug
 	pugi::xml_node node = it->first_child();	
 	if ( string(node.name()) == "ObjectProperty")
 	{	
@@ -128,9 +168,15 @@ void parseFunctionalObjectProperty(std::string& entry, pugi::xml_node_iterator& 
 
 void parseInverseFunctionalObjectProperty(std::string& entry, pugi::xml_node_iterator& it)
 {
+#ifdef debug 
+#ifdef debugparseXML
+		logFile << "-----Found inverse functional object-property. " << endl;
+#endif
+#endif // debug
 	pugi::xml_node node = it->first_child();
 	if (string(node.name()) == "ObjectProperty")
 	{
+
 		string irival = node.attribute("IRI").as_string();
 		cout << "----------------" << irival << endl;
 		irival = irival.substr(irival.find("#") + 1);
@@ -146,9 +192,15 @@ void parseInverseFunctionalObjectProperty(std::string& entry, pugi::xml_node_ite
 
 void parseReflexiveObjectProperty(std::string& entry, pugi::xml_node_iterator& it)
 {
+#ifdef debug 
+#ifdef debugparseXML
+		logFile << "-----Found reflexive object-property. " << endl;
+#endif
+#endif // debug
 	pugi::xml_node node = it->first_child();
 	if (string(node.name()) == "ObjectProperty")
 	{
+
 		string irival = node.attribute("IRI").as_string();		
 		irival = irival.substr(irival.find("#") + 1);
 		irival = "V3{" + irival + "}";
@@ -161,9 +213,15 @@ void parseReflexiveObjectProperty(std::string& entry, pugi::xml_node_iterator& i
 
 void parseIrreflexiveObjectProperty(std::string& entry, pugi::xml_node_iterator& it)
 {
+#ifdef debug 
+#ifdef debugparseXML
+		logFile << "-----Found irreflexive object-property. " << endl;
+#endif
+#endif // debug
 	pugi::xml_node node = it->first_child();
 	if (string(node.name()) == "ObjectProperty")
 	{
+
 		string irival = node.attribute("IRI").as_string();
 		irival = irival.substr(irival.find("#") + 1);
 		irival = "V3{" + irival + "}";
@@ -178,9 +236,15 @@ void parseIrreflexiveObjectProperty(std::string& entry, pugi::xml_node_iterator&
 
 void parseTransitiveObjectProperty(std::string& entry, pugi::xml_node_iterator& it)
 {
+#ifdef debug 
+#ifdef debugparseXML
+		logFile << "-----Found transitive object-property. " << endl;
+#endif
+#endif // debug
 	pugi::xml_node node = it->first_child();
 	if (string(node.name()) == "ObjectProperty")
 	{
+
 		string irival = node.attribute("IRI").as_string();
 		irival = irival.substr(irival.find("#") + 1);
 		irival = "V3{" + irival + "}";
@@ -201,9 +265,15 @@ void parseTransitiveObjectProperty(std::string& entry, pugi::xml_node_iterator& 
 
 void parseSymmetricObjectProperty(std::string& entry, pugi::xml_node_iterator& it)
 {
+#ifdef debug 
+#ifdef debugparseXML
+		logFile << "-----Found symmetric object-property. " << endl;
+#endif
+#endif // debug
 	pugi::xml_node node = it->first_child();
 	if (string(node.name()) == "ObjectProperty")
-	{
+	{ 
+
 		string irival = node.attribute("IRI").as_string();
 		irival = irival.substr(irival.find("#") + 1);
 		irival = "V3{" + irival + "}";
@@ -219,9 +289,15 @@ void parseSymmetricObjectProperty(std::string& entry, pugi::xml_node_iterator& i
 
 void parseAsymmetricObjectProperty(std::string& entry, pugi::xml_node_iterator& it)
 {
+#ifdef debug 
+#ifdef debugparseXML
+		logFile << "-----Found asymmetric object-property. " << endl;
+#endif
+#endif // debug
 	pugi::xml_node node = it->first_child();
 	if (string(node.name()) == "ObjectProperty")
 	{
+
 		string irival = node.attribute("IRI").as_string();
 		irival = irival.substr(irival.find("#") + 1);
 		irival = "V3{" + irival + "}";
@@ -232,18 +308,25 @@ void parseAsymmetricObjectProperty(std::string& entry, pugi::xml_node_iterator& 
 		entry.append("($OA V0{z1} $CO V0{z} $AO $NI ");
 		entry.append(irival);
 		entry.append("))");
+
 	}
 };
 
 void readOWLXMLOntology(string filename, vector<pair<string, string>>& ontNamespaces, vector<string>& formulae)
 {
+#ifdef debug 
+#ifdef debugparseXML
+	logFile << "----Reading OWL/XML file: " << filename << "." << endl;
+#endif
+#endif // debug
 	pugi::xml_document doc;
 	pugi::xml_parse_result result = doc.load_file(filename.data());
 	//building namespace
 	buildNamespace(doc, ontNamespaces);
 	//std::cout << "Load result: " << result.description() << ", mesh name: " << doc.child("mesh").attribute("name").value() << std::endl;
 	pugi::xml_node tools = doc.first_child();
-	
+
+
 	for (pugi::xml_node_iterator it = tools.begin(); it != tools.end(); ++it)
 	{
 		string entry = "";		
@@ -277,9 +360,13 @@ void readOWLXMLOntology(string filename, vector<pair<string, string>>& ontNamesp
 		if (!entry.empty())
 			formulae.push_back(entry);
 		
+#ifdef debug 
+#ifdef debugparseXML
+		logFile << "----End reading OWL/XML file."  << endl;
+#endif
+#endif // debug
 		//cout << irival << endl;
 		//cout << irival.substr(irival.find("#") + 1) << endl;
 	}
 
 };
-

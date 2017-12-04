@@ -1,3 +1,4 @@
+#pragma once
 #include "stdafx.h" // only on windows
 #include <fstream>
 #include <string>
@@ -9,7 +10,22 @@
 #include <sstream>
 #include "Reasoner4LQSR.h"
 #include "XMLparser.h"
+#include "log.h"
 
+std::fstream logFile;
+
+void debugStart()
+{
+	logFile.open("LOG.log", fstream::out);
+#ifdef debug  
+	logFile << "Debug Started" << endl;
+#endif // debug
+};
+
+void debugEnd()
+{
+	logFile.close();
+};
 
 int main()
 {

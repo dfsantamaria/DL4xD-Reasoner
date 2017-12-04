@@ -11,18 +11,11 @@
 #include <stack>
 #include <sstream>
 #include "Reasoner4LQSR.h"
-#include "XMLparser.h"
+//#include "XMLparser.h"
+#include "log.h"
 
 using namespace std;
-#define debug                   //debug istructions
-#define debugclash              //debug istructions for clash checking
-#define debugexpand             //debug istructions for expansion rule
-#define debuginsertf            //debug istructions for internal formula translation
-#define eqsetdebug                 //debug istructions for computing EqSet
-#define debugquery               //debug istructions for query
-#define debugcnf                    //debug for CNF converter
-#define debugmvq                    //debug for moving quantifiers 
-std::ofstream logFile("LOG.log");   //log file
+
 
 // VariablesSet varSet = VariablesSet(3, 100);
 // Operators operators = Operators();
@@ -44,18 +37,6 @@ void InitializeReasoner(int sizeV, int sizeQ, int sizet)
 {
 	varSet= VariablesSet(sizeV, sizeQ, sizet);
 	operators = Operators();
-};
-
-void debugStart()
-{
- #ifdef debug  
-	logFile << "Debug Started" << endl;
- #endif // debug
-};
-
-void debugEnd()
-{
-	logFile.close();
 };
 
 //Class of the single Var
