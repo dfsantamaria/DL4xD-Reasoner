@@ -153,8 +153,7 @@ void parseFunctionalObjectProperty(std::string& entry, pugi::xml_node_iterator& 
 	pugi::xml_node node = it->first_child();	
 	if ( string(node.name()) == "ObjectProperty")
 	{	
-		string irival = node.attribute("IRI").as_string();
-        cout << "----------------"<<irival << endl;
+		string irival = node.attribute("IRI").as_string();        
 		irival = irival.substr(irival.find("#") + 1);
 		irival = "V3{" + irival + "}";
 		entry = "($FA V0{z})($FA V0{z1})($FA V0{z2})";
@@ -177,8 +176,7 @@ void parseInverseFunctionalObjectProperty(std::string& entry, pugi::xml_node_ite
 	if (string(node.name()) == "ObjectProperty")
 	{
 
-		string irival = node.attribute("IRI").as_string();
-		cout << "----------------" << irival << endl;
+		string irival = node.attribute("IRI").as_string();		
 		irival = irival.substr(irival.find("#") + 1);
 		irival = "V3{" + irival + "}";
 		entry = "($FA V0{z})($FA V0{z1})($FA V0{z2})";
@@ -312,6 +310,46 @@ void parseAsymmetricObjectProperty(std::string& entry, pugi::xml_node_iterator& 
 	}
 };
 
+void parseInverseObjectProperties(std::string& entry, pugi::xml_node_iterator& it)
+{
+#ifdef debug 
+#ifdef debugparseXML
+	logFile << "-----Found inverse object-property. " << endl;
+#endif
+#endif // debug
+	pugi::xml_node node = it->first_child();
+	if (string(node.name()) == "ObjectProperty")
+	{		
+		string irival = node.attribute("IRI").as_string();
+		irival = irival.substr(irival.find("#") + 1);
+		string prop1 = "V3{" + irival + "}";
+		node = node.next_sibling();			
+		irival = "";  
+		if (string(node.name()) == "ObjectProperty")
+		{   
+			irival = node.attribute("IRI").as_string();
+			irival = irival.substr(irival.find("#") + 1);
+			string prop2 = "V3{" + irival + "}";
+			entry = "($FA V0{z})($FA V0{z1})((";
+			entry.append("($OA V0{z} $CO V0{z1} $AO $NI ");
+			entry.append(prop1);
+			entry.append(") $OR");
+			entry.append("($OA V0{z1} $CO V0{z} $AO $NI ");
+			entry.append(prop2);
+			entry.append(")) $AD (");
+			entry.append("($OA V0{z1} $CO V0{z} $AO $NI ");
+			entry.append(prop2);
+			entry.append(") $OR");
+			entry.append("($OA V0{z} $CO V0{z1} $AO $IN ");
+			entry.append(prop2);
+			entry.append("))"); 
+		}
+	}
+};
+/*(8z1)(8z2)((:(hz1; z2i 2 XR3 1) _ hz2; z1i 2 XR3 2) ^ (:(hz2; z1i 2
+	X3
+	R2) _ hz1; z2i 2 XR3 1))*/
+
 void readOWLXMLOntology(string filename, vector<pair<string, string>>& ontNamespaces, vector<string>& formulae)
 {
 #ifdef debug 
@@ -357,16 +395,18 @@ void readOWLXMLOntology(string filename, vector<pair<string, string>>& ontNamesp
 			parseSymmetricObjectProperty(entry, it);
 		else if (name == "AsymmetricObjectProperty")
 			parseAsymmetricObjectProperty(entry, it);
+		else if (name == "InverseObjectProperties")
+			parseInverseObjectProperties(entry, it);
 		if (!entry.empty())
-			formulae.push_back(entry);
-		
-#ifdef debug 
-#ifdef debugparseXML
-		logFile << "----End reading OWL/XML file."  << endl;
-#endif
-#endif // debug
+			formulae.push_back(entry);	
+
 		//cout << irival << endl;
 		//cout << irival.substr(irival.find("#") + 1) << endl;
 	}
 
+#ifdef debug 
+#ifdef debugparseXML
+	logFile << "----End Reading OWL/XML file: " << filename << "." << endl;
+#endif
+#endif // debug
 };
