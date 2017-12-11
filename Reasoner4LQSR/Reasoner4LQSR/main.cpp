@@ -129,7 +129,7 @@ int main()
 	vector<string> formulae;
 	vector<Formula> KB2;
 	cout << "Reading OWL File" << endl;
-	readOWLXMLOntology("Example/yy.owl", ontNamespaces, formulae);
+	readOWLXMLOntology("Example/y2.owl", ontNamespaces, formulae);
 	cout << "Printing ontology namespaces" << endl;
 	for (pair<string, string> p : ontNamespaces)
 		cout << p.first << " " << p.second << endl;

@@ -10,19 +10,22 @@
 
 using namespace std;
 
-void parseDeclaration(std::string& entry, pugi::xml_node_iterator& it);
+void parseDeclaration(vector<std::string>& entry, pugi::xml_node_iterator& it);
 void readOWLXMLOntology(std::string filename, vector<pair<std::string, std::string>>& ontNamespaces, vector<string>& formulae);
 void buildNamespace(pugi::xml_document& xmldocument, vector<pair<std::string, std::string>>& ontNamespaces);
-void parseClassAssertion(std::string& entry, pugi::xml_node_iterator& it);
-void parseObjectPropertyAssertion(std::string& entry, pugi::xml_node_iterator& it);
-void parseNegativeObjectPropertyAssertion(std::string& entry, pugi::xml_node_iterator& it);
-void parseSameIndividual(std::string& entry, pugi::xml_node_iterator& it);
-void parseDifferentIndividuals(std::string& entry, pugi::xml_node_iterator& it);
-void parseFunctionalObjectProperty(std::string& entry, pugi::xml_node_iterator& it);
-void parseInverseFunctionalObjectProperty(std::string& entry, pugi::xml_node_iterator& it);
-void parseReflexiveObjectProperty(std::string& entry, pugi::xml_node_iterator& it);
-void parseIrreflexiveObjectProperty(std::string& entry, pugi::xml_node_iterator& it);
-void parseTransitiveObjectProperty(std::string& entry, pugi::xml_node_iterator& it);
-void parseSymmetricObjectProperty(std::string& entry, pugi::xml_node_iterator& it);
-void parseAsymmetricObjectProperty(std::string& entry, pugi::xml_node_iterator& it);
-void parseInverseObjectProperties(std::string& entry, pugi::xml_node_iterator& it);
+void parseClassAssertion(vector<std::string>& entry, pugi::xml_node_iterator& it);
+void parseObjectPropertyAssertion(vector<std::string>& entry, pugi::xml_node_iterator& it);
+void parseNegativeObjectPropertyAssertion(vector<std::string>& entry, pugi::xml_node_iterator& it);
+void parseSameIndividual(vector<std::string>& entry, pugi::xml_node_iterator& it);
+void parseDifferentIndividuals(vector<std::string>& entry, pugi::xml_node_iterator& it);
+void parseFunctionalObjectProperty(vector<std::string>& entry, pugi::xml_node_iterator& it);
+void parseInverseFunctionalObjectProperty(vector<std::string>& entry, pugi::xml_node_iterator& it);
+void parseReflexiveObjectProperty(vector<std::string>& entry, pugi::xml_node_iterator& it);
+void parseIrreflexiveObjectProperty(vector<std::string>& entry, pugi::xml_node_iterator& it);
+void parseTransitiveObjectProperty(vector<std::string>& entry, pugi::xml_node_iterator& it);
+void parseSymmetricObjectProperty(vector<std::string>& entry, pugi::xml_node_iterator& it);
+void parseAsymmetricObjectProperty(vector<std::string>& entry, pugi::xml_node_iterator& it);
+void parseInverseObjectProperties(vector<std::string>& entry, pugi::xml_node_iterator& it);
+void parseEquivalentObjectProperties(vector<std::string>& entry, pugi::xml_node_iterator& it);
+void parseDisjointObjectProperties(vector<std::string>& entry, pugi::xml_node_iterator& it);
+void parseSubObjectProperty(vector<std::string>& entry, pugi::xml_node_iterator& it);
