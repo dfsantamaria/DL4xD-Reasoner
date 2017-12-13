@@ -537,9 +537,6 @@ void parseSubObjectProperty(vector<std::string>& out, pugi::xml_node_iterator& i
 
 };
 
-
-
-
 void parseObjectInserctionOf(vector<std::string>& entry, pugi::xml_node_iterator& it, string varz) { throw new exception(); };
 void parseObjectUnionOf(vector<std::string>& entry, pugi::xml_node_iterator& it, string varz) { throw new exception(); };
 void parseObjectComplementOf(vector<std::string>& entry, pugi::xml_node_iterator& it, string varz) { throw new exception(); };
@@ -558,9 +555,7 @@ void parseDisjointUnion(vector<std::string>& entry, pugi::xml_node_iterator& it,
 void parseObjectPropertyChain(vector<std::string>& entry, pugi::xml_node_iterator& it, string varz) { throw new exception(); };
 void parseObjectPropertyDomain(vector<std::string>& entry, pugi::xml_node_iterator& it, string varz) { throw new exception(); };
 void parseObjectPropertyRange(vector<std::string>& entry, pugi::xml_node_iterator& it, string varz) { throw new exception(); };
-
-
-
+void parseClassExpression(vector<std::string>& entry, pugi::xml_node_iterator& it) { throw new exception; }
 
 
 

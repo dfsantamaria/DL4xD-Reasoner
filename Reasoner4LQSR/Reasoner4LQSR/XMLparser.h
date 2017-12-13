@@ -48,3 +48,4 @@ void parseDisjointUnion(vector<std::string>& entry, pugi::xml_node_iterator& it,
 void parseObjectPropertyChain(vector<std::string>& entry, pugi::xml_node_iterator& it, string varz);
 void parseObjectPropertyDomain(vector<std::string>& entry, pugi::xml_node_iterator& it, string varz);
 void parseObjectPropertyRange(vector<std::string>& entry, pugi::xml_node_iterator& it, string varz);
+void parseClassExpression(vector<std::string>& entry, pugi::xml_node_iterator& it);
