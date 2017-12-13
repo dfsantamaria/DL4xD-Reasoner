@@ -29,3 +29,22 @@ void parseInverseObjectProperties(vector<std::string>& entry, pugi::xml_node_ite
 void parseEquivalentObjectProperties(vector<std::string>& entry, pugi::xml_node_iterator& it);
 void parseDisjointObjectProperties(vector<std::string>& entry, pugi::xml_node_iterator& it);
 void parseSubObjectProperty(vector<std::string>& entry, pugi::xml_node_iterator& it);
+
+void parseObjectInserctionOf(vector<std::string>& entry, pugi::xml_node_iterator& it, string varz);
+void parseObjectUnionOf(vector<std::string>& entry, pugi::xml_node_iterator& it, string varz);
+void parseObjectComplementOf(vector<std::string>& entry, pugi::xml_node_iterator& it, string varz);
+void parseObjectOneOf(vector<std::string>& entry, pugi::xml_node_iterator& it, string varz);
+void parseObjectSomeValuesFrom(vector<std::string>& entry, pugi::xml_node_iterator& it, string varz);
+void parseObjectAllValuesFrom(vector<std::string>& entry, pugi::xml_node_iterator& it, string varz);
+void parseObjectHasValue(vector<std::string>& entry, pugi::xml_node_iterator& it, string varz);
+void parseObjectHasSelf(vector<std::string>& entry, pugi::xml_node_iterator& it, string varz); 
+void parseObjectMinCardinality(vector<std::string>& entry, pugi::xml_node_iterator& it, string varz);
+void parseObjectMaxCardinality(vector<std::string>& entry, pugi::xml_node_iterator& it, string varz);
+void parseObjectExactCardinality(vector<std::string>& entry, pugi::xml_node_iterator& it, string varz);
+void parseSubClassOf(vector<std::string>& entry, pugi::xml_node_iterator& it, string varz);
+void parseEquivalentClasses(vector<std::string>& entry, pugi::xml_node_iterator& it, string varz);
+void parseDisjointClasses(vector<std::string>& entry, pugi::xml_node_iterator& it, string varz);
+void parseDisjointUnion(vector<std::string>& entry, pugi::xml_node_iterator& it, string varz);
+void parseObjectPropertyChain(vector<std::string>& entry, pugi::xml_node_iterator& it, string varz);
+void parseObjectPropertyDomain(vector<std::string>& entry, pugi::xml_node_iterator& it, string varz);
+void parseObjectPropertyRange(vector<std::string>& entry, pugi::xml_node_iterator& it, string varz);

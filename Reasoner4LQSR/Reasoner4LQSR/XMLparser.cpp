@@ -537,6 +537,38 @@ void parseSubObjectProperty(vector<std::string>& out, pugi::xml_node_iterator& i
 
 };
 
+
+
+
+void parseObjectInserctionOf(vector<std::string>& entry, pugi::xml_node_iterator& it, string varz) { throw new exception(); };
+void parseObjectUnionOf(vector<std::string>& entry, pugi::xml_node_iterator& it, string varz) { throw new exception(); };
+void parseObjectComplementOf(vector<std::string>& entry, pugi::xml_node_iterator& it, string varz) { throw new exception(); };
+void parseObjectOneOf(vector<std::string>& entry, pugi::xml_node_iterator& it, string varz) { throw new exception(); };
+void parseObjectSomeValuesFrom(vector<std::string>& entry, pugi::xml_node_iterator& it, string varz) { throw new exception(); };
+void parseObjectAllValuesFrom(vector<std::string>& entry, pugi::xml_node_iterator& it, string varz) { throw new exception(); };
+void parseObjectHasValue(vector<std::string>& entry, pugi::xml_node_iterator& it, string varz) { throw new exception(); };
+void parseObjectHasSelf(vector<std::string>& entry, pugi::xml_node_iterator& it, string varz) { throw new exception(); };
+void parseObjectMinCardinality(vector<std::string>& entry, pugi::xml_node_iterator& it, string varz) { throw new exception(); };
+void parseObjectMaxCardinality(vector<std::string>& entry, pugi::xml_node_iterator& it, string varz) { throw new exception(); };
+void parseObjectExactCardinality(vector<std::string>& entry, pugi::xml_node_iterator& it, string varz) { throw new exception(); };
+void parseSubClassOf(vector<std::string>& entry, pugi::xml_node_iterator& it, string varz) { throw new exception(); };
+void parseEquivalentClasses(vector<std::string>& entry, pugi::xml_node_iterator& it, string varz) { throw new exception(); };
+void parseDisjointClasses(vector<std::string>& entry, pugi::xml_node_iterator& it, string varz) { throw new exception(); };
+void parseDisjointUnion(vector<std::string>& entry, pugi::xml_node_iterator& it, string varz) { throw new exception(); };
+void parseObjectPropertyChain(vector<std::string>& entry, pugi::xml_node_iterator& it, string varz) { throw new exception(); };
+void parseObjectPropertyDomain(vector<std::string>& entry, pugi::xml_node_iterator& it, string varz) { throw new exception(); };
+void parseObjectPropertyRange(vector<std::string>& entry, pugi::xml_node_iterator& it, string varz) { throw new exception(); };
+
+
+
+
+
+
+
+
+
+
+
 void readOWLXMLOntology(string filename, vector<pair<string, string>>& ontNamespaces, vector<string>& formulae)
 {
 #ifdef debug 
