@@ -75,7 +75,7 @@ private:
 class Operators
 {
 private:
-	vector<string> logOp = { "$OR","$AD","$RO","$DA", "$NG" }; //logic operators
+	vector<string> logOp = { "$OR","$AD","$RO","$DA", "$NG", "$IF", "$FI", "$II" }; //logic operators
 	vector<string> setOp = { "$IN", "$EQ", "$NI", "$QE", "$OA", "$AO", "$CO" }; //set operators
 	vector<string> qutOp = { "$FA" };	//quantifiers
 public:

@@ -298,8 +298,8 @@ string Operators::getQuantiOpElement(int index)
 	Return the value of the given string representing a logic operator
 	*/
 int Operators::checkLogOp(string *s)
-	{
-		for (const string &op : logOp)
+{	
+	for (const string &op : logOp)
 		{
 			if (op.compare(*s) == 0)
 				return 1;
