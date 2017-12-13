@@ -1,5 +1,5 @@
 V0{Annetta}
-($FA V0{x}) ( (V0{x} $IN V1{VeryYoung}) $OR  (V0{x} $NI V1{Kid})  )
+($FA V0{x}) ( (V0{x} $IN V1{VeryYoung}) $FI  (V0{x} $NI V1{Kid})  )
 V0{Annetta} $IN V1{Person}
 
 //END
