@@ -2297,6 +2297,9 @@ End QueryManager
 */
 
 
+
+
+
 QueryManager* performQuery(string& str, Formula** formula, Tableau& tableau, int yn)
 {
 	QueryManager* queryManager = new QueryManager(5, 50);
@@ -2334,6 +2337,150 @@ void performQuerySet(vector<QueryManager>& results,vector<string>& strings, vect
 	}	
 };
 
+
+void propagateNegation(Formula* current, vector<bool>& isNegated, vector<Formula*> stackF, bool valLeft, bool valRight)
+{
+	if (current->getLSubformula() != NULL)
+	{
+		stackF.push_back(current->getLSubformula());
+		isNegated.push_back(valLeft);
+	}
+	if (current->getRSubformula() != NULL)
+	{
+		stackF.push_back(current->getRSubformula());
+		isNegated.push_back(valRight);
+	}
+}
+
+void dropLRImplication(Formula* f)
+{	
+	
+	Formula* right = new Formula(NULL, 6);
+	right->setLSubformula(copyFormula(f->getLSubformula(), right));
+	right->setRSubformula(copyFormula(f->getRSubformula(), right));
+
+	Formula* left = new Formula(NULL, 5);
+	left->setLSubformula(f->getLSubformula());
+	left->getLSubformula()->setPreviousFormula(left);
+
+	left->setRSubformula(f->getRSubformula());
+	left->getRSubformula()->setPreviousFormula(left);
+
+	f->setLSubformula(left);
+	f->setRSubformula(right);
+	left->setPreviousFormula(f);
+	right->setPreviousFormula(f);
+	
+}
+
+void dropNegation(Formula *f)
+{
+	Formula* father = f->getPreviousformula();
+
+
+	Formula* tmp = f->getLSubformula();	
+	if (tmp == NULL)
+		tmp = f->getRSubformula();
+
+	if (father->getLSubformula() == f)
+		father->setLSubformula(tmp);
+	else
+		father->setRSubformula(tmp);	
+
+	f->setLSubformula(NULL);
+	f->setRSubformula(NULL);
+	f->setPreviousFormula(NULL);
+	delete(f);
+
+	f = tmp;
+}
+
+void normalizeFormula(Formula* formula)
+{
+	vector<bool> isNegated;
+	vector<Formula*> stackF;
+	stackF.push_back(formula);
+	if (formula->getAtom() != NULL)
+		return;
+	isNegated.push_back(false);
+
+	while (!stackF.empty())
+	{
+		Formula* current = stackF.back();
+		bool neg = isNegated.back();
+		stackF.pop_back();
+		isNegated.pop_back();
+
+		if (current->getAtom() != NULL )
+		{
+			if (neg)
+			 {
+			  int  newOp = (current->getAtom()->getAtomOp() >= 2 ? -2 : 2);
+			  current->getAtom()->setAtomOp(current->getAtom()->getAtomOp() + newOp);
+			 }
+		}
+		else
+		{
+		 switch (current->getOperand())
+		  {
+			case 0:
+				if (neg)
+					current->setOperand(1);
+				propagateNegation(current, isNegated, stackF, neg, neg);
+				break;
+
+			case 1:
+				if (neg)
+					current->setOperand(0);
+				propagateNegation(current, isNegated, stackF, neg, neg);
+				break;
+
+			case 2:
+				if (neg)
+					current->setOperand(0);
+				propagateNegation(current, isNegated, stackF, !neg, !neg);
+				break;
+
+			case 3:
+				if (neg)
+					current->setOperand(1);
+				propagateNegation(current, isNegated, stackF, !neg, !neg);
+				break;
+
+			case 4: //case negation formula
+			    dropNegation(current);				
+				stackF.push_back(current);
+				isNegated.push_back(!neg);
+				break;
+
+			case 5: //case ->	
+				if (neg) //case \neg ->			  
+					current->setOperand(1);
+				else
+					current->setOperand(0);
+				propagateNegation(current, isNegated, stackF, !neg, neg);
+				break;
+
+			case 6: //case <-
+				if (neg) //case \neg ->			  
+					current->setOperand(1);
+				else
+					current->setOperand(0);
+				propagateNegation(current, isNegated, stackF, neg, !neg);
+				break;
+
+			case 7:
+				if (neg) //case \neg <-->
+					current->setOperand(0);
+				else
+					current->setOperand(1);
+				dropLRImplication(current);
+				propagateNegation(current, isNegated, stackF, neg, neg);;
+				break;
+			}
+		}
+	}
+}
 
 /*
   Some printing function

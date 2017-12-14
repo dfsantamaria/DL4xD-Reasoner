@@ -290,6 +290,9 @@ int retrieveVarData(const string input, string* name, int* level);
 void debugStart();
 void debugEnd();
 void InitializeReasoner(int sizeV, int sizeQ, int sizet);
+void normalizeFormula(Formula* formula);
+void propagateNegation(Formula* current, vector<bool>& isNegated, vector<Formula*> stackF, bool valLeft, bool valRight);
+void dropLRImplication(Formula* f);
 
 //Printing Function;
 void printClosedBranches(Tableau& tableau);
