@@ -125,6 +125,8 @@ public:
 	int getFulfillness();
 	~Formula();
 	string toString();
+	string toStringNoQVar();
+	void toStringQVar(vector<Var*>& qu);
 };
 
 
@@ -290,9 +292,10 @@ int retrieveVarData(const string input, string* name, int* level);
 void debugStart();
 void debugEnd();
 void InitializeReasoner(int sizeV, int sizeQ, int sizet);
-void normalizeFormula(Formula* formula);
-void propagateNegation(Formula* current, vector<bool>& isNegated, vector<Formula*> stackF, bool valLeft, bool valRight);
+Formula* normalizeFormula(Formula& formula);
+void propagateNegation(Formula* current, vector<bool>& isNegated, vector<Formula*>& stackF, bool valLeft, bool valRight);
 void dropLRImplication(Formula* f);
+Formula* dropNegation(Formula *f, Formula **topform);
 
 //Printing Function;
 void printClosedBranches(Tableau& tableau);

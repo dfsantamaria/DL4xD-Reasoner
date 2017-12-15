@@ -467,28 +467,65 @@ void Formula::setPreviousFormula(Formula *prev) { pformula = prev; };
 void Formula::setFulfillness(int val) { fulfilled = val; };
 int Formula::getFulfillness() { return fulfilled; };
 Formula::~Formula() {};
+void Formula::toStringQVar(vector<Var*>& qu)
+{
+ if(getAtom()!=NULL)
+	for (int i = 0; i < getAtom()->getElements().size(); i++)
+	{
+		int j = 0;
+		for (; j < qu.size(); j++)
+		{
+			if (getAtom()->getElementAt(i)->getVarType() == 1 && qu.at(j)->getVarType() == 1)
+				if (!getAtom()->getElementAt(i)->getName().compare(qu.at(j)->getName()))
+					break;
+		}
+
+		if (j >= qu.size() && getAtom()->getElementAt(i)->getVarType() == 1)
+			qu.push_back(getAtom()->getElementAt(i));
+	}
+ if (getLSubformula() != NULL)
+	 getLSubformula()->toStringQVar(qu);
+ if (getRSubformula() != NULL)
+	 getRSubformula()->toStringQVar(qu);
+}
 string Formula::toString()
+{
+	vector<Var*> q;
+	toStringQVar(q);
+	string r=toStringNoQVar();
+	string quanti = "";
+	for (Var* v : q)
+	{
+		quanti.append("(");
+		quanti.append("$FA ");
+		quanti.append(v->toString());
+		quanti.append(")");
+	}	
+	quanti.append(r);
+	return quanti;
+}
+string Formula::toStringNoQVar()
 	{
 		if (getAtom() != NULL)
-		{
+		{		
 			return (getAtom()->toString().append(" "));
 		}
 		else if (getOperand()==4 && getRSubformula() != NULL)
 		{
 			string ret=("( ");
 			ret.append(operators.getLogOpElement(getOperand()));			
-			ret.append(getRSubformula()->toString());			
+			ret.append(getRSubformula()->toStringNoQVar());			
 			ret.append(")");
 			return ret;
 		}
 		else if (getOperand() > -1 && getLSubformula() != NULL && getRSubformula() != NULL)
 		{			
 			string ret = "( ";			
-            ret.append(getLSubformula()->toString());
+            ret.append(getLSubformula()->toStringNoQVar());
 			ret.append(" ");						
 			ret.append(operators.getLogOpElement(getOperand()));
 			ret.append(" ");
-			ret.append(getRSubformula()->toString());
+			ret.append(getRSubformula()->toStringNoQVar());
 			ret.append(")");
 			return ret;		
 		}		
@@ -904,9 +941,9 @@ int parseInternalFormula(vector<vector <Var>>& vec, vector<vector <Var>>& vec2, 
 			}
 			else
 			{				
-				Formula *rightf = stformula.top(); cout << "right"<< rightf->toString() << endl;
+				Formula *rightf = stformula.top(); 
 				stformula.pop();				
-				Formula *centerf = stformula.top(); cout << "center" << centerf->toString() << endl;
+				Formula *centerf = stformula.top(); 
 				stformula.pop();				
 				centerf->setRSubformula(rightf);
 							
@@ -1198,13 +1235,15 @@ int instantiateFormula(Formula f, vector<Formula> &destination)
 	vector<Formula> tmp;
 	tmp.push_back(f);
 	while (!tmp.empty())
-	{
+	{		
 		Formula top = tmp.back();
 		tmp.pop_back();
 		if (containsQVar(&top, s))
 		{
 			for (int i = 0; i < varSet.getVVLAt(0)->size(); i++)
-				tmp.push_back(*(copyFormula(&top, NULL, &s, &varSet.getVVLAt(0)->at(i))));
+			{
+				tmp.push_back(*(copyFormula(&top, NULL, &s, &varSet.getVVLAt(0)->at(i))));				
+			}
 		}
 		else
 		{
@@ -1215,7 +1254,7 @@ int instantiateFormula(Formula f, vector<Formula> &destination)
 #endif // debug		
 			if (top.getAtom() != NULL)
 				top.setFulfillness(0);
-			destination.push_back(top);
+			destination.push_back(top); 
 		}
 	}
 
@@ -1229,14 +1268,25 @@ int expandKB(const vector<Formula> &inpf, vector <Formula> &out)
 #ifdef debug  
 	logFile << "--- Applying Expansion Rule" << endl;
 #endif // debug
+
+	if (varSet.getVVLAt(0)->size() == 0) //no individual;
+	{
+		for (Formula f : inpf)
+		{
+			out.push_back(f);
+		}
+		return 0;
+	}
+
+
 	int or = operators.getLogOpValue("$OR");
 	vector <Formula> tmp;
 	for (int i = 0; i < inpf.size(); i++)
 		tmp.push_back(inpf.at(i));
 
+	
 	while (!tmp.empty())
 	{
-
 		Formula f = tmp.back();
 #ifdef debug  
 #ifdef debugexpand
@@ -1245,11 +1295,22 @@ int expandKB(const vector<Formula> &inpf, vector <Formula> &out)
 #endif // debug
 		tmp.pop_back();
 		if (f.getAtom() != NULL || f.getOperand()== or)
-		{
-			instantiateFormula(f, out);
-		}
+		{			
+			instantiateFormula(f, out); 
+		}	
+		/*else if (f.getOperand() == 4)
+		{			
+			f.getRSubformula()->setPreviousFormula(NULL);
+#ifdef debug  
+#ifdef debugexpand			
+			logFile << "----- Obtaining Formula: " << f.getRSubformula()->toString() << endl;
+#endif
+#endif // debug			
+			tmp.push_back(*(f.getRSubformula()));
+		}*/
 		else
 		{
+			
 			f.getLSubformula()->setPreviousFormula(NULL);
 			f.getRSubformula()->setPreviousFormula(NULL);
 #ifdef debug  
@@ -1336,7 +1397,7 @@ int checkVectorClash(Atom* candidate, vector<Formula> &formset, int start)
 #ifdef debug  
 	logFile << "---Checking for Clash in Vector of Formulae" << endl;
 #endif // debug
-
+	
 	if (candidate != NULL) //atomic formula
 	{
 		if (checkAtomClash(*candidate) == 0)  // type a != a
@@ -1378,8 +1439,12 @@ Check for Clash in a Vector of formulae
 */
 int checkNodeClash(vector<Formula> &formset)
 {
-	for (int i = 0; i < formset.size() - 1; i++)
+	if (formset.size() < 2)
 	{
+		return 1;
+	}
+	for (int i = 0; i < formset.size() - 1; i++)
+	{		
 		if (checkVectorClash(formset.at(i).getAtom(), formset, i + 1) == 0)
 			return 0;
 	}
@@ -1631,12 +1696,19 @@ void chooseRule(Tableau &T, vector<Node*> &nodeSet, Formula &f)
 }
 
 void expandTableau(Tableau& T)
-{
+{ 
+	
+	if ( (checkNodeClash(T.getTableau()->getSetFormulae())==0) )
+	{		
+		T.getClosedBranches().push_back(T.getTableau());
+		return;
+	}
 	vector<Node*> nonComBranches = vector<Node*>();
 	nonComBranches.push_back(T.getTableau()); //initially only the root node
 	vector<Formula> fset = T.getTableau()->getSetFormulae();
+	
 	for (int i = 0; i < fset.size(); i++)
-	{
+	{		
 		if (fset.at(i).getAtom() == NULL)  //OR found
 		{
 #ifdef debug  
@@ -1647,7 +1719,7 @@ void expandTableau(Tableau& T)
 			chooseRule(T, nonComBranches, fset.at(i));
 		}
 	}
-	T.getOpenBranches() = nonComBranches;
+	T.getOpenBranches() = nonComBranches; 
 }
 
 
@@ -2051,7 +2123,9 @@ void readKBFromStrings(int qflag, vector<string>&names, vector<Formula>& KB)
 	//Converting to CNF;
 	for (int i = 0; i < KB.size(); i++)
 	{		
-		normalizeFormula(&KB.at(i));
+		Formula* newf=normalizeFormula(KB.at(i));
+		KB.at(i) = *newf;
+		
 		convertToCNF(&KB.at(i));		
 	}
 	vector<Formula> KBf;
@@ -2358,7 +2432,7 @@ void performQuerySet(vector<QueryManager>& results,vector<string>& strings, vect
 };
 
 
-void propagateNegation(Formula* current, vector<bool>& isNegated, vector<Formula*> stackF, bool valLeft, bool valRight)
+void propagateNegation(Formula* current, vector<bool>& isNegated, vector<Formula*>& stackF, bool valLeft, bool valRight)
 {
 	if (current->getLSubformula() != NULL)
 	{
@@ -2393,59 +2467,62 @@ void dropLRImplication(Formula* f)
 	
 }
 
-void dropNegation(Formula *f)
+Formula* dropNegation(Formula *f, Formula **topform)
 {
 	Formula* father = f->getPreviousformula();
-
-
-	Formula* tmp = f->getLSubformula();	
+	Formula* tmp = f->getRSubformula();	
 	if (tmp == NULL)
-		tmp = f->getRSubformula();
-
-	if (father->getLSubformula() == f)
-		father->setLSubformula(tmp);
-	else
-		father->setRSubformula(tmp);	
-
+		tmp = f->getLSubformula();	
+	if (father == NULL)
+	{	
+	  (*topform) = tmp;	
+	}
+	else 
+	{
+		if (father->getLSubformula() == f)
+			father->setLSubformula(tmp);
+		else
+			father->setRSubformula(tmp);
+	}	
 	f->setLSubformula(NULL);
 	f->setRSubformula(NULL);
 	f->setPreviousFormula(NULL);
-	delete(f);
-
-	f = tmp;
+	//delete(f);
+	return(tmp); 	
 }
 
-void normalizeFormula(Formula* formula)
+Formula* normalizeFormula(Formula& formula)
 {
-	cout << "Normalize" << formula->toString() << endl;
+	cout << "Normalize" << formula.toString() << endl;
+	if (formula.getAtom() != NULL)
+		return &formula;
 
+	Formula* startFormula = &formula;
 	vector<bool> isNegated;
 	vector<Formula*> stackF;
-	stackF.push_back(formula);
-	if (formula->getAtom() != NULL)
-		return;
-	isNegated.push_back(false);
-
+	stackF.push_back(startFormula);
+	
+	isNegated.push_back(false);	
 	while (!stackF.empty())
 	{
 		Formula* current = stackF.back();
 		bool neg = isNegated.back();
 		stackF.pop_back();
-		isNegated.pop_back();
-
+		isNegated.pop_back();		
 		if (current->getAtom() != NULL )
-		{
+		{		
 			if (neg)
-			 {
-			  int  newOp = (current->getAtom()->getAtomOp() >= 2 ? -2 : 2);
+			{
+				
+			  int  newOp = (current->getAtom()->getAtomOp() >= 2 ? -2 : 2);			  
 			  current->getAtom()->setAtomOp(current->getAtom()->getAtomOp() + newOp);
 			 }
 		}
 		else
-		{
+		{			
 		 switch (current->getOperand())
 		  {
-			case 0:
+			case 0: 
 				if (neg)
 					current->setOperand(1);
 				propagateNegation(current, isNegated, stackF, neg, neg);
@@ -2469,13 +2546,13 @@ void normalizeFormula(Formula* formula)
 				propagateNegation(current, isNegated, stackF, !neg, !neg);
 				break;
 
-			case 4: //case negation formula
-			    dropNegation(current);				
-				stackF.push_back(current);
+			case 4: //case negation formula				
+			   				
+				stackF.push_back(dropNegation(current, &startFormula));					
 				isNegated.push_back(!neg);
 				break;
 
-			case 5: //case ->	
+			case 5: //case ->					
 				if (neg) //case \neg ->			  
 					current->setOperand(1);
 				else
@@ -2501,7 +2578,9 @@ void normalizeFormula(Formula* formula)
 				break;
 			}
 		}
-	}
+	}		
+	return startFormula;
+		
 }
 
 /*
@@ -2545,9 +2624,10 @@ void printTRadix(vector<Formula>& KB)
 {
 	cout << "---Radix Content ---" << endl;
 	for (int i = 0; i < KB.size(); i++)
-	{
+	{		
 		cout << KB.at(i).toString() << endl;
 	}
+	
 }
 
 void printTExpanded(Tableau& tableau)

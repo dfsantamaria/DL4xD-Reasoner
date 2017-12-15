@@ -1,13 +1,5 @@
-
+//( ( V0{Annetta} $IN V1{Young} ) $AD ( $NG ( V0{Annetta} $IN V1{Person} ) ) )
+($FA V0{x}) ( (V0{x} $IN V1{VeryYoung}) $II  (V0{x} $NI V1{Kid})  )
 V0{Annetta}
-($FA V0{x}) ( (V0{x} $IN V1{VeryYoung}) $FI  (V0{x} $NI V1{Kid})  )
-V0{Annetta} $IN V1{Person}
-
-
+($FA V0{x}) ( $NG (V0{x} $IN V1{VeryYoung}) )
 ($NG ( V0{Annetta} $IN V1{Person} ) )
-( $NG( ( V0{Annetta} $IN V1{Person} )  $AD ( V0{Annetta} $IN V1{Young} ) ) )
-( ( V0{Annetta} $IN V1{Young} ) $AD (  $NG (V0{Annetta} $IN V1{Young}) ) )
-
-
-
-//END

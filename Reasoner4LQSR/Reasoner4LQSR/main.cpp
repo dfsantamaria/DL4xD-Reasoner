@@ -42,12 +42,12 @@ int main()
 	//	insertFormulaKB("( ($OA V0{l} $CO V0{j} $AO $IN V3{C333})  $AD (  ($OA V0{k} $CO V0{t} $AO $IN V3{C333}) $OR ($OA V0{s} $CO V0{v} $AO $IN V3{C333}) ) )", KB);
 	string kbname = "Example/bg5.txt";
 	readKBFromFile(0, kbname, KB);
-	
+
 	//print Tableau Radix	
 	printTRadix(KB);
 
 	cout << "Expanding Quantifiers in KB" << endl;
-	expandKB(KB, expKB);
+	expandKB(KB, expKB); 
 	Tableau tableau = Tableau(new Node(expKB));
 
 	//Printing result of expansion
@@ -84,7 +84,7 @@ int main()
 	//vector<Atom*> qAtoms;  
 	//cout << stringSet.at(0) << endl;
 	vector<QueryManager> results;
-	performQuerySet(results, stringSet, querySet, tableau); 
+	performQuerySet(results, stringSet, querySet, tableau);
 	cout << "Printing query results ..." << endl;
 	for (int i = 0; i < results.at(0).getMatchSet().second.size(); i++)
 	{
@@ -125,7 +125,7 @@ int main()
 	convertToCNF(out);
 	cout << out->toString() << endl;
 	*/
-	vector<pair<string, string>> ontNamespaces;	
+	vector<pair<string, string>> ontNamespaces;
 	vector<string> formulae;
 	vector<Formula> KB2;
 	cout << "Reading OWL File" << endl;
@@ -133,7 +133,7 @@ int main()
 	cout << "Printing ontology namespaces" << endl;
 	for (pair<string, string> p : ontNamespaces)
 		cout << p.first << " " << p.second << endl;
-	cout << "Printing formulae: " << formulae.size()<< endl;
+	cout << "Printing formulae: " << formulae.size() << endl;
 	for (string p : formulae)
 		cout << p << endl;
 	readKBFromStrings(0, formulae, KB2);
