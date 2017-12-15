@@ -2579,8 +2579,7 @@ Formula* normalizeFormula(Formula& formula)
 			}
 		}
 	}		
-	return startFormula;
-		
+	return startFormula;		
 }
 
 /*
