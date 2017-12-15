@@ -125,8 +125,8 @@ public:
 	int getFulfillness();
 	~Formula();
 	string toString();
-	string toStringNoQVar();
-	void toStringQVar(vector<Var*>& qu);
+	//string toStringNoQVar();
+	//void toStringQVar(vector<Var*>& qu);
 };
 
 

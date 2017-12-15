@@ -467,7 +467,7 @@ void Formula::setPreviousFormula(Formula *prev) { pformula = prev; };
 void Formula::setFulfillness(int val) { fulfilled = val; };
 int Formula::getFulfillness() { return fulfilled; };
 Formula::~Formula() {};
-void Formula::toStringQVar(vector<Var*>& qu)
+/*void Formula::toStringQVar(vector<Var*>& qu)
 {
  if(getAtom()!=NULL)
 	for (int i = 0; i < getAtom()->getElements().size(); i++)
@@ -488,7 +488,8 @@ void Formula::toStringQVar(vector<Var*>& qu)
  if (getRSubformula() != NULL)
 	 getRSubformula()->toStringQVar(qu);
 }
-string Formula::toString()
+*/
+/*string Formula::toString()
 {
 	vector<Var*> q;
 	toStringQVar(q);
@@ -503,8 +504,8 @@ string Formula::toString()
 	}	
 	quanti.append(r);
 	return quanti;
-}
-string Formula::toStringNoQVar()
+}*/
+string Formula::toString()
 	{
 		if (getAtom() != NULL)
 		{		
@@ -514,18 +515,18 @@ string Formula::toStringNoQVar()
 		{
 			string ret=("( ");
 			ret.append(operators.getLogOpElement(getOperand()));			
-			ret.append(getRSubformula()->toStringNoQVar());			
+			ret.append(getRSubformula()->toString());			
 			ret.append(")");
 			return ret;
 		}
 		else if (getOperand() > -1 && getLSubformula() != NULL && getRSubformula() != NULL)
 		{			
 			string ret = "( ";			
-            ret.append(getLSubformula()->toStringNoQVar());
+            ret.append(getLSubformula()->toString());
 			ret.append(" ");						
 			ret.append(operators.getLogOpElement(getOperand()));
 			ret.append(" ");
-			ret.append(getRSubformula()->toStringNoQVar());
+			ret.append(getRSubformula()->toString());
 			ret.append(")");
 			return ret;		
 		}		
@@ -942,11 +943,12 @@ int parseInternalFormula(vector<vector <Var>>& vec, vector<vector <Var>>& vec2, 
 			else
 			{				
 				Formula *rightf = stformula.top(); 
-				stformula.pop();				
+				stformula.pop();					
 				Formula *centerf = stformula.top(); 
 				stformula.pop();				
 				centerf->setRSubformula(rightf);
-							
+				rightf->setPreviousFormula(centerf);
+
 				if (centerf->getAtom()==NULL && centerf->getOperand()==4) //$NG has one branch
 				{					
 					centerf->setLSubformula(NULL); 
@@ -956,6 +958,7 @@ int parseInternalFormula(vector<vector <Var>>& vec, vector<vector <Var>>& vec2, 
 					Formula *leftf = stformula.top(); 
 					stformula.pop();
 					centerf->setLSubformula(leftf);
+					leftf->setPreviousFormula(centerf);
 				}
 				
 #ifdef debug 
@@ -965,8 +968,7 @@ int parseInternalFormula(vector<vector <Var>>& vec, vector<vector <Var>>& vec2, 
 #endif // debug
 				stformula.push(centerf); 
 				if (!stackFormula.empty())
-				 stackFormula.pop();
-				
+				 stackFormula.pop();				
 			}
 			break;
 		case '$': operand = string(1, c) + string(1, top.at(i + 1)) + string(1, top.at(i + 2));
@@ -1081,7 +1083,7 @@ Formula* copyFormula(Formula* formula, Formula* father)
 void convertToCNF(Formula* formula)
 {
 	vector<Formula*> stack;
-	stack.push_back(formula);
+	stack.push_back(formula); 	
 #ifdef debug
 #ifdef debugcnf
 	logFile << "-----Converting formula in CNF:" << endl;
@@ -1191,7 +1193,7 @@ int insertFormulaKB(int keepQ,vector<vector <Var>>& varset, vector<vector <Var>>
 	if ( res == 1)
 	{
 		vec.push_back(*f);
-		delete(f);
+		//delete(f);
 	}
 	return res;
 }
@@ -2124,9 +2126,8 @@ void readKBFromStrings(int qflag, vector<string>&names, vector<Formula>& KB)
 	for (int i = 0; i < KB.size(); i++)
 	{		
 		Formula* newf=normalizeFormula(KB.at(i));
-		KB.at(i) = *newf;
-		
-		convertToCNF(&KB.at(i));		
+		KB.at(i) = *newf;		
+		convertToCNF(&KB.at(i));			
 	}
 	vector<Formula> KBf;
 	while(!KB.empty())
@@ -2449,32 +2450,31 @@ void propagateNegation(Formula* current, vector<bool>& isNegated, vector<Formula
 void dropLRImplication(Formula* f)
 {	
 	
-	Formula* right = new Formula(NULL, 6);
+	Formula* right = new Formula(NULL, 5);
 	right->setLSubformula(copyFormula(f->getLSubformula(), right));
 	right->setRSubformula(copyFormula(f->getRSubformula(), right));
 
 	Formula* left = new Formula(NULL, 5);
-	left->setLSubformula(f->getLSubformula());
+	left->setLSubformula(f->getRSubformula());
 	left->getLSubformula()->setPreviousFormula(left);
 
-	left->setRSubformula(f->getRSubformula());
+	left->setRSubformula(f->getLSubformula());
 	left->getRSubformula()->setPreviousFormula(left);
 
 	f->setLSubformula(left);
 	f->setRSubformula(right);
 	left->setPreviousFormula(f);
-	right->setPreviousFormula(f);
-	
+	right->setPreviousFormula(f);	
 }
 
 Formula* dropNegation(Formula *f, Formula **topform)
-{
-	Formula* father = f->getPreviousformula();
+{	
+	Formula* father = f->getPreviousformula(); 
 	Formula* tmp = f->getRSubformula();	
 	if (tmp == NULL)
 		tmp = f->getLSubformula();	
 	if (father == NULL)
-	{	
+	{		
 	  (*topform) = tmp;	
 	}
 	else 
@@ -2487,12 +2487,12 @@ Formula* dropNegation(Formula *f, Formula **topform)
 	f->setLSubformula(NULL);
 	f->setRSubformula(NULL);
 	f->setPreviousFormula(NULL);
-	//delete(f);
+	//delete(f);	
 	return(tmp); 	
 }
 
 Formula* normalizeFormula(Formula& formula)
-{
+{	
 	cout << "Normalize" << formula.toString() << endl;
 	if (formula.getAtom() != NULL)
 		return &formula;
@@ -2574,7 +2574,7 @@ Formula* normalizeFormula(Formula& formula)
 				else
 					current->setOperand(1);
 				dropLRImplication(current);
-				propagateNegation(current, isNegated, stackF, neg, neg);;
+				propagateNegation(current, isNegated, stackF, neg, neg);
 				break;
 			}
 		}
