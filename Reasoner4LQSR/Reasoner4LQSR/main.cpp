@@ -40,9 +40,9 @@ int main()
 	vector<Formula> KB;
 	vector<Formula> expKB;
 	//	insertFormulaKB("( ($OA V0{l} $CO V0{j} $AO $IN V3{C333})  $AD (  ($OA V0{k} $CO V0{t} $AO $IN V3{C333}) $OR ($OA V0{s} $CO V0{v} $AO $IN V3{C333}) ) )", KB);
-	string kbname = "Example/bg4.txt";
+	string kbname = "Example/bg5.txt";
 	readKBFromFile(0, kbname, KB);
-
+	
 	//print Tableau Radix	
 	printTRadix(KB);
 

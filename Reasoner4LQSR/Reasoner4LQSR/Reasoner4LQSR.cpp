@@ -473,17 +473,25 @@ string Formula::toString()
 		{
 			return (getAtom()->toString().append(" "));
 		}
-		else if (getOperand() > -1 && getLSubformula() != NULL && getRSubformula() != NULL)
+		else if (getOperand()==4 && getRSubformula() != NULL)
 		{
-			string ret = "( ";
-			ret.append(getLSubformula()->toString());
-			ret.append(" ");
+			string ret=("( ");
+			ret.append(operators.getLogOpElement(getOperand()));			
+			ret.append(getRSubformula()->toString());			
+			ret.append(")");
+			return ret;
+		}
+		else if (getOperand() > -1 && getLSubformula() != NULL && getRSubformula() != NULL)
+		{			
+			string ret = "( ";			
+            ret.append(getLSubformula()->toString());
+			ret.append(" ");						
 			ret.append(operators.getLogOpElement(getOperand()));
 			ret.append(" ");
 			ret.append(getRSubformula()->toString());
 			ret.append(")");
-			return ret;
-		}
+			return ret;		
+		}		
 		else if (getOperand() > -1)
 			return (operators.getLogOpElement(getOperand()));
 		else return "NULL";
@@ -877,11 +885,11 @@ int parseInternalFormula(vector<vector <Var>>& vec, vector<vector <Var>>& vec2, 
 		switch (c)
 		{
 		case '(': stackFormula.push(string(1, c)); break;
-		case ')':
+		case ')':    
 			if (!atom.empty())
-			{
+			{				
 				if (!stackFormula.empty())
-				 stackFormula.pop();
+				  stackFormula.pop();				
                  #ifdef debug 
                    #ifdef debuginsertf
 				     logFile << "-----Candidate atom found: " << atom << endl;
@@ -889,36 +897,47 @@ int parseInternalFormula(vector<vector <Var>>& vec, vector<vector <Var>>& vec2, 
                  #endif // debug                
 				createAtom(vec, vec2, atom, &formula, startQuantVect, typeformula);				
 				if (formula != NULL) // creation of the formula 
-				{					
-					stformula.push(formula);
+				{						
+					stformula.push(formula); 
 				}				
 				atom.clear();
 			}
 			else
 			{				
-				Formula *rightf = stformula.top();
-				stformula.pop();
-				Formula *centerf = stformula.top();
-				stformula.pop();
-				Formula *leftf = stformula.top();
-				stformula.pop();
-				centerf->setLSubformula(leftf);
+				Formula *rightf = stformula.top(); cout << "right"<< rightf->toString() << endl;
+				stformula.pop();				
+				Formula *centerf = stformula.top(); cout << "center" << centerf->toString() << endl;
+				stformula.pop();				
 				centerf->setRSubformula(rightf);
+							
+				if (centerf->getAtom()==NULL && centerf->getOperand()==4) //$NG has one branch
+				{					
+					centerf->setLSubformula(NULL); 
+				}
+				else
+				{
+					Formula *leftf = stformula.top(); 
+					stformula.pop();
+					centerf->setLSubformula(leftf);
+				}
+				
 #ifdef debug 
 #ifdef debuginsertf
 				logFile << "-----Computing subformula: " << centerf->toString() << endl;
 #endif
 #endif // debug
-				stformula.push(centerf);
+				stformula.push(centerf); 
 				if (!stackFormula.empty())
 				 stackFormula.pop();
+				
 			}
 			break;
 		case '$': operand = string(1, c) + string(1, top.at(i + 1)) + string(1, top.at(i + 2));
 			i = i + 2;
 			if (operators.checkLogOp(&operand) != 0)
-			{
+			{				
 				stformula.push(new Formula(NULL, operators.getLogOpValue(operand)));
+				
 			}
 			else
 			{
@@ -2032,7 +2051,8 @@ void readKBFromStrings(int qflag, vector<string>&names, vector<Formula>& KB)
 	//Converting to CNF;
 	for (int i = 0; i < KB.size(); i++)
 	{		
-		convertToCNF(&KB.at(i));
+		normalizeFormula(&KB.at(i));
+		convertToCNF(&KB.at(i));		
 	}
 	vector<Formula> KBf;
 	while(!KB.empty())
@@ -2397,6 +2417,8 @@ void dropNegation(Formula *f)
 
 void normalizeFormula(Formula* formula)
 {
+	cout << "Normalize" << formula->toString() << endl;
+
 	vector<bool> isNegated;
 	vector<Formula*> stackF;
 	stackF.push_back(formula);
