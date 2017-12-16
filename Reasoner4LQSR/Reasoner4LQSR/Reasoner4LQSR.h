@@ -280,6 +280,7 @@ int insertFormulaKB(int keepQ, vector<vector <Var>>& varset1, vector<vector <Var
 void insertVarsEqClass(Var& var1, Var& var2, Tableau& tab, int brindx);
 int instantiateFormula(Formula f, vector<Formula> &destination);
 void moveQuantifier(int qFlag, Formula* formula, vector<vector <Var>>& varset1, vector<Formula>& data);
+void moveQuantifierKB(int qflag, vector<Formula*>& KB, vector<Formula*>& KBout);
 Atom* negatedAtom(Atom *input);
 int parseInternalFormula(vector<vector <Var>>& vec, vector<vector <Var>>& vec2, const string *inputformula, Formula **outformula, vector<int>& startQuantVect, int typeformula);
 void PBRule(vector<Atom*> atoms, Node* node, vector<Node*> &nodeSet);

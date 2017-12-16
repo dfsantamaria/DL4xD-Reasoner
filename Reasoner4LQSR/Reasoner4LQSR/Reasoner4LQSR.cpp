@@ -2058,7 +2058,7 @@ void renameQVariables(Formula* formula, vector<vector <Var>>& varset1)
 	}
 }
 
-void moveQuantifier(int qFlag, Formula* formula, vector<vector <Var>>& varset1, vector<Formula>& data)
+void moveQuantifier(int qFlag, Formula* formula, vector<vector <Var>>& varset1, vector<Formula*>& data)
 {
 #ifdef debug 
 #ifdef debugmvq
@@ -2068,43 +2068,44 @@ void moveQuantifier(int qFlag, Formula* formula, vector<vector <Var>>& varset1, 
 #endif // debug
 	if (formula->getOperand() != 1)
 	{
-		data.push_back(*formula);
+		data.push_back(formula);
 		return;
 	}
-	vector<Formula*> tmp;
-	vector<Formula*> inside;
+	vector<Formula*> tmp;	
 	tmp.push_back(formula);
 	while (!tmp.empty())
 	{
-		Formula* current = tmp.back();
-		tmp.pop_back();
 		
-		if (current->getOperand() == 1) //AND found
+	 Formula* current = tmp.back(); 
+	  tmp.pop_back();	 
+	  if (current->getOperand() == 1) //AND found
 		{
-			inside.push_back(current->getLSubformula());
+			Formula* fL = current->getLSubformula();
+			Formula* fR = current->getRSubformula();
+			fL->setPreviousFormula(NULL);
+			fR->setPreviousFormula(NULL);
+
+			//cout << "-debug-- " << fL->toString()<<endl;
+			//cout << "-debug-- " << fR->toString()<<endl;
+
+			delete(current);
+			tmp.push_back(fL);
 			if (qFlag == 1)
-			  renameQVariables(current->getRSubformula(), varset1);
-			inside.push_back(current->getRSubformula());
-			while (!inside.empty())
-			{
-				Formula* local = inside.back();
-				inside.pop_back();
-				local->setPreviousFormula(NULL);				
-				tmp.push_back(local);
-			}			
+			  renameQVariables(fR, varset1);
+			tmp.push_back(fR);	
+			
 		}
-		else
+		else 
 		{
-			data.push_back(*current);
+			data.push_back(current);
              #ifdef debug 
              #ifdef debugmvq			     
 		         logFile << "-----Formula inserted: " << current->toString() << endl;
             #endif
             #endif // debug
+				 
 		}
-	}
-	
-	return;
+	}	
 }
 
 
@@ -2127,6 +2128,14 @@ void converKBToCNF(vector<Formula*>& KB, vector<Formula*>& KBcnf)
 	}
 }
 
+void moveQuantifierKB(int qflag, vector<Formula*>& KB, vector<Formula*>& KBout)
+{	
+	for(int i=0; i<KB.size();i++)
+	{		
+		moveQuantifier(qflag, KB.at(i) , varSet.getVQL(), KBout);		
+	}
+}
+
 void readKBFromStrings(int qflag, vector<string>&names, vector<Formula*>& KB)
 {	
 	cout << "Knowledge Base" << endl;
@@ -2137,21 +2146,7 @@ void readKBFromStrings(int qflag, vector<string>&names, vector<Formula*>& KB)
 			continue;
 		cout << str << endl;
 		insertFormulaKB(qflag,varSet.getVQL(), varSet.getVVL(), str, KB, &typeformula);
-	}
-	//Converting to CNF;
-	/*
-
-	vector<Formula> KBf;
-	while(!KB.empty())
-	{
-	  moveQuantifier(qflag, &KB.back(), varSet.getVQL(), KBf); 		
-	  KB.back().setLSubformula(NULL);
-	  KB.back().setRSubformula(NULL);
-	  KB.back().~Formula();
-	  KB.pop_back();
-	}
-	KB = KBf;
-	*/
+	}	
 }
 
 void readKBFromFile(int qflag, string &name, vector<Formula*>& KB)
