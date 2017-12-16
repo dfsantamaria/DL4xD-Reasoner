@@ -111,8 +111,7 @@ int main()
 	{
 		cout << "Branch number: " << i << " Answer:" << results.at(0)->getAnswerSet().at(i) << endl;
 	}
-
-
+	
 	/*
 	    OWL/XML Reader
 	*/
@@ -142,6 +141,5 @@ int main()
 	KB2norm.clear();
 	printTRadix(KB2cnf); //print Tableau Radix
 	cout << "--End reading ontology--" << endl;
-
 	debugEnd();	
 }
