@@ -467,7 +467,7 @@ void Formula::setPreviousFormula(Formula *prev) { pformula = prev; };
 void Formula::setFulfillness(int val) { fulfilled = val; };
 int Formula::getFulfillness() { return fulfilled; };
 Formula::~Formula() { delete atom;  lsubformula = NULL; rsubformula = NULL; pformula = NULL; };
-/*void Formula::toStringQVar(vector<Var*>& qu)
+void Formula::toStringQVar(vector<Var*>& qu)
 {
  if(getAtom()!=NULL)
 	for (int i = 0; i < getAtom()->getElements().size(); i++)
@@ -487,9 +487,9 @@ Formula::~Formula() { delete atom;  lsubformula = NULL; rsubformula = NULL; pfor
 	 getLSubformula()->toStringQVar(qu);
  if (getRSubformula() != NULL)
 	 getRSubformula()->toStringQVar(qu);
-}
-*/
-/*string Formula::toString()
+};
+
+string Formula::toString()
 {
 	vector<Var*> q;
 	toStringQVar(q);
@@ -504,8 +504,8 @@ Formula::~Formula() { delete atom;  lsubformula = NULL; rsubformula = NULL; pfor
 	}	
 	quanti.append(r);
 	return quanti;
-}*/
-string Formula::toString()
+}
+string Formula::toStringNoQVar()
 	{
 		if (getAtom() != NULL)
 		{		
@@ -515,18 +515,18 @@ string Formula::toString()
 		{
 			string ret=("( ");
 			ret.append(operators.getLogOpElement(getOperand()));			
-			ret.append(getRSubformula()->toString());			
+			ret.append(getRSubformula()->toStringNoQVar());
 			ret.append(")");
 			return ret;
 		}
 		else if (getOperand() > -1 && getLSubformula() != NULL && getRSubformula() != NULL)
 		{			
 			string ret = "( ";			
-            ret.append(getLSubformula()->toString());
+            ret.append(getLSubformula()->toStringNoQVar());
 			ret.append(" ");						
 			ret.append(operators.getLogOpElement(getOperand()));
 			ret.append(" ");
-			ret.append(getRSubformula()->toString());
+			ret.append(getRSubformula()->toStringNoQVar());
 			ret.append(")");
 			return ret;		
 		}		
@@ -2337,10 +2337,11 @@ void QueryManager::executeQuery(Formula& f, Tableau& tableau, pair <vector<int>,
 		extractLiterals(formula, qLits);
 		
 		//Print Atoms from Query
-		cout << "Literals from query: " << qLits.size() << endl;
+		/*cout << "Literals from query: " << qLits.size() << endl;
 		for (Atom* a : qLits)
 			cout << a->toString() << endl;
 		//---------------------------------
+		*/
 		for (int branchIt=0; branchIt<tableau.getOpenBranches().size();branchIt++)
 		{
 			int res=0;
@@ -2378,10 +2379,13 @@ void QueryManager::executeQuery(Formula& f, Tableau& tableau, pair <vector<int>,
 					   }
 					matchSet = tmp;
 					if (matchSet.empty())
-						res = 0;
-					else res = 1;
+					  res = 0;
+					else 
+					  res = 1;
+					
 				}
 			}
+				cout << "ressss" << res << " "<< branchIt<< endl;
 				if (res == 0)
 					break;
 			}				
@@ -2389,10 +2393,11 @@ void QueryManager::executeQuery(Formula& f, Tableau& tableau, pair <vector<int>,
 			{
 				result.first.push_back(branchIt);
 				result.second.push_back(matchSet);
+				if (YN == 1)
+					ynAnswer.at(branchIt) = 1;
 			}
-			cout << "Tableau Branch: " << branchIt << ", Answer: " << res << endl;
-			if(YN==1)
-			 ynAnswer.at(branchIt)=res;
+			else if(YN==1)
+			  ynAnswer.at(branchIt)=res;
 		}
 	};
 
