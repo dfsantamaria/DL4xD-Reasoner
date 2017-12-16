@@ -58,22 +58,16 @@ int main()
 	moveQuantifierKB(1, KBcnf, KBmq);	
 	printTRadix(KBmq); //print Tableau Radix
 
-	/*vector<Formula> expKB;
+	vector<Formula*> expKB;
 	cout << "Expanding Quantifiers in KB" << endl;
-	expandKB(KB, expKB); 
+	expandKB(KBmq, expKB); 	
 	Tableau tableau = Tableau(new Node(expKB));
-
 	//Printing result of expansion
 	printTExpanded(tableau);
-
 	//Printing content of VVL and VQL
 	printVarSet();
-
-	//cout << "Clash before tableau expansion:" << checkNodeClash(tableau.getTableau()->getSetFormulae()) << endl;
-
 	cout << "Expanding Tableau" << endl;
 	expandTableau(tableau);
-
 	cout << "Building EqSet" << endl;
 	buildEqSet(tableau);
 
@@ -86,43 +80,43 @@ int main()
 	//print closed branches
 	printClosedBranches(tableau);
 
-*/
 	/* Query Reading*/
-	/*
 	cout << "---" << endl;
 	cout << "Reading Query ..." << endl;
 	string queryname = "Example/query.txt";
 	vector<Formula> querySet;
 	vector<string> stringSet = vector<string>(0);
 	readQueryFromFile(queryname, stringSet);
-	//vector<Atom*> qAtoms;  
-	//cout << stringSet.at(0) << endl;
-	vector<QueryManager> results;
+	vector<QueryManager*> results;
 	performQuerySet(results, stringSet, querySet, tableau);
+
 	cout << "Printing query results ..." << endl;
-	for (int i = 0; i < results.at(0).getMatchSet().second.size(); i++)
+	for (int i = 0; i < results.at(0)->getMatchSet().second.size(); i++)
 	{
-		cout << "Tableau branch number: " << results.at(0).getMatchSet().first.at(i) << endl;
-		for (int j = 0; j < results.at(0).getMatchSet().second.at(i).size(); j++)
+		cout << "Tableau branch number: " << results.at(0)->getMatchSet().first.at(i) << endl;
+		for (int j = 0; j < results.at(0)->getMatchSet().second.at(i).size(); j++)
 		{
 			cout << "Solution number: " << j << endl;
-			for (int k = 0; k < results.at(0).getMatchSet().second.at(i).at(j).size(); k++)
+			for (int k = 0; k < results.at(0)->getMatchSet().second.at(i).at(j).size(); k++)
 			{
-				cout << results.at(0).getMatchSet().second.at(i).at(j).at(k).first->toString();
+				cout << results.at(0)->getMatchSet().second.at(i).at(j).at(k).first->toString();
 				cout << ",";
-				cout << results.at(0).getMatchSet().second.at(i).at(j).at(k).second->toString() << "; ";
+				cout << results.at(0)->getMatchSet().second.at(i).at(j).at(k).second->toString() << "; ";
 			}
 			cout << endl;
 		}
 	}
 	cout << "Printing Y/N results ..." << endl;
-	for (int i = 0; i < results.at(0).getAnswerSet().size(); i++)
+	for (int i = 0; i < results.at(0)->getAnswerSet().size(); i++)
 	{
-		cout << "Branch number: " << i << " Answer:" << results.at(0).getAnswerSet().at(i) << endl;
+		cout << "Branch number: " << i << " Answer:" << results.at(0)->getAnswerSet().at(i) << endl;
 	}
+
+
+	/*
+	    OWL/XML Reader
 	*/
 
-	
 	vector<pair<string, string>> ontNamespaces;
 	vector<string> formulae;
 	vector<Formula*> KB2;
@@ -147,7 +141,7 @@ int main()
 	converKBToCNF(KB2norm, KB2cnf);
 	KB2norm.clear();
 	printTRadix(KB2cnf); //print Tableau Radix
+	cout << "--End reading ontology--" << endl;
 
-	debugEnd();
-	return 0;
+	debugEnd();	
 }

@@ -544,14 +544,14 @@ End Formula
   Start Node
 */
 
-int Node::containsFormula(Formula &F) //to be completed and performed
+int Node::containsFormula(Formula* F) //to be completed and performed
 	{
 		for (int i = 0; i < this->getSetFormulae().size(); i++)
 		{
-			Atom* locAt = this->getSetFormulae().at(i).getAtom();
-			if (locAt != NULL && F.getAtom() != NULL)
+			Atom* locAt = this->getSetFormulae().at(i)->getAtom();
+			if (locAt != NULL && F->getAtom() != NULL)
 			{
-				if (locAt->equals(*(F.getAtom())) == 0)
+				if (locAt->equals(*(F->getAtom())) == 0)
 				{
 					return 0;
 				}
@@ -563,24 +563,24 @@ int Node::containsFormula(Formula &F) //to be completed and performed
 
 Node::Node(int size) { setFormula.reserve(size); leftChild = rightChild = father = NULL; };
 Node::Node() { leftChild = rightChild = father = NULL; };
-Node::Node(vector<Formula>& formula) { setFormula = formula; leftChild = rightChild = father = NULL; };
+Node::Node(vector<Formula*> formula) { setFormula = formula; leftChild = rightChild = father = NULL; };
 Node* Node::getLeftChild() { return leftChild; };
 Node* Node::getRightChild() { return rightChild; };
 Node* Node::getFather() { return father; };
 void Node::setRightChild(Node* child) { rightChild = child; child->setFather(this); };
 void Node::setLeftChild(Node* child) { leftChild = child; child->setFather(this); };
 void Node::setFather(Node* f) { father = f; };
-void Node::insertFormula(Formula& f)
+void Node::insertFormula(Formula* f)
 	{
 		setFormula.push_back(f);
 	};
-void Node::insertCheckFormula(Formula& f)
+void Node::insertCheckFormula(Formula* f)
 	{
 		if (this->containsFormula(f) == 1)
 			setFormula.push_back(f);
 	};
-vector<Formula>& Node::getSetFormulae() { return setFormula; };
-void Node::setSetFormulae(vector<Formula>& input) { setFormula = input; };
+vector<Formula*> Node::getSetFormulae() { return setFormula; };
+void Node::setSetFormulae(vector<Formula*> input) { setFormula = input; };
 Node::~Node() {};
 /**
 End Node
@@ -593,7 +593,7 @@ Start Tableau
 Tableau::Tableau(Node* initial) { radix = initial; };
 Tableau::Tableau(int size_radix) { radix = new Node(size_radix); };
 Node* Tableau::getTableau() { return radix; };
-int Tableau::insertFormula(Formula &f) { radix->insertFormula(f);  return 0; };
+int Tableau::insertFormula(Formula* f) { radix->insertFormula(f);  return 0; };
 vector<Node*>& Tableau::getOpenBranches() { return openBranches; };
 vector<Node*>& Tableau::getClosedBranches() { return closedBranches; };
 vector < vector < vector <Var*> > >& Tableau::getEqSet() { return EqSet; };
@@ -1226,34 +1226,34 @@ int containsQVar(Formula *fr, string &s)
 	return 0;
 }
 
-int instantiateFormula(Formula f, vector<Formula> &destination)
+int instantiateFormula(Formula* f, vector<Formula*> &destination)
 {
 #ifdef debug  
-	logFile << "------- Expanding Formula: " << f.toString() << endl;
+	logFile << "------- Expanding Formula: " << f->toString() << endl;
 #endif // debug
 	string s;
-	vector<Formula> tmp;
+	vector<Formula*> tmp;
 	tmp.push_back(f);
 	while (!tmp.empty())
 	{		
-		Formula top = tmp.back();
+		Formula* top = tmp.back();
 		tmp.pop_back();
-		if (containsQVar(&top, s))
+		if (containsQVar(top, s))
 		{
 			for (int i = 0; i < varSet.getVVLAt(0)->size(); i++)
 			{
-				tmp.push_back(*(copyFormula(&top, NULL, &s, &varSet.getVVLAt(0)->at(i))));				
+				tmp.push_back((copyFormula(top, NULL, &s, &varSet.getVVLAt(0)->at(i))));				
 			}
 		}
 		else
 		{
 #ifdef debug 
 #ifdef debugexpand
-			logFile << "------- Expanded Formula: " << top.toString() << endl;
+			logFile << "------- Expanded Formula: " << top->toString() << endl;
 #endif
 #endif // debug		
-			if (top.getAtom() != NULL)
-				top.setFulfillness(0);
+			if (top->getAtom() != NULL)
+				top->setFulfillness(0);
 			destination.push_back(top); 
 		}
 	}
@@ -1263,7 +1263,7 @@ int instantiateFormula(Formula f, vector<Formula> &destination)
 
 
 
-int expandKB(const vector<Formula> &inpf, vector <Formula> &out)
+int expandKB(const vector<Formula*> &inpf, vector <Formula*> &out)
 {
 #ifdef debug  
 	logFile << "--- Applying Expansion Rule" << endl;
@@ -1271,7 +1271,7 @@ int expandKB(const vector<Formula> &inpf, vector <Formula> &out)
 
 	if (varSet.getVVLAt(0)->size() == 0) //no individual;
 	{
-		for (Formula f : inpf)
+		for (Formula* f : inpf)
 		{
 			out.push_back(f);
 		}
@@ -1280,21 +1280,21 @@ int expandKB(const vector<Formula> &inpf, vector <Formula> &out)
 
 
 	int or = operators.getLogOpValue("$OR");
-	vector <Formula> tmp;
+	vector <Formula*> tmp;
 	for (int i = 0; i < inpf.size(); i++)
 		tmp.push_back(inpf.at(i));
 
 	
 	while (!tmp.empty())
 	{
-		Formula f = tmp.back();
+		Formula* f = tmp.back();
 #ifdef debug  
 #ifdef debugexpand
-		logFile << "----- Computing Formula: " << f.toString() << endl;
+		logFile << "----- Computing Formula: " << f->toString() << endl;
 #endif
 #endif // debug
 		tmp.pop_back();
-		if (f.getAtom() != NULL || f.getOperand()== or)
+		if (f->getAtom() != NULL || f->getOperand()== or)
 		{			
 			instantiateFormula(f, out); 
 		}	
@@ -1308,11 +1308,11 @@ int expandKB(const vector<Formula> &inpf, vector <Formula> &out)
 #endif // debug			
 			tmp.push_back(*(f.getRSubformula()));
 		}*/
-		else
+		/*else
 		{
 			
-			f.getLSubformula()->setPreviousFormula(NULL);
-			f.getRSubformula()->setPreviousFormula(NULL);
+			f->getLSubformula()->setPreviousFormula(NULL);
+			f->getRSubformula()->setPreviousFormula(NULL);
 #ifdef debug  
 #ifdef debugexpand
 			logFile << "----- Obtaining Formula: " << f.getLSubformula()->toString() << endl;
@@ -1323,7 +1323,7 @@ int expandKB(const vector<Formula> &inpf, vector <Formula> &out)
 			tmp.push_back(*(f.getRSubformula()));
 
 			//cout << (f.getOperand()) << endl;
-		}
+		}*/
 	}
 #ifdef debug  
 	logFile << "--- End Expansion Rule" << endl;
@@ -1392,7 +1392,7 @@ int checkAtomsClash(vector<Atom*> &vec)
 /*
 Check for Clash between the given candidate and a vector of formulae starting from the given index
 */
-int checkVectorClash(Atom* candidate, vector<Formula> &formset, int start)
+int checkVectorClash(Atom* candidate, vector<Formula*> &formset, int start)
 {
 #ifdef debug  
 	logFile << "---Checking for Clash in Vector of Formulae" << endl;
@@ -1409,19 +1409,19 @@ int checkVectorClash(Atom* candidate, vector<Formula> &formset, int start)
 		}
 		for (int j = start; j < formset.size(); j++)
 		{
-			if (formset.at(j).getAtom() != NULL)
+			if (formset.at(j)->getAtom() != NULL)
 			{
-				if (checkAtomClash(*formset.at(j).getAtom()) == 0)
+				if (checkAtomClash(*formset.at(j)->getAtom()) == 0)
 				{
 #ifdef debug  
-					logFile << "-----Clash at: " << formset.at(j).getAtom()->toString() << endl;
+					logFile << "-----Clash at: " << formset.at(j)->getAtom()->toString() << endl;
 #endif // debug
 					return 0;
 				}
-				if (checkAtomClash(*candidate, *formset.at(j).getAtom()) == 0)
+				if (checkAtomClash(*candidate, *formset.at(j)->getAtom()) == 0)
 				{
 #ifdef debug  
-					logFile << "-----Clash at: " << candidate->toString() << "," << formset.at(j).getAtom()->toString() << endl;
+					logFile << "-----Clash at: " << candidate->toString() << "," << formset.at(j)->getAtom()->toString() << endl;
 #endif // debug
 					return 0;
 				}
@@ -1437,7 +1437,7 @@ int checkVectorClash(Atom* candidate, vector<Formula> &formset, int start)
 /*
 Check for Clash in a Vector of formulae
 */
-int checkNodeClash(vector<Formula> &formset)
+int checkNodeClash(vector<Formula*> &formset)
 {
 	if (formset.size() < 2)
 	{
@@ -1445,7 +1445,7 @@ int checkNodeClash(vector<Formula> &formset)
 	}
 	for (int i = 0; i < formset.size() - 1; i++)
 	{		
-		if (checkVectorClash(formset.at(i).getAtom(), formset, i + 1) == 0)
+		if (checkVectorClash(formset.at(i)->getAtom(), formset, i + 1) == 0)
 			return 0;
 	}
 	return 1;
@@ -1463,13 +1463,13 @@ int checkBranchClash(Node* node, Tableau& tableau)
 #ifdef debug  
 	logFile << "---Checking for Clash in the Current branch" << endl;
 #endif // debug
-	vector<Formula>local = node->getSetFormulae();
+	vector<Formula*>local = node->getSetFormulae();
 	Node* iterator = node->getFather();
 	while (iterator != NULL)
 	{
 		for (int i = 0; i < local.size(); i++)
 		{
-			Atom* at = local.at(i).getAtom();
+			Atom* at = local.at(i)->getAtom();
 			if (at != NULL && (checkVectorClash(at, iterator->getSetFormulae(), 0) == 0))
 			{
 #ifdef debug
@@ -1491,13 +1491,13 @@ int checkBranchClash(Node* node, Tableau& tableau)
 Return the set of atomic formula contained in a formula.
 */
 
-void getAtomSet(Formula &f, vector<Atom*> &outf)
+void getAtomSet(Formula* f, vector<Atom*> &outf)
 {
-	if (f.getAtom() != NULL)
+	if (f->getAtom() != NULL)
 		return;
 	stack <Formula*> st;
-	st.push(f.getRSubformula());
-	st.push(f.getLSubformula());
+	st.push(f->getRSubformula());
+	st.push(f->getLSubformula());
 	while (!st.empty())
 	{
 		Formula* tmp = st.top();
@@ -1565,7 +1565,7 @@ void ERule(Atom* atom, Node* node)
 	vector<Node*> newNodeSet;
 	Atom* neg = negatedAtom(atom);
 	//	if (checkBranchClash(neg, tmp) == 1)		  //solve thi inefficiency
-	node->insertFormula(*(new Formula(copyAtom(atom, NULL, NULL), -1)));
+	node->insertFormula((new Formula(copyAtom(atom, NULL, NULL), -1)));
 }
 
 void PBRule(vector<Atom*> atoms, Node* node, vector<Node*> &nodeSet)
@@ -1601,9 +1601,9 @@ void PBRule(vector<Atom*> atoms, Node* node, vector<Node*> &nodeSet)
 #endif
 #endif // debug
 		Atom* neg = negatedAtom(atoms.at(i));
-		tmp->setLeftChild(new Node(vector<Formula> {*(new Formula(copyAtom(atoms.at(i), NULL, NULL), -1))}));
+		tmp->setLeftChild(new Node(vector<Formula*> {(new Formula(copyAtom(atoms.at(i), NULL, NULL), -1))}));
 		newNodeSet.push_back(tmp->getLeftChild());
-		tmp->setRightChild(new Node(vector<Formula> {*(new Formula(negatedAtom(atoms.at(i)), -1))}));
+		tmp->setRightChild(new Node(vector<Formula*> {(new Formula(negatedAtom(atoms.at(i)), -1))}));
 		tmp = tmp->getRightChild();
 	}
 #ifdef debug  
@@ -1611,7 +1611,7 @@ void PBRule(vector<Atom*> atoms, Node* node, vector<Node*> &nodeSet)
 	logFile << "------ Computing Atom from PB-Rule. " << (copyAtom(atoms.at(atoms.size() - 1), NULL, NULL))->toString() << endl;
 #endif
 #endif // debug
-	tmp->insertFormula(*(new Formula(copyAtom(atoms.at(atoms.size() - 1), NULL, NULL), -1)));
+	tmp->insertFormula((new Formula(copyAtom(atoms.at(atoms.size() - 1), NULL, NULL), -1)));
 	newNodeSet.push_back(tmp);
 	nodeSet.insert(nodeSet.end(), newNodeSet.begin(), newNodeSet.end());
 }
@@ -1624,14 +1624,14 @@ int checkAtoms(Atom* atom, Node* node)
 	Node* iterator = node;
 	while (iterator != NULL)
 	{
-		vector<Formula> vec = iterator->getSetFormulae();
+		vector<Formula*> vec = iterator->getSetFormulae();
 		for (int i = 0; i < vec.size(); i++)
 		{
-			if (vec.at(i).getAtom() != NULL)
+			if (vec.at(i)->getAtom() != NULL)
 			{
-				if ((checkAtomClash(*atom, *(vec.at(i).getAtom())) == 0))
+				if ((checkAtomClash(*atom, *(vec.at(i)->getAtom())) == 0))
 					return 0;
-				if (atom->equals(*(vec.at(i).getAtom())) == 0)
+				if (atom->equals(*(vec.at(i)->getAtom())) == 0)
 					return 2;
 			}
 		}
@@ -1641,7 +1641,7 @@ int checkAtoms(Atom* atom, Node* node)
 }
 
 
-void chooseRule(Tableau &T, vector<Node*> &nodeSet, Formula &f)
+void chooseRule(Tableau &T, vector<Node*> &nodeSet, Formula* f)
 {
 	vector<Node*> newNodeSet;
 	for (int b = 0; b < nodeSet.size(); b++)
@@ -1705,15 +1705,15 @@ void expandTableau(Tableau& T)
 	}
 	vector<Node*> nonComBranches = vector<Node*>();
 	nonComBranches.push_back(T.getTableau()); //initially only the root node
-	vector<Formula> fset = T.getTableau()->getSetFormulae();
+	vector<Formula*> fset = T.getTableau()->getSetFormulae();
 	
 	for (int i = 0; i < fset.size(); i++)
 	{		
-		if (fset.at(i).getAtom() == NULL)  //OR found
+		if (fset.at(i)->getAtom() == NULL)  //OR found
 		{
 #ifdef debug  
 #ifdef debugexpand
-			logFile << "------Fulfilling formula: " << fset.at(i).toString() << endl;
+			logFile << "------Fulfilling formula: " << fset.at(i)->toString() << endl;
 #endif
 #endif // debug
 			chooseRule(T, nonComBranches, fset.at(i));
@@ -1885,18 +1885,18 @@ void buildEqSet(Tableau& tab)
 		{
 			for (int fcount = 0; fcount < node->getSetFormulae().size(); fcount++)
 			{
-				Formula localf = node->getSetFormulae().at(fcount);
-				if (localf.getAtom() != NULL && localf.getAtom()->getAtomOp() == operators.getSetOpValue("$EQ")) //find equivalences
-					if (localf.getAtom()->getElementAt(0)->equal(localf.getAtom()->getElementAt(1)) == 1)  // ignore the case a=a
+				Formula* localf = node->getSetFormulae().at(fcount);
+				if (localf->getAtom() != NULL && localf->getAtom()->getAtomOp() == operators.getSetOpValue("$EQ")) //find equivalences
+					if (localf->getAtom()->getElementAt(0)->equal(localf->getAtom()->getElementAt(1)) == 1)  // ignore the case a=a
 					{
 #ifdef debug 
 #ifdef eqsetdebug
-						logFile << "----- Computing equivalence classes for " << localf.getAtom()->toString() << " in branch " << i << endl;
+						logFile << "----- Computing equivalence classes for " << localf->getAtom()->toString() << " in branch " << i << endl;
 #endif
 #endif // debug
 
-						Var* var1 = localf.getAtom()->getElements().at(0);
-						Var* var2 = localf.getAtom()->getElements().at(1);
+						Var* var1 = localf->getAtom()->getElements().at(0);
+						Var* var2 = localf->getAtom()->getElements().at(1);
 						insertVarsEqClass(*var1, *var2, tab, i);
 					}
 			}
@@ -1960,9 +1960,9 @@ int checkNodeClashEqSet(Atom& atom, Node& node, Tableau& T, int& brind)
 	{
 		for (int j = 0; j < tmp->getSetFormulae().size(); j++)
 		{
-			if (tmp->getSetFormulae().at(j).getAtom() != NULL)
+			if (tmp->getSetFormulae().at(j)->getAtom() != NULL)
 			{
-				if (checkAtomClashEqSet(atom, *(tmp->getSetFormulae().at(j).getAtom()), T, brind) == 0)
+				if (checkAtomClashEqSet(atom, *(tmp->getSetFormulae().at(j)->getAtom()), T, brind) == 0)
 					return 0;
 			}
 		}
@@ -1981,13 +1981,13 @@ void checkTableauClash(Tableau& T)
 		int clash = 1;
 		for (int j = 0; j < currentNode->getSetFormulae().size() - 1; j++)
 		{
-			if (currentNode->getSetFormulae().at(j).getAtom() != NULL)
+			if (currentNode->getSetFormulae().at(j)->getAtom() != NULL)
 			{
 
-				if (checkAtomClashEqSet(*(currentNode->getSetFormulae().at(j).getAtom()), T, i) == 1 &&
-					checkAtomClashEqSet(*(currentNode->getSetFormulae().at(j).getAtom()), *(currentNode->getSetFormulae().at(j + 1).getAtom()), T, i) == 1)
+				if (checkAtomClashEqSet(*(currentNode->getSetFormulae().at(j)->getAtom()), T, i) == 1 &&
+					checkAtomClashEqSet(*(currentNode->getSetFormulae().at(j)->getAtom()), *(currentNode->getSetFormulae().at(j + 1)->getAtom()), T, i) == 1)
 				{
-					tobreak = checkNodeClashEqSet(*(currentNode->getSetFormulae().at(j).getAtom()), *(currentNode->getFather()), T, i);
+					tobreak = checkNodeClashEqSet(*(currentNode->getSetFormulae().at(j)->getAtom()), *(currentNode->getFather()), T, i);
 				}
 				else tobreak = 0;
 
@@ -2246,11 +2246,11 @@ int QueryManager::checkQueryLiteralMatchInBranch(Node* branch, Atom* query)
 		Node* iterator = branch;
 		while (iterator != NULL)
 		{
-			for (Formula formula : iterator->getSetFormulae())
+			for (Formula* formula : iterator->getSetFormulae())
 			{
-				if (formula.getAtom() != NULL)
+				if (formula->getAtom() != NULL)
 				{
-					if (formula.getAtom()->equals( *(query))==0)
+					if (formula->getAtom()->equals( *(query))==0)
 					{						
 						return 1;
 					}
@@ -2267,18 +2267,18 @@ int QueryManager::checkQueryVariableMatchInBranch(Node* branch, Atom* query, vec
 		Node* iterator = branch;
 		while (iterator != NULL)
 		{
-			for (Formula formula : iterator->getSetFormulae())
+			for (Formula* formula : iterator->getSetFormulae())
 			{
-				if (formula.getAtom() != NULL)
+				if (formula->getAtom() != NULL)
 				{
-					if (formula.getAtom()->getElements().size() == query->getElements().size() && formula.getAtom()->getAtomOp() == query->getAtomOp())
+					if (formula->getAtom()->getElements().size() == query->getElements().size() && formula->getAtom()->getAtomOp() == query->getAtomOp())
 					{
 						int matchN = 0;
 						int noq = 0; //check if the query is a literal and there is a match
 						vector<pair<Var*, Var*>> temp = vector<pair<Var*, Var*>>();
-						for (int varIt = 0; varIt < formula.getAtom()->getElements().size(); varIt++)
+						for (int varIt = 0; varIt < formula->getAtom()->getElements().size(); varIt++)
 						{
-							if (query->getElementAt(varIt)->getVarType() == 0 && query->getElementAt(varIt)->equal(formula.getAtom()->getElements().at(varIt)) == 0)
+							if (query->getElementAt(varIt)->getVarType() == 0 && query->getElementAt(varIt)->equal(formula->getAtom()->getElements().at(varIt)) == 0)
 							{
 								// cout << query->toString() << "++" << formula.getAtom()->toString() << endl;
 								matchN++;								
@@ -2286,7 +2286,7 @@ int QueryManager::checkQueryVariableMatchInBranch(Node* branch, Atom* query, vec
 							else if (query->getElementAt(varIt)->getVarType() == 1)
 							{
 								// cout << query->toString() << ".." << formula.getAtom()->toString() << endl;
-								temp.push_back(pair<Var*, Var*>(query->getElementAt(varIt), formula.getAtom()->getElementAt(varIt)));
+								temp.push_back(pair<Var*, Var*>(query->getElementAt(varIt), formula->getAtom()->getElementAt(varIt)));
 								matchN++;
 								// cout<<temp.back().first->toString() << " pair " << temp.back().second->toString()<< " " <<endl;
 							}
@@ -2350,7 +2350,9 @@ void QueryManager::executeQuery(Formula& f, Tableau& tableau, pair <vector<int>,
 			{
 				res = 0;
 				if (qLits.at(qIter)->containsQVariable() == 0)
-					res = checkQueryLiteralMatchInBranch(tableau.getOpenBranches().at(branchIt), qLits.at(qIter));
+				{
+					res = checkQueryLiteralMatchInBranch(tableau.getOpenBranches().at(branchIt), qLits.at(qIter)); 
+				}
 				else
 				{
 				  if (matchSet.empty())
@@ -2388,7 +2390,7 @@ void QueryManager::executeQuery(Formula& f, Tableau& tableau, pair <vector<int>,
 				result.first.push_back(branchIt);
 				result.second.push_back(matchSet);
 			}
-			//cout << "Tableau Branch: " << branchIt << ", Answer: " << res << endl;
+			cout << "Tableau Branch: " << branchIt << ", Answer: " << res << endl;
 			if(YN==1)
 			 ynAnswer.at(branchIt)=res;
 		}
@@ -2423,19 +2425,19 @@ QueryManager* performQuery(string& str, Formula** formula, Tableau& tableau, int
 			cout << j.toString() << endl;*/
 };
 
-void performQuerySet(vector<QueryManager>& results,vector<string>& strings, vector<Formula>& formulae, Tableau& tableau)
+void performQuerySet(vector<QueryManager*>& results,vector<string>& strings, vector<Formula>& formulae, Tableau& tableau)
 {
 #ifdef debug 
 #ifdef debugquery
 	logFile << "-----Parsing line:" << strings.at(0) << endl;
 #endif
-#endif // debug	
+#endif // debug		
 	for (string s : strings) // Manage multiple query
 	{
 		Formula *f = NULL;  
 		QueryManager* manager=performQuery(s, &f, tableau, 1); 
 		formulae.push_back(*f);
-		results.push_back(*manager); //Multiple query to be managed
+		results.push_back(manager); //Multiple query to be managed
 	}	
 };
 
@@ -2598,7 +2600,7 @@ void printClosedBranches(Tableau& tableau)
 		while (tmp != NULL)
 		{
 			for (int j = 0; j < tmp->getSetFormulae().size(); j++)
-				cout << tmp->getSetFormulae().at(j).toString() << endl;
+				cout << tmp->getSetFormulae().at(j)->toString() << endl;
 			cout << "----" << endl;
 			tmp = tmp->getFather();
 		}
@@ -2615,7 +2617,7 @@ void printOpenBranches(Tableau& tableau)
 		while (tmp != NULL)
 		{
 			for (int j = 0; j < tmp->getSetFormulae().size(); j++)
-				cout << tmp->getSetFormulae().at(j).toString() << endl;
+				cout << tmp->getSetFormulae().at(j)->toString() << endl;
 			cout << "----" << endl;
 			tmp = tmp->getFather();
 		}
@@ -2637,7 +2639,7 @@ void printTExpanded(Tableau& tableau)
 	cout << "Content of Expansion:" << endl;
 	for (int i = 0; i < tableau.getTableau()->getSetFormulae().size(); i++)
 	{
-		cout << (tableau.getTableau()->getSetFormulae().at(i).toString()) << "," << tableau.getTableau()->getSetFormulae().at(i).getFulfillness() << endl;
+		cout << (tableau.getTableau()->getSetFormulae().at(i)->toString()) << "," << tableau.getTableau()->getSetFormulae().at(i)->getFulfillness() << endl;
 	}
 }
 

@@ -133,27 +133,27 @@ public:
 class Node
 {
 private:
-	vector<Formula> setFormula;
+	vector<Formula*> setFormula;
 	Node* leftChild;
 	Node* rightChild;
 	Node* father;
 	//flag di fullfilled
 	//flag di completeness
-	int containsFormula(Formula &F);
+	int containsFormula(Formula* F);
 public:
 	Node(int size);
 	Node();
-	Node(vector<Formula>& formula);
+	Node(vector<Formula*> formula);
 	Node* getLeftChild();
 	Node* getRightChild();
 	Node* getFather();
 	void setRightChild(Node* child);
 	void setLeftChild(Node* child);
 	void setFather(Node* f);
-	void insertFormula(Formula& f);	
-	void insertCheckFormula(Formula& f);
-	vector<Formula>& getSetFormulae();
-	void setSetFormulae(vector<Formula>& input);
+	void insertFormula(Formula* f);	
+	void insertCheckFormula(Formula* f);
+	vector<Formula*> getSetFormulae();
+	void setSetFormulae(vector<Formula*> input);
 	~Node();
 };
 
@@ -200,7 +200,7 @@ public:
 	Tableau(Node* initial);
 	Tableau(int size_radix);
 	Node* getTableau();
-	int insertFormula(Formula &f);
+	int insertFormula(Formula* f);
 	vector<Node*>& getOpenBranches();
 	vector<Node*>& getClosedBranches();
 	vector < vector < vector <Var*> > >& getEqSet();
@@ -271,21 +271,21 @@ int createAtom(vector<vector <Var>>& vec, vector<vector <Var>>& vec2, string inp
 Var* createQVarFromString(vector<vector<Var>>& vec, string *name, int *level, int *vartype, int *start);
 Var* createVarFromString(vector<vector<Var>>& vec, vector<vector<Var>>& vec2, string *name, int *level, int *vartype, int *start, int *typeformula);
 void ERule(Atom* atom, Node* node);
-int expandKB(const vector<Formula> &inpf, vector <Formula> &out);
+int expandKB(const vector<Formula*> &inpf, vector <Formula*> &out);
 void expandTableau(Tableau& T);
 void getAtomSet(Formula &f, vector<Atom*> &outf);
 int getVarsOrder(Var &var1, Var &var2);
 int insertFormulaKB(int keepQ, vector<vector <Var>>& varset, vector<vector <Var>>& varset2, string formula, vector<Formula> &vec, int* typeformula);
 int insertFormulaKB(int keepQ, vector<vector <Var>>& varset1, vector<vector <Var>>& varset2, string formula, Formula** ffinal, int* typeformula);
 void insertVarsEqClass(Var& var1, Var& var2, Tableau& tab, int brindx);
-int instantiateFormula(Formula f, vector<Formula> &destination);
+int instantiateFormula(Formula* f, vector<Formula*> &destination);
 void moveQuantifier(int qFlag, Formula* formula, vector<vector <Var>>& varset1, vector<Formula>& data);
 void moveQuantifierKB(int qflag, vector<Formula*>& KB, vector<Formula*>& KBout);
 Atom* negatedAtom(Atom *input);
 int parseInternalFormula(vector<vector <Var>>& vec, vector<vector <Var>>& vec2, const string *inputformula, Formula **outformula, vector<int>& startQuantVect, int typeformula);
 void PBRule(vector<Atom*> atoms, Node* node, vector<Node*> &nodeSet);
 QueryManager* performQuery(string& str, Formula** formula, Tableau& tableau, int yn);
-void performQuerySet(vector<QueryManager>& results, vector<string>& strings, vector<Formula>& formulae, Tableau& tableau);
+void performQuerySet(vector<QueryManager*>& results, vector<string>& strings, vector<Formula>& formulae, Tableau& tableau);
 void readKBFromFile(int qflag, string &name, vector<Formula*>& KB);
 void readKBFromStrings(int qflag, vector<string>&names, vector<Formula*>& KB);
 void readQueryFromFile(string& name, vector<string>& stringSet);

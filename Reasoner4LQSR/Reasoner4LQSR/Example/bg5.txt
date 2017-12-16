@@ -1,7 +1,7 @@
 //($FA V0{y}) (( (V0{y} $NI V1{Person}) $AD (V0{y} $NI V1{VeryYoung})) $OR (V0{y} $IN V1{Kid})) 
 
 ($FA V0{x}) ( $NG ( (V0{x} $IN V1{VeryYoung}) $II  (V0{x} $NI V1{Kid}) ) )
-//V0{Annetta}
+V0{Annetta}
 //($FA V0{x}) ( $NG (V0{x} $IN V1{VeryYoung}) )
 //($NG ( V0{Annetta} $IN V1{Person} ) )
 
