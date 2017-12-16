@@ -37,8 +37,8 @@ int main()
 	/*
 	Inserting Knowledge Base
 	*/
-	vector<Formula> KB;
-	vector<Formula> expKB;
+	vector<Formula*> KB;
+	
 	//	insertFormulaKB("( ($OA V0{l} $CO V0{j} $AO $IN V3{C333})  $AD (  ($OA V0{k} $CO V0{t} $AO $IN V3{C333}) $OR ($OA V0{s} $CO V0{v} $AO $IN V3{C333}) ) )", KB);
 	string kbname = "Example/bg5.txt";
 	readKBFromFile(0, kbname, KB);
@@ -46,6 +46,12 @@ int main()
 	//print Tableau Radix	
 	printTRadix(KB);
 
+
+
+	
+	
+
+	/*vector<Formula> expKB;
 	cout << "Expanding Quantifiers in KB" << endl;
 	expandKB(KB, expKB); 
 	Tableau tableau = Tableau(new Node(expKB));
@@ -73,8 +79,9 @@ int main()
 	//print closed branches
 	printClosedBranches(tableau);
 
-
+*/
 	/* Query Reading*/
+	/*
 	cout << "---" << endl;
 	cout << "Reading Query ..." << endl;
 	string queryname = "Example/query.txt";
@@ -106,25 +113,9 @@ int main()
 	{
 		cout << "Branch number: " << i << " Answer:" << results.at(0).getAnswerSet().at(i) << endl;
 	}
-	/*
-	for (Formula f : querySet)
-	cout << f.toString() << endl;
 	*/
 
 	/*
-	vector<Formula> KB2; int typeformula = 0;
-	//insertFormulaKB(varSet.getVQL(), varSet.getVVL(),
-	//	"($FA V0{k}) ( (V0{k} $NI V1{C2})  $OR (  (  (V0{k} $NI V1{l}) $AD ( V0{k} $NI V1{C1}) ) $OR (V0{k} $NI V1{C3})))", KB2, &typeformula);
-
-	insertFormulaKB(varSet.getVQL(), varSet.getVVL(),
-	"($FA V0{z}) ($FA V1{z1})(( (V0{Annetta} $IN V1{Person}) $AD (V0{z} $IN V1{VeryYoung})) $OR (V0{z} $IN V1{z1}))", KB2, &typeformula);
-
-	cout << KB2.at(0).toString() << endl;
-	Formula* out= copyFormula(&KB2.at(0), NULL);
-	KB2.clear();
-	convertToCNF(out);
-	cout << out->toString() << endl;
-	*/
 	vector<pair<string, string>> ontNamespaces;
 	vector<string> formulae;
 	vector<Formula> KB2;
@@ -138,6 +129,7 @@ int main()
 		cout << p << endl;
 	readKBFromStrings(0, formulae, KB2);
 	printTRadix(KB2);
+	*/
 	debugEnd();
 	return 0;
 }

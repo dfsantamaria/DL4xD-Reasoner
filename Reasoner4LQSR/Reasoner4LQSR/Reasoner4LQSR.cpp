@@ -466,7 +466,7 @@ void Formula::setRSubformula(Formula *sub) { rsubformula = sub; };
 void Formula::setPreviousFormula(Formula *prev) { pformula = prev; };
 void Formula::setFulfillness(int val) { fulfilled = val; };
 int Formula::getFulfillness() { return fulfilled; };
-Formula::~Formula() {};
+Formula::~Formula() { delete atom;  lsubformula = NULL; rsubformula = NULL; pformula = NULL; };
 /*void Formula::toStringQVar(vector<Var*>& qu)
 {
  if(getAtom()!=NULL)
@@ -1186,15 +1186,13 @@ int insertFormulaKB(int keepQ,vector<vector <Var>>& varset1, vector<vector <Var>
 	return res;
 }
 
-int insertFormulaKB(int keepQ,vector<vector <Var>>& varset, vector<vector <Var>>& varset2, string formula, vector<Formula> &vec, int* typeformula)
+int insertFormulaKB(int keepQ,vector<vector <Var>>& varset, vector<vector <Var>>& varset2, string formula, vector<Formula*> &vec, int* typeformula)
 {
 	Formula* f = NULL;
 	int res = insertFormulaKB(keepQ, varset, varset2, formula, &f, typeformula);
-	if ( res == 1)
-	{
-		vec.push_back(*f);
-		//delete(f);
-	}
+	if ( res == 1)	
+	  vec.push_back(f);		
+	
 	return res;
 }
 
@@ -2111,7 +2109,7 @@ void moveQuantifier(int qFlag, Formula* formula, vector<vector <Var>>& varset1, 
 
 
 
-void readKBFromStrings(int qflag, vector<string>&names, vector<Formula>& KB)
+void readKBFromStrings(int qflag, vector<string>&names, vector<Formula*>& KB)
 {	
 	cout << "Knowledge Base" << endl;
 	int typeformula = 0;
@@ -2120,9 +2118,10 @@ void readKBFromStrings(int qflag, vector<string>&names, vector<Formula>& KB)
 		if ((str.rfind("//", 0) == 0) || str.empty())
 			continue;
 		cout << str << endl;
-		insertFormulaKB( qflag,varSet.getVQL(), varSet.getVVL(), str, KB, &typeformula);
+		insertFormulaKB(qflag,varSet.getVQL(), varSet.getVVL(), str, KB, &typeformula);
 	}
 	//Converting to CNF;
+	/*
 	for (int i = 0; i < KB.size(); i++)
 	{		
 		Formula* newf=normalizeFormula(KB.at(i));
@@ -2139,9 +2138,10 @@ void readKBFromStrings(int qflag, vector<string>&names, vector<Formula>& KB)
 	  KB.pop_back();
 	}
 	KB = KBf;
+	*/
 }
 
-void readKBFromFile(int qflag, string &name, vector<Formula>& KB)
+void readKBFromFile(int qflag, string &name, vector<Formula*>& KB)
 {
 	std::ifstream file(name);
 	std::string str;
@@ -2619,12 +2619,12 @@ void printOpenBranches(Tableau& tableau)
 	}
 }
 
-void printTRadix(vector<Formula>& KB)
+void printTRadix(vector<Formula*>& KB)
 {
 	cout << "---Radix Content ---" << endl;
 	for (int i = 0; i < KB.size(); i++)
 	{		
-		cout << KB.at(i).toString() << endl;
+		cout << KB.at(i)->toString() << endl;
 	}
 	
 }

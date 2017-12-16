@@ -284,8 +284,8 @@ int parseInternalFormula(vector<vector <Var>>& vec, vector<vector <Var>>& vec2, 
 void PBRule(vector<Atom*> atoms, Node* node, vector<Node*> &nodeSet);
 QueryManager* performQuery(string& str, Formula** formula, Tableau& tableau, int yn);
 void performQuerySet(vector<QueryManager>& results, vector<string>& strings, vector<Formula>& formulae, Tableau& tableau);
-void readKBFromFile(int qflag, string &name, vector<Formula>& KB);
-void readKBFromStrings(int qflag, vector<string>&names, vector<Formula>& KB);
+void readKBFromFile(int qflag, string &name, vector<Formula*>& KB);
+void readKBFromStrings(int qflag, vector<string>&names, vector<Formula*>& KB);
 void readQueryFromFile(string& name, vector<string>& stringSet);
 void renameQVariables(Formula* formula, vector<vector <Var>>& varset1);
 int retrieveVarData(const string input, string* name, int* level);
@@ -304,7 +304,7 @@ void printOpenBranches(Tableau& tableau);
 void printStack(stack<Formula*> st);
 void printStack(stack<string> st);
 void printTExpanded(Tableau& tableau);
-void printTRadix(vector<Formula>& KB);
+void printTRadix(vector<Formula*>& KB);
 void printVarSet();
 void printVector(vector<Var>& v);
 
