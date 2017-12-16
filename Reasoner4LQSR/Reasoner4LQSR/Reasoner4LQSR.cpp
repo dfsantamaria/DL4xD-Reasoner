@@ -2109,6 +2109,16 @@ void moveQuantifier(int qFlag, Formula* formula, vector<vector <Var>>& varset1, 
 
 
 
+void normalizeKB(vector<Formula*>& KB, vector<Formula*>& KBnorm)
+{
+  for (int i = 0; i < KB.size(); i++)
+	{		
+		Formula* newf=normalizeFormula(KB.at(i));
+		KBnorm.push_back(newf);
+	}
+}
+
+
 void readKBFromStrings(int qflag, vector<string>&names, vector<Formula*>& KB)
 {	
 	cout << "Knowledge Base" << endl;
@@ -2122,12 +2132,7 @@ void readKBFromStrings(int qflag, vector<string>&names, vector<Formula*>& KB)
 	}
 	//Converting to CNF;
 	/*
-	for (int i = 0; i < KB.size(); i++)
-	{		
-		Formula* newf=normalizeFormula(KB.at(i));
-		KB.at(i) = *newf;		
-		convertToCNF(&KB.at(i));			
-	}
+
 	vector<Formula> KBf;
 	while(!KB.empty())
 	{
@@ -2484,20 +2489,16 @@ Formula* dropNegation(Formula *f, Formula **topform)
 		else
 			father->setRSubformula(tmp);
 	}	
-	f->setLSubformula(NULL);
-	f->setRSubformula(NULL);
-	f->setPreviousFormula(NULL);
-	//delete(f);	
+	delete(f);	
 	return(tmp); 	
 }
 
-Formula* normalizeFormula(Formula& formula)
-{	
-	cout << "Normalize" << formula.toString() << endl;
-	if (formula.getAtom() != NULL)
-		return &formula;
+Formula* normalizeFormula(Formula* formula)
+{		
+	if (formula->getAtom() != NULL)
+		return formula;
 
-	Formula* startFormula = &formula;
+	Formula* startFormula = formula;
 	vector<bool> isNegated;
 	vector<Formula*> stackF;
 	stackF.push_back(startFormula);

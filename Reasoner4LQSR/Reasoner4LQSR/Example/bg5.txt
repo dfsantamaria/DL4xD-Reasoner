@@ -1,13 +1,13 @@
-//($FA V0{y}) (( (V0{y} $NI V1{Person}) $AD (V0{y} $NI V1{VeryYoung})) $OR (V0{y} $IN V1{Kid})) 
+($FA V0{y}) (( (V0{y} $NI V1{Person}) $AD (V0{y} $NI V1{VeryYoung})) $OR (V0{y} $IN V1{Kid})) 
 
-//($FA V0{x}) ( (V0{x} $IN V1{VeryYoung}) $II  (V0{x} $NI V1{Kid})  )
-//V0{Annetta}
-//($FA V0{x}) ( $NG (V0{x} $IN V1{VeryYoung}) )
-//($NG ( V0{Annetta} $IN V1{Person} ) )
+($FA V0{x}) ( (V0{x} $IN V1{VeryYoung}) $II  (V0{x} $NI V1{Kid})  )
+V0{Annetta}
+($FA V0{x}) ( $NG (V0{x} $IN V1{VeryYoung}) )
+($NG ( V0{Annetta} $IN V1{Person} ) )
 
 ($FA V0{x}) (  (V0{x} $NI V1{Kid}) $AD ($NG ( (V0{x} $IN V1{VeryYoung}) $IF  (V0{x} $NI V1{Kid}) ) ) )
 
-//($FA V0{y}) ( ( (V0{y} $NI V1{Person}) $AD (V0{y} $NI V1{VeryYoung})) $OR ( (V0{y} $IN V1{Person}) $AD (V0{y} $IN V1{VeryYoung}))) 
+($FA V0{y}) ( ( (V0{y} $NI V1{Person}) $AD (V0{y} $NI V1{VeryYoung})) $OR ( (V0{y} $IN V1{Person}) $AD (V0{y} $IN V1{VeryYoung}))) 
 
-//($FA V0{x})( ( (V0{x} $IN V1{VeryYoung})  $AD (V0{x} $IN V1{Kid}) ) $OR ( (V0{x} $NI V1{VeryYoung})  $AD (V0{x} $NI V1{Kid}) )) 
-//($FA V0{x})( ( (V0{x} $NI V1{Kid})  $AD (V0{x} $NI V1{VeryYoung}) ) $OR ( (V0{x} $IN V1{VeryYoung})  $AD (V0{x} $IN V1{Kid}) ))
+($FA V0{x})( ( (V0{x} $IN V1{VeryYoung})  $AD (V0{x} $IN V1{Kid}) ) $OR ( (V0{x} $NI V1{VeryYoung})  $AD (V0{x} $NI V1{Kid}) )) 
+($FA V0{x})( ( (V0{x} $NI V1{Kid})  $AD (V0{x} $NI V1{VeryYoung}) ) $OR ( (V0{x} $IN V1{VeryYoung})  $AD (V0{x} $IN V1{Kid}) ))
