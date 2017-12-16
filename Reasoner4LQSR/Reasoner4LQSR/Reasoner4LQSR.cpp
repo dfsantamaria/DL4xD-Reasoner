@@ -902,6 +902,7 @@ int createAtom(vector<vector <Var>>& vec, vector<vector <Var>>& vec2, string inp
 
 /*
 Parse a string representing an internal formula and return the corresponding internal formula.
+Return 1 if a formula is created, 0 in case of declarations.
 */
 int parseInternalFormula(vector<vector <Var>>& vec, vector<vector <Var>>& vec2, const string *inputformula, Formula **outformula, vector<int>& startQuantVect, int typeformula)
 {
@@ -939,13 +940,14 @@ int parseInternalFormula(vector<vector <Var>>& vec, vector<vector <Var>>& vec2, 
 					stformula.push(formula); 
 				}				
 				atom.clear();
+				
 			}
-			else
+			if(stformula.size()>1)
 			{				
 				Formula *rightf = stformula.top(); 
 				stformula.pop();					
 				Formula *centerf = stformula.top(); 
-				stformula.pop();				
+				stformula.pop();			
 				centerf->setRSubformula(rightf);
 				rightf->setPreviousFormula(centerf);
 
@@ -975,8 +977,7 @@ int parseInternalFormula(vector<vector <Var>>& vec, vector<vector <Var>>& vec2, 
 			i = i + 2;
 			if (operators.checkLogOp(&operand) != 0)
 			{				
-				stformula.push(new Formula(NULL, operators.getLogOpValue(operand)));
-				
+				stformula.push(new Formula(NULL, operators.getLogOpValue(operand)));	
 			}
 			else
 			{
@@ -988,7 +989,6 @@ int parseInternalFormula(vector<vector <Var>>& vec, vector<vector <Var>>& vec2, 
 		default:	atom.append(string(1, c)); break;
 		}
 	}	
-
 	
 	if (!atom.empty())
 	{ 		
@@ -1003,7 +1003,7 @@ int parseInternalFormula(vector<vector <Var>>& vec, vector<vector <Var>>& vec2, 
            #ifdef debug  
 		         logFile << "-----Final Formula: " << (*outformula)->toString() << endl;
           #endif // debug
-				 return 1;
+		 return 1;
 	}
 	return 0;
 }
@@ -1186,13 +1186,13 @@ int insertFormulaKB(int keepQ,vector<vector <Var>>& varset1, vector<vector <Var>
 	return res;
 }
 
+//if insertFormulaKB returns 1, the parsed formula should be inserted in KB, otherwise is a declaration
 int insertFormulaKB(int keepQ,vector<vector <Var>>& varset, vector<vector <Var>>& varset2, string formula, vector<Formula*> &vec, int* typeformula)
 {
 	Formula* f = NULL;
 	int res = insertFormulaKB(keepQ, varset, varset2, formula, &f, typeformula);
 	if ( res == 1)	
-	  vec.push_back(f);		
-	
+	  vec.push_back(f);	
 	return res;
 }
 
