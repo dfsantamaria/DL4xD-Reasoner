@@ -39,18 +39,26 @@ int main()
 	*/
 	vector<Formula*> KB;
 	vector<Formula*> KBnorm;
-
+	vector<Formula*> KBcnf;
 	//	insertFormulaKB("( ($OA V0{l} $CO V0{j} $AO $IN V3{C333})  $AD (  ($OA V0{k} $CO V0{t} $AO $IN V3{C333}) $OR ($OA V0{s} $CO V0{v} $AO $IN V3{C333}) ) )", KB);
 	string kbname = "Example/bg5.txt";
+	cout << "--Reading KB From File--" << endl;
 	readKBFromFile(0, kbname, KB);
 	printTRadix(KB); //print Tableau Radix
 	cout << "--Normalizing KB--" << endl;
 	normalizeKB(KB, KBnorm);
 	KB.clear();
 	printTRadix(KBnorm); //print Tableau Radix	
-   
-	
-	
+	cout << "--Convert Formulae in CNF--" << endl;
+	converKBToCNF(KBnorm,KBcnf);
+	KBnorm.clear();
+	printTRadix(KBcnf); //print Tableau Radix
+
+	cout << "Testing" << endl;
+	cout << KBcnf.at(0)->toString() << endl;
+	cout << KBcnf.at(0)->getRSubformula()->getRSubformula()->toString() << endl;
+	cout << KBcnf.at(0)->getRSubformula()->getRSubformula()->getPreviousformula()->getPreviousformula()->toString() << endl;
+
 
 	/*vector<Formula> expKB;
 	cout << "Expanding Quantifiers in KB" << endl;
@@ -116,10 +124,11 @@ int main()
 	}
 	*/
 
-	/*
+	
 	vector<pair<string, string>> ontNamespaces;
 	vector<string> formulae;
-	vector<Formula> KB2;
+	vector<Formula*> KB2;
+	vector<Formula*> KB2norm;
 	cout << "Reading OWL File" << endl;
 	readOWLXMLOntology("Example/y2.owl", ontNamespaces, formulae);
 	cout << "Printing ontology namespaces" << endl;
@@ -128,9 +137,14 @@ int main()
 	cout << "Printing formulae: " << formulae.size() << endl;
 	for (string p : formulae)
 		cout << p << endl;
+	cout << "--Reading Ontology--" << endl;
 	readKBFromStrings(0, formulae, KB2);
 	printTRadix(KB2);
-	*/
+	cout << "--Normalizing KB2--" << endl;
+	normalizeKB(KB2, KB2norm);
+	KB.clear();
+	printTRadix(KB2norm); //print Tableau Radix	
+
 	debugEnd();
 	return 0;
 }

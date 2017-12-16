@@ -1080,7 +1080,7 @@ Formula* copyFormula(Formula* formula, Formula* father)
 	return fin;
 }
 
-void convertToCNF(Formula* formula)
+Formula* convertToCNF(Formula* formula)
 {
 	vector<Formula*> stack;
 	stack.push_back(formula); 	
@@ -1135,15 +1135,14 @@ void convertToCNF(Formula* formula)
 			}
 
 		}
-		if (lr > -1 && current->getPreviousformula() != NULL)
-			stack.push_back(current->getPreviousformula());
-		else
-		{
+		//if (lr > -1 && current->getPreviousformula() != NULL)
+		//	stack.push_back(current->getPreviousformula());
+		//else		
 			if (current->getLSubformula() != NULL)
 				stack.push_back(current->getLSubformula());
 			if (current->getRSubformula() != NULL)
 				stack.push_back(current->getRSubformula());
-		}
+		
 	}
 #ifdef debug
 #ifdef debugcnf
@@ -1151,6 +1150,7 @@ void convertToCNF(Formula* formula)
 	logFile << "-----" << formula->toString() << endl;
 #endif
 #endif // debug
+	return formula;
 }
 
 /*
@@ -2118,6 +2118,14 @@ void normalizeKB(vector<Formula*>& KB, vector<Formula*>& KBnorm)
 	}
 }
 
+void converKBToCNF(vector<Formula*>& KB, vector<Formula*>& KBcnf)
+{
+	for (int i = 0; i < KB.size(); i++)
+	{
+	  Formula* newf=convertToCNF(KB.at(i));
+	  KBcnf.push_back(newf);
+	}
+}
 
 void readKBFromStrings(int qflag, vector<string>&names, vector<Formula*>& KB)
 {	
@@ -2149,8 +2157,7 @@ void readKBFromStrings(int qflag, vector<string>&names, vector<Formula*>& KB)
 void readKBFromFile(int qflag, string &name, vector<Formula*>& KB)
 {
 	std::ifstream file(name);
-	std::string str;
-	cout << "Reading From Files" << endl;	
+	std::string str;		
 	vector<string> lines;
 	while (std::getline(file, str))
 	{
