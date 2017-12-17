@@ -11,7 +11,7 @@
 #include <stack>
 #include <sstream>
 #include "Reasoner4LQSR.h"
-//#include "XMLparser.h"
+#include "XMLparser.h"
 #include "log.h"
 
 using namespace std;
@@ -2112,20 +2112,41 @@ void moveQuantifier(int qFlag, Formula* formula, vector<vector <Var>>& varset1, 
 
 void normalizeKB(vector<Formula*>& KB, vector<Formula*>& KBnorm)
 {
+#ifdef debug
+#ifdef debugnorm
+	logFile << "-----Normalizing KB-----" << endl;
+#endif
+#endif // debug
   for (int i = 0; i < KB.size(); i++)
 	{		
 		Formula* newf=normalizeFormula(KB.at(i));
 		KBnorm.push_back(newf);
 	}
+#ifdef debug
+#ifdef debugnorm
+  logFile << "-----End Normalizing KB-----" << endl;
+#endif
+#endif // debug
 }
 
-void converKBToCNF(vector<Formula*>& KB, vector<Formula*>& KBcnf)
+void convertKBToCNF(vector<Formula*>& KB, vector<Formula*>& KBcnf)
 {
+#ifdef debug
+#ifdef debugcnf
+	logFile << "-----Converting KB in CNF-----" << endl;	
+#endif
+#endif // debug
+
 	for (int i = 0; i < KB.size(); i++)
 	{
 	  Formula* newf=convertToCNF(KB.at(i));
 	  KBcnf.push_back(newf);
 	}
+#ifdef debug
+#ifdef debugcnf
+	logFile << "-----End converting KB in CNF:" << endl;
+#endif
+#endif // debug
 }
 
 void moveQuantifierKB(int qflag, vector<Formula*>& KB, vector<Formula*>& KBout)
@@ -2384,8 +2405,7 @@ void QueryManager::executeQuery(Formula& f, Tableau& tableau, pair <vector<int>,
 					  res = 1;
 					
 				}
-			}
-				cout << "ressss" << res << " "<< branchIt<< endl;
+			}				
 				if (res == 0)
 					break;
 			}				
@@ -2449,6 +2469,13 @@ void performQuerySet(vector<QueryManager*>& results,vector<string>& strings, vec
 
 void propagateNegation(Formula* current, vector<bool>& isNegated, vector<Formula*>& stackF, bool valLeft, bool valRight)
 {
+#ifdef debug
+#ifdef debugnorm		
+	logFile << "------ Dropping Negation boleans to subformulae of:-----" << endl;	
+	logFile << "-------"<<current->toString() << endl;
+#endif
+#endif // debug
+
 	if (current->getLSubformula() != NULL)
 	{
 		stackF.push_back(current->getLSubformula());
@@ -2463,7 +2490,12 @@ void propagateNegation(Formula* current, vector<bool>& isNegated, vector<Formula
 
 void dropLRImplication(Formula* f)
 {	
-	
+#ifdef debug
+#ifdef debugnorm		
+	logFile << "------ Dropping II from:" << endl;
+	logFile << f->toString() << endl;
+#endif
+#endif // debug
 	Formula* right = new Formula(NULL, 5);
 	right->setLSubformula(copyFormula(f->getLSubformula(), right));
 	right->setRSubformula(copyFormula(f->getRSubformula(), right));
@@ -2478,11 +2510,17 @@ void dropLRImplication(Formula* f)
 	f->setLSubformula(left);
 	f->setRSubformula(right);
 	left->setPreviousFormula(f);
-	right->setPreviousFormula(f);	
+	right->setPreviousFormula(f);
 }
 
 Formula* dropNegation(Formula *f, Formula **topform)
 {	
+#ifdef debug
+#ifdef debugnorm		
+	logFile << "------ Dropping Negation from:" << endl;
+	logFile << "-------" << f->toString() << endl;
+#endif
+#endif // debug
 	Formula* father = f->getPreviousformula(); 
 	Formula* tmp = f->getRSubformula();	
 	if (tmp == NULL)
@@ -2497,6 +2535,7 @@ Formula* dropNegation(Formula *f, Formula **topform)
 			father->setLSubformula(tmp);
 		else
 			father->setRSubformula(tmp);
+		tmp->setPreviousFormula(father);
 	}	
 	delete(f);	
 	return(tmp); 	
@@ -2504,9 +2543,22 @@ Formula* dropNegation(Formula *f, Formula **topform)
 
 Formula* normalizeFormula(Formula* formula)
 {		
+#ifdef debug
+#ifdef debugnorm
+	logFile << "-----Normalizing Formula:------" << endl;
+	logFile << "------" << formula->toString() << endl;
+#endif
+#endif // debug
 	if (formula->getAtom() != NULL)
+	{
+#ifdef debug
+#ifdef debugnorm		
+		logFile << "------ Obtained:" << endl;
+		logFile << "-------" << formula->toString() << endl;
+#endif
+#endif // debug
 		return formula;
-
+	}
 	Formula* startFormula = formula;
 	vector<bool> isNegated;
 	vector<Formula*> stackF;
@@ -2522,49 +2574,105 @@ Formula* normalizeFormula(Formula* formula)
 		if (current->getAtom() != NULL )
 		{		
 			if (neg)
-			{
-				
+			{	
+#ifdef debug
+#ifdef debugnorm		
+				logFile << "------ Found Negation on Literal:" << endl;
+				logFile << "-------" << formula->toString() << endl;
+#endif
+#endif // debug
 			  int  newOp = (current->getAtom()->getAtomOp() >= 2 ? -2 : 2);			  
 			  current->getAtom()->setAtomOp(current->getAtom()->getAtomOp() + newOp);
+#ifdef debug
+#ifdef debugnorm		
+			  logFile << "------ Computing:" << endl;
+			  logFile << "-------" << current->getAtom()->toString() << endl;
+#endif
+#endif // debug
 			 }
 		}
 		else
 		{			
 		 switch (current->getOperand())
 		  {
-			case 0: 
+			case 0:
 				if (neg)
+				{
 					current->setOperand(1);
+#ifdef debug
+#ifdef debugnorm		
+					logFile << "------ Found Negation on \"OR\":" << endl;
+					
+#endif
+#endif // debug
+				}
 				propagateNegation(current, isNegated, stackF, neg, neg);
 				break;
 
 			case 1:
 				if (neg)
+				{
 					current->setOperand(0);
+#ifdef debug
+#ifdef debugnorm		
+					logFile << "------ Found Negation on \"AND\":" << endl;
+
+#endif
+#endif // debug
+				}
 				propagateNegation(current, isNegated, stackF, neg, neg);
 				break;
 
 			case 2:
 				if (neg)
+				{
 					current->setOperand(0);
+#ifdef debug
+#ifdef debugnorm		
+					logFile << "------ Found Negation on \"NOR\":" << endl;
+
+#endif
+#endif // debug
+				}
 				propagateNegation(current, isNegated, stackF, !neg, !neg);
 				break;
 
 			case 3:
 				if (neg)
+				{
 					current->setOperand(1);
+#ifdef debug
+#ifdef debugnorm		
+					logFile << "------ Found Negation on \"NAND\":" << endl;
+
+#endif
+#endif // debug
+				}
 				propagateNegation(current, isNegated, stackF, !neg, !neg);
 				break;
 
 			case 4: //case negation formula				
-			   				
+#ifdef debug
+#ifdef debugnorm		
+				logFile << "------ Found Negation on \"NEG\":" << endl;
+
+#endif
+#endif // debug			
 				stackF.push_back(dropNegation(current, &startFormula));					
 				isNegated.push_back(!neg);
 				break;
 
 			case 5: //case ->					
 				if (neg) //case \neg ->			  
+				{
 					current->setOperand(1);
+#ifdef debug
+#ifdef debugnorm		
+					logFile << "------ Found Negation on \"IF\":" << endl;
+
+#endif
+#endif // debug
+				}
 				else
 					current->setOperand(0);
 				propagateNegation(current, isNegated, stackF, !neg, neg);
@@ -2572,7 +2680,15 @@ Formula* normalizeFormula(Formula* formula)
 
 			case 6: //case <-
 				if (neg) //case \neg ->			  
+				{
 					current->setOperand(1);
+#ifdef debug
+#ifdef debugnorm		
+					logFile << "------ Found Negation on \"FI\":" << endl;
+
+#endif
+#endif // debug
+				}
 				else
 					current->setOperand(0);
 				propagateNegation(current, isNegated, stackF, neg, !neg);
@@ -2580,7 +2696,15 @@ Formula* normalizeFormula(Formula* formula)
 
 			case 7:
 				if (neg) //case \neg <-->
+				{
 					current->setOperand(0);
+#ifdef debug
+#ifdef debugnorm		
+					logFile << "------ Found Negation on \"II\":" << endl;
+
+#endif
+#endif // debug
+				}
 				else
 					current->setOperand(1);
 				dropLRImplication(current);
@@ -2588,7 +2712,13 @@ Formula* normalizeFormula(Formula* formula)
 				break;
 			}
 		}
-	}		
+	}
+#ifdef debug
+#ifdef debugnorm		
+	logFile << "------ Formula Computed:" << endl;
+	logFile << "-------" << startFormula->toString() << endl;
+#endif
+#endif // debug
 	return startFormula;		
 }
 

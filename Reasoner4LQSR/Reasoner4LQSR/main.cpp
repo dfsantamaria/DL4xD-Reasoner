@@ -42,7 +42,7 @@ int main()
 	vector<Formula*> KBcnf;
 	vector<Formula*> KBmq;
 	//	insertFormulaKB("( ($OA V0{l} $CO V0{j} $AO $IN V3{C333})  $AD (  ($OA V0{k} $CO V0{t} $AO $IN V3{C333}) $OR ($OA V0{s} $CO V0{v} $AO $IN V3{C333}) ) )", KB);
-	string kbname = "Example/bg5.txt";
+	string kbname = "Example/bg6.txt";
 	cout << "--Reading KB From File--" << endl;
 	readKBFromFile(0, kbname, KB);
 	printTRadix(KB); //print Tableau Radix
@@ -51,7 +51,7 @@ int main()
 	KB.clear();
 	printTRadix(KBnorm); //print Tableau Radix	
 	cout << "--Convert Formulae in CNF--" << endl;
-	converKBToCNF(KBnorm,KBcnf);
+	convertKBToCNF(KBnorm,KBcnf);
 	KBnorm.clear();
 	printTRadix(KBcnf); //print Tableau Radix
 	cout << "--Move Quantifiers--" << endl;
@@ -137,7 +137,7 @@ int main()
 	KB.clear();
 	printTRadix(KB2norm); //print Tableau Radix	
 	cout << "--Convert Formulae in CNF--" << endl;
-	converKBToCNF(KB2norm, KB2cnf);
+	convertKBToCNF(KB2norm, KB2cnf);
 	KB2norm.clear();
 	printTRadix(KB2cnf); //print Tableau Radix
 	cout << "--End reading ontology--" << endl;

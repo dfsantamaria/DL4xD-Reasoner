@@ -30,6 +30,9 @@
     <ClInclude Include="Reasoner4LQSR.h">
       <Filter>File di intestazione</Filter>
     </ClInclude>
+    <ClInclude Include="log.h">
+      <Filter>File di intestazione</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
