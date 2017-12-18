@@ -222,7 +222,7 @@ private: vector< vector <Var> > QVQL;
 		 pair <vector<int>, vector<vector<vector<pair<Var*, Var*>>>>> Match;
 		 Formula formula;
 		 int nlevel;
-		 int maxQQSize;
+		 int maxQQSize;		 
 
 public:
 	QueryManager(int _nlevel, int _maxQQSize);
@@ -236,7 +236,7 @@ public:
 	int checkQueryLiteralMatchInBranch(Node* branch, Atom* query);
 	int checkQueryVariableMatchInBranch(Node* branch, Atom* query, vector<pair<Var*, Var*>>& currentMatch, vector<vector<pair<Var*, Var*>>>& matches);
 	Atom applySubstitution(Atom* result, Atom* query, const vector<pair<Var*, Var*>>& matches);
-	void executeQuery(Formula& f, Tableau& tableau, pair <vector<int>, vector<vector<vector<pair<Var*, Var*>>>>>& result, int YN, vector<int>& ynAnswer);
+	int executeQuery(Formula& f, Tableau& tableau, pair <vector<int>, vector<vector<vector<pair<Var*, Var*>>>>>& result, int YN, vector<int>& ynAnswer);
 };
 
 
@@ -273,7 +273,7 @@ Var* createVarFromString(vector<vector<Var>>& vec, vector<vector<Var>>& vec2, st
 void ERule(Atom* atom, Node* node);
 int expandKB(const vector<Formula*> &inpf, vector <Formula*> &out);
 void expandTableau(Tableau& T);
-void getAtomSet(Formula &f, vector<Atom*> &outf);
+void getAtomSet(Formula* f, vector<Atom*> &outf);
 int getVarsOrder(Var &var1, Var &var2);
 int insertFormulaKB(int keepQ, vector<vector <Var>>& varset, vector<vector <Var>>& varset2, string formula, vector<Formula> &vec, int* typeformula);
 int insertFormulaKB(int keepQ, vector<vector <Var>>& varset1, vector<vector <Var>>& varset2, string formula, Formula** ffinal, int* typeformula);
@@ -284,7 +284,7 @@ void moveQuantifierKB(int qflag, vector<Formula*>& KB, vector<Formula*>& KBout);
 Atom* negatedAtom(Atom *input);
 int parseInternalFormula(vector<vector <Var>>& vec, vector<vector <Var>>& vec2, const string *inputformula, Formula **outformula, vector<int>& startQuantVect, int typeformula);
 void PBRule(vector<Atom*> atoms, Node* node, vector<Node*> &nodeSet);
-QueryManager* performQuery(string& str, Formula** formula, Tableau& tableau, int yn);
+int performQuery(QueryManager*& queryManager, string& str, Formula** formula, Tableau& tableau, int yn);
 void performQuerySet(vector<QueryManager*>& results, vector<string>& strings, vector<Formula>& formulae, Tableau& tableau);
 void readKBFromFile(int qflag, string &name, vector<Formula*>& KB);
 void readKBFromStrings(int qflag, vector<string>&names, vector<Formula*>& KB);

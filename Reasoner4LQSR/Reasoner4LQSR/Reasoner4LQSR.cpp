@@ -2119,7 +2119,7 @@ void normalizeKB(vector<Formula*>& KB, vector<Formula*>& KBnorm)
 #endif // debug
   for (int i = 0; i < KB.size(); i++)
 	{		
-		Formula* newf=normalizeFormula(KB.at(i));
+		Formula* newf=normalizeFormula(KB.at(i)); 
 		KBnorm.push_back(newf);
 	}
 #ifdef debug
@@ -2351,12 +2351,12 @@ Atom QueryManager::applySubstitution(Atom* result, Atom* query, const vector<pai
 		return *result;
 };
 
-void QueryManager::executeQuery(Formula& f, Tableau& tableau, pair <vector<int>, vector<vector<vector<pair<Var*, Var*>>>>>& result, int YN, vector<int>& ynAnswer)
+int QueryManager::executeQuery(Formula& f, Tableau& tableau, pair <vector<int>, vector<vector<vector<pair<Var*, Var*>>>>>& result, int YN, vector<int>& ynAnswer)
 	{
 		vector<Atom*> qLits;
 		formula = f;
 		extractLiterals(formula, qLits);
-		
+		int matchFound = -1; //use -1 for errors
 		//Print Atoms from Query
 		/*cout << "Literals from query: " << qLits.size() << endl;
 		for (Atom* a : qLits)
@@ -2392,6 +2392,8 @@ void QueryManager::executeQuery(Formula& f, Tableau& tableau, pair <vector<int>,
 						{
 							if (checkQueryLiteralMatchInBranch(tableau.getOpenBranches().at(branchIt), &sigq) == 1)
 								tmp.push_back(matchSet.at(solIter));
+							else { tmp.clear(); break; }
+
 						}
 						else 
 							checkQueryVariableMatchInBranch(tableau.getOpenBranches().at(branchIt), &sigq, matchSet.at(solIter), tmp);
@@ -2402,8 +2404,7 @@ void QueryManager::executeQuery(Formula& f, Tableau& tableau, pair <vector<int>,
 					if (matchSet.empty())
 					  res = 0;
 					else 
-					  res = 1;
-					
+					  res = 1;					
 				}
 			}				
 				if (res == 0)
@@ -2413,12 +2414,17 @@ void QueryManager::executeQuery(Formula& f, Tableau& tableau, pair <vector<int>,
 			{
 				result.first.push_back(branchIt);
 				result.second.push_back(matchSet);
+				matchFound = 1;
 				if (YN == 1)
 					ynAnswer.at(branchIt) = 1;
 			}
-			else if(YN==1)
-			  ynAnswer.at(branchIt)=res;
+			else if (YN == 1)
+			{
+				ynAnswer.at(branchIt) = res;
+				matchFound = (res?res:0);
+			}
 		}
+		return matchFound;
 	};
 
 /**
@@ -2429,11 +2435,12 @@ End QueryManager
 
 
 
-QueryManager* performQuery(string& str, Formula** formula, Tableau& tableau, int yn)
+int performQuery(QueryManager*& queryManager, string& str, Formula** formula, Tableau& tableau, int yn)
 {
-	QueryManager* queryManager = new QueryManager(5, 50);
-	int typeformula = 1;
-	insertFormulaKB(0,queryManager->getQVQL(), queryManager->getQVVL(), str, formula, &typeformula);	
+	
+	queryManager = (new QueryManager(5, 50)); 
+	int typeformula = 1; 
+	insertFormulaKB(0, queryManager->getQVQL(), queryManager->getQVVL(), str, formula, &typeformula);	
 	
 	pair <vector<int>, vector<vector<vector<pair<Var*, Var*>>>>> result(vector<int>(0), vector<vector<vector<pair<Var*, Var*>>>>(0));
 	vector<int> ynanswer;
@@ -2441,13 +2448,11 @@ QueryManager* performQuery(string& str, Formula** formula, Tableau& tableau, int
 		ynanswer = vector<int>(0);
 	else
 		ynanswer = vector<int>(tableau.getOpenBranches().size());
-	queryManager->executeQuery(**formula, tableau, result, yn, ynanswer); 
+	int matchFound=queryManager->executeQuery(**formula, tableau, result, yn, ynanswer); 
 	queryManager->setMatchSet(result);
 	queryManager->setAnswerSet(ynanswer);
-	return queryManager;
-	/*for (vector<Var> i : queryManager->getQVQL())
-		for (Var j : i)
-			cout << j.toString() << endl;*/
+	cout << ".................................." << matchFound<<endl;
+	return matchFound;	
 };
 
 void performQuerySet(vector<QueryManager*>& results,vector<string>& strings, vector<Formula>& formulae, Tableau& tableau)
@@ -2460,7 +2465,8 @@ void performQuerySet(vector<QueryManager*>& results,vector<string>& strings, vec
 	for (string s : strings) // Manage multiple query
 	{
 		Formula *f = NULL;  
-		QueryManager* manager=performQuery(s, &f, tableau, 1); 
+		QueryManager* manager=NULL; 
+		int result=performQuery(manager,s, &f, tableau, 1);
 		formulae.push_back(*f);
 		results.push_back(manager); //Multiple query to be managed
 	}	
@@ -2542,7 +2548,8 @@ Formula* dropNegation(Formula *f, Formula **topform)
 }
 
 Formula* normalizeFormula(Formula* formula)
-{		
+{
+	
 #ifdef debug
 #ifdef debugnorm
 	logFile << "-----Normalizing Formula:------" << endl;
@@ -2562,9 +2569,9 @@ Formula* normalizeFormula(Formula* formula)
 	Formula* startFormula = formula;
 	vector<bool> isNegated;
 	vector<Formula*> stackF;
-	stackF.push_back(startFormula);
-	
+	stackF.push_back(startFormula);	
 	isNegated.push_back(false);	
+	
 	while (!stackF.empty())
 	{
 		Formula* current = stackF.back();
@@ -2572,13 +2579,14 @@ Formula* normalizeFormula(Formula* formula)
 		stackF.pop_back();
 		isNegated.pop_back();		
 		if (current->getAtom() != NULL )
-		{		
+		{
+			
 			if (neg)
-			{	
+			{	;
 #ifdef debug
 #ifdef debugnorm		
 				logFile << "------ Found Negation on Literal:" << endl;
-				logFile << "-------" << formula->toString() << endl;
+				logFile << "-------" << current->toString() << endl;
 #endif
 #endif // debug
 			  int  newOp = (current->getAtom()->getAtomOp() >= 2 ? -2 : 2);			  
@@ -2597,7 +2605,7 @@ Formula* normalizeFormula(Formula* formula)
 		  {
 			case 0:
 				if (neg)
-				{
+				{					
 					current->setOperand(1);
 #ifdef debug
 #ifdef debugnorm		
