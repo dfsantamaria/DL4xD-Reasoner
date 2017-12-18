@@ -2465,7 +2465,7 @@ void performQuerySet(vector<QueryManager*>& results,vector<string>& strings, vec
 	{
 		Formula *f = NULL;  
 		QueryManager* manager=NULL; 
-		int result=performQuery(manager,s, &f, tableau, 1);
+		int result = performQuery(manager, s, &f, tableau, 1);       
 		formulae.push_back(*f);
 		results.push_back(manager); //Multiple query to be managed
 	}	

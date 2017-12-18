@@ -42,7 +42,7 @@ int main()
 	vector<Formula*> KBcnf;
 	vector<Formula*> KBmq;
 	//	insertFormulaKB("( ($OA V0{l} $CO V0{j} $AO $IN V3{C333})  $AD (  ($OA V0{k} $CO V0{t} $AO $IN V3{C333}) $OR ($OA V0{s} $CO V0{v} $AO $IN V3{C333}) ) )", KB);
-	string kbname = "Example/bg6.txt";
+	string kbname = "Example/bg7.txt";
 	cout << "--Reading KB From File--" << endl;
 	readKBFromFile(0, kbname, KB);
 	printTRadix(KB); //print Tableau Radix
@@ -55,7 +55,7 @@ int main()
 	KBnorm.clear();
 	printTRadix(KBcnf); //print Tableau Radix
 	cout << "--Move Quantifiers--" << endl;
-	moveQuantifierKB(1, KBcnf, KBmq);	
+	moveQuantifierKB(0, KBcnf, KBmq);	
 	printTRadix(KBmq); //print Tableau Radix
 
 	vector<Formula*> expKB;
@@ -121,6 +121,7 @@ int main()
 	vector<Formula*> KB2;
 	vector<Formula*> KB2norm;
 	vector<Formula*> KB2cnf;
+	vector<Formula*> KB2mq;
 	cout << "Reading OWL File" << endl;
 	readOWLXMLOntology("Example/y2.owl", ontNamespaces, formulae);
 	cout << "Printing ontology namespaces" << endl;
@@ -140,6 +141,9 @@ int main()
 	convertKBToCNF(KB2norm, KB2cnf);
 	KB2norm.clear();
 	printTRadix(KB2cnf); //print Tableau Radix
+	cout << "--Move Quantifiers--" << endl;
+	moveQuantifierKB(0, KB2cnf, KB2mq);
+	printTRadix(KB2mq); //print Tableau Radix
 	cout << "--End reading ontology--" << endl;
 	debugEnd();	
 }
