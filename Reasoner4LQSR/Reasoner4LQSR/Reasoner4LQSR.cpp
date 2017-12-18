@@ -2378,8 +2378,8 @@ int QueryManager::executeQuery(Formula& f, Tableau& tableau, pair <vector<int>, 
 				else
 				{
 				  if (matchSet.empty())
-				   {
-					res = checkQueryVariableMatchInBranch(tableau.getOpenBranches().at(branchIt), qLits.at(qIter), vector<pair<Var*, Var*>>(), matchSet);
+				    {
+					  res = checkQueryVariableMatchInBranch(tableau.getOpenBranches().at(branchIt), qLits.at(qIter), vector<pair<Var*, Var*>>(), matchSet);
 				    }
 				   else
 				    {
