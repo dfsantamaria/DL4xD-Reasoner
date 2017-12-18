@@ -2450,8 +2450,7 @@ int performQuery(QueryManager*& queryManager, string& str, Formula** formula, Ta
 		ynanswer = vector<int>(tableau.getOpenBranches().size());
 	int matchFound=queryManager->executeQuery(**formula, tableau, result, yn, ynanswer); 
 	queryManager->setMatchSet(result);
-	queryManager->setAnswerSet(ynanswer);
-	cout << ".................................." << matchFound<<endl;
+	queryManager->setAnswerSet(ynanswer);	
 	return matchFound;	
 };
 

@@ -2,4 +2,4 @@
 (V0{Annetta})
 (V0{Ann})
 (V0{George})
-($FA V0{x})( $NG (V0{x} $IN V1{Person}) )
+($FA V0{x})( $NG (V0{x} $NI V1{Person}) )
