@@ -42,7 +42,7 @@ int main()
 	vector<Formula*> KBcnf;
 	vector<Formula*> KBmq;
 	//	insertFormulaKB("( ($OA V0{l} $CO V0{j} $AO $IN V3{C333})  $AD (  ($OA V0{k} $CO V0{t} $AO $IN V3{C333}) $OR ($OA V0{s} $CO V0{v} $AO $IN V3{C333}) ) )", KB);
-	string kbname = "Example/bg7.txt";
+	string kbname = "Example/bg5.txt";
 	cout << "--Reading KB From File--" << endl;
 	readKBFromFile(0, kbname, KB);
 	printTRadix(KB); //print Tableau Radix
@@ -132,18 +132,17 @@ int main()
 	for (string p : formulae)
 		cout << p << endl;
 	cout << "Metrics of the Ontology: " << endl;
+	cout << "Number of formulae: " << formulae.size() << endl;
 	cout << "Individuals: " << KBsize.at(0) << "." << endl;
 	cout << "Classes: " << KBsize.at(1) << "." << endl;
 	cout << "Properties: " << KBsize.at(2) << "." << endl;
 	cout << "Quantified Variables of level 0: " << KBsize.at(3) << "." << endl;
-	
-
 	cout << "--Reading Ontology--" << endl;
 	readKBFromStrings(0, formulae, KB2);
 	printTRadix(KB2);
 	cout << "--Converting KB2 to NNF--" << endl;
 	convertKBToNNF(KB2, KB2norm);
-	KB.clear();
+	KB2.clear();
 	printTRadix(KB2norm); //print Tableau Radix	
 	cout << "--Convert Formulae in CNF--" << endl;
 	convertKBToCNF(KB2norm, KB2cnf);

@@ -163,11 +163,12 @@ private:
 	vector< vector <Var> > VVL;
 	vector< vector <Var> > VQL;
 	//vector< vector <Var> > QVQL;
-	int capacity;
-	int nlevel;
+	//int capacity;
+	//int nlevel;
 public:
 	VariablesSet();
 	VariablesSet(int maxNVariable, int maxVSize, int maxQSize);
+	VariablesSet(int maxNVariable, vector<int>& KBsize);
 	vector<Var>*getAt(vector<vector<Var>>& vec, int level);
 	vector<Var>* getVVLAt(int level);
 	vector<Var>* getVQLAt(int level);

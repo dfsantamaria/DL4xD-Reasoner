@@ -109,24 +109,48 @@ string Var::toString()
 VariablesSet::VariablesSet() {};
 VariablesSet::VariablesSet(int maxNVariable, int maxVSize, int maxQSize)
 	{
-		nlevel = maxNVariable;
-		capacity = maxVSize;
-		VQL.reserve(nlevel);  //initialize vectors for variables
-		//QVQL.reserve(nlevel);  //initialize vectors for variables
-		VVL.reserve(nlevel);
-		for (int i = 0; i <= nlevel; i++)
+		//nlevel = maxNVariable;
+		//capacity = maxVSize;
+		VQL.reserve(maxNVariable);  //initialize vectors for variables
+		//QVQL.reserve(maxNVariable);  //initialize vectors for variables
+		VVL.reserve(maxNVariable);
+		for (int i = 0; i <= maxNVariable; i++)
 		{
 			VQL.push_back(vector<Var>());
 			VVL.push_back(vector<Var>());
 			//	QVQL.push_back(vector<Var>());
 		}
-		for (int i = 0; i <= nlevel; i++)
+		for (int i = 0; i <= maxNVariable; i++)
 		{
 			VQL.at(i).reserve(maxQSize);
 			VVL.at(i).reserve(maxVSize);
 			//	QVQL.at(i).reserve(maxQQSize);
 		}
 	};
+
+VariablesSet::VariablesSet(int maxNVariable, vector<int>& KBsize)
+{
+	//nlevel = maxNVariable;
+	//capacity = maxVSize;
+	VQL.reserve(maxNVariable);  //initialize vectors for variables
+						  //QVQL.reserve(nlevel);  //initialize vectors for variables
+	VVL.reserve(maxNVariable);
+	for (int i = 0; i <= maxNVariable; i++)
+	{
+		VQL.push_back(vector<Var>());
+		VVL.push_back(vector<Var>());
+		//	QVQL.push_back(vector<Var>());
+	}
+	for (int i = 0; i < maxNVariable; i++)
+	{		
+		VVL.at(i).reserve(KBsize.at(i));		
+	}
+
+	for (int i = maxNVariable; i < KBsize.size(); i++)
+	{
+		VQL.at(i).reserve(KBsize.at(i));
+	}
+};
 
 vector<Var>* VariablesSet::getAt(vector<vector<Var>>& vec, int level)
 	{
