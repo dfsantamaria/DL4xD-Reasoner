@@ -122,14 +122,22 @@ int main()
 	vector<Formula*> KB2norm;
 	vector<Formula*> KB2cnf;
 	vector<Formula*> KB2mq;
+	vector<int>KBsize(4);
 	cout << "Reading OWL File" << endl;
-	readOWLXMLOntology("Example/y2.owl", ontNamespaces, formulae);
+	readOWLXMLOntology("Example/yy.owl", ontNamespaces, formulae, KBsize);
 	cout << "Printing ontology namespaces" << endl;
 	for (pair<string, string> p : ontNamespaces)
 		cout << p.first << " " << p.second << endl;
 	cout << "Printing formulae: " << formulae.size() << endl;
 	for (string p : formulae)
 		cout << p << endl;
+	cout << "Metrics of the Ontology: " << endl;
+	cout << "Individuals: " << KBsize.at(0) << "." << endl;
+	cout << "Classes: " << KBsize.at(1) << "." << endl;
+	cout << "Properties: " << KBsize.at(2) << "." << endl;
+	cout << "Quantified Variables of level 0: " << KBsize.at(3) << "." << endl;
+	
+
 	cout << "--Reading Ontology--" << endl;
 	readKBFromStrings(0, formulae, KB2);
 	printTRadix(KB2);
