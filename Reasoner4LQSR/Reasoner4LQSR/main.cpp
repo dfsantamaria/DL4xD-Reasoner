@@ -46,11 +46,11 @@ int main()
 	cout << "--Reading KB From File--" << endl;
 	readKBFromFile(0, kbname, KB);
 	printTRadix(KB); //print Tableau Radix
-	cout << "--Normalizing KB--" << endl;
-	normalizeKB(KB, KBnorm);
+	cout << "--Converting the KB to NNF --" << endl;
+	convertKBToNNF(KB, KBnorm);
 	KB.clear();
 	printTRadix(KBnorm); //print Tableau Radix	
-	cout << "--Convert Formulae in CNF--" << endl;
+	cout << "--Converting Formulae to CNF--" << endl;
 	convertKBToCNF(KBnorm,KBcnf);
 	KBnorm.clear();
 	printTRadix(KBcnf); //print Tableau Radix
@@ -133,8 +133,8 @@ int main()
 	cout << "--Reading Ontology--" << endl;
 	readKBFromStrings(0, formulae, KB2);
 	printTRadix(KB2);
-	cout << "--Normalizing KB2--" << endl;
-	normalizeKB(KB2, KB2norm);
+	cout << "--Converting KB2 to NNF--" << endl;
+	convertKBToNNF(KB2, KB2norm);
 	KB.clear();
 	printTRadix(KB2norm); //print Tableau Radix	
 	cout << "--Convert Formulae in CNF--" << endl;

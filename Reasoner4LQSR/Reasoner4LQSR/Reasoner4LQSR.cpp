@@ -1080,7 +1080,7 @@ Formula* copyFormula(Formula* formula, Formula* father)
 	return fin;
 }
 
-Formula* convertToCNF(Formula* formula)
+Formula* convertFormulaToCNF(Formula* formula)
 {
 	vector<Formula*> stack;
 	stack.push_back(formula); 	
@@ -2110,21 +2110,21 @@ void moveQuantifier(int qFlag, Formula* formula, vector<vector <Var>>& varset1, 
 
 
 
-void normalizeKB(vector<Formula*>& KB, vector<Formula*>& KBnorm)
+void convertKBToNNF(vector<Formula*>& KB, vector<Formula*>& KBnorm)
 {
 #ifdef debug
 #ifdef debugnorm
-	logFile << "-----Normalizing KB-----" << endl;
+	logFile << "-----Converting KB to NNF-----" << endl;
 #endif
 #endif // debug
   for (int i = 0; i < KB.size(); i++)
 	{		
-		Formula* newf=normalizeFormula(KB.at(i)); 
+		Formula* newf=convertFormulaToNNF(KB.at(i)); 
 		KBnorm.push_back(newf);
 	}
 #ifdef debug
 #ifdef debugnorm
-  logFile << "-----End Normalizing KB-----" << endl;
+  logFile << "-----End converting KB to NNF-----" << endl;
 #endif
 #endif // debug
 }
@@ -2133,18 +2133,18 @@ void convertKBToCNF(vector<Formula*>& KB, vector<Formula*>& KBcnf)
 {
 #ifdef debug
 #ifdef debugcnf
-	logFile << "-----Converting KB in CNF-----" << endl;	
+	logFile << "-----Converting KB to CNF-----" << endl;	
 #endif
 #endif // debug
 
 	for (int i = 0; i < KB.size(); i++)
 	{
-	  Formula* newf=convertToCNF(KB.at(i));
+	  Formula* newf=convertFormulaToCNF(KB.at(i));
 	  KBcnf.push_back(newf);
 	}
 #ifdef debug
 #ifdef debugcnf
-	logFile << "-----End converting KB in CNF:" << endl;
+	logFile << "-----End converting KB to CNF:" << endl;
 #endif
 #endif // debug
 }
@@ -2546,12 +2546,12 @@ Formula* dropNegation(Formula *f, Formula **topform)
 	return(tmp); 	
 }
 
-Formula* normalizeFormula(Formula* formula)
+Formula* convertFormulaToNNF(Formula* formula)
 {
 	
 #ifdef debug
 #ifdef debugnorm
-	logFile << "-----Normalizing Formula:------" << endl;
+	logFile << "-----Converting Formula to NNF:------" << endl;
 	logFile << "------" << formula->toString() << endl;
 #endif
 #endif // debug
@@ -2721,7 +2721,8 @@ Formula* normalizeFormula(Formula* formula)
 		}
 	}
 #ifdef debug
-#ifdef debugnorm		
+#ifdef debugnorm	
+	logFile << "------ End converting formula to NNF" << endl;
 	logFile << "------ Formula Computed:" << endl;
 	logFile << "-------" << startFormula->toString() << endl;
 #endif
