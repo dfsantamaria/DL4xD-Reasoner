@@ -14,6 +14,9 @@
 #pragma once
 using namespace std;
 
+#define propertyindex 3
+#define qvar0 (propertyindex+1)
+
 void buildNamespace(pugi::xml_document& xmldocument, vector<pair<string, string>>& ontNamespaces)
 {	
  for (pugi::xml_node_iterator it = xmldocument.begin(); it != xmldocument.end(); ++it)
@@ -54,7 +57,7 @@ void parseDeclaration(vector<std::string>& out, pugi::xml_node_iterator& it, vec
 	else if (name == "ObjectProperty")
 	{
 		entry = "V3{" + irival.substr(irival.find("#") + 1) + "}";
-		KBsize.at(2)++;
+		KBsize.at(propertyindex)++;
 	}
 	else if (name == "NamedIndividual")
 	{
@@ -190,8 +193,8 @@ void parseFunctionalObjectProperty(vector<std::string>& out, pugi::xml_node_iter
 		entry.append(")$OR($OA V0{z} $CO V0{z2} $AO $NI ");
 		entry.append(irival);
 		entry.append("))$OR( V0{z1} $EQ V0{z2}))");
-		if(KBsize.at(3)<3)
-		    KBsize.at(3)=3;
+		if(KBsize.at(qvar0)<3)
+		    KBsize.at(qvar0)=3;
 		out.push_back(entry);
 	}	
 };
@@ -216,8 +219,8 @@ void parseInverseFunctionalObjectProperty(vector<std::string>& out, pugi::xml_no
 		entry.append(")$OR($OA V0{z2} $CO V0{z1} $AO $NI ");
 		entry.append(irival);
 		entry.append("))$OR( V0{z} $EQ V0{z2}))");
-		if (KBsize.at(3)<3)
-			KBsize.at(3) = 3;
+		if (KBsize.at(qvar0)<3)
+			KBsize.at(qvar0) = 3;
 		out.push_back(entry);
 	}
 };
@@ -241,8 +244,8 @@ void parseReflexiveObjectProperty(vector<std::string>& out, pugi::xml_node_itera
 		entry.append(irival);
 		entry.append(")");
 		out.push_back(entry);
-		if (KBsize.at(3)<1)
-			KBsize.at(3) = 1;
+		if (KBsize.at(qvar0)<1)
+			KBsize.at(qvar0) = 1;
 	}
 };
 
@@ -265,8 +268,8 @@ void parseIrreflexiveObjectProperty(vector<std::string>& out, pugi::xml_node_ite
 		entry.append(irival);
 		entry.append(")");
 		out.push_back(entry);
-		if (KBsize.at(3)<1)
-			KBsize.at(3) = 1;
+		if (KBsize.at(qvar0)<1)
+			KBsize.at(qvar0) = 1;
 	}
 };
 
@@ -299,8 +302,8 @@ void parseTransitiveObjectProperty(vector<std::string>& out, pugi::xml_node_iter
 		entry.append(irival);
 		entry.append("))");
 		out.push_back(entry);
-		if (KBsize.at(3)<3)
-		 KBsize.at(3) = 3;
+		if (KBsize.at(qvar0)<3)
+		 KBsize.at(qvar0) = 3;
 	}
 };
 
@@ -326,8 +329,8 @@ void parseSymmetricObjectProperty(vector<std::string>& out, pugi::xml_node_itera
 		entry.append(irival);
 		entry.append("))");
 		out.push_back(entry);
-		if (KBsize.at(3)<2)
-			KBsize.at(3) = 2;
+		if (KBsize.at(qvar0)<2)
+			KBsize.at(qvar0) = 2;
 	}
 };
 
@@ -353,8 +356,8 @@ void parseAsymmetricObjectProperty(vector<std::string>& out, pugi::xml_node_iter
 		entry.append(irival);
 		entry.append("))");
 		out.push_back(entry);
-		if (KBsize.at(3)<2)
-			KBsize.at(3) = 2;
+		if (KBsize.at(qvar0)<2)
+			KBsize.at(qvar0) = 2;
 	}
 };
 
@@ -393,8 +396,8 @@ void parseInverseObjectProperties(vector<std::string>& out, pugi::xml_node_itera
 			entry.append(prop1);
 			entry.append(")))");
 			out.push_back(entry);
-			if (KBsize.at(3)<2)
-				KBsize.at(3) = 2;
+			if (KBsize.at(qvar0)<2)
+				KBsize.at(qvar0) = 2;
 		}
 	}
 };
@@ -434,8 +437,8 @@ void parseEquivalentObjectProperties(vector<std::string>& out, pugi::xml_node_it
 			entry.append(prop2);
 			entry.append(")))");
 			out.push_back(entry);
-			if (KBsize.at(3)<2)
-				KBsize.at(3) = 2;
+			if (KBsize.at(qvar0)<2)
+				KBsize.at(qvar0) = 2;
 		}
 		else if (string(node.name()) == "ObjectInverseOf")			
 			{
@@ -456,8 +459,8 @@ void parseEquivalentObjectProperties(vector<std::string>& out, pugi::xml_node_it
 				entry.append(prop2);
 				entry.append(")))");
 				out.push_back(entry);
-				if (KBsize.at(3)<2)
-					KBsize.at(3) = 2;
+				if (KBsize.at(qvar0)<2)
+					KBsize.at(qvar0) = 2;
 			}
 	}
 
@@ -498,8 +501,8 @@ void parseDisjointObjectProperties(vector<std::string>& out, pugi::xml_node_iter
 			entry.append(prop1);
 			entry.append(")))");
 			out.push_back(entry);
-			if (KBsize.at(3)<2)
-				KBsize.at(3) = 2;
+			if (KBsize.at(qvar0)<2)
+				KBsize.at(qvar0) = 2;
 		}
 		else if (string(node.name()) == "ObjectInverseOf")
 		{
@@ -520,8 +523,8 @@ void parseDisjointObjectProperties(vector<std::string>& out, pugi::xml_node_iter
 			entry.append(prop1);
 			entry.append(")))");
 			out.push_back(entry);
-			if (KBsize.at(3)< 2)
-				KBsize.at(3) = 2;
+			if (KBsize.at(qvar0)< 2)
+				KBsize.at(qvar0) = 2;
 		}
 	}
 
@@ -556,8 +559,8 @@ void parseSubObjectProperty(vector<std::string>& out, pugi::xml_node_iterator& i
 			entry.append("($OA V0{z} $CO V0{z1} $AO $IN ");
 			entry.append(prop2);	
 			entry.append("))");
-			if (KBsize.at(3)< 2)
-				KBsize.at(3) = 2;
+			if (KBsize.at(qvar0)< 2)
+				KBsize.at(qvar0) = 2;
 		}
 		else if (string(node.name()) == "ObjectInverseOf")
 		{
@@ -571,8 +574,8 @@ void parseSubObjectProperty(vector<std::string>& out, pugi::xml_node_iterator& i
 			entry.append("($OA V0{z1} $CO V0{z} $AO $IN ");
 			entry.append(prop2);
 			entry.append("))");
-			if (KBsize.at(3)<2)
-				KBsize.at(3) = 2;
+			if (KBsize.at(qvar0)<2)
+				KBsize.at(qvar0) = 2;
 		}
 	}
 
@@ -669,8 +672,8 @@ void readOWLXMLOntology(string filename, vector<pair<string, string>>& ontNamesp
 	logFile << "----The Ontology Contains: " << endl;
 	logFile << "----- Individuals: " << KBsize.at(0) << "." << endl;
 	logFile << "----- Classes: " << KBsize.at(1) << "." << endl;
-	logFile << "----- Properties: " << KBsize.at(2) << "." << endl;
-	logFile << "----- Quantified Variables of level 0: " << KBsize.at(3) << "." << endl;
+	logFile << "----- Properties: " << KBsize.at(propertyindex) << "." << endl;
+	logFile << "----- Quantified Variables of level 0: " << KBsize.at(qvar0) << "." << endl;
 	logFile << "----End Reading OWL/XML file: " << filename << "." << endl;
 #endif
 #endif // debug

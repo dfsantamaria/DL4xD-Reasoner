@@ -39,6 +39,12 @@ void InitializeReasoner(int sizeV, int sizeQ, int sizet)
 	operators = Operators();
 };
 
+void InitializeReasoner(int sizeV, vector<int>& KBsize)
+{	
+	varSet = VariablesSet(sizeV, KBsize); 
+	operators = Operators();
+};
+
 //Class of the single Var
 /*
  Start Var
@@ -135,20 +141,22 @@ VariablesSet::VariablesSet(int maxNVariable, vector<int>& KBsize)
 	VQL.reserve(maxNVariable);  //initialize vectors for variables
 						  //QVQL.reserve(nlevel);  //initialize vectors for variables
 	VVL.reserve(maxNVariable);
+
 	for (int i = 0; i <= maxNVariable; i++)
 	{
 		VQL.push_back(vector<Var>());
 		VVL.push_back(vector<Var>());
 		//	QVQL.push_back(vector<Var>());
 	}
-	for (int i = 0; i < maxNVariable; i++)
+	for (int i = 0; i <= maxNVariable; i++)
 	{		
-		VVL.at(i).reserve(KBsize.at(i));		
+		VVL.at(i).reserve(KBsize.at(i));	
 	}
 
-	for (int i = maxNVariable; i < KBsize.size(); i++)
+	for (int i = 0; i <= maxNVariable; i++)
 	{
-		VQL.at(i).reserve(KBsize.at(i));
+		VQL.at(i).reserve(KBsize.at(1+maxNVariable+i)); 
+		//	QVQL.at(i).reserve(maxQQSize);
 	}
 };
 
@@ -2189,7 +2197,7 @@ void readKBFromStrings(int qflag, vector<string>&names, vector<Formula*>& KB)
 	{
 		if ((str.rfind("//", 0) == 0) || str.empty())
 			continue;
-		cout << str << endl;
+		cout << str << endl;		
 		insertFormulaKB(qflag,varSet.getVQL(), varSet.getVVL(), str, KB, &typeformula);
 	}	
 }

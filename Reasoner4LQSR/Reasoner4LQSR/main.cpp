@@ -12,6 +12,11 @@
 #include "XMLparser.h"
 #include "log.h"
 
+#define propertyindex 3
+#define qvar0 (propertyindex+1)
+#define maxLevNum 3
+#define sizeofVVector (maxLevNum+maxLevNum+2) 
+
 std::fstream logFile;
 
 void debugStart()
@@ -122,9 +127,11 @@ int main()
 	vector<Formula*> KB2norm;
 	vector<Formula*> KB2cnf;
 	vector<Formula*> KB2mq;
-	vector<int>KBsize(4);
+	vector<int> KBsize(sizeofVVector,0);
 	cout << "Reading OWL File" << endl;
 	readOWLXMLOntology("Example/yy.owl", ontNamespaces, formulae, KBsize);
+	InitializeReasoner(maxLevNum, KBsize);
+	//InitializeReasoner(3, 100, 20);
 	cout << "Printing ontology namespaces" << endl;
 	for (pair<string, string> p : ontNamespaces)
 		cout << p.first << " " << p.second << endl;
@@ -135,8 +142,8 @@ int main()
 	cout << "Number of formulae: " << formulae.size() << endl;
 	cout << "Individuals: " << KBsize.at(0) << "." << endl;
 	cout << "Classes: " << KBsize.at(1) << "." << endl;
-	cout << "Properties: " << KBsize.at(2) << "." << endl;
-	cout << "Quantified Variables of level 0: " << KBsize.at(3) << "." << endl;
+	cout << "Properties: " << KBsize.at(propertyindex) << "." << endl;
+	cout << "Quantified Variables of level 0: " << KBsize.at(qvar0) << "." << endl;
 	cout << "--Reading Ontology--" << endl;
 	readKBFromStrings(0, formulae, KB2);
 	printTRadix(KB2);
@@ -152,5 +159,5 @@ int main()
 	moveQuantifierKB(0, KB2cnf, KB2mq);
 	printTRadix(KB2mq); //print Tableau Radix
 	cout << "--End reading ontology--" << endl;
-	debugEnd();	
+	debugEnd();
 }

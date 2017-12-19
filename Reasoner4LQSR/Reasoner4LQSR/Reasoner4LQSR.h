@@ -295,6 +295,7 @@ int retrieveVarData(const string input, string* name, int* level);
 void debugStart();
 void debugEnd();
 void InitializeReasoner(int sizeV, int sizeQ, int sizet);
+void InitializeReasoner(int sizeV, vector<int>& KBsize);
 Formula* convertFormulaToNNF(Formula* formula);
 void convertKBToNNF(vector<Formula*>& KB, vector<Formula*>& KBnorm);
 void propagateNegation(Formula* current, vector<bool>& isNegated, vector<Formula*>& stackF, bool valLeft, bool valRight);
