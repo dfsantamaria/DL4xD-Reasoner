@@ -38,7 +38,7 @@ int main()
 	/*
 	Initialization
 	*/
-	//If you don't read an OWL File, make sure that quantified and quantifier free var vectors are sufficietly large.
+	//If you don't read an OWL File, make sure that quantified and quantifier free var vectors are sufficiently large.
 	//InitializeReasoner(3, 100, 20);
 	InitializeReasoner(maxLevNum, vector<int>{20,20,0,20,10,0,0,0});
 	/*
@@ -50,12 +50,11 @@ int main()
 	vector<Formula*> KBmq;	
 	string kbname = "Example/bg5.txt";
 
-	/*Precomputing Space*/
+	/*Precomputing Space -- to be implemented*/
 //  to be implemented
 //	vector<int>KBsize(8, 0);
 //	vector<int>Litsize(2, 0);
 //	precomputeKBSpaceFromFile(kbname, KBsize, Litsize);
-
 	/*  */
 
 

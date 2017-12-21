@@ -21,7 +21,7 @@
       <FileName>Reasoner4LQSR.cpp</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Atom">
+  <Class Name="Literal">
     <Position X="10.75" Y="2.75" Width="1.75" />
     <TypeIdentifier>
       <HashCode>AAAAgAEAAAQAACAAAgCABAQAAAAAAAAAAQAAAAIAAAA=</HashCode>

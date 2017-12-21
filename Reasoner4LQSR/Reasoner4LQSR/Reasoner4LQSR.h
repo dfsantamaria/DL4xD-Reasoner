@@ -40,10 +40,10 @@ public:
 	string toString();
 };
 
-class Atom
+class Literal
 {
 private:
-	int atomOp;
+	int literalOp;
 	/*
 	-1 unsetted;
 	*/
@@ -54,13 +54,13 @@ private:
 	Con il vettore consideriamo anche i possibili datatype groups
 	*/
  public:
-	Atom();
-	Atom(int op, vector<Var*> vec);
+	Literal();
+	Literal(int op, vector<Var*> vec);
 	vector<Var*>& getElements();
-	int getAtomOp();
-	void setAtomOp(int value);
+	int getLiteralOp();
+	void setLiteralOp(int value);
 	Var* getElementAt(int index);
-	~Atom();
+	~Literal();
 	/*
 	Use Carefully. Remember the position of the left/right operand
 	*/
@@ -68,7 +68,7 @@ private:
 	int setElementAt(int index, Var* element);
 	string toString();
 	int containsQVariable();
-	int equals(Atom &atom);
+	int equals(Literal &atom);
 };
 
 //Special chars of a formula
@@ -100,7 +100,7 @@ class Formula  //struttura più generica da cambiare eventualmente con strutture 
 {
 private:
 	//vector<Var*> quantified;
-	Atom *atom;
+	Literal *atom;
 	int operand;
 	int fulfilled;
 	Formula *lsubformula;
@@ -108,16 +108,16 @@ private:
 	Formula *pformula;
 public:
 	Formula();
-	Formula(Atom *at, int op);
-	Formula(Atom *at, int op, Formula *lf, Formula *rf);
+	Formula(Literal *at, int op);
+	Formula(Literal *at, int op, Formula *lf, Formula *rf);
 	// vector<Var*>* getQuantifiedSet() { return &quantified; };
-	Atom* getAtom();
+	Literal* getLiteral();
 	int getOperand();
 	Formula* getLSubformula();
 	Formula* getRSubformula();
 	Formula* getPreviousformula();
 	void setOperand(int op);
-	void setAtom(Atom *at);
+	void setLiteral(Literal *at);
 	void setLSubformula(Formula *sub);
 	void setRSubformula(Formula *sub);
 	void setPreviousFormula(Formula *prev);
@@ -227,16 +227,16 @@ private: vector< vector <Var> > QVQL;
 
 public:
 	QueryManager(int _nlevel, int _maxQQSize);
-	void extractLiterals(Formula& f, vector<Atom*> &atoms);
+	void extractLiterals(Formula& f, vector<Literal*> &atoms);
 	vector<vector<Var>>& getQVQL();
 	vector<vector<Var>>& getQVVL();
 	vector<int>& getAnswerSet();
 	pair <vector<int>, vector<vector<vector<pair<Var*, Var*>>>>>& getMatchSet();
 	void setMatchSet(pair <vector<int>, vector<vector<vector<pair<Var*, Var*>>>>>& input);
 	void setAnswerSet(vector<int> input);
-	int checkQueryLiteralMatchInBranch(Node* branch, Atom* query);
-	int checkQueryVariableMatchInBranch(Node* branch, Atom* query, vector<pair<Var*, Var*>>& currentMatch, vector<vector<pair<Var*, Var*>>>& matches);
-	Atom applySubstitution(Atom* result, Atom* query, const vector<pair<Var*, Var*>>& matches);
+	int checkQueryLiteralMatchInBranch(Node* branch, Literal* query);
+	int checkQueryVariableMatchInBranch(Node* branch, Literal* query, vector<pair<Var*, Var*>>& currentMatch, vector<vector<pair<Var*, Var*>>>& matches);
+	Literal applySubstitution(Literal* result, Literal* query, const vector<pair<Var*, Var*>>& matches);
 	int executeQuery(Formula& f, Tableau& tableau, pair <vector<int>, vector<vector<vector<pair<Var*, Var*>>>>>& result, int YN, vector<int>& ynAnswer);
 };
 
@@ -244,37 +244,37 @@ public:
 
 void areInEqClass(Var& var1, int& varclass1, int& indx1, Var& var2, int& varclass2, int& indx2, Tableau& tab, int brindx);
 void buildEqSet(Tableau& tab);
-int checkAtomClash(Atom &atom); //0 for clash 1 for no-clash
-int checkAtomClash(Atom &atom1, Atom &atom2);
-int checkAtomClashEqSet(Atom &atom, Tableau& T, int& brindx); //0 for clash 1 for no-clash
-int checkAtomClashEqSet(Atom &atom1, Atom &atom2, Tableau& t, int& brindx);
-int checkAtomOpClash(int op1, int op2);
-int checkAtoms(Atom* atom, Node* node);
-int checkAtomsClash(vector<Atom*> &vec);
-int checkBranchClash(Atom* atom, Node* node);
+int checkLiteralClash(Literal &atom); //0 for clash 1 for no-clash
+int checkLiteralClash(Literal &atom1, Literal &atom2);
+int checkLiteralClashEqSet(Literal &atom, Tableau& T, int& brindx); //0 for clash 1 for no-clash
+int checkLiteralClashEqSet(Literal &atom1, Literal &atom2, Tableau& t, int& brindx);
+int checkLiteralOpClash(int op1, int op2);
+int checkLiterals(Literal* atom, Node* node);
+int checkLiteralsClash(vector<Literal*> &vec);
+int checkBranchClash(Literal* atom, Node* node);
 int checkBranchClash(Node* node, Tableau& tableau);
 int checkNodeClash(vector<Formula> &formset);
-int checkNodeClashEqSet(Atom& atom, Node& node, Tableau& T, int& brind);
+int checkNodeClashEqSet(Literal& atom, Node& node, Tableau& T, int& brind);
 void checkTableauClash(Tableau& T);
 int checkTableauRootClash(Tableau &T);
-int checkVectorClash(Atom* candidate, vector<Formula> &formset, int start);
+int checkVectorClash(Literal* candidate, vector<Formula> &formset, int start);
 void chooseRule(Tableau &T, vector<Node*> &nodeSet, Formula* f);
 void closeTableauRoot(Tableau& T);
 int containsQVar(Formula *fr, string &s);
 int containsVariableName(vector<Var>* vect, Var** found, const string *name, const int *start);
 Formula* convertFormulaToCNF(Formula* formula);
 void convertKBToCNF(vector<Formula*>& KB, vector<Formula*>& KBcnf);
-Atom* copyAtom(Atom* atom, const string *qvar, Var* dest);
-void copyAtom(Atom* source, Atom* dest);
+Literal* copyLiteral(Literal* atom, const string *qvar, Var* dest);
+void copyLiteral(Literal* source, Literal* dest);
 Formula* copyFormula(Formula* formula, Formula* father);
 Formula* copyFormula(Formula* formula, Formula* father, const string *qvar, Var* dest);
-int createAtom(vector<vector <Var>>& vec, vector<vector <Var>>& vec2, string input, Formula **formula, vector<int>& startQuantVect, int typeformula);
+int createLiteral(vector<vector <Var>>& vec, vector<vector <Var>>& vec2, string input, Formula **formula, vector<int>& startQuantVect, int typeformula);
 Var* createQVarFromString(vector<vector<Var>>& vec, string *name, int *level, int *vartype, int *start);
 Var* createVarFromString(vector<vector<Var>>& vec, vector<vector<Var>>& vec2, string *name, int *level, int *vartype, int *start, int *typeformula);
-void ERule(Atom* atom, Node* node);
+void ERule(Literal* atom, Node* node);
 int expandKB(const vector<Formula*> &inpf, vector <Formula*> &out);
 void expandTableau(Tableau& T);
-void getAtomSet(Formula* f, vector<Atom*> &outf);
+void getLiteralSet(Formula* f, vector<Literal*> &outf);
 int getVarsOrder(Var &var1, Var &var2);
 int insertFormulaKB(int keepQ, vector<vector <Var>>& varset, vector<vector <Var>>& varset2, string formula, vector<Formula> &vec, int* typeformula);
 int insertFormulaKB(int keepQ, vector<vector <Var>>& varset1, vector<vector <Var>>& varset2, string formula, Formula** ffinal, int* typeformula);
@@ -282,9 +282,9 @@ void insertVarsEqClass(Var& var1, Var& var2, Tableau& tab, int brindx);
 int instantiateFormula(Formula* f, vector<Formula*> &destination);
 void moveQuantifier(int qFlag, Formula* formula, vector<vector <Var>>& varset1, vector<Formula>& data);
 void moveQuantifierKB(int qflag, vector<Formula*>& KB, vector<Formula*>& KBout);
-Atom* negatedAtom(Atom *input);
+Literal* negatedLiteral(Literal *input);
 int parseInternalFormula(vector<vector <Var>>& vec, vector<vector <Var>>& vec2, const string *inputformula, Formula **outformula, vector<int>& startQuantVect, int typeformula);
-void PBRule(vector<Atom*> atoms, Node* node, vector<Node*> &nodeSet);
+void PBRule(vector<Literal*> atoms, Node* node, vector<Node*> &nodeSet);
 int performQuery(QueryManager*& queryManager, string& str, Formula** formula, Tableau& tableau, int yn);
 void performQuerySet(vector<QueryManager*>& results, vector<string>& strings, vector<Formula>& formulae, Tableau& tableau);
 void readKBFromFile(int qflag, string &name, vector<Formula*>& KB);

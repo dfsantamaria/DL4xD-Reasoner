@@ -345,50 +345,50 @@ int Operators::checkLogOp(string *s)
 
 
 /**
-  Start Atom
+  Start Literal
 */
-Atom::Atom() {};
+Literal::Literal() {};
 
-Atom::Atom(int op, vector<Var*> vec)
+Literal::Literal(int op, vector<Var*> vec)
 	{
 		//components.reserve(maxVarSize);
-		setAtomOp(op);
+		setLiteralOp(op);
 		components = vec;
 	};
 
-vector<Var*>& Atom::getElements()
+vector<Var*>& Literal::getElements()
 	{
 		return components;
 	};
 
-int Atom::getAtomOp()
+int Literal::getLiteralOp()
 	{
-		return atomOp;
+		return literalOp;
 	};
 
-void Atom::setAtomOp(int value)
+void Literal::setLiteralOp(int value)
 	{
-		atomOp = value;
+		literalOp = value;
 	};
 
-Var* Atom::getElementAt(int index)
+Var* Literal::getElementAt(int index)
 	{
 		if (index < components.size())
 			return components.at(index);
 		return NULL;
 	}
 
-Atom::~Atom() {};
+Literal::~Literal() {};
 
 	/*
 	Use Carefully. Remember the position of the left/right operand
 	*/
-void Atom::addElement(Var* element)
+void Literal::addElement(Var* element)
 	{
 		getElements().push_back(element);
 	};
 
-int Atom::setElementAt(int index, Var* element)
+int Literal::setElementAt(int index, Var* element)
 	{
 		if (index < components.size())
 		{
@@ -398,7 +398,7 @@ int Atom::setElementAt(int index, Var* element)
 		return 1;
      };
 
-string Atom::toString()
+string Literal::toString()
 	{
 		string out = "(";
 		if (getElements().size() > 2)
@@ -412,14 +412,14 @@ string Atom::toString()
 		else
 			out.append(getElementAt(1)->toString());
 		out.append(" ");
-		out.append(operators.getSetOpElement(getAtomOp()));
+		out.append(operators.getSetOpElement(getLiteralOp()));
 		out.append(" ");
 		out.append(getElementAt(0)->toString());
 		out.append(")");
 		return out;
 	};
 
-int Atom::containsQVariable()
+int Literal::containsQVariable()
 	{		
 		for (Var* var: getElements())
 		{
@@ -429,9 +429,9 @@ int Atom::containsQVariable()
 		return 0;
 };
 
-int Atom::equals(Atom &atom)
+int Literal::equals(Literal &atom)
 	{
-		if ((this->getElements().size() == atom.getElements().size()) && (this->getAtomOp() == atom.getAtomOp()))
+		if ((this->getElements().size() == atom.getElements().size()) && (this->getLiteralOp() == atom.getLiteralOp()))
 		{
 			int j = 0;
 			for (; j < this->getElements().size(); j++)
@@ -447,7 +447,7 @@ int Atom::equals(Atom &atom)
 		return 1;
 	};
 /**
-End Atom
+End Literal
 */
 
 
@@ -456,7 +456,7 @@ End Atom
 */
 Formula::Formula()
 	{
-		setAtom(NULL);
+		setLiteral(NULL);
 		setOperand(-1);
 		fulfilled = 1;
 		setLSubformula(NULL);
@@ -464,9 +464,9 @@ Formula::Formula()
 		setPreviousFormula(NULL);
 	};
 
-Formula::Formula(Atom *at, int op)
+Formula::Formula(Literal *at, int op)
 	{
-		setAtom(at);
+		setLiteral(at);
 		setOperand(op);
 		fulfilled = 1;
 		setLSubformula(NULL);
@@ -474,9 +474,9 @@ Formula::Formula(Atom *at, int op)
 		setPreviousFormula(NULL);
 	};
 
-Formula::Formula(Atom *at, int op, Formula *lf, Formula *rf)
+Formula::Formula(Literal *at, int op, Formula *lf, Formula *rf)
 	{
-		setAtom(at);
+		setLiteral(at);
 		setOperand(op);
 		lsubformula = lf;
 		rsubformula = rf;
@@ -486,13 +486,13 @@ Formula::Formula(Atom *at, int op, Formula *lf, Formula *rf)
 	};
 
 // vector<Var*>* getQuantifiedSet() { return &quantified; };
-Atom* Formula::getAtom() { return atom; };
+Literal* Formula::getLiteral() { return atom; };
 int Formula::getOperand() { return operand; };
 Formula* Formula::getLSubformula() { return lsubformula; };
 Formula* Formula::getRSubformula() { return rsubformula; };
 Formula* Formula::getPreviousformula() { return pformula; };
 void Formula::setOperand(int op) { operand = op; };
-void Formula::setAtom(Atom *at) { atom = at; };
+void Formula::setLiteral(Literal *at) { atom = at; };
 void Formula::setLSubformula(Formula *sub) { lsubformula = sub; };
 void Formula::setRSubformula(Formula *sub) { rsubformula = sub; };
 void Formula::setPreviousFormula(Formula *prev) { pformula = prev; };
@@ -501,19 +501,19 @@ int Formula::getFulfillness() { return fulfilled; };
 Formula::~Formula() { delete atom;  lsubformula = NULL; rsubformula = NULL; pformula = NULL; };
 void Formula::toStringQVar(vector<Var*>& qu)
 {
- if(getAtom()!=NULL)
-	for (int i = 0; i < getAtom()->getElements().size(); i++)
+ if(getLiteral()!=NULL)
+	for (int i = 0; i < getLiteral()->getElements().size(); i++)
 	{
 		int j = 0;
 		for (; j < qu.size(); j++)
 		{
-			if (getAtom()->getElementAt(i)->getVarType() == 1 && qu.at(j)->getVarType() == 1)
-				if (!getAtom()->getElementAt(i)->getName().compare(qu.at(j)->getName()))
+			if (getLiteral()->getElementAt(i)->getVarType() == 1 && qu.at(j)->getVarType() == 1)
+				if (!getLiteral()->getElementAt(i)->getName().compare(qu.at(j)->getName()))
 					break;
 		}
 
-		if (j >= qu.size() && getAtom()->getElementAt(i)->getVarType() == 1)
-			qu.push_back(getAtom()->getElementAt(i));
+		if (j >= qu.size() && getLiteral()->getElementAt(i)->getVarType() == 1)
+			qu.push_back(getLiteral()->getElementAt(i));
 	}
  if (getLSubformula() != NULL)
 	 getLSubformula()->toStringQVar(qu);
@@ -539,9 +539,9 @@ string Formula::toString()
 }
 string Formula::toStringNoQVar()
 	{
-		if (getAtom() != NULL)
+		if (getLiteral() != NULL)
 		{		
-			return (getAtom()->toString().append(" "));
+			return (getLiteral()->toString().append(" "));
 		}
 		else if (getOperand()==4 && getRSubformula() != NULL)
 		{
@@ -580,10 +580,10 @@ int Node::containsFormula(Formula* F) //to be completed and performed
 	{
 		for (int i = 0; i < this->getSetFormulae().size(); i++)
 		{
-			Atom* locAt = this->getSetFormulae().at(i)->getAtom();
-			if (locAt != NULL && F->getAtom() != NULL)
+			Literal* locAt = this->getSetFormulae().at(i)->getLiteral();
+			if (locAt != NULL && F->getLiteral() != NULL)
 			{
-				if (locAt->equals(*(F->getAtom())) == 0)
+				if (locAt->equals(*(F->getLiteral())) == 0)
 				{
 					return 0;
 				}
@@ -852,13 +852,13 @@ Var* createQVarFromString(vector<vector<Var>>& vec, string *name, int *level, in
 
 
 /*
-Create an Atom from the given string
+Create an Literal from the given string
 */
-int createAtom(vector<vector <Var>>& vec, vector<vector <Var>>& vec2, string input, Formula **formula, vector<int>& startQuantVect, int typeformula)
+int createLiteral(vector<vector <Var>>& vec, vector<vector <Var>>& vec2, string input, Formula **formula, vector<int>& startQuantVect, int typeformula)
 {	
 #ifdef debug  
 #ifdef debuginsertf
-	logFile << "-----Computing Atom: " << input << endl;
+	logFile << "-----Computing Literal: " << input << endl;
 #endif
 #endif // debug
 	Var* var1;
@@ -866,7 +866,7 @@ int createAtom(vector<vector <Var>>& vec, vector<vector <Var>>& vec2, string inp
 	Var* var3;
 	string name = string();
 	int level = -1;
-	Atom* atom = NULL;
+	Literal* atom = NULL;
 	if (input[0] == '$') //case pair or quantifier
 	{
 		string head = input.substr(0, 3); //cout << head << endl;	
@@ -887,10 +887,10 @@ int createAtom(vector<vector <Var>>& vec, vector<vector <Var>>& vec2, string inp
 			match = match.substr(3, match.size() - 1);
 			retrieveVarData(match, &name, &level);
 			var3 = createVarFromString(vec, vec2, &name, &level, new int(0), &startQuantVect.at(level), &typeformula);
-			atom = new Atom(op, { var3, var1, var2 });
-			//Atom* atom = new Atom(0, { new Var(name,level,0), new Var("b1",0,0), new Var("c1",0,0) });
+			atom = new Literal(op, { var3, var1, var2 });
+			//Literal* atom = new Literal(0, { new Var(name,level,0), new Var("b1",0,0), new Var("c1",0,0) });
 			*formula = (new Formula(atom, -1));
-			//cout << "Atom found: " << formula->print() << endl;			
+			//cout << "Literal found: " << formula->print() << endl;			
 		}
 		else if (head.compare("$FA") == 0)  //case quantified variable
 		{
@@ -909,7 +909,7 @@ int createAtom(vector<vector <Var>>& vec, vector<vector <Var>>& vec2, string inp
 			int op = operators.getSetOpValue(input.substr(found, 3));
 			retrieveVarData(input.substr(found + 3, input.size() - 1), &name, &level);
 			var2 = createVarFromString(vec, vec2, &name, &level, new int(0), &startQuantVect.at(level), &typeformula);
-			atom = new Atom(op, { var2, var1 });
+			atom = new Literal(op, { var2, var1 });
 			*formula = (new Formula(atom, -1));
 		}
 		else
@@ -926,7 +926,7 @@ int createAtom(vector<vector <Var>>& vec, vector<vector <Var>>& vec2, string inp
 #ifdef debug  
 #ifdef debuginsertf
 	if (atom != NULL)
-		logFile << "-----Atom created: " << atom->toString() << endl;
+		logFile << "-----Literal created: " << atom->toString() << endl;
 #endif
 #endif // debug
 	return 0;
@@ -967,7 +967,7 @@ int parseInternalFormula(vector<vector <Var>>& vec, vector<vector <Var>>& vec2, 
 				     logFile << "-----Candidate atom found: " << atom << endl;
                    #endif
                  #endif // debug                
-				createAtom(vec, vec2, atom, &formula, startQuantVect, typeformula);				
+				createLiteral(vec, vec2, atom, &formula, startQuantVect, typeformula);				
 				if (formula != NULL) // creation of the formula 
 				{						
 					stformula.push(formula); 
@@ -984,7 +984,7 @@ int parseInternalFormula(vector<vector <Var>>& vec, vector<vector <Var>>& vec2, 
 				centerf->setRSubformula(rightf);
 				rightf->setPreviousFormula(centerf);
 
-				if (centerf->getAtom()==NULL && centerf->getOperand()==4) //$NG has one branch
+				if (centerf->getLiteral()==NULL && centerf->getOperand()==4) //$NG has one branch
 				{					
 					centerf->setLSubformula(NULL); 
 				}
@@ -1025,7 +1025,7 @@ int parseInternalFormula(vector<vector <Var>>& vec, vector<vector <Var>>& vec2, 
 	
 	if (!atom.empty())
 	{ 		
-		createAtom(vec, vec2, atom, &formula, startQuantVect, typeformula);		
+		createLiteral(vec, vec2, atom, &formula, startQuantVect, typeformula);		
 		if (formula != NULL)
 			stformula.push(formula);		
 	}
@@ -1051,18 +1051,18 @@ void printVector(vector<Var>& v)
 
 }
 
-void copyAtom(Atom* source, Atom* dest)
+void copyLiteral(Literal* source, Literal* dest)
 {
-	//Atom(int op, vector<Var*> vec)
-	dest->setAtomOp(source->getAtomOp());
+	//Literal(int op, vector<Var*> vec)
+	dest->setLiteralOp(source->getLiteralOp());
 	for (Var* var : source->getElements())
 		dest->addElement(var);
 }
 
-Atom* copyAtom(Atom* atom, const string *qvar, Var* dest)
+Literal* copyLiteral(Literal* atom, const string *qvar, Var* dest)
 {
-	Atom* fin = new Atom();
-	fin->setAtomOp(atom->getAtomOp());
+	Literal* fin = new Literal();
+	fin->setLiteralOp(atom->getLiteralOp());
 	for (int i = 0; i < atom->getElements().size(); i++)
 	{
 		if (qvar != NULL && dest != NULL && ((atom->getElementAt(i)->getName()) == *qvar))
@@ -1080,11 +1080,11 @@ Formula* copyFormula(Formula* formula, Formula* father, const string *qvar, Var*
 		return NULL;
 	Formula* fin = new Formula();
 	fin->setOperand(formula->getOperand());
-	if (formula->getAtom() == NULL)
-		fin->setAtom(NULL);
+	if (formula->getLiteral() == NULL)
+		fin->setLiteral(NULL);
 	else
 	{
-		fin->setAtom(copyAtom(formula->getAtom(), qvar, dest));
+		fin->setLiteral(copyLiteral(formula->getLiteral(), qvar, dest));
 	}
 	fin->setPreviousFormula(father);
 	fin->setLSubformula(copyFormula(formula->getLSubformula(), fin, qvar, dest));
@@ -1099,13 +1099,13 @@ Formula* copyFormula(Formula* formula, Formula* father)
 		return NULL;
 	Formula* fin = new Formula();
 	fin->setOperand(formula->getOperand());
-	if (formula->getAtom() == NULL)
-		fin->setAtom(NULL);
+	if (formula->getLiteral() == NULL)
+		fin->setLiteral(NULL);
 	else
 	{
-		Atom* atomf = new Atom();
-		copyAtom(formula->getAtom(), atomf);
-		fin->setAtom(atomf);
+		Literal* atomf = new Literal();
+		copyLiteral(formula->getLiteral(), atomf);
+		fin->setLiteral(atomf);
 	}
 	fin->setPreviousFormula(father);
 	fin->setLSubformula(copyFormula(formula->getLSubformula(), fin));
@@ -1241,9 +1241,9 @@ int containsQVar(Formula *fr, string &s)
 		q.pop_back();
 		if (f != NULL)
 		{
-			if (f->getAtom() != NULL)
+			if (f->getLiteral() != NULL)
 			{
-				for (Var* var : (f->getAtom()->getElements()))
+				for (Var* var : (f->getLiteral()->getElements()))
 				{
 					if (var->getVarType() == 1)
 					{
@@ -1285,7 +1285,7 @@ int instantiateFormula(Formula* f, vector<Formula*> &destination)
 			logFile << "------- Expanded Formula: " << top->toString() << endl;
 #endif
 #endif // debug		
-			if (top->getAtom() != NULL)
+			if (top->getLiteral() != NULL)
 				top->setFulfillness(0);
 			destination.push_back(top); 
 		}
@@ -1327,7 +1327,7 @@ int expandKB(const vector<Formula*> &inpf, vector <Formula*> &out)
 #endif
 #endif // debug
 		tmp.pop_back();
-		if (f->getAtom() != NULL || f->getOperand()== or)
+		if (f->getLiteral() != NULL || f->getOperand()== or)
 		{			
 			instantiateFormula(f, out); 
 		}	
@@ -1364,14 +1364,14 @@ int expandKB(const vector<Formula*> &inpf, vector <Formula*> &out)
 	return 0;
 }
 
-int checkAtomOpClash(int op1, int op2)
+int checkLiteralOpClash(int op1, int op2)
 {
 	if (abs(op1 - op2) == 2)
 		return 0;
 	return 1;
 }
 
-int checkAtomClash(Atom &atom1, Atom &atom2)
+int checkLiteralClash(Literal &atom1, Literal &atom2)
 {
 #ifdef debug 
 #ifdef debugclash
@@ -1388,24 +1388,24 @@ int checkAtomClash(Atom &atom1, Atom &atom2)
 			if (atom1.getElementAt(i)->equal(atom2.getElementAt(i)) != 0)
 				return 1;
 		}
-		return checkAtomOpClash(atom1.getAtomOp(), atom2.getAtomOp());
+		return checkLiteralOpClash(atom1.getLiteralOp(), atom2.getLiteralOp());
 	}
 	return 1;
 }
 
-int checkAtomClash(Atom &atom) //0 for clash 1 for no-clash
+int checkLiteralClash(Literal &atom) //0 for clash 1 for no-clash
 {
 #ifdef debug
 #ifdef debugclash
 	logFile << "-----Checking for Clash: " << atom.toString() << endl;
 #endif
 #endif // debug
-	if (atom.getElements().size() == 2 && atom.getAtomOp() == 3 && atom.getElementAt(0)->equal(atom.getElementAt(1)) == 0)
+	if (atom.getElements().size() == 2 && atom.getLiteralOp() == 3 && atom.getElementAt(0)->equal(atom.getElementAt(1)) == 0)
 		return 0;
 	return 1;
 }
 
-int checkAtomsClash(vector<Atom*> &vec)
+int checkLiteralsClash(vector<Literal*> &vec)
 {
 
 	for (int i = 0; i < vec.size() - 1; i++)
@@ -1415,7 +1415,7 @@ int checkAtomsClash(vector<Atom*> &vec)
 		logFile << "-----Checking for Clash: " << vec.at(i)->toString() << " and " << vec.at(i + 1)->toString() << endl;
 #endif // debug
 #endif
-		if (checkAtomClash(*vec.at(i), *vec.at(i + 1)))
+		if (checkLiteralClash(*vec.at(i), *vec.at(i + 1)))
 			return 0;
 	}
 	return 1;
@@ -1425,7 +1425,7 @@ int checkAtomsClash(vector<Atom*> &vec)
 /*
 Check for Clash between the given candidate and a vector of formulae starting from the given index
 */
-int checkVectorClash(Atom* candidate, vector<Formula*> &formset, int start)
+int checkVectorClash(Literal* candidate, vector<Formula*> &formset, int start)
 {
 #ifdef debug  
 	logFile << "---Checking for Clash in Vector of Formulae" << endl;
@@ -1433,7 +1433,7 @@ int checkVectorClash(Atom* candidate, vector<Formula*> &formset, int start)
 	
 	if (candidate != NULL) //atomic formula
 	{
-		if (checkAtomClash(*candidate) == 0)  // type a != a
+		if (checkLiteralClash(*candidate) == 0)  // type a != a
 		{
 #ifdef debug  
 			logFile << "-----Clash at: " << candidate->toString() << endl;
@@ -1442,19 +1442,19 @@ int checkVectorClash(Atom* candidate, vector<Formula*> &formset, int start)
 		}
 		for (int j = start; j < formset.size(); j++)
 		{
-			if (formset.at(j)->getAtom() != NULL)
+			if (formset.at(j)->getLiteral() != NULL)
 			{
-				if (checkAtomClash(*formset.at(j)->getAtom()) == 0)
+				if (checkLiteralClash(*formset.at(j)->getLiteral()) == 0)
 				{
 #ifdef debug  
-					logFile << "-----Clash at: " << formset.at(j)->getAtom()->toString() << endl;
+					logFile << "-----Clash at: " << formset.at(j)->getLiteral()->toString() << endl;
 #endif // debug
 					return 0;
 				}
-				if (checkAtomClash(*candidate, *formset.at(j)->getAtom()) == 0)
+				if (checkLiteralClash(*candidate, *formset.at(j)->getLiteral()) == 0)
 				{
 #ifdef debug  
-					logFile << "-----Clash at: " << candidate->toString() << "," << formset.at(j)->getAtom()->toString() << endl;
+					logFile << "-----Clash at: " << candidate->toString() << "," << formset.at(j)->getLiteral()->toString() << endl;
 #endif // debug
 					return 0;
 				}
@@ -1478,7 +1478,7 @@ int checkNodeClash(vector<Formula*> &formset)
 	}
 	for (int i = 0; i < formset.size() - 1; i++)
 	{		
-		if (checkVectorClash(formset.at(i)->getAtom(), formset, i + 1) == 0)
+		if (checkVectorClash(formset.at(i)->getLiteral(), formset, i + 1) == 0)
 			return 0;
 	}
 	return 1;
@@ -1502,7 +1502,7 @@ int checkBranchClash(Node* node, Tableau& tableau)
 	{
 		for (int i = 0; i < local.size(); i++)
 		{
-			Atom* at = local.at(i)->getAtom();
+			Literal* at = local.at(i)->getLiteral();
 			if (at != NULL && (checkVectorClash(at, iterator->getSetFormulae(), 0) == 0))
 			{
 #ifdef debug
@@ -1524,9 +1524,9 @@ int checkBranchClash(Node* node, Tableau& tableau)
 Return the set of atomic formula contained in a formula.
 */
 
-void getAtomSet(Formula* f, vector<Atom*> &outf)
+void getLiteralSet(Formula* f, vector<Literal*> &outf)
 {
-	if (f->getAtom() != NULL)
+	if (f->getLiteral() != NULL)
 		return;
 	stack <Formula*> st;
 	st.push(f->getRSubformula());
@@ -1534,8 +1534,8 @@ void getAtomSet(Formula* f, vector<Atom*> &outf)
 	while (!st.empty())
 	{
 		Formula* tmp = st.top();
-		if (tmp->getAtom() != NULL)
-			outf.push_back(tmp->getAtom());                       //There should be only OR because of CNF formula		
+		if (tmp->getLiteral() != NULL)
+			outf.push_back(tmp->getLiteral());                       //There should be only OR because of CNF formula		
 		st.pop();
 		if (tmp->getRSubformula() != NULL)
 			st.push(tmp->getRSubformula());
@@ -1557,16 +1557,16 @@ void closeTableauRoot(Tableau& T)
 }
 
 
-Atom* negatedAtom(Atom *input)
+Literal* negatedLiteral(Literal *input)
 {
-	Atom* out = copyAtom(input, NULL, NULL);
-	int neg = (out->getAtomOp() >= 2 ? -2 : 2);
-	out->setAtomOp(out->getAtomOp() + neg);
+	Literal* out = copyLiteral(input, NULL, NULL);
+	int neg = (out->getLiteralOp() >= 2 ? -2 : 2);
+	out->setLiteralOp(out->getLiteralOp() + neg);
 	return out;
 }
 
 
-int checkBranchClash(Atom* atom, Node* node)
+int checkBranchClash(Literal* atom, Node* node)
 {
 	Node* iterator = node;
 	while (iterator != NULL)
@@ -1582,7 +1582,7 @@ int checkBranchClash(Atom* atom, Node* node)
 	return 1;
 }
 
-void ERule(Atom* atom, Node* node)
+void ERule(Literal* atom, Node* node)
 {
 #ifdef debug  
 	logFile << "---Applying E-RULE" << endl;
@@ -1590,18 +1590,18 @@ void ERule(Atom* atom, Node* node)
 
 #ifdef debug  
 #ifdef debugexpand
-	logFile << "----- Computing Atom from E-Rule: " << copyAtom(atom, NULL, NULL)->toString() << endl;
+	logFile << "----- Computing Literal from E-Rule: " << copyLiteral(atom, NULL, NULL)->toString() << endl;
 #endif
 #endif // debug
 
 	Node* tmp = node;
 	vector<Node*> newNodeSet;
-	Atom* neg = negatedAtom(atom);
+	Literal* neg = negatedLiteral(atom);
 	//	if (checkBranchClash(neg, tmp) == 1)		  //solve thi inefficiency
-	node->insertFormula((new Formula(copyAtom(atom, NULL, NULL), -1)));
+	node->insertFormula((new Formula(copyLiteral(atom, NULL, NULL), -1)));
 }
 
-void PBRule(vector<Atom*> atoms, Node* node, vector<Node*> &nodeSet)
+void PBRule(vector<Literal*> atoms, Node* node, vector<Node*> &nodeSet)
 {
 #ifdef debug  
 	logFile << "---Applying PB-RULE" << endl;
@@ -1609,14 +1609,14 @@ void PBRule(vector<Atom*> atoms, Node* node, vector<Node*> &nodeSet)
 
 #ifdef debug  
 #ifdef debugexpand
-	logFile << "----- Computing Atom from PB-Rule. " << endl;
+	logFile << "----- Computing Literal from PB-Rule. " << endl;
 #endif
 #endif // debug
 	Node* tmp = node;
 	vector<Node*> newNodeSet;
 	/*	for (int i = 0; i < atoms.size(); i++)           //solve this inefficiency. Looking for positive in the branch.
 		{
-			Atom* neg = negatedAtom(atoms.at(i));
+			Literal* neg = negatedLiteral(atoms.at(i));
 			if (checkBranchClash(neg, tmp) == 0)
 			{
 				newNodeSet.push_back(tmp);
@@ -1629,22 +1629,22 @@ void PBRule(vector<Atom*> atoms, Node* node, vector<Node*> &nodeSet)
 	{
 #ifdef debug  
 #ifdef debugexpand
-		logFile << "------ Computing Atom from PB-Rule. " << copyAtom(atoms.at(i), NULL, NULL)->toString() << endl;
-		logFile << "------ Computing Atom from PB-Rule. " << (negatedAtom(atoms.at(i)))->toString() << endl;
+		logFile << "------ Computing Literal from PB-Rule. " << copyLiteral(atoms.at(i), NULL, NULL)->toString() << endl;
+		logFile << "------ Computing Literal from PB-Rule. " << (negatedLiteral(atoms.at(i)))->toString() << endl;
 #endif
 #endif // debug
-		Atom* neg = negatedAtom(atoms.at(i));
-		tmp->setLeftChild(new Node(vector<Formula*> {(new Formula(copyAtom(atoms.at(i), NULL, NULL), -1))}));
+		Literal* neg = negatedLiteral(atoms.at(i));
+		tmp->setLeftChild(new Node(vector<Formula*> {(new Formula(copyLiteral(atoms.at(i), NULL, NULL), -1))}));
 		newNodeSet.push_back(tmp->getLeftChild());
-		tmp->setRightChild(new Node(vector<Formula*> {(new Formula(negatedAtom(atoms.at(i)), -1))}));
+		tmp->setRightChild(new Node(vector<Formula*> {(new Formula(negatedLiteral(atoms.at(i)), -1))}));
 		tmp = tmp->getRightChild();
 	}
 #ifdef debug  
 #ifdef debugexpand
-	logFile << "------ Computing Atom from PB-Rule. " << (copyAtom(atoms.at(atoms.size() - 1), NULL, NULL))->toString() << endl;
+	logFile << "------ Computing Literal from PB-Rule. " << (copyLiteral(atoms.at(atoms.size() - 1), NULL, NULL))->toString() << endl;
 #endif
 #endif // debug
-	tmp->insertFormula((new Formula(copyAtom(atoms.at(atoms.size() - 1), NULL, NULL), -1)));
+	tmp->insertFormula((new Formula(copyLiteral(atoms.at(atoms.size() - 1), NULL, NULL), -1)));
 	newNodeSet.push_back(tmp);
 	nodeSet.insert(nodeSet.end(), newNodeSet.begin(), newNodeSet.end());
 }
@@ -1652,7 +1652,7 @@ void PBRule(vector<Atom*> atoms, Node* node, vector<Node*> &nodeSet)
 
 
 
-int checkAtoms(Atom* atom, Node* node)
+int checkLiterals(Literal* atom, Node* node)
 {
 	Node* iterator = node;
 	while (iterator != NULL)
@@ -1660,11 +1660,11 @@ int checkAtoms(Atom* atom, Node* node)
 		vector<Formula*> vec = iterator->getSetFormulae();
 		for (int i = 0; i < vec.size(); i++)
 		{
-			if (vec.at(i)->getAtom() != NULL)
+			if (vec.at(i)->getLiteral() != NULL)
 			{
-				if ((checkAtomClash(*atom, *(vec.at(i)->getAtom())) == 0))
+				if ((checkLiteralClash(*atom, *(vec.at(i)->getLiteral())) == 0))
 					return 0;
-				if (atom->equals(*(vec.at(i)->getAtom())) == 0)
+				if (atom->equals(*(vec.at(i)->getLiteral())) == 0)
 					return 2;
 			}
 		}
@@ -1679,10 +1679,10 @@ void chooseRule(Tableau &T, vector<Node*> &nodeSet, Formula* f)
 	vector<Node*> newNodeSet;
 	for (int b = 0; b < nodeSet.size(); b++)
 	{
-		vector<Atom*> atoms;
-		vector<Atom*> atomset;
-		getAtomSet(f, atomset);
-		/*	if (checkAtomsClash(atomset))
+		vector<Literal*> atoms;
+		vector<Literal*> atomset;
+		getLiteralSet(f, atomset);
+		/*	if (checkLiteralsClash(atomset))
 			{
 				newNodeSet.push_back(nodeSet.at(b));
 				//T.getClosedBranches().push_back(nodeSet.at(b));
@@ -1691,7 +1691,7 @@ void chooseRule(Tableau &T, vector<Node*> &nodeSet, Formula* f)
 		int check = 0;
 		for (int j = 0; j < atomset.size(); j++)
 		{
-			check = checkAtoms(atomset.at(j), nodeSet.at(b));
+			check = checkLiterals(atomset.at(j), nodeSet.at(b));
 			if (check == 1)
 			{
 				atoms.push_back(atomset.at(j));
@@ -1742,7 +1742,7 @@ void expandTableau(Tableau& T)
 	
 	for (int i = 0; i < fset.size(); i++)
 	{		
-		if (fset.at(i)->getAtom() == NULL)  //OR found
+		if (fset.at(i)->getLiteral() == NULL)  //OR found
 		{
 #ifdef debug  
 #ifdef debugexpand
@@ -1762,9 +1762,9 @@ int checkTableauRootClash(Tableau &T)
 	return (checkNodeClash(T.getTableau()->getSetFormulae()) == 1);
 	/*	for (int i = 0; i < T.getTableau()->getSetFormulae().size(); i++)
 	{
-	vector<Atom*> atomset;
-	getAtomSet(T.getTableau()->getSetFormulae().at(i), atomset);
-	if (checkAtomsClash(atomset))
+	vector<Literal*> atomset;
+	getLiteralSet(T.getTableau()->getSetFormulae().at(i), atomset);
+	if (checkLiteralsClash(atomset))
 	{
 	return 0;
 	}
@@ -1919,17 +1919,17 @@ void buildEqSet(Tableau& tab)
 			for (int fcount = 0; fcount < node->getSetFormulae().size(); fcount++)
 			{
 				Formula* localf = node->getSetFormulae().at(fcount);
-				if (localf->getAtom() != NULL && localf->getAtom()->getAtomOp() == operators.getSetOpValue("$EQ")) //find equivalences
-					if (localf->getAtom()->getElementAt(0)->equal(localf->getAtom()->getElementAt(1)) == 1)  // ignore the case a=a
+				if (localf->getLiteral() != NULL && localf->getLiteral()->getLiteralOp() == operators.getSetOpValue("$EQ")) //find equivalences
+					if (localf->getLiteral()->getElementAt(0)->equal(localf->getLiteral()->getElementAt(1)) == 1)  // ignore the case a=a
 					{
 #ifdef debug 
 #ifdef eqsetdebug
-						logFile << "----- Computing equivalence classes for " << localf->getAtom()->toString() << " in branch " << i << endl;
+						logFile << "----- Computing equivalence classes for " << localf->getLiteral()->toString() << " in branch " << i << endl;
 #endif
 #endif // debug
 
-						Var* var1 = localf->getAtom()->getElements().at(0);
-						Var* var2 = localf->getAtom()->getElements().at(1);
+						Var* var1 = localf->getLiteral()->getElements().at(0);
+						Var* var2 = localf->getLiteral()->getElements().at(1);
 						insertVarsEqClass(*var1, *var2, tab, i);
 					}
 			}
@@ -1939,7 +1939,7 @@ void buildEqSet(Tableau& tab)
 }
 
 
-int checkAtomClashEqSet(Atom &atom1, Atom &atom2, Tableau& t, int& brindx)
+int checkLiteralClashEqSet(Literal &atom1, Literal &atom2, Tableau& t, int& brindx)
 {
 #ifdef debug 
 #ifdef debugclash
@@ -1950,10 +1950,10 @@ int checkAtomClashEqSet(Atom &atom1, Atom &atom2, Tableau& t, int& brindx)
 
 	if (atom1.getElements().size() == atom2.getElements().size())
 	{
-		if (checkAtomOpClash(atom1.getAtomOp(), atom2.getAtomOp()) == 1)
+		if (checkLiteralOpClash(atom1.getLiteralOp(), atom2.getLiteralOp()) == 1)
 			return 1;
 
-		if (atom1.getAtomOp() == 3 || atom1.getAtomOp() == 1) // case equivalence		
+		if (atom1.getLiteralOp() == 3 || atom1.getLiteralOp() == 1) // case equivalence		
 			return (t.sameEqClass(*(atom1.getElementAt(0)), *(atom2.getElementAt(0)), brindx)) + (t.sameEqClass(*(atom1.getElementAt(1)), *(atom2.getElementAt(1)), brindx));
 
 		//other case
@@ -1971,14 +1971,14 @@ int checkAtomClashEqSet(Atom &atom1, Atom &atom2, Tableau& t, int& brindx)
 
 
 
-int checkAtomClashEqSet(Atom &atom, Tableau& T, int& brindx) //0 for clash 1 for no-clash
+int checkLiteralClashEqSet(Literal &atom, Tableau& T, int& brindx) //0 for clash 1 for no-clash
 {
 #ifdef debug
 #ifdef debugclash
 	logFile << "-----Checking for Clash: " << atom.toString() << " in EqSet" << endl;
 #endif
 #endif // debug
-	if (atom.getElements().size() == 2 && atom.getAtomOp() == 3)
+	if (atom.getElements().size() == 2 && atom.getLiteralOp() == 3)
 	{
 		//cout << "clash" << atom.toString() << " "<< T.sameEqClass(*(atom.getElementAt(0)), *(atom.getElementAt(1)), brindx) <<endl;
 		return (T.sameEqClass(*(atom.getElementAt(0)), *(atom.getElementAt(1)), brindx));
@@ -1986,16 +1986,16 @@ int checkAtomClashEqSet(Atom &atom, Tableau& T, int& brindx) //0 for clash 1 for
 	return 1;
 }
 
-int checkNodeClashEqSet(Atom& atom, Node& node, Tableau& T, int& brind)
+int checkNodeClashEqSet(Literal& atom, Node& node, Tableau& T, int& brind)
 {
 	Node* tmp = &node;
 	while (tmp != NULL)
 	{
 		for (int j = 0; j < tmp->getSetFormulae().size(); j++)
 		{
-			if (tmp->getSetFormulae().at(j)->getAtom() != NULL)
+			if (tmp->getSetFormulae().at(j)->getLiteral() != NULL)
 			{
-				if (checkAtomClashEqSet(atom, *(tmp->getSetFormulae().at(j)->getAtom()), T, brind) == 0)
+				if (checkLiteralClashEqSet(atom, *(tmp->getSetFormulae().at(j)->getLiteral()), T, brind) == 0)
 					return 0;
 			}
 		}
@@ -2014,13 +2014,13 @@ void checkTableauClash(Tableau& T)
 		int clash = 1;
 		for (int j = 0; j < currentNode->getSetFormulae().size() - 1; j++)
 		{
-			if (currentNode->getSetFormulae().at(j)->getAtom() != NULL)
+			if (currentNode->getSetFormulae().at(j)->getLiteral() != NULL)
 			{
 
-				if (checkAtomClashEqSet(*(currentNode->getSetFormulae().at(j)->getAtom()), T, i) == 1 &&
-					checkAtomClashEqSet(*(currentNode->getSetFormulae().at(j)->getAtom()), *(currentNode->getSetFormulae().at(j + 1)->getAtom()), T, i) == 1)
+				if (checkLiteralClashEqSet(*(currentNode->getSetFormulae().at(j)->getLiteral()), T, i) == 1 &&
+					checkLiteralClashEqSet(*(currentNode->getSetFormulae().at(j)->getLiteral()), *(currentNode->getSetFormulae().at(j + 1)->getLiteral()), T, i) == 1)
 				{
-					tobreak = checkNodeClashEqSet(*(currentNode->getSetFormulae().at(j)->getAtom()), *(currentNode->getFather()), T, i);
+					tobreak = checkNodeClashEqSet(*(currentNode->getSetFormulae().at(j)->getLiteral()), *(currentNode->getFather()), T, i);
 				}
 				else tobreak = 0;
 
@@ -2056,9 +2056,9 @@ void renameQVariables(Formula* formula, vector<vector <Var>>& varset1)
 	{
 		Formula* tmp = stackformula.back();
 		stackformula.pop_back();
-		if (tmp->getAtom() != NULL)
+		if (tmp->getLiteral() != NULL)
 		{
-			Atom* atm = tmp->getAtom();
+			Literal* atm = tmp->getLiteral();
 			for (int i = 0; i < atm->getElements().size(); i++)
 			{
 				if (atm->getElementAt(i)->getVarType() == 1)
@@ -2257,7 +2257,7 @@ QueryManager::QueryManager(int _nlevel, int _maxQQSize)
 		}
 	};
 
-void QueryManager::extractLiterals(Formula& f, vector<Atom*> &atoms)
+void QueryManager::extractLiterals(Formula& f, vector<Literal*> &atoms)
 	{
 #ifdef debug 
 #ifdef debugquery
@@ -2273,12 +2273,12 @@ void QueryManager::extractLiterals(Formula& f, vector<Atom*> &atoms)
 			tmp.pop_back();
 			if (back != NULL)
 			{
-				if (back->getAtom() != NULL)
+				if (back->getLiteral() != NULL)
 				{
-					atoms.push_back(back->getAtom());
+					atoms.push_back(back->getLiteral());
 #ifdef debug 
 #ifdef debugquery
-					logFile << "-----Atom computed:" << atoms.back()->toString() << endl;
+					logFile << "-----Literal computed:" << atoms.back()->toString() << endl;
 #endif
 #endif // debug					 
 				}
@@ -2295,16 +2295,16 @@ vector<int>& QueryManager::getAnswerSet() { return ynAnswer; };
 pair <vector<int>, vector<vector<vector<pair<Var*, Var*>>>>>& QueryManager::getMatchSet() { return Match; };
 void QueryManager::setMatchSet(pair <vector<int>, vector<vector<vector<pair<Var*, Var*>>>>>& input) { Match = input; };
 void QueryManager::setAnswerSet(vector<int> input) { ynAnswer = input; };
-int QueryManager::checkQueryLiteralMatchInBranch(Node* branch, Atom* query)
+int QueryManager::checkQueryLiteralMatchInBranch(Node* branch, Literal* query)
 	{
 		Node* iterator = branch;
 		while (iterator != NULL)
 		{
 			for (Formula* formula : iterator->getSetFormulae())
 			{
-				if (formula->getAtom() != NULL)
+				if (formula->getLiteral() != NULL)
 				{
-					if (formula->getAtom()->equals( *(query))==0)
+					if (formula->getLiteral()->equals( *(query))==0)
 					{						
 						return 1;
 					}
@@ -2315,7 +2315,7 @@ int QueryManager::checkQueryLiteralMatchInBranch(Node* branch, Atom* query)
 		return 0;	
 };
 
-int QueryManager::checkQueryVariableMatchInBranch(Node* branch, Atom* query, vector<pair<Var*, Var*>>& currentMatch, vector<vector<pair<Var*, Var*>>>& matches)
+int QueryManager::checkQueryVariableMatchInBranch(Node* branch, Literal* query, vector<pair<Var*, Var*>>& currentMatch, vector<vector<pair<Var*, Var*>>>& matches)
 	{
 		int res = 0;
 		Node* iterator = branch;
@@ -2323,24 +2323,24 @@ int QueryManager::checkQueryVariableMatchInBranch(Node* branch, Atom* query, vec
 		{
 			for (Formula* formula : iterator->getSetFormulae())
 			{
-				if (formula->getAtom() != NULL)
+				if (formula->getLiteral() != NULL)
 				{
-					if (formula->getAtom()->getElements().size() == query->getElements().size() && formula->getAtom()->getAtomOp() == query->getAtomOp())
+					if (formula->getLiteral()->getElements().size() == query->getElements().size() && formula->getLiteral()->getLiteralOp() == query->getLiteralOp())
 					{
 						int matchN = 0;
 						int noq = 0; //check if the query is a literal and there is a match
 						vector<pair<Var*, Var*>> temp = vector<pair<Var*, Var*>>();
-						for (int varIt = 0; varIt < formula->getAtom()->getElements().size(); varIt++)
+						for (int varIt = 0; varIt < formula->getLiteral()->getElements().size(); varIt++)
 						{
-							if (query->getElementAt(varIt)->getVarType() == 0 && query->getElementAt(varIt)->equal(formula->getAtom()->getElements().at(varIt)) == 0)
+							if (query->getElementAt(varIt)->getVarType() == 0 && query->getElementAt(varIt)->equal(formula->getLiteral()->getElements().at(varIt)) == 0)
 							{
-								// cout << query->toString() << "++" << formula.getAtom()->toString() << endl;
+								// cout << query->toString() << "++" << formula.getLiteral()->toString() << endl;
 								matchN++;								
 							}
 							else if (query->getElementAt(varIt)->getVarType() == 1)
 							{
-								// cout << query->toString() << ".." << formula.getAtom()->toString() << endl;
-								temp.push_back(pair<Var*, Var*>(query->getElementAt(varIt), formula->getAtom()->getElementAt(varIt)));
+								// cout << query->toString() << ".." << formula.getLiteral()->toString() << endl;
+								temp.push_back(pair<Var*, Var*>(query->getElementAt(varIt), formula->getLiteral()->getElementAt(varIt)));
 								matchN++;
 								// cout<<temp.back().first->toString() << " pair " << temp.back().second->toString()<< " " <<endl;
 							}
@@ -2364,9 +2364,9 @@ int QueryManager::checkQueryVariableMatchInBranch(Node* branch, Atom* query, vec
 		return res;
 };
 	
-Atom QueryManager::applySubstitution(Atom* result, Atom* query, const vector<pair<Var*,Var*>>& matches)
+Literal QueryManager::applySubstitution(Literal* result, Literal* query, const vector<pair<Var*,Var*>>& matches)
 	{				
-		copyAtom(query,result);
+		copyLiteral(query,result);
 		//cout << "Q before:" << result->toString() << endl;		
 		for (int sigIt = 0; sigIt < matches.size(); sigIt++)
 		{
@@ -2386,13 +2386,13 @@ Atom QueryManager::applySubstitution(Atom* result, Atom* query, const vector<pai
 
 int QueryManager::executeQuery(Formula& f, Tableau& tableau, pair <vector<int>, vector<vector<vector<pair<Var*, Var*>>>>>& result, int YN, vector<int>& ynAnswer)
 	{
-		vector<Atom*> qLits;
+		vector<Literal*> qLits;
 		formula = f;
 		extractLiterals(formula, qLits);
 		int matchFound = -1; //use -1 for errors
-		//Print Atoms from Query
+		//Print Literals from Query
 		/*cout << "Literals from query: " << qLits.size() << endl;
-		for (Atom* a : qLits)
+		for (Literal* a : qLits)
 			cout << a->toString() << endl;
 		//---------------------------------
 		*/
@@ -2419,7 +2419,7 @@ int QueryManager::executeQuery(Formula& f, Tableau& tableau, pair <vector<int>, 
 					 vector <vector<pair<Var*, Var*>>> tmp(0);
 					 for (int solIter = 0; solIter < matchSet.size(); solIter++) //iterate over partial solutions
 					   {
-						Atom sigq = Atom(-1, vector<Var*>(0));
+						Literal sigq = Literal(-1, vector<Var*>(0));
 						applySubstitution(&sigq, qLits.at(qIter), matchSet.at(solIter));
 						if (sigq.containsQVariable() == 0)
 						{
@@ -2588,7 +2588,7 @@ Formula* convertFormulaToNNF(Formula* formula)
 	logFile << "------" << formula->toString() << endl;
 #endif
 #endif // debug
-	if (formula->getAtom() != NULL)
+	if (formula->getLiteral() != NULL)
 	{
 #ifdef debug
 #ifdef debugnorm		
@@ -2610,7 +2610,7 @@ Formula* convertFormulaToNNF(Formula* formula)
 		bool neg = isNegated.back();
 		stackF.pop_back();
 		isNegated.pop_back();		
-		if (current->getAtom() != NULL )
+		if (current->getLiteral() != NULL )
 		{
 			
 			if (neg)
@@ -2621,12 +2621,12 @@ Formula* convertFormulaToNNF(Formula* formula)
 				logFile << "-------" << current->toString() << endl;
 #endif
 #endif // debug
-			  int  newOp = (current->getAtom()->getAtomOp() >= 2 ? -2 : 2);			  
-			  current->getAtom()->setAtomOp(current->getAtom()->getAtomOp() + newOp);
+			  int  newOp = (current->getLiteral()->getLiteralOp() >= 2 ? -2 : 2);			  
+			  current->getLiteral()->setLiteralOp(current->getLiteral()->getLiteralOp() + newOp);
 #ifdef debug
 #ifdef debugnorm		
 			  logFile << "------ Computing:" << endl;
-			  logFile << "-------" << current->getAtom()->toString() << endl;
+			  logFile << "-------" << current->getLiteral()->toString() << endl;
 #endif
 #endif // debug
 			 }
@@ -2914,10 +2914,10 @@ that stays for X^1_{ {x_{b_3} }
 TO DO LIST
 Create doc, in particular UML and separe headers from source.
 USE A MAP to MAP from string representing operator and integer representing operator.
-check brackets; check format of a formula in general as preprocessing and Check if an atom is built correctly.
+check brackets; check format of a formula in general as preprocessing and Check if a Literal is built correctly.
 define special chars from a config file. Setting the size of the special chars and checking for correctness.
 allowing change of the $ char from a config file.
-Optimize Atom management and creation
+Optimize Literal management and creation
 Test Cases
 Optimize expandKB
 remove recursion
