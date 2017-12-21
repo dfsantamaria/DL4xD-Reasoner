@@ -944,9 +944,10 @@ int parseInternalFormula(vector<vector <Var>>& vec, vector<vector <Var>>& vec2, 
 #endif // debug
 	stack<string> stackFormula;
 	stack<Formula*> stformula; //tracking subformulae
-	stackFormula.push(*inputformula);
-	string top = stackFormula.top();
-	stackFormula.pop();
+//	stackFormula.push(*inputformula);
+//	string top = stackFormula.top();
+	string top = *inputformula;
+//	stackFormula.pop();
 	string atom = string();
 	string operand = string();
 	Formula* formula = NULL;
@@ -2761,6 +2762,32 @@ Formula* convertFormulaToNNF(Formula* formula)
 #endif // debug
 	return startFormula;		
 }
+
+
+
+int precomputeKBSpaceFromString(string& inputformula, vector<int>& KBsize, vector<int>& Litsize)
+{
+	throw new exception("Function to be implemented");
+	return -1;
+}
+
+void precomputeKBSpaceFromFile(string &name, vector<int>& KBsize, vector<int>& Litsize)
+{
+	std::ifstream file(name);
+	std::string str;	
+	while (std::getline(file, str))
+	{		
+		if ((str.rfind("//", 0) != 0) || !str.empty())
+		{
+		  precomputeKBSpaceFromString(str, KBsize, Litsize);
+		}
+	}
+	
+}
+
+
+
+
 
 /*
   Some printing function

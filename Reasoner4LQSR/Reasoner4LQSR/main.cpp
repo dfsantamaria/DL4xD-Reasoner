@@ -38,16 +38,27 @@ int main()
 	/*
 	Initialization
 	*/
-	InitializeReasoner(3, 100, 20);
+	//If you don't read an OWL File, make sure that quantified and quantifier free var vectors are sufficietly large.
+	//InitializeReasoner(3, 100, 20);
+	InitializeReasoner(maxLevNum, vector<int>{20,20,0,20,10,0,0,0});
 	/*
 	Inserting Knowledge Base
 	*/
 	vector<Formula*> KB;
 	vector<Formula*> KBnorm;
 	vector<Formula*> KBcnf;
-	vector<Formula*> KBmq;
-	//	insertFormulaKB("( ($OA V0{l} $CO V0{j} $AO $IN V3{C333})  $AD (  ($OA V0{k} $CO V0{t} $AO $IN V3{C333}) $OR ($OA V0{s} $CO V0{v} $AO $IN V3{C333}) ) )", KB);
+	vector<Formula*> KBmq;	
 	string kbname = "Example/bg5.txt";
+
+	/*Precomputing Space*/
+//  to be implemented
+//	vector<int>KBsize(8, 0);
+//	vector<int>Litsize(2, 0);
+//	precomputeKBSpaceFromFile(kbname, KBsize, Litsize);
+
+	/*  */
+
+
 	cout << "--Reading KB From File--" << endl;
 	readKBFromFile(0, kbname, KB);
 	printTRadix(KB); //print Tableau Radix
@@ -90,7 +101,8 @@ int main()
 	cout << "Reading Query ..." << endl;
 	string queryname = "Example/query.txt";
 	vector<Formula> querySet;
-	vector<string> stringSet = vector<string>(0);
+	vector<string> stringSet = vector<string>(0);	
+
 	readQueryFromFile(queryname, stringSet);
 	vector<QueryManager*> results;
 	performQuerySet(results, stringSet, querySet, tableau);
@@ -127,10 +139,10 @@ int main()
 	vector<Formula*> KB2norm;
 	vector<Formula*> KB2cnf;
 	vector<Formula*> KB2mq;
-	vector<int> KBsize(sizeofVVector,0);
+	vector<int> KB2size(sizeofVVector,0);
 	cout << "Reading OWL File" << endl;
-	readOWLXMLOntology("Example/yy.owl", ontNamespaces, formulae, KBsize);
-	InitializeReasoner(maxLevNum, KBsize);
+	readOWLXMLOntology("Example/yy.owl", ontNamespaces, formulae, KB2size);
+	InitializeReasoner(maxLevNum, KB2size);
 	//InitializeReasoner(3, 100, 20);
 	cout << "Printing ontology namespaces" << endl;
 	for (pair<string, string> p : ontNamespaces)
@@ -140,10 +152,10 @@ int main()
 		cout << p << endl;
 	cout << "Metrics of the Ontology: " << endl;
 	cout << "Number of formulae: " << formulae.size() << endl;
-	cout << "Individuals: " << KBsize.at(0) << "." << endl;
-	cout << "Classes: " << KBsize.at(1) << "." << endl;
-	cout << "Properties: " << KBsize.at(propertyindex) << "." << endl;
-	cout << "Quantified Variables of level 0: " << KBsize.at(qvar0) << "." << endl;
+	cout << "Individuals: " << KB2size.at(0) << "." << endl;
+	cout << "Classes: " << KB2size.at(1) << "." << endl;
+	cout << "Properties: " << KB2size.at(propertyindex) << "." << endl;
+	cout << "Quantified Variables of level 0: " << KB2size.at(qvar0) << "." << endl;
 	cout << "--Reading Ontology--" << endl;
 	readKBFromStrings(0, formulae, KB2);
 	printTRadix(KB2);

@@ -301,6 +301,8 @@ void convertKBToNNF(vector<Formula*>& KB, vector<Formula*>& KBnorm);
 void propagateNegation(Formula* current, vector<bool>& isNegated, vector<Formula*>& stackF, bool valLeft, bool valRight);
 void dropLRImplication(Formula* f);
 Formula* dropNegation(Formula *f, Formula **topform);
+void precomputeKBSpaceFromFile(string &name, vector<int>& KBsize, vector<int>& Litsize);
+int precomputeKBSpaceFromString(string& line, vector<int>& KBsize, vector<int>& Litsize);
 
 //Printing Function;
 void printClosedBranches(Tableau& tableau);
