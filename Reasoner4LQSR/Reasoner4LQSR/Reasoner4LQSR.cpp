@@ -975,7 +975,7 @@ int parseInternalFormula(vector<vector <Var>>& vec, vector<vector <Var>>& vec2, 
 				atom.clear();
 				
 			}
-			if(stformula.size()>1)
+			else if(stformula.size()>1)       //if(stformula.size()>1)
 			{				
 				Formula *rightf = stformula.top(); 
 				stformula.pop();					
@@ -1009,8 +1009,10 @@ int parseInternalFormula(vector<vector <Var>>& vec, vector<vector <Var>>& vec2, 
 		case '$': operand = string(1, c) + string(1, top.at(i + 1)) + string(1, top.at(i + 2));
 			i = i + 2;
 			if (operators.checkLogOp(&operand) != 0)
-			{				
-				stformula.push(new Formula(NULL, operators.getLogOpValue(operand)));	
+			{		
+				int isNg = operators.getLogOpValue(operand);
+				stformula.push(new Formula(NULL, isNg));
+				
 			}
 			else
 			{

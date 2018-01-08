@@ -814,6 +814,8 @@ void readOWLXMLOntology(string filename, vector<pair<string, string>>& ontNamesp
 			parseSubObjectProperty(formulae, it, KBsize);
 		else if (name == "SubClassOf")
 			parseSubClassOfExpression(formulae, it, KBsize);
+		else if (name == "EquivalentClasses")
+			parseEquivalentClassExpression(formulae, it, KBsize);
 
 		// if (!entry.empty())
 		//	formulae.push_back(entry);	

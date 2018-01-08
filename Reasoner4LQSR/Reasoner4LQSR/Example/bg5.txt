@@ -5,7 +5,7 @@
 (V0{Ann})
 (V0{George})
 ($FA V0{x}) ( $NG (V0{x} $IN V1{VeryYoung}) )
-$NG ( V0{Annetta} $IN V1{Person} )
+($NG ( V0{Annetta} $IN V1{Person} ))
 
 ($FA V0{x}) (  (V0{x} $NI V1{Kid}) $AD ($NG ( (V0{x} $IN V1{VeryYoung}) $IF  (V0{x} $NI V1{Kid}) ) ) )
 

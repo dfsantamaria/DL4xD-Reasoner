@@ -48,7 +48,7 @@ int main()
 	vector<Formula*> KBnorm;
 	vector<Formula*> KBcnf;
 	vector<Formula*> KBmq;	
-	string kbname = "Example/bg5.txt";
+	string kbname = "Example/bg8.txt";
 
 	/*Precomputing Space -- to be implemented*/
 //  to be implemented
