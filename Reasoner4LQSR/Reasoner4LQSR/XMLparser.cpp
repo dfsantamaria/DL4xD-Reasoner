@@ -596,23 +596,26 @@ void parseSubClassOfExpression(vector<std::string>& entry, pugi::xml_node_iterat
 	
 	*/
 	string formula = "";
-	parseObjectInserctionOf(formula,it,"z",0);
+	pugi::xml_node_iterator it2 = it->first_child().next_sibling();
+	parseObjectIntersectionOf(formula, it2,"z",0);
+	cout << "----------------" << "("<<formula<<")" << endl;
 }
 
-void parseEquivalentClassExpression(vector<std::string>& entry, pugi::xml_node_iterator& it, vector<int>& KBsize)
+void parseEquivalentClassExpression(vector<std::string>& entry, pugi::xml_node_iterator& it, string varz, vector<int>& KBsize)
 {
 	throw new exception;
 }
 
 void parseClassExpression(string& entry, pugi::xml_node_iterator& it, string varz, int varcount)
-{
-	pugi::xml_node node = it->first_child();
-	if (string(node.name()) == "ObjectIntersectionOf")
+{	
+
+	cout <<"+++"<< it->name() << endl;
+	if (string(it->name()) == "ObjectIntersectionOf")
 	{
-		parseObjectInserctionOf(entry, it, varz, varcount);
+	  parseObjectIntersectionOf(entry, it, varz, varcount);
 	}
 }
-void parseObjectInserctionOf(string& entry, pugi::xml_node_iterator& it, string varz, int varcount)
+void parseObjectIntersectionOf(string& entry, pugi::xml_node_iterator& it, string varz, int varcount)
 {
 	
 #ifdef debug 
@@ -625,27 +628,29 @@ void parseObjectInserctionOf(string& entry, pugi::xml_node_iterator& it, string 
 	//{		
 		
 	for (pugi::xml_node_iterator node = it->begin(); node != it->end(); ++node)
-		{
+		{	
+		cout << "!!!!" << node->name() << endl;
 		  if (string(node->name()) == "Class")
-		  {
+		  {			  
 			string irival = node->attribute("IRI").as_string();
 			irival = irival.substr(irival.find("#") + 1);
 			string classn = "V1{" + irival + "}";
-			string res = "(V0{" + varz + "} $IN " + classn+" )";
+			string res = "(V0{" + varz + "} $IN " + classn+")";
 			entry += res;
+			if (node != it->begin())
+				entry = "(" + entry + ")";
 		  }
-		  else 
-			  parseClassExpression(entry,it,varz,varcount);
-		  if (node != it->end())
+		  else
 		  {
-			  if (node != it->begin())
-			  {				  
-				  entry = "(" + entry + ")";
-				  entry += "$AD ";
-			  }
-		  }
-		}
-	entry = "(" + entry + ")";	
+			  string intformula = "";
+			  parseClassExpression(intformula, node, varz, varcount);
+			  entry +=  intformula ;
+		  }					  
+		
+		  if( node!=it->last_child())
+			  entry += "$AD ";
+		  
+		}	
 };
 
 void parseObjectUnionOf(vector<std::string>& entry, pugi::xml_node_iterator& it, string varz, vector<int>& KBsize) { throw new exception(); };

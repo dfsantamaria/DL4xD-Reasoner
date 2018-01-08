@@ -140,7 +140,7 @@ int main()
 	vector<Formula*> KB2mq;
 	vector<int> KB2size(sizeofVVector,0);
 	cout << "Reading OWL File" << endl;
-	readOWLXMLOntology("Example/yy.owl", ontNamespaces, formulae, KB2size);
+	readOWLXMLOntology("Example/yy4.owl", ontNamespaces, formulae, KB2size);
 	InitializeReasoner(maxLevNum, KB2size);
 	//InitializeReasoner(3, 100, 20);
 	cout << "Printing ontology namespaces" << endl;
