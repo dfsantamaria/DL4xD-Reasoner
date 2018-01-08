@@ -26,12 +26,12 @@
     </Declaration>
     <SubClassOf>
         <Class IRI="#A"/>
-        <ObjectIntersectionOf>            
+        <ObjectIntersectionOf>
             <Class IRI="#D"/>
-            <ObjectIntersectionOf>
+            <ObjectUnionOf>
                 <Class IRI="#B"/>
                 <Class IRI="#C"/>
-            </ObjectIntersectionOf>
+            </ObjectUnionOf>
         </ObjectIntersectionOf>
     </SubClassOf>
 </Ontology>

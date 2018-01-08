@@ -31,11 +31,12 @@ void parseDisjointObjectProperties(vector<std::string>& entry, pugi::xml_node_it
 void parseSubObjectProperty(vector<std::string>& entry, pugi::xml_node_iterator& it, vector<int>& KBsize);
 
 void parseSubClassOfExpression(vector<std::string>& entry, pugi::xml_node_iterator& it, vector<int>& KBsize);
-void parseEquivalentClassExpression(vector<std::string>& entry, pugi::xml_node_iterator& it, string varz, vector<int>& KBsize);
-void parseObjectIntersectionOf(string& entry, pugi::xml_node_iterator& it, string varz, int varcount);
-void parseClassExpression(string& entry, pugi::xml_node_iterator& it, string varz, int varcount);
+void parseEquivalentClassExpression(vector<std::string>& entry, pugi::xml_node_iterator& it, vector<int>& KBsize);
+void parseObjectIntersectionOf(string& entry, pugi::xml_node_iterator& it, string varz, int& varcount);
+void parseClassExpression(string& entry, pugi::xml_node_iterator& it, string varz, int& varcount);
+void parseObjectUnionOf(string& entry, pugi::xml_node_iterator& it, string varz, int& varcount);
 
-void parseObjectUnionOf(vector<std::string>& entry, pugi::xml_node_iterator& it, string varz, vector<int>& KBsize);
+
 void parseObjectComplementOf(vector<std::string>& entry, pugi::xml_node_iterator& it, string varz, vector<int>& KBsize);
 void parseObjectOneOf(vector<std::string>& entry, pugi::xml_node_iterator& it, string varz, vector<int>& KBsize);
 void parseObjectSomeValuesFrom(vector<std::string>& entry, pugi::xml_node_iterator& it, string varz, vector<int>& KBsize);
@@ -45,8 +46,6 @@ void parseObjectHasSelf(vector<std::string>& entry, pugi::xml_node_iterator& it,
 void parseObjectMinCardinality(vector<std::string>& entry, pugi::xml_node_iterator& it, string varz, vector<int>& KBsize);
 void parseObjectMaxCardinality(vector<std::string>& entry, pugi::xml_node_iterator& it, string varz, vector<int>& KBsize);
 void parseObjectExactCardinality(vector<std::string>& entry, pugi::xml_node_iterator& it, string varz, vector<int>& KBsize);
-void parseSubClassOf(vector<std::string>& entry, pugi::xml_node_iterator& it, string varz, vector<int>& KBsize);
-void parseEquivalentClasses(vector<std::string>& entry, pugi::xml_node_iterator& it, string varz, vector<int>& KBsize);
 void parseDisjointClasses(vector<std::string>& entry, pugi::xml_node_iterator& it, string varz, vector<int>& KBsize);
 void parseDisjointUnion(vector<std::string>& entry, pugi::xml_node_iterator& it, string varz, vector<int>& KBsize);
 void parseObjectPropertyChain(vector<std::string>& entry, pugi::xml_node_iterator& it, string varz, vector<int>& KBsize);
