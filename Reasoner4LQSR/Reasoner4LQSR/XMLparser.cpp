@@ -1,4 +1,4 @@
-
+﻿
 #include "stdafx.h" // only on windows
 #include <fstream>
 #include <string>
@@ -581,7 +581,73 @@ void parseSubObjectProperty(vector<std::string>& out, pugi::xml_node_iterator& i
 
 };
 
-void parseObjectInserctionOf(vector<std::string>& entry, pugi::xml_node_iterator& it, string varz, vector<int>& KBsize) { throw new exception(); };
+
+
+
+
+
+
+
+
+
+void parseSubClassOfExpression(vector<std::string>& entry, pugi::xml_node_iterator& it, vector<int>& KBsize)
+{
+	/*
+	
+	*/
+	string formula = "";
+	parseObjectInserctionOf(formula,it,"z",0);
+}
+
+void parseEquivalentClassExpression(vector<std::string>& entry, pugi::xml_node_iterator& it, vector<int>& KBsize)
+{
+	throw new exception;
+}
+
+void parseClassExpression(string& entry, pugi::xml_node_iterator& it, string varz, int varcount)
+{
+	pugi::xml_node node = it->first_child();
+	if (string(node.name()) == "ObjectIntersectionOf")
+	{
+		parseObjectInserctionOf(entry, it, varz, varcount);
+	}
+}
+void parseObjectInserctionOf(string& entry, pugi::xml_node_iterator& it, string varz, int varcount)
+{
+	
+#ifdef debug 
+#ifdef debugparseXML
+	logFile << "-----Found ObjectIntersectionOf class expression. " << endl;
+#endif
+#endif // debug
+	//pugi::xml_node node = it->first_child();
+	//if (string(node.name()) == "ObjectIntersectionOf")
+	//{		
+		
+	for (pugi::xml_node_iterator node = it->begin(); node != it->end(); ++node)
+		{
+		  if (string(node->name()) == "Class")
+		  {
+			string irival = node->attribute("IRI").as_string();
+			irival = irival.substr(irival.find("#") + 1);
+			string classn = "V1{" + irival + "}";
+			string res = "(V0{" + varz + "} $IN " + classn+" )";
+			entry += res;
+		  }
+		  else 
+			  parseClassExpression(entry,it,varz,varcount);
+		  if (node != it->end())
+		  {
+			  if (node != it->begin())
+			  {				  
+				  entry = "(" + entry + ")";
+				  entry += "$AD ";
+			  }
+		  }
+		}
+	entry = "(" + entry + ")";	
+};
+
 void parseObjectUnionOf(vector<std::string>& entry, pugi::xml_node_iterator& it, string varz, vector<int>& KBsize) { throw new exception(); };
 void parseObjectComplementOf(vector<std::string>& entry, pugi::xml_node_iterator& it, string varz, vector<int>& KBsize) { throw new exception(); };
 void parseObjectOneOf(vector<std::string>& entry, pugi::xml_node_iterator& it, string varz, vector<int>& KBsize) { throw new exception(); };
@@ -660,6 +726,9 @@ void readOWLXMLOntology(string filename, vector<pair<string, string>>& ontNamesp
 			parseDisjointObjectProperties(formulae, it, KBsize);
 		else if (name == "SubObjectProperty")
 			parseSubObjectProperty(formulae, it, KBsize);
+		else if (name == "SubClassOf")
+			parseSubClassOfExpression(formulae, it, KBsize);
+
 		// if (!entry.empty())
 		//	formulae.push_back(entry);	
 

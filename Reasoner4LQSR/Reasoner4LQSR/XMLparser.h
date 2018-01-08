@@ -30,7 +30,10 @@ void parseEquivalentObjectProperties(vector<std::string>& entry, pugi::xml_node_
 void parseDisjointObjectProperties(vector<std::string>& entry, pugi::xml_node_iterator& it, vector<int>& KBsize);
 void parseSubObjectProperty(vector<std::string>& entry, pugi::xml_node_iterator& it, vector<int>& KBsize);
 
-void parseObjectInserctionOf(vector<std::string>& entry, pugi::xml_node_iterator& it, string varz, vector<int>& KBsize);
+void parseSubClassOfExpression(vector<std::string>& entry, pugi::xml_node_iterator& it, vector<int>& KBsize);
+void parseEquivalentClassExpression(vector<std::string>& entry, pugi::xml_node_iterator& it, string varz, vector<int>& KBsize);
+void parseObjectInserctionOf(string& entry, pugi::xml_node_iterator& it, string varz, int varcount);
+
 void parseObjectUnionOf(vector<std::string>& entry, pugi::xml_node_iterator& it, string varz, vector<int>& KBsize);
 void parseObjectComplementOf(vector<std::string>& entry, pugi::xml_node_iterator& it, string varz, vector<int>& KBsize);
 void parseObjectOneOf(vector<std::string>& entry, pugi::xml_node_iterator& it, string varz, vector<int>& KBsize);
