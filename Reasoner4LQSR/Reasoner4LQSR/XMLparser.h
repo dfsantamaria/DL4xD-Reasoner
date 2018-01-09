@@ -9,7 +9,8 @@
 #include "thirdparts/pugixml/src/pugixml.hpp"
 
 using namespace std;
-
+string retrieveNameFromNode(pugi::xml_node_iterator& it, string& const attribute);
+string retrieveVarNameFromNode(pugi::xml_node_iterator& it, string& const attribute, int& var);
 void parseDeclaration(vector<std::string>& entry, pugi::xml_node_iterator& it, vector<int>& KBsize);
 void readOWLXMLOntology(std::string filename, vector<pair<std::string, std::string>>& ontNamespaces, vector<string>& formulae, vector<int>& KBsize);
 void buildNamespace(pugi::xml_document& xmldocument, vector<pair<std::string, std::string>>& ontNamespaces);

@@ -36,11 +36,13 @@
     <Declaration>
         <ObjectProperty IRI="#prop"/>
     </Declaration>
-    <DisjointUnion>
+    <SubClassOf>
         <Class IRI="#D"/>
-        <Class IRI="#A"/>
-        <Class IRI="#B"/>
-    </DisjointUnion>
+        <ObjectUnionOf>
+            <Class IRI="#A"/>
+            <Class IRI="#B"/>
+        </ObjectUnionOf>
+    </SubClassOf>
 </Ontology>
 
 

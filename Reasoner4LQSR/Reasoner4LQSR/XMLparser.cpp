@@ -586,26 +586,28 @@ void parseSubObjectProperty(vector<std::string>& out, pugi::xml_node_iterator& i
 
 
 
+string retrieveNameFromNode(pugi::xml_node_iterator const& it, string const& attribute)
+{
+	string irival = it->attribute("IRI").as_string();
+	irival = irival.substr(irival.find("#") + 1);
+	return irival;
+}
 
-
-
+string retrieveVarNameFromNode(pugi::xml_node_iterator const& it, string const& attribute, int const& var)
+{
+	return "V" + to_string(var) + "{" + retrieveNameFromNode(it, attribute) + "}";
+}
 
 void parseSubClassOfExpression(vector<std::string>& entry, pugi::xml_node_iterator& it, vector<int>& KBsize)
 {	
 	int varz = 0;
-	string formula = "";
-	string irival = it->first_child().attribute("IRI").as_string();
-	irival = irival.substr(irival.find("#") + 1);
-	string classn = "V1{" + irival + "}";
-	string res = "(V0{z} $IN " + classn + ")";
+	string formula = "";	
+	string res = "(V0{z} $IN " + retrieveVarNameFromNode(it->first_child(), "IRI", 1) + ")";
 	pugi::xml_node_iterator node = it->first_child().next_sibling();
 	int varcount = 1;
 	if (node->name() == "Class")
-	{
-		irival = node->attribute("IRI").as_string();
-		irival = irival.substr(irival.find("#") + 1);
-		classn = "V1{" + irival + "}";
-		formula = "(" + res + "$IF" + "(V0{z} $IN " + classn + "))";
+	{		
+		formula = "(" + res + "$IF" + "(V0{z} $IN " + retrieveVarNameFromNode(node, "IRI", 1) + "))";
 	}
 	else
 	{
@@ -692,18 +694,13 @@ void parseEquivalentClassExpression(vector<std::string>& entry, pugi::xml_node_i
 {	
 	int varz = 0;
 	string formula = "";
-	string irival = it->first_child().attribute("IRI").as_string();
-	irival = irival.substr(irival.find("#") + 1);
-	string classn = "V1{" + irival + "}";
-	string res = "(V0{z} $IN " + classn + ")";
+	string irival = it->first_child().attribute("IRI").as_string();	
+	string res = "(V0{z} $IN " +  retrieveVarNameFromNode(it->first_child(), "IRI", 1) + ")";
 	pugi::xml_node_iterator node = it->first_child().next_sibling();
 	int varcount = 1;
 	if (node->name() == "Class")
-	{
-		irival = node->attribute("IRI").as_string();
-		irival = irival.substr(irival.find("#") + 1);
-		classn = "V1{" + irival + "}";
-		formula = "(" + res + "$II" + "(V0{z} $IN " + classn + "))";
+	{		
+		formula = "(" + res + "$II" + "(V0{z} $IN " + retrieveVarNameFromNode(node, "IRI", 1) + "))";
 	}
 	else
 	{
@@ -761,14 +758,12 @@ void parseObjectIntersectionOf(string& entry, pugi::xml_node_iterator& it, int v
 	for (pugi::xml_node_iterator node = it->begin(); node != it->end(); ++node)
 		{			
 		  if (string(node->name()) == "Class")
-		  {			  
-			string irival = node->attribute("IRI").as_string();
-			irival = irival.substr(irival.find("#") + 1);
-			string classn = "V1{" + irival + "}";
+		  {	  
+			
 			string var = "z";
 			if (varz > 0)
 				var += to_string(varz);
-			string res = "(V0{" + var + "} $IN " + classn+")";
+			string res = "(V0{" + var + "} $IN " + retrieveVarNameFromNode(node, "IRI", 1) +")";
 			entry += res;
 			if (node != it->begin())
 				entry = "(" + entry + ")";
@@ -797,14 +792,11 @@ void parseObjectUnionOf(string& entry, pugi::xml_node_iterator& it, int varz, in
 	for (pugi::xml_node_iterator node = it->begin(); node != it->end(); ++node)
 	{
 		if (string(node->name()) == "Class")
-		{
-			string irival = node->attribute("IRI").as_string();
-			irival = irival.substr(irival.find("#") + 1);
-			string classn = "V1{" + irival + "}";
+		{			
 			string var = "z";
 			if (varz > 0)
 				var += to_string(varz);
-			string res = "(V0{" + var + "} $IN " + classn + ")";
+			string res = "(V0{" + var + "} $IN " + retrieveVarNameFromNode(node, "IRI", 1) + ")";
 			entry += res;
 			if (node != it->begin())
 				entry = "(" + entry + ")";
@@ -832,14 +824,11 @@ void parseObjectComplementOf(string& entry, pugi::xml_node_iterator& it, int var
 	for (pugi::xml_node_iterator node = it->begin(); node != it->end(); ++node)
 	{
 		if (string(node->name()) == "Class")
-		{
-			string irival = node->attribute("IRI").as_string();
-			irival = irival.substr(irival.find("#") + 1);
-			string classn = "V1{" + irival + "}";
+		{			
 			string var = "z";
 			if (varz > 0)
 				var += to_string(varz);
-			string res = "($NG (V0{" + var + "} $IN " + classn + "))";
+			string res = "($NG (V0{" + var + "} $IN " + retrieveVarNameFromNode(node, "IRI", 1) + "))";
 			entry += res;
 			if (node != it->begin())
 				entry = "(" + entry + ")";
@@ -867,21 +856,16 @@ void parseObjectPropertyDomain(string& entry, pugi::xml_node_iterator& it, int v
 
 	    pugi::xml_node_iterator node = it->begin(); 
 	
-		entry += "( ( $OA V0{z} $CO V0{z1} $AO $IN V3{";
-		string irival = node->attribute("IRI").as_string();
-		irival = irival.substr(irival.find("#") + 1);
-		entry+=irival + "}) $AD";
+		entry += "( ( $OA V0{z} $CO V0{z1} $AO $IN V3{";		
+		entry+=retrieveNameFromNode(node, "IRI")+ "}) $II";
 		node = node->next_sibling();
 
 		if (string(node->name()) == "Class")
-		{
-			irival = node->attribute("IRI").as_string();
-			irival = irival.substr(irival.find("#") + 1);
-			string classn = "V1{" + irival + "}";
+		{			
 			string var = "z";
 			if (varz > 0)
 				var += varz;
-			string res = "(V0{" + var + "} $IN " + classn + ") )";
+			string res = "(V0{" + var + "} $IN " + retrieveVarNameFromNode(node, "IRI", 1) + ") )";
 			entry += res;
 			
 		}
@@ -905,21 +889,16 @@ void parseObjectPropertyRange(string& entry, pugi::xml_node_iterator& it, int va
 
 	pugi::xml_node_iterator node = it->begin();
 
-	entry += "( ( $OA V0{z} $CO V0{z1} $AO $IN V3{";
-	string irival = node->attribute("IRI").as_string();
-	irival = irival.substr(irival.find("#") + 1);
-	entry += irival + "}) $AD";
+	entry += "( ( $OA V0{z} $CO V0{z1} $AO $IN V3{";	
+	entry += retrieveNameFromNode(node, "IRI") + "}) $II";
 	node = node->next_sibling();
 
 	if (string(node->name()) == "Class")
-	{
-		irival = node->attribute("IRI").as_string();
-		irival = irival.substr(irival.find("#") + 1);
-		string classn = "V1{" + irival + "}";
+	{		
 		string var = "z";
 		if (varz > 0)
 			var += to_string(varz);
-		string res = "(V0{" + var + "} $IN " + classn + ") )";
+		string res = "(V0{" + var + "} $IN " + retrieveVarNameFromNode(node, "IRI", 1) + ") )";
 		entry += res;
 
 	}
@@ -938,14 +917,11 @@ void parseDisjointClasses(string& entry, pugi::xml_node_iterator& it, int varz, 
 #endif
 #endif // debug
 
-	pugi::xml_node_iterator node = it->begin();
-	string irival = node->attribute("IRI").as_string();
-	irival = irival.substr(irival.find("#") + 1);
-	string classn = "V1{" + irival + "}";
+	pugi::xml_node_iterator node = it->begin();	
 	string var = "z";
 	if (varz > 0)
 		var += to_string(varz);
-	string res = "(V0{" + var + "} $IN " + classn + ") $II ";
+	string res = "(V0{" + var + "} $IN " + retrieveVarNameFromNode(node, "IRI", 1) + ") $II ";
 	entry += res;
 	
 
@@ -953,13 +929,11 @@ void parseDisjointClasses(string& entry, pugi::xml_node_iterator& it, int varz, 
 	{
 		if (string(nd->name()) == "Class")
 		{
-			string irival = nd->attribute("IRI").as_string();
-			irival = irival.substr(irival.find("#") + 1);
-			string classn = "V1{" + irival + "}";
+			
 			string var = "z";
 			if (varz > 0)
 				var += to_string(varz);
-			string res = "($NG (V0{" + var + "} $IN " + classn + "))";
+			string res = "($NG (V0{" + var + "} $IN " + retrieveVarNameFromNode(nd, "IRI", 1) + "))";
 			entry += res;
 			if (nd != node)
 				entry = "(" + entry + ")";
@@ -989,14 +963,11 @@ void parseObjectOneOf(string& entry, pugi::xml_node_iterator& it, int varz, int&
 	for (pugi::xml_node_iterator node = it->begin(); node != it->end(); ++node)
 	{
 		if (string(node->name()) == "NamedIndividual")
-		{
-			string irival = node->attribute("IRI").as_string();
-			irival = irival.substr(irival.find("#") + 1);
-			string classn = "V0{" + irival + "}";
+		{			
 			string var = "z";
 			if (varz > 0)
 				var += to_string(varz);
-			string res = "(V0{" + var + "} $EQ " + classn + ")";
+			string res = "(V0{" + var + "} $EQ " + retrieveVarNameFromNode(node, "IRI", 0) + ")";
 			entry += res;
 			if (node != it->begin())
 				entry = "(" + entry + ")";
@@ -1014,13 +985,10 @@ void parseObjectHasSelf(string& entry, pugi::xml_node_iterator& it, int varz, in
 #endif
 #endif // debug            
 	        pugi::xml_node_iterator node = it->begin();		
-			string irival = node->attribute("IRI").as_string();
-			irival = irival.substr(irival.find("#") + 1);
-			string classn = "V3{" + irival + "}";
 			string var = "z";
 			if (varz > 0)
 				var += to_string(varz);
-			string res = "($OA V0{" + var + "} $CO  V0{" + var + "} $OA $IN "+ classn + ")";
+			string res = "($OA V0{" + var + "} $CO  V0{" + var + "} $OA $IN "+ retrieveVarNameFromNode(node, "IRI", 3) + ")";
 			entry += res;	
 	
 };
@@ -1032,19 +1000,14 @@ void parseObjectHasValue(string& entry, pugi::xml_node_iterator& it, int varz, i
 	logFile << "-----Found ObjectHasSelf class expression. " << endl;
 #endif
 #endif // debug            
-	pugi::xml_node_iterator node = it->begin();
-	string irival = node->attribute("IRI").as_string();
-	irival = irival.substr(irival.find("#") + 1);
-	string classn = "V3{" + irival + "}";
+	pugi::xml_node_iterator node = it->begin();	
+	string classn = retrieveVarNameFromNode(node, "IRI", 3);
 	
 	node = node->next_sibling();
-	irival = node->attribute("IRI").as_string();
-	irival = irival.substr(irival.find("#") + 1);
-
 	string var = "z";
 	if (varz > 0)
 		var += to_string(varz);
-	string res = "($OA V0{" + var + "} $CO  V0{" + irival + "} $OA $IN " + classn + ")";
+	string res = "($OA V0{" + var + "} $CO "+ retrieveVarNameFromNode(node, "IRI", 0)+   " $OA $IN " + classn + ")";
 	entry += res;
 };
 
