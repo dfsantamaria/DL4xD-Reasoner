@@ -26,13 +26,12 @@
     </Declaration>
     <SubClassOf>
         <Class IRI="#A"/>
-        <ObjectIntersectionOf>
-            <Class IRI="#D"/>
-            <ObjectUnionOf>
-                <Class IRI="#B"/>
+        <ObjectComplementOf>
+            <ObjectIntersectionOf>
                 <Class IRI="#C"/>
-            </ObjectUnionOf>
-        </ObjectIntersectionOf>
+                <Class IRI="#D"/>
+            </ObjectIntersectionOf>
+        </ObjectComplementOf>
     </SubClassOf>
 </Ontology>
 
