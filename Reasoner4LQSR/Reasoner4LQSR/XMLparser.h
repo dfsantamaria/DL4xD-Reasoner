@@ -9,8 +9,8 @@
 #include "thirdparts/pugixml/src/pugixml.hpp"
 
 using namespace std;
-string retrieveNameFromNode(pugi::xml_node_iterator& it, string& const attribute);
-string retrieveVarNameFromNode(pugi::xml_node_iterator& it, string& const attribute, int& var);
+string retrieveNameFromNode(pugi::xml_node_iterator const& it, string const& attribute);
+string retrieveVarNameFromNode(pugi::xml_node_iterator const& it, string const& attribute, int const& var);
 void parseDeclaration(vector<std::string>& entry, pugi::xml_node_iterator& it, vector<int>& KBsize);
 void readOWLXMLOntology(std::string filename, vector<pair<std::string, std::string>>& ontNamespaces, vector<string>& formulae, vector<int>& KBsize);
 void buildNamespace(pugi::xml_document& xmldocument, vector<pair<std::string, std::string>>& ontNamespaces);
@@ -46,7 +46,7 @@ void parseObjectOneOf(string& entry, pugi::xml_node_iterator& it, int varz, int&
 void parseObjectHasSelf(string& entry, pugi::xml_node_iterator& it, int varz, int& varcount);
 void parseObjectHasValue(string& entry, pugi::xml_node_iterator& it, int varz,int& varcount);
 
-void parseObjectPropertyChain(string& entry, pugi::xml_node_iterator& it, int varz);
+
 void parseObjectSomeValuesFrom(string& entry, pugi::xml_node_iterator& it, int varz);
 void parseObjectAllValuesFrom(string& entry, pugi::xml_node_iterator& it, int varz);
 void parseObjectMinCardinality(string& entry, pugi::xml_node_iterator& it, int varz);

@@ -525,33 +525,30 @@ void parseDisjointObjectProperties(vector<std::string>& out, pugi::xml_node_iter
 			out.push_back(entry);
 			if (KBsize.at(qvar0)< 2)
 				KBsize.at(qvar0) = 2;
-		}
+		}		
 	}
+
+
 
 };
 
 
 void parseSubObjectProperty(vector<std::string>& out, pugi::xml_node_iterator& it, vector<int>& KBsize)
-{
+{	
 #ifdef debug 
 #ifdef debugparseXML
 	logFile << "-----Found subobject-property. " << endl;
 #endif
 #endif // debug
-	pugi::xml_node node = it->first_child();
+	pugi::xml_node node = it->first_child(); 
 	if (string(node.name()) == "ObjectProperty")
 	{
-		string entry = "";
-		string irival = node.attribute("IRI").as_string();
-		irival = irival.substr(irival.find("#") + 1);
-		string prop1 = "V3{" + irival + "}";
-		node = node.next_sibling();
-		irival = "";
+		string entry = "";		
+		string prop1 = retrieveVarNameFromNode(node, "IRI", 3);
+		node = node.next_sibling();		
 		if (string(node.name()) == "ObjectProperty")
-		{
-			irival = node.attribute("IRI").as_string();
-			irival = irival.substr(irival.find("#") + 1);
-			string prop2 = "V3{" + irival + "}";
+		{			
+			string prop2 = retrieveVarNameFromNode(node, "IRI", 3);
 			entry = "($FA V0{z})($FA V0{z1})(";
 			entry.append("($OA V0{z} $CO V0{z1} $AO $NI ");
 			entry.append(prop1);
@@ -559,14 +556,13 @@ void parseSubObjectProperty(vector<std::string>& out, pugi::xml_node_iterator& i
 			entry.append("($OA V0{z} $CO V0{z1} $AO $IN ");
 			entry.append(prop2);	
 			entry.append("))");
+			out.push_back(entry);
 			if (KBsize.at(qvar0)< 2)
 				KBsize.at(qvar0) = 2;
 		}
 		else if (string(node.name()) == "ObjectInverseOf")
-		{
-			irival = (node.first_child()).attribute("IRI").as_string();
-			irival = irival.substr(irival.find("#") + 1);
-			string prop2 = "V3{" + irival + "}";
+		{			
+			string prop2 = retrieveVarNameFromNode(node.first_child(), "IRI", 3);
 			entry = "($FA V0{z})($FA V0{z1})(";
 			entry.append("($OA V0{z} $CO V0{z1} $AO $NI ");
 			entry.append(prop1);
@@ -574,11 +570,43 @@ void parseSubObjectProperty(vector<std::string>& out, pugi::xml_node_iterator& i
 			entry.append("($OA V0{z1} $CO V0{z} $AO $IN ");
 			entry.append(prop2);
 			entry.append("))");
+			out.push_back(entry);
 			if (KBsize.at(qvar0)<2)
 				KBsize.at(qvar0) = 2;
 		}
+		
 	}
-
+     else if (string(node.name()) == "ObjectPropertyChain")
+		{		
+		  string entry = "";
+		  string quant = "($FA V0{z})";
+		  int i = 1;
+			for (pugi::xml_node_iterator ch = node.begin(); ch != node.end(); ++ch,++i)
+			{
+				if (string(ch->name()) == "ObjectProperty")
+				{
+					cout << "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<" << endl;
+					string propc = retrieveVarNameFromNode(ch, "IRI", 3);
+					quant += "($FA V0{z" + to_string(i) + "})";
+					string prevVar = "z";
+					if (i > 1)
+						prevVar = prevVar + to_string(i-1);
+					if (i % 2 && ch != node.last_child())
+						entry += "(";
+					entry += "($OA V0{"+prevVar+"} $CO "+ "V0{ z" + to_string(i) + " } $OA $IN "+propc + ")";
+					if (i % 2==0)
+						entry += ")";
+					if (ch != node.last_child())
+						entry += "$AD ";
+					
+				}
+                    
+			} 
+			entry= quant+ "( ("+entry+") $IF ($OA V0{z} $CO " + "V0{ z" + to_string(i-1) + " } $OA $IN " + retrieveVarNameFromNode(node.next_sibling(), "IRI", 3) + "))";
+			out.push_back(entry);
+			if (KBsize.at(qvar0)< 2)
+			KBsize.at(qvar0) = 2;
+		}
 };
 
 
@@ -1020,7 +1048,7 @@ void parseObjectMaxCardinality(string& entry, pugi::xml_node_iterator& it, int v
 void parseObjectExactCardinality(string& entry, pugi::xml_node_iterator& it, int varz) { throw new exception(); };
 
 void parseDisjointUnion(string& entry, pugi::xml_node_iterator& it, int varz) { throw new exception(); };
-void parseObjectPropertyChain(string& entry, pugi::xml_node_iterator& it, int varz) { throw new exception(); };
+
 
 
 
@@ -1082,7 +1110,7 @@ void readOWLXMLOntology(string filename, vector<pair<string, string>>& ontNamesp
 			parseEquivalentObjectProperties(formulae, it, KBsize);
 		else if (name == "DisjointObjectProperties")
 			parseDisjointObjectProperties(formulae, it, KBsize);
-		else if (name == "SubObjectProperty")
+		else if (name == "SubObjectPropertyOf")
 			parseSubObjectProperty(formulae, it, KBsize);
 		else if (name == "SubClassOf")
 			parseSubClassOfExpression(formulae, it, KBsize);

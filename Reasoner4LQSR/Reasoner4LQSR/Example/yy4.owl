@@ -13,6 +13,12 @@
     <Prefix name="xsd" IRI="http://www.w3.org/2001/XMLSchema#"/>
     <Prefix name="rdfs" IRI="http://www.w3.org/2000/01/rdf-schema#"/>
     <Declaration>
+        <ObjectProperty IRI="#prop2"/>
+    </Declaration>
+    <Declaration>
+        <ObjectProperty IRI="#prop3"/>
+    </Declaration>
+    <Declaration>
         <NamedIndividual IRI="#c"/>
     </Declaration>
     <Declaration>
@@ -36,13 +42,15 @@
     <Declaration>
         <ObjectProperty IRI="#prop"/>
     </Declaration>
-    <SubClassOf>
-        <Class IRI="#D"/>
-        <ObjectUnionOf>
-            <Class IRI="#A"/>
-            <Class IRI="#B"/>
-        </ObjectUnionOf>
-    </SubClassOf>
+    <Declaration>
+        <ObjectProperty IRI="#prop4"/>
+    </Declaration>
+    <SubObjectPropertyOf>
+        <ObjectPropertyChain>
+            <ObjectProperty IRI="#prop2"/>
+        </ObjectPropertyChain>
+        <ObjectProperty IRI="#prop"/>
+    </SubObjectPropertyOf>
 </Ontology>
 
 
