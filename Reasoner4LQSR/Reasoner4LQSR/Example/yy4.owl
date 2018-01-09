@@ -24,15 +24,20 @@
     <Declaration>
         <Class IRI="#A"/>
     </Declaration>
-    <SubClassOf>
-        <Class IRI="#A"/>
-        <ObjectComplementOf>
-            <ObjectIntersectionOf>
-                <Class IRI="#C"/>
-                <Class IRI="#D"/>
-            </ObjectIntersectionOf>
-        </ObjectComplementOf>
-    </SubClassOf>
+    <Declaration>
+        <ObjectProperty IRI="#prop"/>
+    </Declaration>
+    <ObjectPropertyDomain>
+        <ObjectProperty IRI="#prop"/>
+        <Class IRI="#C"/>
+    </ObjectPropertyDomain>
+    <ObjectPropertyDomain>
+        <ObjectProperty IRI="#prop"/>
+        <ObjectIntersectionOf>
+            <Class IRI="#A"/>
+            <Class IRI="#B"/>
+        </ObjectIntersectionOf>
+    </ObjectPropertyDomain>
 </Ontology>
 
 

@@ -32,12 +32,13 @@ void parseSubObjectProperty(vector<std::string>& entry, pugi::xml_node_iterator&
 
 void parseSubClassOfExpression(vector<std::string>& entry, pugi::xml_node_iterator& it, vector<int>& KBsize);
 void parseEquivalentClassExpression(vector<std::string>& entry, pugi::xml_node_iterator& it, vector<int>& KBsize);
-void parseObjectIntersectionOf(string& entry, pugi::xml_node_iterator& it, int varz);
-void parseClassExpression(string& entry, pugi::xml_node_iterator& it, int varz);
-void parseObjectUnionOf(string& entry, pugi::xml_node_iterator& it, int varz);
+void parseObjectIntersectionOf(string& entry, pugi::xml_node_iterator& it, int varz, int& varcount);
+void parseClassExpression(string& entry, pugi::xml_node_iterator& it, int varz, int& varcount);
+void parseObjectUnionOf(string& entry, pugi::xml_node_iterator& it, int varz, int& varcount);
+void parseObjectPropertyDomain(string& entry, pugi::xml_node_iterator& it, int varz, int& varcount);
+void parseObjectPropertyDomainExpression(vector<std::string>& entry, pugi::xml_node_iterator& it, vector<int>& KBsize);
 
-
-void parseObjectComplementOf(string& entry, pugi::xml_node_iterator& it, int varz);
+void parseObjectComplementOf(string& entry, pugi::xml_node_iterator& it, int varz, int& varcount);
 void parseObjectOneOf(string& entry, pugi::xml_node_iterator& it, int varz);
 void parseObjectSomeValuesFrom(string& entry, pugi::xml_node_iterator& it, int varz);
 void parseObjectAllValuesFrom(string& entry, pugi::xml_node_iterator& it, int varz);
@@ -49,5 +50,5 @@ void parseObjectExactCardinality(string& entry, pugi::xml_node_iterator& it, int
 void parseDisjointClasses(string& entry, pugi::xml_node_iterator& it, int varz);
 void parseDisjointUnion(string& entry, pugi::xml_node_iterator& it, int varz);
 void parseObjectPropertyChain(string& entry, pugi::xml_node_iterator& it, int varz);
-void parseObjectPropertyDomain(string& entry, pugi::xml_node_iterator& it, int varz);
+
 void parseObjectPropertyRange(string& entry, pugi::xml_node_iterator& it, int varz);

@@ -599,6 +599,7 @@ void parseSubClassOfExpression(vector<std::string>& entry, pugi::xml_node_iterat
 	string classn = "V1{" + irival + "}";
 	string res = "(V0{z} $IN " + classn + ")";
 	pugi::xml_node_iterator node = it->first_child().next_sibling();
+	int varcount = 1;
 	if (node->name() == "Class")
 	{
 		irival = node->attribute("IRI").as_string();
@@ -608,7 +609,7 @@ void parseSubClassOfExpression(vector<std::string>& entry, pugi::xml_node_iterat
 	}
 	else
 	{
-		parseClassExpression(formula, node, varz);
+		parseClassExpression(formula, node, varz, varcount);
 		formula = "(" + res + "$II" + "(" + formula + ")" + ")";
 	}
 	string quantifier = "($FA V0{z})";
@@ -619,9 +620,37 @@ void parseSubClassOfExpression(vector<std::string>& entry, pugi::xml_node_iterat
 	}
 	formula = quantifier.append(formula);
 	entry.push_back(formula);
-	if (KBsize.at(qvar0)<varz + 1)
-		KBsize.at(qvar0) = varz + 1;
+	if (KBsize.at(qvar0)< varcount)
+		KBsize.at(qvar0) = varcount;
 	
+}
+
+
+/*
+else if (string(it->name()) == "ObjectPropertyDomain")
+{
+cout << "eeeeeeeeeeeeeeeeeeee" << endl;
+parseObjectPropertyDomain(entry, it, varz, varcount);
+}
+*/
+
+
+void parseObjectPropertyDomainExpression(vector<std::string>& entry, pugi::xml_node_iterator& it, vector<int>& KBsize)
+{
+	int varz = 0;
+	string formula = "";
+	int varcount = 2;
+	parseObjectPropertyDomain(formula, it, varz, varcount);		
+	string quantifier = "($FA V0{z})($FA V0{z1})";
+	if (varz > 2)
+	{
+		for (int i = 2; i < varz; i++)
+			quantifier.append("($FA V0{z").append(to_string(i)).append("})");
+	}
+	formula = quantifier.append(formula);
+	entry.push_back(formula);
+	if (KBsize.at(qvar0)< varcount)
+		KBsize.at(qvar0) = varcount;
 }
 
 void parseEquivalentClassExpression(vector<std::string>& entry, pugi::xml_node_iterator& it, vector<int>& KBsize)
@@ -633,6 +662,7 @@ void parseEquivalentClassExpression(vector<std::string>& entry, pugi::xml_node_i
 	string classn = "V1{" + irival + "}";
 	string res = "(V0{z} $IN " + classn + ")";
 	pugi::xml_node_iterator node = it->first_child().next_sibling();
+	int varcount = 1;
 	if (node->name() == "Class")
 	{
 		irival = node->attribute("IRI").as_string();
@@ -642,7 +672,7 @@ void parseEquivalentClassExpression(vector<std::string>& entry, pugi::xml_node_i
 	}
 	else
 	{
-		parseClassExpression(formula, node, varz);
+		parseClassExpression(formula, node, varz, varcount);
 		formula = "(" + res + "$II" + "(" + formula + ")" + ")";
 	}
 	string quantifier = "($FA V0{z})";
@@ -653,26 +683,26 @@ void parseEquivalentClassExpression(vector<std::string>& entry, pugi::xml_node_i
 	}
 	formula = quantifier.append(formula);
 	entry.push_back(formula);
-	if (KBsize.at(qvar0)<varz+1)
-		KBsize.at(qvar0) = varz+1;	
+	if (KBsize.at(qvar0)< varcount)
+		KBsize.at(qvar0) = varcount;	
 }
 
-void parseClassExpression(string& entry, pugi::xml_node_iterator& it, int varz)
+void parseClassExpression(string& entry, pugi::xml_node_iterator& it, int varz, int& varcount)
 {	
 	if (string(it->name()) == "ObjectIntersectionOf")
 	{
-	  parseObjectIntersectionOf(entry, it, varz);
+	  parseObjectIntersectionOf(entry, it, varz, varcount);
 	}
 	else if (string(it->name()) == "ObjectUnionOf")
 	{
-	 parseObjectUnionOf(entry, it, varz);
+	 parseObjectUnionOf(entry, it, varz, varcount);
 	}
 	else if (string(it->name()) == "ObjectComplementOf")
 	{
-		parseObjectComplementOf(entry, it, varz);
-	}
+		parseObjectComplementOf(entry, it, varz, varcount);
+	}	
 }
-void parseObjectIntersectionOf(string& entry, pugi::xml_node_iterator& it, int varz)
+void parseObjectIntersectionOf(string& entry, pugi::xml_node_iterator& it, int varz, int& varcount)
 {
 	
 #ifdef debug 
@@ -680,7 +710,7 @@ void parseObjectIntersectionOf(string& entry, pugi::xml_node_iterator& it, int v
 	logFile << "-----Found ObjectIntersectionOf class expression. " << endl;
 #endif
 #endif // debug            
-		
+	
 	for (pugi::xml_node_iterator node = it->begin(); node != it->end(); ++node)
 		{			
 		  if (string(node->name()) == "Class")
@@ -699,7 +729,7 @@ void parseObjectIntersectionOf(string& entry, pugi::xml_node_iterator& it, int v
 		  else
 		  {
 			  string intformula = "";
-			  parseClassExpression(intformula, node, varz);
+			  parseClassExpression(intformula, node, varz, varcount);
 			  entry +=  intformula ;
 		  }					  
 		
@@ -708,7 +738,7 @@ void parseObjectIntersectionOf(string& entry, pugi::xml_node_iterator& it, int v
 		}	
 };
 
-void parseObjectUnionOf(string& entry, pugi::xml_node_iterator& it, int varz)
+void parseObjectUnionOf(string& entry, pugi::xml_node_iterator& it, int varz, int& varcount)
 {
 
 #ifdef debug 
@@ -735,7 +765,7 @@ void parseObjectUnionOf(string& entry, pugi::xml_node_iterator& it, int varz)
 		else
 		{
 			string intformula = "";
-			parseClassExpression(intformula, node, varz);
+			parseClassExpression(intformula, node, varz, varcount);
 			entry += intformula;
 		}
 
@@ -744,7 +774,7 @@ void parseObjectUnionOf(string& entry, pugi::xml_node_iterator& it, int varz)
 	}
 };
 
-void parseObjectComplementOf(string& entry, pugi::xml_node_iterator& it, int varz)
+void parseObjectComplementOf(string& entry, pugi::xml_node_iterator& it, int varz, int& varcount)
 {
 #ifdef debug 
 #ifdef debugparseXML
@@ -770,12 +800,52 @@ void parseObjectComplementOf(string& entry, pugi::xml_node_iterator& it, int var
 		else
 		{
 			string intformula = "($NG ( ";
-			parseClassExpression(intformula, node, varz);
+			parseClassExpression(intformula, node, varz, varcount);
 			entry += intformula + "))";
 		}
 	}
 	
 };
+
+void parseObjectPropertyDomain(string& entry, pugi::xml_node_iterator& it, int varz, int& varcount)
+{ 
+	//(∀z1)(∀z2)(hz1, z2i ∈ XP31 ↔(hz1, z2i ∈ XP32 ∧ z1 ∈ XC1 1))
+#ifdef debug 
+#ifdef debugparseXML
+		logFile << "-----Found ObjectPropertyDomain class expression. " << endl;
+#endif
+#endif // debug            
+	   if (varcount < 2)
+		 varcount = 2;
+
+	    pugi::xml_node_iterator node = it->begin(); 
+	
+		entry += "( ( $OA V0{z} $CO V0{z1} $AO $IN V3{";
+		string irival = node->attribute("IRI").as_string();
+		irival = irival.substr(irival.find("#") + 1);
+		entry+=irival + "}) $AD";
+		node = node->next_sibling();
+
+		if (string(node->name()) == "Class")
+		{
+			irival = node->attribute("IRI").as_string();
+			irival = irival.substr(irival.find("#") + 1);
+			string classn = "V1{" + irival + "}";
+			string var = "z";
+			if (varz > 0)
+				var += varz;
+			string res = "(V0{" + var + "} $IN " + classn + ") )";
+			entry += res;
+			
+		}
+		else
+		{
+			string intformula = "(";
+			parseClassExpression(intformula, node, varz, varcount);
+			entry += intformula+")";
+		}		
+};
+
 
 
 void parseObjectOneOf(string& entry, pugi::xml_node_iterator& it, int varz) { throw new exception(); };
@@ -789,7 +859,7 @@ void parseObjectExactCardinality(string& entry, pugi::xml_node_iterator& it, int
 void parseDisjointClasses(string& entry, pugi::xml_node_iterator& it, int varz) { throw new exception(); };
 void parseDisjointUnion(string& entry, pugi::xml_node_iterator& it, int varz) { throw new exception(); };
 void parseObjectPropertyChain(string& entry, pugi::xml_node_iterator& it, int varz) { throw new exception(); };
-void parseObjectPropertyDomain(string& entry, pugi::xml_node_iterator& it, int varz) { throw new exception(); };
+
 void parseObjectPropertyRange(string& entry, pugi::xml_node_iterator& it, int varz) { throw new exception(); };
 
 
@@ -856,6 +926,8 @@ void readOWLXMLOntology(string filename, vector<pair<string, string>>& ontNamesp
 			parseSubClassOfExpression(formulae, it, KBsize);
 		else if (name == "EquivalentClasses")
 			parseEquivalentClassExpression(formulae, it, KBsize);
+		else if (name == "ObjectPropertyDomain")
+			parseObjectPropertyDomainExpression(formulae, it, KBsize);
 
 		// if (!entry.empty())
 		//	formulae.push_back(entry);	
