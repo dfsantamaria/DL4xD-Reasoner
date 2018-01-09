@@ -36,9 +36,13 @@ void parseObjectIntersectionOf(string& entry, pugi::xml_node_iterator& it, int v
 void parseClassExpression(string& entry, pugi::xml_node_iterator& it, int varz, int& varcount);
 void parseObjectUnionOf(string& entry, pugi::xml_node_iterator& it, int varz, int& varcount);
 void parseObjectPropertyDomain(string& entry, pugi::xml_node_iterator& it, int varz, int& varcount);
+void parseObjectPropertyRange(string& entry, pugi::xml_node_iterator& it, int varz, int& varcount);
 void parseObjectPropertyDomainExpression(vector<std::string>& entry, pugi::xml_node_iterator& it, vector<int>& KBsize);
-
+void parseObjectPropertyRangeExpression(vector<std::string>& entry, pugi::xml_node_iterator& it, vector<int>& KBsize);
 void parseObjectComplementOf(string& entry, pugi::xml_node_iterator& it, int varz, int& varcount);
+
+
+
 void parseObjectOneOf(string& entry, pugi::xml_node_iterator& it, int varz);
 void parseObjectSomeValuesFrom(string& entry, pugi::xml_node_iterator& it, int varz);
 void parseObjectAllValuesFrom(string& entry, pugi::xml_node_iterator& it, int varz);

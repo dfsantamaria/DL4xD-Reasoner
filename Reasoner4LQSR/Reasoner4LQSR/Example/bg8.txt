@@ -1,3 +1,3 @@
 ($FA V0{z}) ($FA V0{z1})( ($OA V0{z} $CO V0{z1} $AO $NI V3{C333}) $AD (V0{z} $IN V1{C}) )
-
+($FA V0{z}) ($FA V0{z1})( ($OA V0{z} $CO V0{z1} $AO $IN V3{prop}) $AD(V0{z} $IN V1{C}) )
 

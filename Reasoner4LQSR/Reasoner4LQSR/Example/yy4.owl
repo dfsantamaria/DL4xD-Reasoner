@@ -27,17 +27,17 @@
     <Declaration>
         <ObjectProperty IRI="#prop"/>
     </Declaration>
-    <ObjectPropertyDomain>
-        <ObjectProperty IRI="#prop"/>
-        <Class IRI="#C"/>
-    </ObjectPropertyDomain>
-    <ObjectPropertyDomain>
-        <ObjectProperty IRI="#prop"/>
+    <DisjointClasses>
+        <Class IRI="#A"/>
+        <Class IRI="#D"/>
+    </DisjointClasses>
+    <DisjointClasses>
+        <Class IRI="#A"/>
         <ObjectIntersectionOf>
-            <Class IRI="#A"/>
             <Class IRI="#B"/>
+            <Class IRI="#C"/>
         </ObjectIntersectionOf>
-    </ObjectPropertyDomain>
+    </DisjointClasses>
 </Ontology>
 
 
