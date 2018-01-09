@@ -13,13 +13,22 @@
     <Prefix name="xsd" IRI="http://www.w3.org/2001/XMLSchema#"/>
     <Prefix name="rdfs" IRI="http://www.w3.org/2000/01/rdf-schema#"/>
     <Declaration>
+        <NamedIndividual IRI="#c"/>
+    </Declaration>
+    <Declaration>
         <Class IRI="#D"/>
     </Declaration>
     <Declaration>
         <Class IRI="#C"/>
     </Declaration>
     <Declaration>
+        <NamedIndividual IRI="#b"/>
+    </Declaration>
+    <Declaration>
         <Class IRI="#B"/>
+    </Declaration>
+    <Declaration>
+        <NamedIndividual IRI="#a"/>
     </Declaration>
     <Declaration>
         <Class IRI="#A"/>
@@ -27,17 +36,11 @@
     <Declaration>
         <ObjectProperty IRI="#prop"/>
     </Declaration>
-    <DisjointClasses>
+    <DisjointUnion>
+        <Class IRI="#D"/>
         <Class IRI="#A"/>
         <Class IRI="#B"/>
-    </DisjointClasses>
-    <DisjointClasses>
-        <Class IRI="#A"/>
-        <ObjectIntersectionOf>
-            <Class IRI="#C"/>
-            <Class IRI="#D"/>
-        </ObjectIntersectionOf>
-    </DisjointClasses>
+    </DisjointUnion>
 </Ontology>
 
 

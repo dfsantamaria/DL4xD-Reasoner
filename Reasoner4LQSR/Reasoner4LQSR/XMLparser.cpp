@@ -735,7 +735,19 @@ void parseClassExpression(string& entry, pugi::xml_node_iterator& it, int varz, 
 	else if (string(it->name()) == "ObjectComplementOf")
 	{
 		parseObjectComplementOf(entry, it, varz, varcount);
-	}	
+	}
+	else if (string(it->name()) == "ObjectOneOf")
+	{
+		parseObjectOneOf(entry, it, varz, varcount);
+	}
+	else if (string(it->name()) == "ObjectHasSelf")
+	{
+		parseObjectHasSelf(entry, it, varz, varcount);
+	}
+	else if (string(it->name()) == "ObjectHasValue")
+	{
+		parseObjectHasValue(entry, it, varz, varcount);
+	}
 }
 void parseObjectIntersectionOf(string& entry, pugi::xml_node_iterator& it, int varz, int& varcount)
 {
@@ -778,7 +790,7 @@ void parseObjectUnionOf(string& entry, pugi::xml_node_iterator& it, int varz, in
 
 #ifdef debug 
 #ifdef debugparseXML
-	logFile << "-----Found ObjectIntersectionOf class expression. " << endl;
+	logFile << "-----Found ObjectUnionOf class expression. " << endl;
 #endif
 #endif // debug
 
@@ -965,11 +977,81 @@ void parseDisjointClasses(string& entry, pugi::xml_node_iterator& it, int varz, 
 };
 
 
-void parseObjectOneOf(string& entry, pugi::xml_node_iterator& it, int varz) { throw new exception(); };
+void parseObjectOneOf(string& entry, pugi::xml_node_iterator& it, int varz, int& varcount)
+{
+
+#ifdef debug 
+#ifdef debugparseXML
+	logFile << "-----Found ObjectOneOf class expression. " << endl;
+#endif
+#endif // debug            
+
+	for (pugi::xml_node_iterator node = it->begin(); node != it->end(); ++node)
+	{
+		if (string(node->name()) == "NamedIndividual")
+		{
+			string irival = node->attribute("IRI").as_string();
+			irival = irival.substr(irival.find("#") + 1);
+			string classn = "V0{" + irival + "}";
+			string var = "z";
+			if (varz > 0)
+				var += to_string(varz);
+			string res = "(V0{" + var + "} $EQ " + classn + ")";
+			entry += res;
+			if (node != it->begin())
+				entry = "(" + entry + ")";
+		}
+		if (node != it->last_child())
+			entry += "$OR ";
+	}
+};
+
+void parseObjectHasSelf(string& entry, pugi::xml_node_iterator& it, int varz, int& varcount)
+{
+#ifdef debug 
+#ifdef debugparseXML
+	logFile << "-----Found ObjectHasSelf class expression. " << endl;
+#endif
+#endif // debug            
+	        pugi::xml_node_iterator node = it->begin();		
+			string irival = node->attribute("IRI").as_string();
+			irival = irival.substr(irival.find("#") + 1);
+			string classn = "V3{" + irival + "}";
+			string var = "z";
+			if (varz > 0)
+				var += to_string(varz);
+			string res = "($OA V0{" + var + "} $CO  V0{" + var + "} $OA $IN "+ classn + ")";
+			entry += res;	
+	
+};
+
+void parseObjectHasValue(string& entry, pugi::xml_node_iterator& it, int varz, int& varcount)
+{
+#ifdef debug 
+#ifdef debugparseXML
+	logFile << "-----Found ObjectHasSelf class expression. " << endl;
+#endif
+#endif // debug            
+	pugi::xml_node_iterator node = it->begin();
+	string irival = node->attribute("IRI").as_string();
+	irival = irival.substr(irival.find("#") + 1);
+	string classn = "V3{" + irival + "}";
+	
+	node = node->next_sibling();
+	irival = node->attribute("IRI").as_string();
+	irival = irival.substr(irival.find("#") + 1);
+
+	string var = "z";
+	if (varz > 0)
+		var += to_string(varz);
+	string res = "($OA V0{" + var + "} $CO  V0{" + irival + "} $OA $IN " + classn + ")";
+	entry += res;
+};
+
+
+
 void parseObjectSomeValuesFrom(string& entry, pugi::xml_node_iterator& it, int varz) { throw new exception(); };
 void parseObjectAllValuesFrom(string& entry, pugi::xml_node_iterator& it, int varz) { throw new exception(); };
-void parseObjectHasValue(string& entry, pugi::xml_node_iterator& it, int varz) { throw new exception(); };
-void parseObjectHasSelf(string& entry, pugi::xml_node_iterator& it, int varz) { throw new exception(); };
 void parseObjectMinCardinality(string& entry, pugi::xml_node_iterator& it, int varz) { throw new exception(); };
 void parseObjectMaxCardinality(string& entry, pugi::xml_node_iterator& it, int varz) { throw new exception(); };
 void parseObjectExactCardinality(string& entry, pugi::xml_node_iterator& it, int varz) { throw new exception(); };
