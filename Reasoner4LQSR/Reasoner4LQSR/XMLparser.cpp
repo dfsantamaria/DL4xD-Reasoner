@@ -633,6 +633,24 @@ cout << "eeeeeeeeeeeeeeeeeeee" << endl;
 parseObjectPropertyDomain(entry, it, varz, varcount);
 }
 */
+void parseDisjointClassesExpression(vector<std::string>& entry, pugi::xml_node_iterator& it, vector<int>& KBsize)
+{
+	int varz = 0;
+	string formula = "";
+	int varcount = 1;
+	parseDisjointClasses(formula, it, varz, varcount);
+	string quantifier = "($FA V0{z})";
+	if (varz > 1)
+	{
+		for (int i = 1; i < varz; i++)
+			quantifier.append("($FA V0{z").append(to_string(i)).append("})");
+	}
+	formula = quantifier.append(formula);
+	entry.push_back(formula);
+	if (KBsize.at(qvar0)< varcount)
+		KBsize.at(qvar0) = varcount;
+}
+
 
 void parseObjectPropertyRangeExpression(vector<std::string>& entry, pugi::xml_node_iterator& it, vector<int>& KBsize)
 {
@@ -900,6 +918,52 @@ void parseObjectPropertyRange(string& entry, pugi::xml_node_iterator& it, int va
 		entry += intformula + ")";
 	}
 };
+void parseDisjointClasses(string& entry, pugi::xml_node_iterator& it, int varz, int& varcount)
+{
+#ifdef debug 
+#ifdef debugparseXML
+	logFile << "-----Found DisjointClasses class expression. " << endl;
+#endif
+#endif // debug
+
+	pugi::xml_node_iterator node = it->begin();
+	string irival = node->attribute("IRI").as_string();
+	irival = irival.substr(irival.find("#") + 1);
+	string classn = "V1{" + irival + "}";
+	string var = "z";
+	if (varz > 0)
+		var += to_string(varz);
+	string res = "(V0{" + var + "} $IN " + classn + ") $II ";
+	entry += res;
+	
+
+	for (pugi::xml_node_iterator nd = node->next_sibling(); nd != it->end(); ++nd)
+	{
+		if (string(nd->name()) == "Class")
+		{
+			string irival = nd->attribute("IRI").as_string();
+			irival = irival.substr(irival.find("#") + 1);
+			string classn = "V1{" + irival + "}";
+			string var = "z";
+			if (varz > 0)
+				var += to_string(varz);
+			string res = "($NG (V0{" + var + "} $IN " + classn + "))";
+			entry += res;
+			if (nd != node)
+				entry = "(" + entry + ")";
+		}
+		else
+		{
+			string intformula = "($NG ( ";
+			parseClassExpression(intformula, nd, varz, varcount);
+			entry += intformula + "))";
+		}
+		if (nd != it->last_child())
+			entry += "$AD ";
+	}
+
+};
+
 
 void parseObjectOneOf(string& entry, pugi::xml_node_iterator& it, int varz) { throw new exception(); };
 void parseObjectSomeValuesFrom(string& entry, pugi::xml_node_iterator& it, int varz) { throw new exception(); };
@@ -909,7 +973,7 @@ void parseObjectHasSelf(string& entry, pugi::xml_node_iterator& it, int varz) { 
 void parseObjectMinCardinality(string& entry, pugi::xml_node_iterator& it, int varz) { throw new exception(); };
 void parseObjectMaxCardinality(string& entry, pugi::xml_node_iterator& it, int varz) { throw new exception(); };
 void parseObjectExactCardinality(string& entry, pugi::xml_node_iterator& it, int varz) { throw new exception(); };
-void parseDisjointClasses(string& entry, pugi::xml_node_iterator& it, int varz) { throw new exception(); };
+
 void parseDisjointUnion(string& entry, pugi::xml_node_iterator& it, int varz) { throw new exception(); };
 void parseObjectPropertyChain(string& entry, pugi::xml_node_iterator& it, int varz) { throw new exception(); };
 
@@ -983,6 +1047,9 @@ void readOWLXMLOntology(string filename, vector<pair<string, string>>& ontNamesp
 			parseObjectPropertyDomainExpression(formulae, it, KBsize);
 		else if (name == "ObjectPropertyRange")
 			parseObjectPropertyRangeExpression(formulae, it, KBsize);
+		else if (name == "DisjointClasses")		
+			parseDisjointClassesExpression(formulae, it, KBsize);
+		
 		// if (!entry.empty())
 		//	formulae.push_back(entry);	
 

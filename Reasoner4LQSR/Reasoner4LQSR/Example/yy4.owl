@@ -29,13 +29,13 @@
     </Declaration>
     <DisjointClasses>
         <Class IRI="#A"/>
-        <Class IRI="#D"/>
+        <Class IRI="#B"/>
     </DisjointClasses>
     <DisjointClasses>
         <Class IRI="#A"/>
         <ObjectIntersectionOf>
-            <Class IRI="#B"/>
             <Class IRI="#C"/>
+            <Class IRI="#D"/>
         </ObjectIntersectionOf>
     </DisjointClasses>
 </Ontology>
