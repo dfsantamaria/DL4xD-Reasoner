@@ -47,10 +47,10 @@
     </Declaration>
     <SubClassOf>
         <Class IRI="#A"/>
-        <ObjectSomeValuesFrom>
+        <ObjectAllValuesFrom>
             <ObjectProperty IRI="#prop"/>
-            <Class IRI="#C"/>
-        </ObjectSomeValuesFrom>
+            <Class IRI="#B"/>
+        </ObjectAllValuesFrom>
     </SubClassOf>
     <ObjectPropertyRange>
         <ObjectProperty IRI="#prop4"/>

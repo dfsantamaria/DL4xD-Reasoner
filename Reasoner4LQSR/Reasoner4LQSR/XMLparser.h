@@ -46,10 +46,11 @@ void parseObjectOneOf(string& entry, pugi::xml_node_iterator& it, int varz, int&
 void parseObjectHasSelf(string& entry, pugi::xml_node_iterator& it, int varz, int& varcount);
 void parseObjectHasValue(string& entry, pugi::xml_node_iterator& it, int varz,int& varcount);
 void parseObjectSomeValuesFrom(string& entry, pugi::xml_node_iterator& it, int varz, int& varcount);
-
 void parseObjectAllValuesFrom(string& entry, pugi::xml_node_iterator& it, int varz, int& varcount);
+
 void parseObjectMinCardinality(string& entry, pugi::xml_node_iterator& it, int varz);
 void parseObjectMaxCardinality(string& entry, pugi::xml_node_iterator& it, int varz);
 void parseObjectExactCardinality(string& entry, pugi::xml_node_iterator& it, int varz);
+
 void parseDisjointUnion(string& entry, pugi::xml_node_iterator& it, int varz);
 

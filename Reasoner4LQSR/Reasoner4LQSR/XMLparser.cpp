@@ -645,6 +645,8 @@ void parseSubClassOfExpression(vector<std::string>& entry, pugi::xml_node_iterat
 		  formula = "(" + res + "$II" + "(" + formula + ")" + ")";
 		else if(val==1)
 			formula += "$IF " + res + ")";
+		else if (val==2)
+			formula = "(" + res + "$IF" + "(" + formula + ")" + ")";
 	}
 	string quantifier = "($FA V0{z})";
 	if (varcount > 1)
@@ -735,7 +737,8 @@ void parseEquivalentClassExpression(vector<std::string>& entry, pugi::xml_node_i
 		  formula = "(" + res + "$II" + "(" + formula + ")" + ")";
 		else if (val == 1)	
 		     formula += "$IF " + res + ")";
-	
+		else if (val == 2)
+			formula = "(" + res + "$IF" + "(" + formula + ")" + ")";
 	}
 	
 	string quantifier = "($FA V0{z})";
@@ -783,7 +786,11 @@ int parseClassExpression(string& entry, pugi::xml_node_iterator& it, int varz, i
 		parseObjectSomeValuesFrom(entry, it, varz, varcount);
 		return 1;
 	}
-
+	else if (string(it->name()) == "ObjectAllValuesFrom")
+	{
+		parseObjectAllValuesFrom(entry, it, varz, varcount);
+		return 2;
+	}
 	return 0;
 }
 void parseObjectIntersectionOf(string& entry, pugi::xml_node_iterator& it, int varz, int& varcount)
@@ -1070,7 +1077,7 @@ void parseObjectSomeValuesFrom(string& entry, pugi::xml_node_iterator& it, int v
 	node = node->next_sibling(); 	
 	if (string(node->name()) == "Class")
 	{	
-		intformula = "( V0{" + to_string(varz + 1) + "} $IN " + retrieveVarNameFromNode(node, "IRI", 1) + ")";		
+		intformula = "( V0{z" + to_string(varz + 1) + "} $IN " + retrieveVarNameFromNode(node, "IRI", 1) + ")";		
 	}
 	else
 	{		
@@ -1079,10 +1086,34 @@ void parseObjectSomeValuesFrom(string& entry, pugi::xml_node_iterator& it, int v
 	entry += intformula+")";	
 };
 
+void parseObjectAllValuesFrom(string& entry, pugi::xml_node_iterator& it, int varz, int &varcount)
+{ 
+#ifdef debug 
+#ifdef debugparseXML
+	logFile << "-----Found ObjectAllValuessFrom class expression. " << endl;
+#endif
+#endif // debug  
+	if (varcount < 2)
+		varcount = 2;
+	pugi::xml_node_iterator node = it->begin();
+	string var = "z";
+	if (varz > 0)
+		var += to_string(varz);
+	string res = retrieveVarNameFromNode(node, "IRI", 3);
+	entry += "( ($OA V0{" + var + "} $CO V0{z" + to_string(varz + 1) + "} $AO $IN " + res + ") $IF";
+	string intformula = "";
+	node = node->next_sibling();
+	if (string(node->name()) == "Class")
+	{
+		intformula = "( V0{z" + to_string(varz + 1) + "} $IN " + retrieveVarNameFromNode(node, "IRI", 1) + ")";
+	}
+	else
+	{
+		parseClassExpression(intformula, node, varz + 1, varcount);
+	}
+	entry += intformula + ")";
 
-
-
-void parseObjectAllValuesFrom(string& entry, pugi::xml_node_iterator& it, int varz) { throw new exception(); };
+};
 
 
 void parseObjectMinCardinality(string& entry, pugi::xml_node_iterator& it, int varz) { throw new exception(); };
