@@ -45,12 +45,36 @@
     <Declaration>
         <ObjectProperty IRI="#prop4"/>
     </Declaration>
-    <SubObjectPropertyOf>
-        <ObjectPropertyChain>
-            <ObjectProperty IRI="#prop2"/>
-        </ObjectPropertyChain>
-        <ObjectProperty IRI="#prop"/>
-    </SubObjectPropertyOf>
+    <SubClassOf>
+        <Class IRI="#A"/>
+        <ObjectSomeValuesFrom>
+            <ObjectProperty IRI="#prop"/>
+            <Class IRI="#C"/>
+        </ObjectSomeValuesFrom>
+    </SubClassOf>
+    <ObjectPropertyRange>
+        <ObjectProperty IRI="#prop4"/>
+        <ObjectIntersectionOf>
+            <Class IRI="#A"/>
+            <Class IRI="#B"/>
+        </ObjectIntersectionOf>
+    </ObjectPropertyRange>
+    <DLSafeRule>
+        <Body>
+            <ObjectPropertyAtom>
+                <ObjectProperty IRI="#prop"/>
+                <Variable IRI="urn:swrl#x1"/>
+                <Variable IRI="urn:swrl#x2"/>
+            </ObjectPropertyAtom>
+        </Body>
+        <Head>
+            <ObjectPropertyAtom>
+                <ObjectProperty IRI="#prop2"/>
+                <Variable IRI="urn:swrl#x2"/>
+                <Variable IRI="urn:swrl#x1"/>
+            </ObjectPropertyAtom>
+        </Head>
+    </DLSafeRule>
 </Ontology>
 
 
