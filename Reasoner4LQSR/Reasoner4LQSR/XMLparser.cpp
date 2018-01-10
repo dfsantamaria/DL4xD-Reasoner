@@ -626,6 +626,19 @@ string retrieveVarNameFromNode(pugi::xml_node_iterator const& it, string const& 
 	return "V" + to_string(var) + "{" + retrieveNameFromNode(it, attribute) + "}";
 }
 
+
+
+
+void parseDLSafeRule(vector<std::string>& entry, pugi::xml_node_iterator& it, vector<int>& KBsize)
+{
+	throw new exception();
+};
+
+int parseDLSafeBody(string& entry, pugi::xml_node_iterator& it, int varz, int& varcount)
+{
+	throw new exception();
+};
+
 void parseSubClassOfExpression(vector<std::string>& entry, pugi::xml_node_iterator& it, vector<int>& KBsize)
 {	
 	int varz = 0;
@@ -1211,6 +1224,8 @@ void readOWLXMLOntology(string filename, vector<pair<string, string>>& ontNamesp
 			parseDisjointClassesExpression(formulae, it, KBsize);
 		else if (name == "DisjointUnion")
 			parseDisjointUnionExpression(formulae, it, KBsize);
+		else if (name == "DLSafe")
+			parseDLSafeRule(formulae, it, KBsize);
 		// if (!entry.empty())
 		//	formulae.push_back(entry);	
 

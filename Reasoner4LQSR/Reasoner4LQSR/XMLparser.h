@@ -51,5 +51,9 @@ void parseObjectAllValuesFrom(string& entry, pugi::xml_node_iterator& it, int va
 void parseObjectMinCardinality(string& entry, pugi::xml_node_iterator& it, int varz, int& varcount);
 void parseObjectMaxCardinality(string& entry, pugi::xml_node_iterator& it, int varz, int& varcount);
 void parseDisjointUnion(string& entry, pugi::xml_node_iterator& it, int varz, int& varcount);
+void parseDisjointUnionExpression(vector<std::string>& entry, pugi::xml_node_iterator& it, vector<int>& KBsize);
+
+int parseDLSafeBody(string& entry, pugi::xml_node_iterator& it, int varz, int& varcount);
+void parseDLSafeRule(vector<std::string>& entry, pugi::xml_node_iterator& it, vector<int>& KBsize);
 
 void parseObjectExactCardinality(string& entry, pugi::xml_node_iterator& it, int varz);
