@@ -661,6 +661,10 @@ void parseSubClassOfExpression(vector<std::string>& entry, pugi::xml_node_iterat
 	
 }
 
+void parseDisjointUnionExpression(vector<std::string>& entry, pugi::xml_node_iterator& it, vector<int>& KBsize)
+{
+	throw new exception();
+}
 
 void parseDisjointClassesExpression(vector<std::string>& entry, pugi::xml_node_iterator& it, vector<int>& KBsize)
 {
@@ -669,9 +673,9 @@ void parseDisjointClassesExpression(vector<std::string>& entry, pugi::xml_node_i
 	int varcount = 1;
 	parseDisjointClasses(formula, it, varz, varcount);
 	string quantifier = "($FA V0{z})";
-	if (varz > 1)
+	if (varcount > 1)
 	{
-		for (int i = 1; i < varz; i++)
+		for (int i = 1; i < varcount; i++)
 			quantifier.append("($FA V0{z").append(to_string(i)).append("})");
 	}
 	formula = quantifier.append(formula);
@@ -688,9 +692,9 @@ void parseObjectPropertyRangeExpression(vector<std::string>& entry, pugi::xml_no
 	int varcount = 2;
 	parseObjectPropertyRange(formula, it, varz, varcount);
 	string quantifier = "($FA V0{z})($FA V0{z1})";
-	if (varz > 2)
+	if (varcount > 2)
 	{
-		for (int i = 2; i < varz; i++)
+		for (int i = 2; i < varcount; i++)
 			quantifier.append("($FA V0{z").append(to_string(i)).append("})");
 	}
 	formula = quantifier.append(formula);
@@ -706,9 +710,9 @@ void parseObjectPropertyDomainExpression(vector<std::string>& entry, pugi::xml_n
 	int varcount = 2;
 	parseObjectPropertyDomain(formula, it, varz, varcount);		
 	string quantifier = "($FA V0{z})($FA V0{z1})";
-	if (varz > 2)
+	if (varcount > 2)
 	{
-		for (int i = 2; i < varz; i++)
+		for (int i = 2; i < varcount; i++)
 			quantifier.append("($FA V0{z").append(to_string(i)).append("})");
 	}
 	formula = quantifier.append(formula);
@@ -790,6 +794,16 @@ int parseClassExpression(string& entry, pugi::xml_node_iterator& it, int varz, i
 	{
 		parseObjectAllValuesFrom(entry, it, varz, varcount);
 		return 2;
+	}
+	else if (string(it->name()) == "ObjectMinCardinality")
+	{
+		parseObjectMinCardinality(entry, it, varz, varcount);
+		return 2;
+	}
+	else if (string(it->name()) == "ObjectMaxCardinality")
+	{
+		parseObjectMaxCardinality(entry, it, varz, varcount);
+		return 1;
 	}
 	return 0;
 }
@@ -1116,12 +1130,12 @@ void parseObjectAllValuesFrom(string& entry, pugi::xml_node_iterator& it, int va
 };
 
 
-void parseObjectMinCardinality(string& entry, pugi::xml_node_iterator& it, int varz) { throw new exception(); };
-void parseObjectMaxCardinality(string& entry, pugi::xml_node_iterator& it, int varz) { throw new exception(); };
+void parseObjectMinCardinality(string& entry, pugi::xml_node_iterator& it, int varz, int& varcount) { throw new exception(); };
+void parseObjectMaxCardinality(string& entry, pugi::xml_node_iterator& it, int varz, int&varcount) { throw new exception(); };
+void parseDisjointUnion(string& entry, pugi::xml_node_iterator& it, int varz, int& varcount) { throw new exception(); };
+
+
 void parseObjectExactCardinality(string& entry, pugi::xml_node_iterator& it, int varz) { throw new exception(); };
-
-void parseDisjointUnion(string& entry, pugi::xml_node_iterator& it, int varz) { throw new exception(); };
-
 
 
 
@@ -1195,7 +1209,8 @@ void readOWLXMLOntology(string filename, vector<pair<string, string>>& ontNamesp
 			parseObjectPropertyRangeExpression(formulae, it, KBsize);
 		else if (name == "DisjointClasses")		
 			parseDisjointClassesExpression(formulae, it, KBsize);
-		
+		else if (name == "DisjointUnion")
+			parseDisjointUnionExpression(formulae, it, KBsize);
 		// if (!entry.empty())
 		//	formulae.push_back(entry);	
 
