@@ -675,8 +675,21 @@ void parseSubClassOfExpression(vector<std::string>& entry, pugi::xml_node_iterat
 }
 
 void parseDisjointUnionExpression(vector<std::string>& entry, pugi::xml_node_iterator& it, vector<int>& KBsize)
-{
-	throw new exception();
+{	
+	int varz = 0;
+	string formula = "";
+	int varcount = 1;
+	parseDisjointUnion(formula, it, varz, varcount);
+	string quantifier = "($FA V0{z})";
+	if (varcount > 1)
+	{
+		for (int i = 1; i < varcount; i++)
+			quantifier.append("($FA V0{z").append(to_string(i)).append("})");
+	}
+	formula = quantifier.append(formula);
+	entry.push_back(formula);
+	if (KBsize.at(qvar0)< varcount)
+		KBsize.at(qvar0) = varcount;
 }
 
 void parseDisjointClassesExpression(vector<std::string>& entry, pugi::xml_node_iterator& it, vector<int>& KBsize)
@@ -797,7 +810,7 @@ int parseClassExpression(string& entry, pugi::xml_node_iterator& it, int varz, i
 	else if (string(it->name()) == "ObjectHasValue")
 	{
 		parseObjectHasValue(entry, it, varz, varcount);
-	}
+	}	
 	else if (string(it->name()) == "ObjectSomeValuesFrom")
 	{
 		parseObjectSomeValuesFrom(entry, it, varz, varcount);
@@ -1142,10 +1155,75 @@ void parseObjectAllValuesFrom(string& entry, pugi::xml_node_iterator& it, int va
 
 };
 
+void parseDisjointUnion(string& entry, pugi::xml_node_iterator& it, int varz, int& varcount)
+{
+#ifdef debug 
+#ifdef debugparseXML
+	logFile << "-----Found DijsointUion class expression. " << endl;
+#endif
+#endif // debug
+    vector<string> clexpress (0);
+	string var = "z";
+	if (varz > 0)
+	  var += to_string(varz);
+	entry = "(";
+	for (pugi::xml_node_iterator node = it->begin(); node != it->end(); ++node)
+	{
+		
+		string intformula = "";
+		if (string(node->name()) == "Class")
+		{			
+			 intformula = "(V0{" + var + "} $IN " + retrieveVarNameFromNode(node, "IRI", 1) + ")";			
+			//if (node != it->begin())
+			//	entry = "(" + entry + ")";
+		}
+		else
+		{			
+			parseClassExpression(intformula, node, varz, varcount);			
+		}
+		clexpress.push_back(intformula);
+		//if (node != it->last_child())
+		//	entry += "$OR ";
+	}
+
+	entry += "(V0{" + var + "} $IN " + clexpress.at(0) + ") $II (";
+	for (int i=1; i<clexpress.size(); i++)
+	{	
+
+		if (i % 2 == 1 && i != clexpress.size()-1)
+			entry += "(";
+		entry += "($NG " + clexpress.at(i)+ ")";
+		if (i % 2 == 1)
+			entry += ")";
+		if (i != clexpress.size() - 1)
+			entry += "$AD ";
+	}
+	entry += ")";
+
+	entry += ") $AD (";
+	entry+="(V0{" + var + "} $IN " + clexpress.at(0) + ") $II (";
+	for (int i = 1; i<clexpress.size(); i++)
+	{
+
+		if (i % 2 == 1 && i != clexpress.size() - 1)
+			entry += "(";
+		entry += clexpress.at(i);
+		if (i % 2 == 1)
+			entry += ")";
+		if (i != clexpress.size() - 1)
+			entry += "$OR ";
+	}
+   
+	entry += "))";
+	
+	
+};
+
+
 
 void parseObjectMinCardinality(string& entry, pugi::xml_node_iterator& it, int varz, int& varcount) { throw new exception(); };
 void parseObjectMaxCardinality(string& entry, pugi::xml_node_iterator& it, int varz, int&varcount) { throw new exception(); };
-void parseDisjointUnion(string& entry, pugi::xml_node_iterator& it, int varz, int& varcount) { throw new exception(); };
+
 
 
 void parseObjectExactCardinality(string& entry, pugi::xml_node_iterator& it, int varz) { throw new exception(); };

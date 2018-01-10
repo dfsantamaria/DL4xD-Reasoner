@@ -45,16 +45,15 @@
     <Declaration>
         <ObjectProperty IRI="#prop4"/>
     </Declaration>
-    <DisjointClasses>
+    <DisjointUnion>
         <Class IRI="#D"/>
+        <Class IRI="#A"/>
         <ObjectIntersectionOf>
             <Class IRI="#A"/>
-            <ObjectUnionOf>
-                <Class IRI="#B"/>
-                <Class IRI="#C"/>
-            </ObjectUnionOf>
+            <Class IRI="#B"/>
+            <Class IRI="#C"/>
         </ObjectIntersectionOf>
-    </DisjointClasses>
+    </DisjointUnion>
     <ObjectPropertyRange>
         <ObjectProperty IRI="#prop4"/>
         <ObjectIntersectionOf>
