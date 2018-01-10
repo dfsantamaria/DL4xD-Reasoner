@@ -34,21 +34,26 @@ void debugEnd()
 
 int main()
 {
-	debugStart();
+	debugStart();	
+
 	/*
 	Initialization
 	*/
 	//If you don't read an OWL File, make sure that quantified and quantifier free var vectors are sufficiently large.
 	//InitializeReasoner(3, 100, 20);
+/*
 	InitializeReasoner(maxLevNum, vector<int>{20,20,0,20,10,0,0,0});
+*/
 	/*
 	Inserting Knowledge Base
 	*/
+
+	/*
 	vector<Formula*> KB;
 	vector<Formula*> KBnorm;
 	vector<Formula*> KBcnf;
 	vector<Formula*> KBmq;	
-	string kbname = "Example/bg8.txt";
+	string kbname = "Example/bg8.txt"; */
 
 	/*Precomputing Space -- to be implemented*/
 //  to be implemented
@@ -57,7 +62,7 @@ int main()
 //	precomputeKBSpaceFromFile(kbname, KBsize, Litsize);
 	/*  */
 
-
+	/*
 	cout << "--Reading KB From File--" << endl;
 	readKBFromFile(0, kbname, KB);
 	printTRadix(KB); //print Tableau Radix
@@ -96,6 +101,8 @@ int main()
 	printClosedBranches(tableau);
 
 	/* Query Reading*/
+
+	/*
 	cout << "---" << endl;
 	cout << "Reading Query ..." << endl;
 	string queryname = "Example/query.txt";
@@ -128,6 +135,8 @@ int main()
 		cout << "Branch number: " << i << " Answer:" << results.at(0)->getAnswerSet().at(i) << endl;
 	}
 	
+	*/
+
 	/*
 	    OWL/XML Reader
 	*/
@@ -169,6 +178,31 @@ int main()
 	cout << "--Move Quantifiers--" << endl;
 	moveQuantifierKB(0, KB2cnf, KB2mq);
 	printTRadix(KB2mq); //print Tableau Radix
+	/*
+	vector<Formula*> expKB2;
+	cout << "Expanding Quantifiers in KB" << endl;
+	expandKB(KB2mq, expKB2);
+	Tableau tableau2 = Tableau(new Node(expKB2));
+	//Printing result of expansion
+	printTExpanded(tableau2);
+	//Printing content of VVL and VQL
+	printVarSet();
+	cout << "Expanding Tableau" << endl;
+	expandTableau(tableau2);
+	cout << "Building EqSet" << endl;
+	buildEqSet(tableau2);
+
+	//print EqSet
+	printEqSet(tableau2);
+
+	//print open branches
+	printOpenBranches(tableau2);
+
+	//print closed branches
+	printClosedBranches(tableau2);
+
+	*/
+
 	cout << "--End reading ontology--" << endl;
 	debugEnd();
 }
