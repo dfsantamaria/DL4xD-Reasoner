@@ -629,12 +629,94 @@ string retrieveVarNameFromNode(pugi::xml_node_iterator const& it, string const& 
 
 void parseDLSafeRule(vector<std::string>& entry, pugi::xml_node_iterator& it, vector<int>& KBsize)
 {
-	throw new exception();
+	string body = "";
+	string formula = "";
+	vector<string>varSet(0);
+	pugi::xml_node_iterator node = it->first_child();
+	parseDLSafeBody(body, node, varSet);
+	formula = body + "$IF";	
+	node = node->next_sibling();
+	parseDLSafeBody(body, node, varSet);
+	formula += body; 
+	body = "($FA V0{z})";
+	for (int i = 1; i < varSet.size(); i++)
+		{
+		 body += "($FA V0{z" + to_string(i) + "})";
+		}
+	formula = body + formula;
+	entry.push_back(formula);
+	if (KBsize.at(qvar0)< varSet.size())
+		KBsize.at(qvar0) = varSet.size();
 };
 
-int parseDLSafeBody(string& entry, pugi::xml_node_iterator& it, int varz, int& varcount)
+string retrieveZVariable(int num)
 {
-	throw new exception();
+	string var = "z";
+	if (num > 0)
+	 var += to_string(num);
+	return var;
+}
+
+void parseDLAtom(string& atom, pugi::xml_node_iterator& it, vector<string>& varSet, string name, int vt)
+{
+	string clprop = "";
+	vector<int> varus(0);
+	for (pugi::xml_node_iterator node = it->begin(); node != it->end(); ++node)
+	{ 
+		
+		if (string(node->name()) == name)
+		{
+			clprop = retrieveVarNameFromNode(node, "IRI", vt);
+			
+		}
+		else if (string(node->name()) == "Variable")
+		{
+			string varname = retrieveNameFromNode(node,"Variable");
+			int i = 0;			
+			for (; i < varSet.size(); i++)
+			{				
+				if (varSet.at(i) == varname)									
+					break;				
+			}			
+			if (i == varSet.size())
+			{
+				varSet.push_back(varname);
+			}
+			varus.push_back(i);
+		}
+	}
+	
+   string var = retrieveZVariable(varus.at(0));   
+	if (varus.size() == 1) //class case
+	{		
+		atom = "(V0{" +var + "} $IN " + clprop + ")";
+	}
+	else if (varus.size() == 2)
+	{		
+		atom = "($OA V0{" + var + "} $CO V0{";
+		var = retrieveZVariable(varus.at(1));		
+		atom += var + "} $AO $IN " + clprop+")";
+	}
+	
+}
+int parseDLSafeBody(string& entry, pugi::xml_node_iterator& it,vector<string>& varSet)
+{	
+	entry = "";
+	for (pugi::xml_node_iterator node = it->begin(); node != it->end(); ++node)
+	{
+		string atom = "";		
+		if (string(node->name()) == "ClassAtom")		
+			parseDLAtom(atom, node, varSet, "Class", 1);		
+		else if (string(node->name()) == "ObjectPropertyAtom")
+			parseDLAtom(atom, node, varSet,"ObjectProperty",3);	
+		cout << "Atom: " << atom << endl;
+        entry += atom;
+		if (node != it->begin())
+			entry = "("+entry + ")";		
+		if (node != it->last_child())
+			entry += "$AD";
+	}	
+	return 0;
 };
 
 void parseSubClassOfExpression(vector<std::string>& entry, pugi::xml_node_iterator& it, vector<int>& KBsize)
@@ -1338,8 +1420,7 @@ void parseObjectMaxCardinality(string& entry, pugi::xml_node_iterator& it, int v
 		if (i != classexpr.size() - 1)
 			entry += "$AD";
 	}
-	cout << "<<<<<<<<<<<<<<<<<<<<<<<<<<" << entry << endl;
-
+	
 	entry = " ((" + classexpr.at(0) + "$AD ($OA V0{" + vartz + "} $CO V0{z" + to_string(var2) + "} $OA $IN " + cprop + "))$AD (" + entry + ")) $IF";
 	//entry += "( (V0{" + vartz + "} $EQ " + "V0{z" + to_string(var2) + "}) $OR (";
 	string leftimp = "";
@@ -1440,7 +1521,7 @@ void readOWLXMLOntology(string filename, vector<pair<string, string>>& ontNamesp
 			parseDisjointClassesExpression(formulae, it, KBsize);
 		else if (name == "DisjointUnion")
 			parseDisjointUnionExpression(formulae, it, KBsize);
-		else if (name == "DLSafe")
+		else if (name == "DLSafeRule")
 			parseDLSafeRule(formulae, it, KBsize);
 		// if (!entry.empty())
 		//	formulae.push_back(entry);	

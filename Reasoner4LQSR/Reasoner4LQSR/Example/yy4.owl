@@ -69,6 +69,10 @@
                 <Variable IRI="urn:swrl#x2"/>
                 <Variable IRI="urn:swrl#x1"/>
             </ObjectPropertyAtom>
+            <ClassAtom>
+                <Class IRI="#A"/>
+                <Variable IRI="urn:swrl#x1"/>
+            </ClassAtom>
         </Head>
     </DLSafeRule>
 </Ontology>

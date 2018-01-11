@@ -11,6 +11,7 @@
 using namespace std;
 string retrieveNameFromNode(pugi::xml_node_iterator const& it, string const& attribute);
 string retrieveVarNameFromNode(pugi::xml_node_iterator const& it, string const& attribute, int const& var);
+string retrieveZVariable(int num);
 void parseDeclaration(vector<std::string>& entry, pugi::xml_node_iterator& it, vector<int>& KBsize);
 void readOWLXMLOntology(std::string filename, vector<pair<std::string, std::string>>& ontNamespaces, vector<string>& formulae, vector<int>& KBsize);
 void buildNamespace(pugi::xml_document& xmldocument, vector<pair<std::string, std::string>>& ontNamespaces);
@@ -53,7 +54,8 @@ void parseObjectMaxCardinality(string& entry, pugi::xml_node_iterator& it, int v
 void parseDisjointUnion(string& entry, pugi::xml_node_iterator& it, int varz, int& varcount);
 void parseDisjointUnionExpression(vector<std::string>& entry, pugi::xml_node_iterator& it, vector<int>& KBsize);
 
-int parseDLSafeBody(string& entry, pugi::xml_node_iterator& it, int varz, int& varcount);
+int parseDLSafeBody(string& entry, pugi::xml_node_iterator& it, vector<string>& varSet);
 void parseDLSafeRule(vector<std::string>& entry, pugi::xml_node_iterator& it, vector<int>& KBsize);
+void parseDLAtom(string& atom, pugi::xml_node_iterator& node, vector<string>& varSet, string name, int vt);
 
 void parseObjectExactCardinality(string& entry, pugi::xml_node_iterator& it, int varz);
