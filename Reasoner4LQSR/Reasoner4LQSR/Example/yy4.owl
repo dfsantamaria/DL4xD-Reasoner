@@ -45,22 +45,16 @@
     <Declaration>
         <ObjectProperty IRI="#prop4"/>
     </Declaration>
-    <DisjointUnion>
-        <Class IRI="#D"/>
+    <SubClassOf>
         <Class IRI="#A"/>
-        <ObjectIntersectionOf>
-            <Class IRI="#A"/>
-            <Class IRI="#B"/>
-            <Class IRI="#C"/>
-        </ObjectIntersectionOf>
-    </DisjointUnion>
-    <ObjectPropertyRange>
-        <ObjectProperty IRI="#prop4"/>
-        <ObjectIntersectionOf>
-            <Class IRI="#A"/>
-            <Class IRI="#B"/>
-        </ObjectIntersectionOf>
-    </ObjectPropertyRange>
+        <ObjectMaxCardinality cardinality="1">
+            <ObjectProperty IRI="#prop"/>
+            <ObjectIntersectionOf>
+                <Class IRI="#B"/>
+                <Class IRI="#D"/>
+            </ObjectIntersectionOf>
+        </ObjectMaxCardinality>
+    </SubClassOf>
     <DLSafeRule>
         <Body>
             <ObjectPropertyAtom>

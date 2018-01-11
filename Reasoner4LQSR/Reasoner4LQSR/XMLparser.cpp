@@ -584,8 +584,7 @@ void parseSubObjectProperty(vector<std::string>& out, pugi::xml_node_iterator& i
 			for (pugi::xml_node_iterator ch = node.begin(); ch != node.end(); ++ch,++i)
 			{
 				if (string(ch->name()) == "ObjectProperty")
-				{
-					cout << "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<" << endl;
+				{					
 					string propc = retrieveVarNameFromNode(ch, "IRI", 3);
 					quant += "($FA V0{z" + to_string(i) + "})";
 					string prevVar = "z";
@@ -597,8 +596,7 @@ void parseSubObjectProperty(vector<std::string>& out, pugi::xml_node_iterator& i
 					if (i % 2==0)
 						entry += ")";
 					if (ch != node.last_child())
-						entry += "$AD ";
-					
+						entry += "$AD ";					
 				}
                     
 			} 
@@ -657,7 +655,7 @@ void parseSubClassOfExpression(vector<std::string>& entry, pugi::xml_node_iterat
 		if (val == 0)			
 		  formula = "(" + res + "$II" + "(" + formula + ")" + ")";
 		else if(val==1)
-			formula += "$IF " + res + ")";
+			formula = "( (" + formula + ")" + "$IF " + res + ")";
 		else if (val==2)
 			formula = "(" + res + "$IF" + "(" + formula + ")" + ")";
 	}
@@ -766,7 +764,7 @@ void parseEquivalentClassExpression(vector<std::string>& entry, pugi::xml_node_i
 		if(val==0)
 		  formula = "(" + res + "$II" + "(" + formula + ")" + ")";
 		else if (val == 1)	
-		     formula += "$IF " + res + ")";
+			formula = "( (" + formula + ")" + "$IF " + res + ")";
 		else if (val == 2)
 			formula = "(" + res + "$IF" + "(" + formula + ")" + ")";
 	}
@@ -824,12 +822,12 @@ int parseClassExpression(string& entry, pugi::xml_node_iterator& it, int varz, i
 	else if (string(it->name()) == "ObjectMinCardinality")
 	{
 		parseObjectMinCardinality(entry, it, varz, varcount);
-		return 2;
+		return 1;
 	}
 	else if (string(it->name()) == "ObjectMaxCardinality")
 	{
 		parseObjectMaxCardinality(entry, it, varz, varcount);
-		return 1;
+		return 2;
 	}
 	return 0;
 }
@@ -1204,11 +1202,10 @@ void parseDisjointUnion(string& entry, pugi::xml_node_iterator& it, int varz, in
 	entry+="(V0{" + var + "} $IN " + clexpress.at(0) + ") $II (";
 	for (int i = 1; i<clexpress.size(); i++)
 	{
-
 		if (i % 2 == 1 && i != clexpress.size() - 1)
 			entry += "(";
 		entry += clexpress.at(i);
-		if (i % 2 == 1)
+		if (i % 2 == 0)
 			entry += ")";
 		if (i != clexpress.size() - 1)
 			entry += "$OR ";
@@ -1219,10 +1216,151 @@ void parseDisjointUnion(string& entry, pugi::xml_node_iterator& it, int varz, in
 	
 };
 
+void parseObjectMinCardinality(string& entry, pugi::xml_node_iterator& it, int varz, int& varcount)
+{ 		
+	int var= 0;
+	int var2 = 1;
+	if (varz > 0)
+	{
+		var = (varz);
+		var2 = (varz+1);
+	}
+	
+	int cardinality= it->attribute("cardinality").as_int();
+	
+	if (varcount <= cardinality)
+		varcount += cardinality + 1;
+	pugi::xml_node_iterator node = it->first_child();
+    string cprop= retrieveVarNameFromNode(node, "IRI", 3);
+	node = node->next_sibling();
+	vector<string> classexpr(cardinality+1);	
+	for (int i = 0; i < cardinality + 1; i++)
+	{
+		string intformula = "";
+		if (string(node->name()) == "Class")
+		{
+			intformula = "(V0{z" + to_string(var2+i) + "} $IN " + retrieveVarNameFromNode(node, "IRI", 1) + ")";
+		}
+		else
+		{
+			parseClassExpression(intformula, node, var2+i, varcount);
+		}
+		classexpr.at(i)=intformula;
+	}
+				
+	string vartz = "z";
+	if (varz > 1)
+		vartz += to_string(varz);
+	
+	for (int i = 1, j = var2; i < classexpr.size(); i++, j++)
+	{
+		if (i % 2 == 1 && i != classexpr.size()-1)
+		{
+			entry += "(";			
+		}
+		entry += "(" + classexpr.at(i) + "$AD ($OA V0{z" + to_string(j) + "} $CO V0{z" + to_string(j+1) + "} $OA $IN " + cprop + "))";
+		
+		if (i % 2 == 0)
+		{
+			entry += ")";
+		}
+		if (i != classexpr.size() - 1)
+			entry += "$AD";
+	}
+	entry= " ((" + classexpr.at(0) + "$AD ($OA V0{" + vartz + "} $CO V0{z" + to_string(var2) + "} $OA $IN " + cprop + "))$AD ("+entry+")) $IF ("; 
+	//entry += "( (V0{" + vartz + "} $EQ " + "V0{z" + to_string(var2) + "}) $OR (";
+	string leftimp = "";
+	for (int i = var2; i < (var2+cardinality); i++)
+	{
+		if (i % 2 == 1 && i != (var2 + cardinality - 1) )
+		{
+			leftimp += "(";
+		}
+		leftimp += "(V0{z" + to_string(i) + "} $EQ " + "V0{z" + to_string(i + 1) + "})";
+		if (i % 2 == 0)
+		{
+			leftimp += ")";
+		}
+		if (i != (var2 + cardinality - 1))
+			leftimp += "$OR";
+	}	
+	entry += leftimp+")";	
+};
 
+void parseObjectMaxCardinality(string& entry, pugi::xml_node_iterator& it, int varz, int&varcount)
+{ 
+	int var = 0;
+	int var2 = 1;
+	if (varz > 0)
+	{
+		var = (varz);
+		var2 = (varz + 1);
+	}
 
-void parseObjectMinCardinality(string& entry, pugi::xml_node_iterator& it, int varz, int& varcount) { throw new exception(); };
-void parseObjectMaxCardinality(string& entry, pugi::xml_node_iterator& it, int varz, int&varcount) { throw new exception(); };
+	int cardinality = it->attribute("cardinality").as_int();
+
+	if (varcount <= cardinality)
+		varcount += cardinality;
+	pugi::xml_node_iterator node = it->first_child();
+	string cprop = retrieveVarNameFromNode(node, "IRI", 3);
+	node = node->next_sibling();
+	vector<string> classexpr(cardinality);
+	for (int i = 0; i < cardinality; i++)
+	{
+		string intformula = "";
+		if (string(node->name()) == "Class")
+		{
+			intformula = "(V0{z" + to_string(var2 + i) + "} $IN " + retrieveVarNameFromNode(node, "IRI", 1) + ")";
+		}
+		else
+		{
+			parseClassExpression(intformula, node, var2 + i, varcount);
+		}
+		classexpr.at(i) = intformula;
+	}
+
+	string vartz = "z";
+	if (varz > 1)
+		vartz += to_string(varz);
+
+	for (int i = 0, j = var2; i < classexpr.size(); i++, j++)
+	{
+		if (i % 2 == 0 && i != classexpr.size() - 1)
+		{
+			entry += "(";
+		}
+		entry += "(" + classexpr.at(i) + "$AD ($OA V0{z" + to_string(j) + "} $CO V0{z" + to_string(j + 1) + "} $OA $IN " + cprop + "))";
+
+		if (i % 2 == 1)
+		{
+			entry += ")";
+		}
+		if (i != classexpr.size() - 1)
+			entry += "$AD";
+	}
+	cout << "<<<<<<<<<<<<<<<<<<<<<<<<<<" << entry << endl;
+
+	entry = " ((" + classexpr.at(0) + "$AD ($OA V0{" + vartz + "} $CO V0{z" + to_string(var2) + "} $OA $IN " + cprop + "))$AD (" + entry + ")) $IF";
+	//entry += "( (V0{" + vartz + "} $EQ " + "V0{z" + to_string(var2) + "}) $OR (";
+	string leftimp = "";
+	for (int i = var2; i < (var2 + cardinality); i++)
+	{
+		if (i % 2 == 1 && i != (var2 + cardinality - 1))
+		{
+			leftimp += "(";
+		}
+		leftimp += "(V0{z" + to_string(i) + "} $QE " + "V0{z" + to_string(i + 1) + "})";
+		if (i % 2 == 0)
+		{
+			leftimp += ")";
+		}
+		if (i != (var2 + cardinality - 1))
+			leftimp += "$AD";
+	}
+	entry += leftimp;
+	entry = "(" + entry+")";
+	
+};
 
 
 
