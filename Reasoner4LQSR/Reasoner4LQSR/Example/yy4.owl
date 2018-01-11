@@ -47,13 +47,11 @@
     </Declaration>
     <SubClassOf>
         <Class IRI="#A"/>
-        <ObjectMaxCardinality cardinality="1">
-            <ObjectProperty IRI="#prop"/>
-            <ObjectIntersectionOf>
-                <Class IRI="#B"/>
-                <Class IRI="#D"/>
-            </ObjectIntersectionOf>
-        </ObjectMaxCardinality>
+        <ObjectIntersectionOf>
+            <Class IRI="#B"/>
+            <Class IRI="#C"/>
+            <Class IRI="#D"/>
+        </ObjectIntersectionOf>
     </SubClassOf>
     <DLSafeRule>
         <Body>

@@ -629,6 +629,11 @@ string retrieveVarNameFromNode(pugi::xml_node_iterator const& it, string const& 
 
 void parseDLSafeRule(vector<std::string>& entry, pugi::xml_node_iterator& it, vector<int>& KBsize)
 {
+ #ifdef debug 
+ #ifdef debugparseXML
+	logFile << "-----Found Rule. " << endl;
+ #endif
+ #endif // debug 
 	string body = "";
 	string formula = "";
 	vector<string>varSet(0);
@@ -659,6 +664,11 @@ string retrieveZVariable(int num)
 
 void parseDLAtom(string& atom, pugi::xml_node_iterator& it, vector<string>& varSet, string name, int vt)
 {
+#ifdef debug 
+#ifdef debugparseXML
+	logFile << "-----Parsing DL Rule Atom Element: "+  name<< endl;
+#endif
+#endif // debug 
 	string clprop = "";
 	vector<int> varus(0);
 	for (pugi::xml_node_iterator node = it->begin(); node != it->end(); ++node)
@@ -701,6 +711,11 @@ void parseDLAtom(string& atom, pugi::xml_node_iterator& it, vector<string>& varS
 }
 int parseDLSafeBody(string& entry, pugi::xml_node_iterator& it,vector<string>& varSet)
 {	
+#ifdef debug 
+#ifdef debugparseXML
+	logFile << "-----Parsing DL Rule Atom" << endl;
+#endif
+#endif // debug 
 	entry = "";
 	for (pugi::xml_node_iterator node = it->begin(); node != it->end(); ++node)
 	{
@@ -925,11 +940,8 @@ void parseObjectIntersectionOf(string& entry, pugi::xml_node_iterator& it, int v
 	for (pugi::xml_node_iterator node = it->begin(); node != it->end(); ++node)
 		{			
 		  if (string(node->name()) == "Class")
-		  {	  
-			
-			string var = "z";
-			if (varz > 0)
-				var += to_string(varz);
+		  {	  			
+			string var = retrieveZVariable(varz);			
 			string res = "(V0{" + var + "} $IN " + retrieveVarNameFromNode(node, "IRI", 1) +")";
 			entry += res;
 			if (node != it->begin())
