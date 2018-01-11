@@ -47,11 +47,11 @@
     </Declaration>
     <SubClassOf>
         <Class IRI="#A"/>
-        <ObjectIntersectionOf>
+        <ObjectUnionOf>
             <Class IRI="#B"/>
             <Class IRI="#C"/>
             <Class IRI="#D"/>
-        </ObjectIntersectionOf>
+        </ObjectUnionOf>
     </SubClassOf>
     <DLSafeRule>
         <Body>

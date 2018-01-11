@@ -972,9 +972,7 @@ void parseObjectUnionOf(string& entry, pugi::xml_node_iterator& it, int varz, in
 	{
 		if (string(node->name()) == "Class")
 		{			
-			string var = "z";
-			if (varz > 0)
-				var += to_string(varz);
+			string var = retrieveZVariable(varz);			
 			string res = "(V0{" + var + "} $IN " + retrieveVarNameFromNode(node, "IRI", 1) + ")";
 			entry += res;
 			if (node != it->begin())
