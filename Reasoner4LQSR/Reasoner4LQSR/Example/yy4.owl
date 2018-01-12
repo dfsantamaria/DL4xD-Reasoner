@@ -50,7 +50,13 @@
         <ObjectUnionOf>
             <Class IRI="#B"/>
             <Class IRI="#C"/>
-            <Class IRI="#D"/>
+            <ObjectIntersectionOf>
+                <Class IRI="#D"/>
+                <ObjectSomeValuesFrom>
+                    <ObjectProperty IRI="#prop"/>
+                    <Class IRI="#C"/>
+                </ObjectSomeValuesFrom>
+            </ObjectIntersectionOf>
         </ObjectUnionOf>
     </SubClassOf>
     <DLSafeRule>
@@ -60,6 +66,10 @@
                 <Variable IRI="urn:swrl#x1"/>
                 <Variable IRI="urn:swrl#x2"/>
             </ObjectPropertyAtom>
+            <ClassAtom>
+                <Class IRI="#B"/>
+                <Variable IRI="urn:swrl#x2"/>
+            </ClassAtom>
         </Body>
         <Head>
             <ObjectPropertyAtom>
@@ -69,6 +79,10 @@
             </ObjectPropertyAtom>
             <ClassAtom>
                 <Class IRI="#A"/>
+                <Variable IRI="urn:swrl#x1"/>
+            </ClassAtom>
+            <ClassAtom>
+                <Class IRI="#B"/>
                 <Variable IRI="urn:swrl#x1"/>
             </ClassAtom>
         </Head>
