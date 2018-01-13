@@ -1308,7 +1308,7 @@ void parseDisjointUnion(string& entry, pugi::xml_node_iterator& it, int varz, in
 	
 };
 
-void parseObjectMinCardinality(string& entry, pugi::xml_node_iterator& it, int varz, int& varcount)
+void parseObjectMaxCardinality(string& entry, pugi::xml_node_iterator& it, int varz, int& varcount)
 { 		
 	int var= 0;
 	int var2 = 1;
@@ -1339,6 +1339,9 @@ void parseObjectMinCardinality(string& entry, pugi::xml_node_iterator& it, int v
 		}
 		classexpr.at(i)=intformula;
 	}
+	string vartz = "z";
+	if (varz > 0)
+		vartz += to_string(varz);
 
 	for (int i = 1, j = var2; i < classexpr.size(); i++, j++)
 	{
@@ -1346,7 +1349,7 @@ void parseObjectMinCardinality(string& entry, pugi::xml_node_iterator& it, int v
 		{
 			entry += "(";			
 		}
-		entry += "(" + classexpr.at(i) + "$AD ($OA V0{z" + to_string(j) + "} $CO V0{z" + to_string(j+1) + "} $OA $IN " + cprop + "))";
+		entry += "(" + classexpr.at(i) + "$AD ($OA V0{"+ vartz+ "} $CO V0{z" + to_string(j+1) + "} $OA $IN " + cprop + "))";
 		
 		if (i % 2 == 0)
 		{
@@ -1355,9 +1358,7 @@ void parseObjectMinCardinality(string& entry, pugi::xml_node_iterator& it, int v
 		if (i != classexpr.size() - 1)
 			entry += "$AD";
 	}
-	string vartz = "z";
-	if (varz > 0)
-		vartz += to_string(varz);
+
 	entry= " ((" + classexpr.at(0) + "$AD ($OA V0{" + vartz + "} $CO V0{z" + to_string(var2) + "} $OA $IN " + cprop + "))$AD ("+entry+")) $IF ("; 
 	//entry += "( (V0{" + vartz + "} $EQ " + "V0{z" + to_string(var2) + "}) $OR (";
 	string leftimp = "";
@@ -1378,7 +1379,7 @@ void parseObjectMinCardinality(string& entry, pugi::xml_node_iterator& it, int v
 	entry += leftimp+")";	
 };
 
-void parseObjectMaxCardinality(string& entry, pugi::xml_node_iterator& it, int varz, int&varcount)
+void parseObjectMinCardinality(string& entry, pugi::xml_node_iterator& it, int varz, int&varcount)
 { 
 	int var = 0;
 	int var2 = 1;
@@ -1409,14 +1410,18 @@ void parseObjectMaxCardinality(string& entry, pugi::xml_node_iterator& it, int v
 		}
 		classexpr.at(i) = intformula;
 	}
-		
+	
+	string vartz = "z";
+	if (varz > 0)
+		vartz += to_string(varz);
+	entry += " ((";
 	for (int i = 0, j = var2; i < classexpr.size(); i++, j++)
 	{
 		if (i % 2 == 0 && i != classexpr.size() - 1)
 		{
 			entry += "(";
 		}
-		entry += "(" + classexpr.at(i) + "$AD ($OA V0{z" + to_string(j) + "} $CO V0{z" + to_string(j + 1) + "} $OA $IN " + cprop + "))";
+		entry += "(" + classexpr.at(i) + "$AD ($OA V0{" + vartz + "} $CO V0{z" + to_string(j) + "} $OA $IN " + cprop + "))";
 
 		if (i % 2 == 1)
 		{
@@ -1424,11 +1429,8 @@ void parseObjectMaxCardinality(string& entry, pugi::xml_node_iterator& it, int v
 		}
 		if (i != classexpr.size() - 1)
 			entry += "$AD";
-	}
-	string vartz = "z";
-	if (varz > 0)
-		vartz += to_string(varz);
-	entry = " ((" + classexpr.at(0) + "$AD ($OA V0{" + vartz + "} $CO V0{z" + to_string(var2) + "} $OA $IN " + cprop + "))$AD (" + entry + ")) $IF";
+	}	
+	entry+=")) $IF";
 	//entry += "( (V0{" + vartz + "} $EQ " + "V0{z" + to_string(var2) + "}) $OR (";
 	string leftimp = "";
 	for (int i = var2; i < (var2 + cardinality); i++)

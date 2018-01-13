@@ -47,12 +47,9 @@
     </Declaration>
     <SubClassOf>
         <Class IRI="#A"/>
-        <ObjectMaxCardinality cardinality="1">
+        <ObjectMaxCardinality cardinality="2">
             <ObjectProperty IRI="#prop"/>
-            <ObjectUnionOf>
-                <Class IRI="#A"/>
-                <Class IRI="#B"/>
-            </ObjectUnionOf>
+            <Class IRI="#B"/>
         </ObjectMaxCardinality>
     </SubClassOf>
     <DLSafeRule>
