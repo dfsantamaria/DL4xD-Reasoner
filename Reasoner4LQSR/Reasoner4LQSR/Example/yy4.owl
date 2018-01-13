@@ -47,17 +47,13 @@
     </Declaration>
     <SubClassOf>
         <Class IRI="#A"/>
-        <ObjectUnionOf>
-            <Class IRI="#B"/>
-            <Class IRI="#C"/>
-            <ObjectIntersectionOf>
-                <Class IRI="#D"/>
-                <ObjectSomeValuesFrom>
-                    <ObjectProperty IRI="#prop"/>
-                    <Class IRI="#C"/>
-                </ObjectSomeValuesFrom>
-            </ObjectIntersectionOf>
-        </ObjectUnionOf>
+        <ObjectMaxCardinality cardinality="1">
+            <ObjectProperty IRI="#prop"/>
+            <ObjectUnionOf>
+                <Class IRI="#A"/>
+                <Class IRI="#B"/>
+            </ObjectUnionOf>
+        </ObjectMaxCardinality>
     </SubClassOf>
     <DLSafeRule>
         <Body>
