@@ -1309,12 +1309,19 @@ void parseDisjointUnion(string& entry, pugi::xml_node_iterator& it, int varz, in
 };
 
 void parseObjectMaxCardinality(string& entry, pugi::xml_node_iterator& it, int varz, int& varcount)
-{ 		
+{ 	
+#ifdef debug 
+#ifdef debugparseXML
+	logFile << "-----Found ObjectMaxCardinality class expression. " << endl;
+#endif
+#endif // debug
+	string vartz = "z";
 	int var= 0;
 	int var2 = 1;
 	if (varz > 0)
 	{
 		var = (varz);
+		vartz += to_string(varz);
 		var2 = (varz+1);
 	}
 	
@@ -1339,10 +1346,7 @@ void parseObjectMaxCardinality(string& entry, pugi::xml_node_iterator& it, int v
 		}
 		classexpr.at(i)=intformula;
 	}
-	string vartz = "z";
-	if (varz > 0)
-		vartz += to_string(varz);
-
+	
 	for (int i = 1, j = var2; i < classexpr.size(); i++, j++)
 	{
 		if (i % 2 == 1 && i != classexpr.size()-1)
@@ -1381,12 +1385,19 @@ void parseObjectMaxCardinality(string& entry, pugi::xml_node_iterator& it, int v
 
 void parseObjectMinCardinality(string& entry, pugi::xml_node_iterator& it, int varz, int&varcount)
 { 
+#ifdef debug 
+#ifdef debugparseXML
+	logFile << "-----Found ObjectMinCardinality class expression. " << endl;
+#endif
+#endif // debug
+	string vartz = "z";
 	int var = 0;
 	int var2 = 1;
 	if (varz > 0)
 	{
 		var = (varz);
 		var2 = (varz + 1);
+		vartz += to_string(varz);
 	}
 
 	int cardinality = it->attribute("cardinality").as_int();
@@ -1410,10 +1421,7 @@ void parseObjectMinCardinality(string& entry, pugi::xml_node_iterator& it, int v
 		}
 		classexpr.at(i) = intformula;
 	}
-	
-	string vartz = "z";
-	if (varz > 0)
-		vartz += to_string(varz);
+			
 	entry += " ((";
 	for (int i = 0, j = var2; i < classexpr.size(); i++, j++)
 	{
@@ -1455,16 +1463,6 @@ void parseObjectMinCardinality(string& entry, pugi::xml_node_iterator& it, int v
 
 
 void parseObjectExactCardinality(string& entry, pugi::xml_node_iterator& it, int varz) { throw new exception(); };
-
-
-
-
-
-
-
-
-
-
 
 void readOWLXMLOntology(string filename, vector<pair<string, string>>& ontNamespaces, vector<string>& formulae, vector<int>& KBsize)
 {
