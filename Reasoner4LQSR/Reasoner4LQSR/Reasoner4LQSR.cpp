@@ -1305,12 +1305,16 @@ int expandKB(const vector<Formula*> &inpf, vector <Formula*> &out)
 #endif // debug
 
 	if (varSet.getVVLAt(0)->size() == 0) //no individual;
-	{
-		for (Formula* f : inpf)
+	{ 
+		cout << "......................................ENDL" << endl;
+		varSet.getVVLAt(0)->push_back(*new Var("TOPIND", 0, 0,0));
+
+		cout << varSet.getVVLAt(0)->size() << endl;
+		/*for (Formula* f : inpf)
 		{
 			out.push_back(f);
 		}
-		return 0;
+		return 0;*/
 	}
 
 

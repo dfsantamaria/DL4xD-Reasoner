@@ -178,7 +178,7 @@ int main()
 	cout << "--Move Quantifiers--" << endl;
 	moveQuantifierKB(0, KB2cnf, KB2mq);
 	printTRadix(KB2mq); //print Tableau Radix
-	/*
+	
 	vector<Formula*> expKB2;
 	cout << "Expanding Quantifiers in KB" << endl;
 	expandKB(KB2mq, expKB2);
@@ -201,7 +201,7 @@ int main()
 	//print closed branches
 	printClosedBranches(tableau2);
 
-	*/
+	
 
 	cout << "--End reading ontology--" << endl;
 	debugEnd();
