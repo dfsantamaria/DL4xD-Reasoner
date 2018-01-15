@@ -1250,7 +1250,7 @@ int containsQVar(Formula *fr, string &s)
 					if (var->getVarType() == 1)
 					{
 						s = (var->getName());
-						return 1;
+						return var->getType();
 					}
 				}
 			}
@@ -1258,7 +1258,7 @@ int containsQVar(Formula *fr, string &s)
 			q.push_back(f->getRSubformula());
 		}
 	}
-	return 0;
+	return -1;
 }
 
 int instantiateFormula(Formula* f, vector<Formula*> &destination)
@@ -1271,13 +1271,15 @@ int instantiateFormula(Formula* f, vector<Formula*> &destination)
 	tmp.push_back(f);
 	while (!tmp.empty())
 	{		
-		Formula* top = tmp.back();
+
+		Formula* top = tmp.back(); 		
 		tmp.pop_back();
-		if (containsQVar(top, s))
-		{
-			for (int i = 0; i < varSet.getVVLAt(0)->size(); i++)
-			{
-				tmp.push_back((copyFormula(top, NULL, &s, &varSet.getVVLAt(0)->at(i))));				
+		int type = containsQVar(top, s);
+		if (type>-1)
+		{       
+			for (int i = 0; i < varSet.getVVLAt(type)->size(); i++)
+			{				
+				tmp.push_back((copyFormula(top, NULL, &s, &varSet.getVVLAt(type)->at(i))));					
 			}
 		}
 		else
@@ -1527,10 +1529,10 @@ int checkBranchClash(Node* node, Tableau& tableau)
 Return the set of atomic formula contained in a formula.
 */
 
-void getLiteralSet(Formula* f, vector<Literal*> &outf)
+int getLiteralSet(Formula* f, vector<Literal*> &outf)
 {
 	if (f->getLiteral() != NULL)
-		return;
+		return -1;
 	stack <Formula*> st;
 	st.push(f->getRSubformula());
 	st.push(f->getLSubformula());
@@ -1538,13 +1540,24 @@ void getLiteralSet(Formula* f, vector<Literal*> &outf)
 	{
 		Formula* tmp = st.top();
 		if (tmp->getLiteral() != NULL)
-			outf.push_back(tmp->getLiteral());                       //There should be only OR because of CNF formula		
+		{
+			int stop = 0;
+			for (int i = 0; i < outf.size()&&stop==0; i++)
+			{
+				if (outf.at(i)->equals(*tmp->getLiteral())==0)
+					stop = 1;
+				//here code for tautologic assertion
+			}
+			if(stop==0)
+			  outf.push_back(tmp->getLiteral());//There should be only OR because of CNF formula	
+		}                      	
 		st.pop();
 		if (tmp->getRSubformula() != NULL)
 			st.push(tmp->getRSubformula());
 		if (tmp->getLSubformula() != NULL)
 			st.push(tmp->getLSubformula());
 	}
+	return 0;
 }
 
 void closeTableauRoot(Tableau& T)
@@ -1626,8 +1639,8 @@ void PBRule(vector<Literal*> atoms, Node* node, vector<Node*> &nodeSet)
 				nodeSet.insert(nodeSet.end(), newNodeSet.begin(), newNodeSet.end());
 				return;
 			}
-		} */
-
+		} //15/01/18 inserted 
+	tmp = node;*/
 	for (int i = 0; i < atoms.size() - 1; i++)
 	{
 #ifdef debug  
@@ -1684,13 +1697,20 @@ void chooseRule(Tableau &T, vector<Node*> &nodeSet, Formula* f)
 	{
 		vector<Literal*> atoms;
 		vector<Literal*> atomset;
-		getLiteralSet(f, atomset);
+		int val=getLiteralSet(f, atomset);
 		/*	if (checkLiteralsClash(atomset))
 			{
 				newNodeSet.push_back(nodeSet.at(b));
 				//T.getClosedBranches().push_back(nodeSet.at(b));
 				break;
 			}*/
+		cout << ",,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,," << endl;
+		cout << ",,,,,,,,,," << f->toString() << endl;
+		for (Literal* a : atomset)
+		{
+			cout << ",,,,,,,,,,,,," << a->toString() << endl;
+		}
+
 		int check = 0;
 		for (int j = 0; j < atomset.size(); j++)
 		{

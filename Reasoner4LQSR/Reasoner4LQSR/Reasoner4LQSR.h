@@ -274,7 +274,7 @@ Var* createVarFromString(vector<vector<Var>>& vec, vector<vector<Var>>& vec2, st
 void ERule(Literal* atom, Node* node);
 int expandKB(const vector<Formula*> &inpf, vector <Formula*> &out);
 void expandTableau(Tableau& T);
-void getLiteralSet(Formula* f, vector<Literal*> &outf);
+int getLiteralSet(Formula* f, vector<Literal*> &outf);
 int getVarsOrder(Var &var1, Var &var2);
 int insertFormulaKB(int keepQ, vector<vector <Var>>& varset, vector<vector <Var>>& varset2, string formula, vector<Formula> &vec, int* typeformula);
 int insertFormulaKB(int keepQ, vector<vector <Var>>& varset1, vector<vector <Var>>& varset2, string formula, Formula** ffinal, int* typeformula);
