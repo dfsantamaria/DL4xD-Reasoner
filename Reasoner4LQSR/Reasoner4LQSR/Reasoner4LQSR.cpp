@@ -1704,13 +1704,6 @@ void chooseRule(Tableau &T, vector<Node*> &nodeSet, Formula* f)
 				//T.getClosedBranches().push_back(nodeSet.at(b));
 				break;
 			}*/
-		cout << ",,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,," << endl;
-		cout << ",,,,,,,,,," << f->toString() << endl;
-		for (Literal* a : atomset)
-		{
-			cout << ",,,,,,,,,,,,," << a->toString() << endl;
-		}
-
 		int check = 0;
 		for (int j = 0; j < atomset.size(); j++)
 		{
