@@ -250,6 +250,7 @@ int checkLiteralClashEqSet(Literal &atom, Tableau& T, int& brindx); //0 for clas
 int checkLiteralClashEqSet(Literal &atom1, Literal &atom2, Tableau& t, int& brindx);
 int checkLiteralOpClash(int op1, int op2);
 int checkLiterals(Literal* atom, Node* node);
+int checkLiteralTautology(Literal &atom);
 int checkLiteralsClash(vector<Literal*> &vec);
 int checkBranchClash(Literal* atom, Node* node);
 int checkBranchClash(Node* node, Tableau& tableau);

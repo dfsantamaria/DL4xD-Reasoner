@@ -869,7 +869,7 @@ int createLiteral(vector<vector <Var>>& vec, vector<vector <Var>>& vec2, string 
 	Literal* atom = NULL;
 	if (input[0] == '$') //case pair or quantifier
 	{
-		string head = input.substr(0, 3); //cout << head << endl;	
+		string head = input.substr(0, 3); 	
 		string match = input;
 		if (head.compare("$OA") == 0)  //case  pair
 		{
@@ -889,8 +889,7 @@ int createLiteral(vector<vector <Var>>& vec, vector<vector <Var>>& vec2, string 
 			var3 = createVarFromString(vec, vec2, &name, &level, new int(0), &startQuantVect.at(level), &typeformula);
 			atom = new Literal(op, { var3, var1, var2 });
 			//Literal* atom = new Literal(0, { new Var(name,level,0), new Var("b1",0,0), new Var("c1",0,0) });
-			*formula = (new Formula(atom, -1));
-			//cout << "Literal found: " << formula->print() << endl;			
+			*formula = (new Formula(atom, -1));						
 		}
 		else if (head.compare("$FA") == 0)  //case quantified variable
 		{
@@ -1386,10 +1385,7 @@ int checkLiteralClash(Literal &atom1, Literal &atom2)
 	if (atom1.getElements().size() == atom2.getElements().size())
 	{
 		for (int i = 0; i < atom1.getElements().size(); i++)
-		{
-			//cout<<atom1.getElementAt(i)->toString()<<endl;
-			//cout << atom2.getElementAt(i)->toString() << endl;
-			//cout << atom1.getElementAt(i)->equal(atom2.getElementAt(i)) << endl;
+		{			
 			if (atom1.getElementAt(i)->equal(atom2.getElementAt(i)) != 0)
 				return 1;
 		}
@@ -1406,6 +1402,18 @@ int checkLiteralClash(Literal &atom) //0 for clash 1 for no-clash
 #endif
 #endif // debug
 	if (atom.getElements().size() == 2 && atom.getLiteralOp() == 3 && atom.getElementAt(0)->equal(atom.getElementAt(1)) == 0)
+		return 0;
+	return 1;
+}
+
+int checkLiteralTautology(Literal &atom) //0 for tautology 1 for no-tautology
+{
+#ifdef debug
+#ifdef debugclash
+	logFile << "-----Checking for Tautology: " << atom.toString() << endl;
+#endif
+#endif // debug
+	if (atom.getElements().size() == 2 && atom.getLiteralOp() == 1 && atom.getElementAt(0)->equal(atom.getElementAt(1)) == 0)
 		return 0;
 	return 1;
 }
@@ -1539,17 +1547,25 @@ int getLiteralSet(Formula* f, vector<Literal*> &outf)
 	while (!st.empty())
 	{
 		Formula* tmp = st.top();
-		if (tmp->getLiteral() != NULL)
+		if (tmp->getLiteral() != NULL &&checkLiteralClash(*tmp->getLiteral()) != 0 && checkLiteralTautology(*tmp->getLiteral()) != 0)
 		{
-			int stop = 0;
-			for (int i = 0; i < outf.size()&&stop==0; i++)
-			{
-				if (outf.at(i)->equals(*tmp->getLiteral())==0)
-					stop = 1;
-				//here code for tautologic assertion
-			}
-			if(stop==0)
-			  outf.push_back(tmp->getLiteral());//There should be only OR because of CNF formula	
+		  int stop = 0;
+				int i = 0;
+				for (; i < outf.size() && stop == 0; i++)
+				{
+					if (outf.at(i)->equals(*tmp->getLiteral()) == 0)
+						stop = 1;
+					else if (checkLiteralClash(*outf.at(i), *tmp->getLiteral()) == 0)	// case A V \negA						
+						stop = 2; 					
+				}
+				if (stop == 0)
+					outf.push_back(tmp->getLiteral());//There should be only OR because of CNF formula
+				else if (stop == 2) // remove the element
+				{
+
+					outf.at(i - 1) = outf.back(); 
+					outf.pop_back();
+				}						
 		}                      	
 		st.pop();
 		if (tmp->getRSubformula() != NULL)
@@ -1995,8 +2011,7 @@ int checkLiteralClashEqSet(Literal &atom, Tableau& T, int& brindx) //0 for clash
 #endif
 #endif // debug
 	if (atom.getElements().size() == 2 && atom.getLiteralOp() == 3)
-	{
-		//cout << "clash" << atom.toString() << " "<< T.sameEqClass(*(atom.getElementAt(0)), *(atom.getElementAt(1)), brindx) <<endl;
+	{		
 		return (T.sameEqClass(*(atom.getElementAt(0)), *(atom.getElementAt(1)), brindx));
 	}
 	return 1;
@@ -2133,10 +2148,7 @@ void moveQuantifier(int qFlag, Formula* formula, vector<vector <Var>>& varset1, 
 			Formula* fR = current->getRSubformula();
 			fL->setPreviousFormula(NULL);
 			fR->setPreviousFormula(NULL);
-
-			//cout << "-debug-- " << fL->toString()<<endl;
-			//cout << "-debug-- " << fR->toString()<<endl;
-
+			
 			delete(current);
 			tmp.push_back(fL);
 			if (qFlag == 1)
@@ -2382,21 +2394,17 @@ int QueryManager::checkQueryVariableMatchInBranch(Node* branch, Literal* query, 
 	
 Literal QueryManager::applySubstitution(Literal* result, Literal* query, const vector<pair<Var*,Var*>>& matches)
 	{				
-		copyLiteral(query,result);
-		//cout << "Q before:" << result->toString() << endl;		
+		copyLiteral(query,result);				
 		for (int sigIt = 0; sigIt < matches.size(); sigIt++)
 		{
 			for (int i = 0; i < query->getElements().size(); i++)
 			{
 				if (query->getElementAt(i)->equal(matches.at(sigIt).first)==0)
 				{
-
-					result->setElementAt(i, matches.at(sigIt).second);
-					//cout << "replacing..." << result->getElementAt(i)->toString()<<endl;
+					result->setElementAt(i, matches.at(sigIt).second);					
 				}
 			}
-		}
-		//cout << "Query After: " << result->toString() << endl;
+		}		
 		return *result;
 };
 
