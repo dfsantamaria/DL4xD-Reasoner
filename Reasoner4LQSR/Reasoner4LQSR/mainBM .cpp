@@ -18,6 +18,8 @@
 #define sizeofVVector (maxLevNum+maxLevNum+2) 
 
 std::fstream logFile;
+std::fstream testFile;
+
 
 void debugStart()
 {
@@ -25,11 +27,13 @@ void debugStart()
 #ifdef debug  
 	logFile << "Debug Started" << endl;
 #endif // debug
+	testFile.open("test.log", fstream::out);
 };
 
 void debugEnd()
 {
 	logFile.close();
+	testFile.close();
 };
 
 int main()

@@ -13,7 +13,7 @@
 #include "Reasoner4LQSR.h"
 #include "XMLparser.h"
 #include "log.h"
-
+#include "test.h"
 using namespace std;
 
 
@@ -1262,6 +1262,24 @@ int containsQVar(Formula *fr, string &s)
 
 int instantiateFormula(Formula* f, vector<Formula*> &destination)
 {
+
+#ifdef test
+    counterFormula++;
+	cout << "Formula Num" << counterFormula << endl;
+	testFile << counterFormula << endl;
+#endif // couterformula
+
+#ifdef test
+ counterFormulaIn = 0;
+ testFile << f->toString() << endl;
+#endif // counterFormulaIn
+
+	
+	
+	
+	
+
+
 #ifdef debug  
 	logFile << "------- Expanding Formula: " << f->toString() << endl;
 #endif // debug
@@ -1288,12 +1306,25 @@ int instantiateFormula(Formula* f, vector<Formula*> &destination)
 			logFile << "------- Expanded Formula: " << top->toString() << endl;
 #endif
 #endif // debug	
-			//cout<<"------- Expanded Formula: " << top->toString() << endl;
+			
+#ifdef test
+counterTest++;
+counterFormulaIn++;
+#endif // counterFormulaIn
+
+			
+			//cout<<"------- Expanded Formula: " << counterTest << endl;
+
 			if (top->getLiteral() != NULL)
 				top->setFulfillness(0);
 			destination.push_back(top); 
 		}
 	}
+
+  #ifdef test
+	testFile << "In Formula: " << counterFormulaIn << ". Total:" << counterTest << endl;
+	cout << "------- In Formula: " << counterFormulaIn<<". Total:"<<counterTest << endl;
+#endif // counterFormulaIn
 
 	return 0;
 }
