@@ -1,4 +1,5 @@
-﻿
+﻿#pragma once
+
 #include "stdafx.h" // only on windows
 #include <fstream>
 #include <string>
@@ -11,8 +12,10 @@
 #include "XMLparser.h"
 #include "thirdparts/pugixml/src/pugixml.hpp"
 #include "log.h"
-#pragma once
+
+
 using namespace std;
+
 
 #define propertyindex 3
 #define qvar0 (propertyindex+1)
@@ -937,7 +940,17 @@ int parseClassExpression(string& entry, pugi::xml_node_iterator& it, int varz, i
 		parseObjectExactCardinality(entry, it, varz, varcount);
 		return 2;
 	}
-	return -1;
+	else if (string(it->name()) == "Class")
+	{
+		string var = retrieveZVariable(varz);
+		string res = "(V0{" + var + "} $IN " + retrieveVarNameFromNode(it, "IRI", 1) + ")";
+		entry += res;				
+		return 0;
+	}
+	else
+	{ 		
+		return -1;
+	}
 	
 }
 void parseObjectIntersectionOf(string& entry, pugi::xml_node_iterator& it, int varz, int& varcount)
@@ -1506,11 +1519,17 @@ void readOWLXMLOntology(string filename, vector<pair<string, string>>& ontNamesp
 	buildNamespace(doc, ontNamespaces);
 	//std::cout << "Load result: " << result.description() << ", mesh name: " << doc.child("mesh").attribute("name").value() << std::endl;
 	pugi::xml_node tools = doc.first_child();
-
-	
+	/*
+		std::fstream trace;
+		trace.open("trace.log", fstream::out);
+     */
 	for (pugi::xml_node_iterator it = tools.begin(); it != tools.end(); ++it)
-	{			
+	{		
+
 		string name = it->name();
+        /*
+		trace << "<<<<<<<<<<<<<<<<<<<<<<<" << name << endl;
+		*/
 		if (name == "Declaration")
 			parseDeclaration(formulae, it, KBsize);
 		else if (name == "ClassAssertion")
@@ -1559,13 +1578,22 @@ void readOWLXMLOntology(string filename, vector<pair<string, string>>& ontNamesp
 			parseDisjointUnionExpression(formulae, it, KBsize);
 		else if (name == "DLSafeRule")
 			parseDLSafeRule(formulae, it, KBsize);
+		/*
+		if(formulae.size()>0)
+		  trace << formulae.back() << endl;
+		*/
+
 		// if (!entry.empty())
 		//	formulae.push_back(entry);	
+
 
 		//cout << irival << endl;
 		//cout << irival.substr(irival.find("#") + 1) << endl;
 	}
 
+	/*
+	   trace.close();
+		*/
 #ifdef debug 
 #ifdef debugparseXML
 	logFile << "----The Ontology Contains: " << endl;
