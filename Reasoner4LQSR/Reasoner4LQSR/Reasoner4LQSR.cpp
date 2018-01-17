@@ -1287,7 +1287,8 @@ int instantiateFormula(Formula* f, vector<Formula*> &destination)
 #ifdef debugexpand
 			logFile << "------- Expanded Formula: " << top->toString() << endl;
 #endif
-#endif // debug		
+#endif // debug	
+			//cout<<"------- Expanded Formula: " << top->toString() << endl;
 			if (top->getLiteral() != NULL)
 				top->setFulfillness(0);
 			destination.push_back(top); 
@@ -2225,8 +2226,7 @@ void readKBFromStrings(int qflag, vector<string>&names, vector<Formula*>& KB)
 	for(string str: names)
 	{
 		if ((str.rfind("//", 0) == 0) || str.empty())
-			continue;
-		cout << str << endl;		
+			continue;			
 		insertFormulaKB(qflag,varSet.getVQL(), varSet.getVVL(), str, KB, &typeformula);
 	}	
 }

@@ -12,6 +12,7 @@
 #define debugmvq                    //debug for moving quantifiers 
 #define debugparseXML               //debug xml parser
 #define debugnorm                   //debug normalization
+
 extern std::fstream logFile;
 
 

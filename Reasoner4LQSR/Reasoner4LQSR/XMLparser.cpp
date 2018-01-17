@@ -724,7 +724,7 @@ int parseDLSafeBody(string& entry, pugi::xml_node_iterator& it,vector<string>& v
 			parseDLAtom(atom, node, varSet, "Class", 1);		
 		else if (string(node->name()) == "ObjectPropertyAtom")
 			parseDLAtom(atom, node, varSet,"ObjectProperty",3);	
-		cout << "Atom: " << atom << endl;
+		//cout << "Atom: " << atom << endl;
         entry += atom;
 		if (node != it->begin())
 			entry = "("+entry + ")";		
@@ -885,26 +885,32 @@ int parseClassExpression(string& entry, pugi::xml_node_iterator& it, int varz, i
 	if (string(it->name()) == "ObjectIntersectionOf")
 	{
 	  parseObjectIntersectionOf(entry, it, varz, varcount);
+	  return 0;
 	}
 	else if (string(it->name()) == "ObjectUnionOf")
 	{
 	 parseObjectUnionOf(entry, it, varz, varcount);
+	 return 0;
 	}
 	else if (string(it->name()) == "ObjectComplementOf")
 	{
 	 parseObjectComplementOf(entry, it, varz, varcount);
+	 return 0;
 	}
 	else if (string(it->name()) == "ObjectOneOf")
 	{
 		parseObjectOneOf(entry, it, varz, varcount);
+		return 0;
 	}
 	else if (string(it->name()) == "ObjectHasSelf")
 	{
 		parseObjectHasSelf(entry, it, varz, varcount);
+		return 0;
 	}
 	else if (string(it->name()) == "ObjectHasValue")
 	{
 		parseObjectHasValue(entry, it, varz, varcount);
+		return 0;
 	}	
 	else if (string(it->name()) == "ObjectSomeValuesFrom")
 	{
@@ -926,7 +932,13 @@ int parseClassExpression(string& entry, pugi::xml_node_iterator& it, int varz, i
 		parseObjectMaxCardinality(entry, it, varz, varcount);
 		return 2;
 	}
-	return 0;
+	else if (string(it->name()) == "ObjectExactCardinality")
+	{
+		parseObjectExactCardinality(entry, it, varz, varcount);
+		return 2;
+	}
+	return -1;
+	
 }
 void parseObjectIntersectionOf(string& entry, pugi::xml_node_iterator& it, int varz, int& varcount)
 {
@@ -1307,6 +1319,23 @@ void parseDisjointUnion(string& entry, pugi::xml_node_iterator& it, int varz, in
 	
 	
 };
+
+
+void parseObjectExactCardinality(string& entry, pugi::xml_node_iterator& it, int varz, int& varcount)
+{
+#ifdef debug 
+#ifdef debugparseXML
+	logFile << "-----Found ObjectExactCardinality class expression. " << endl;
+#endif
+#endif // debug
+
+	string max = "";
+	parseObjectMaxCardinality(max, it, varz, varcount);
+	entry = "(" + max + ")" + "$AD";
+	max = "";
+	parseObjectMinCardinality(max, it, varz, varcount);
+	entry += "(" + max + ")";
+}
 
 void parseObjectMaxCardinality(string& entry, pugi::xml_node_iterator& it, int varz, int& varcount)
 { 	

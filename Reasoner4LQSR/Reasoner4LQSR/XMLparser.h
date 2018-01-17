@@ -49,13 +49,14 @@ void parseObjectHasValue(string& entry, pugi::xml_node_iterator& it, int varz,in
 void parseObjectSomeValuesFrom(string& entry, pugi::xml_node_iterator& it, int varz, int& varcount);
 void parseObjectAllValuesFrom(string& entry, pugi::xml_node_iterator& it, int varz, int& varcount);
 
+void parseObjectExactCardinality(string& entry, pugi::xml_node_iterator& it, int varz, int& varcount);
 void parseObjectMinCardinality(string& entry, pugi::xml_node_iterator& it, int varz, int& varcount);
 void parseObjectMaxCardinality(string& entry, pugi::xml_node_iterator& it, int varz, int& varcount);
+
 void parseDisjointUnion(string& entry, pugi::xml_node_iterator& it, int varz, int& varcount);
 void parseDisjointUnionExpression(vector<std::string>& entry, pugi::xml_node_iterator& it, vector<int>& KBsize);
 
 int parseDLSafeBody(string& entry, pugi::xml_node_iterator& it, vector<string>& varSet);
 void parseDLSafeRule(vector<std::string>& entry, pugi::xml_node_iterator& it, vector<int>& KBsize);
 void parseDLAtom(string& atom, pugi::xml_node_iterator& node, vector<string>& varSet, string name, int vt);
-
-void parseObjectExactCardinality(string& entry, pugi::xml_node_iterator& it, int varz);
+ 
