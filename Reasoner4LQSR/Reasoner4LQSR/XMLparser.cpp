@@ -768,7 +768,9 @@ int parseSubClassOfExpression(vector<std::string>& entry, pugi::xml_node_iterato
 	else
 	{
 		val=parseClassExpression(formula, node, varz, varcount);
-		if (val == 0)			
+		if (val == -1)
+			return -1;
+		else if (val == 0)			
 		  formula = "(" + res + "$II" + "(" + formula + ")" + ")";
 		else if(val==1)
 			formula = "( (" + formula + ")" + "$IF " + res + ")";
@@ -881,7 +883,9 @@ int parseEquivalentClassExpression(vector<std::string>& entry, pugi::xml_node_it
 	else
 	{
 		val=parseClassExpression(formula, node, varz, varcount);
-		if(val==0)
+		if (val == -1)
+			return -1;
+		else if(val==0)
 		  formula = "(" + res + "$II" + "(" + formula + ")" + ")";
 		else if (val == 1)	
 			formula = "( (" + formula + ")" + "$IF " + res + ")";
