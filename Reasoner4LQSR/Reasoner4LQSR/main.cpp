@@ -150,7 +150,12 @@ int main()
 	vector<Formula*> KB2mq;
 	vector<int> KB2size(sizeofVVector,0);
 	cout << "Reading OWL File" << endl;
-	readOWLXMLOntology("Example/monastero.owl", ontNamespaces, formulae, KB2size);
+	int chk=readOWLXMLOntology("Example/monastero.owl", ontNamespaces, formulae, KB2size);
+	if (chk == -1)
+	{
+		cout << "Ontology not supported" << endl;
+		return -1;
+	}
 	InitializeReasoner(maxLevNum, KB2size);
 	//InitializeReasoner(3, 100, 20);
 	cout << "Printing ontology namespaces" << endl;

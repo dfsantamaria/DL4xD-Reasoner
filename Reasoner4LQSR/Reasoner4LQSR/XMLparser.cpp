@@ -41,7 +41,7 @@ void buildNamespace(pugi::xml_document& xmldocument, vector<pair<string, string>
 	}	
 };
 
-void parseDeclaration(vector<std::string>& out, pugi::xml_node_iterator& it, vector<int>& KBsize)
+int parseDeclaration(vector<std::string>& out, pugi::xml_node_iterator& it, vector<int>& KBsize)
 {
 #ifdef debug 
 #ifdef debugparseXML
@@ -68,9 +68,10 @@ void parseDeclaration(vector<std::string>& out, pugi::xml_node_iterator& it, vec
 		KBsize.at(0)++;
 	}
 	out.push_back(entry);
+	return 0;
 };
 
-void parseClassAssertion(vector<std::string>& out, pugi::xml_node_iterator& it, vector<int>& KBsize)
+int parseClassAssertion(vector<std::string>& out, pugi::xml_node_iterator& it, vector<int>& KBsize)
 {
 #ifdef debug 
 #ifdef debugparseXML
@@ -84,7 +85,7 @@ void parseClassAssertion(vector<std::string>& out, pugi::xml_node_iterator& it, 
 	  
 	  string irival = node->attribute("IRI").as_string();
 	  if (irival.empty())
-		  return;
+		  return -1;
 	  if (name == "Class")
 	  {
 		  entry = "V1{" + irival.substr(irival.find("#") + 1) + "}";		  
@@ -96,9 +97,10 @@ void parseClassAssertion(vector<std::string>& out, pugi::xml_node_iterator& it, 
 
 	}
 	out.push_back(entry);
+	return 0;
 };
 
-void parseObjectPropertyAssertion(vector<std::string>& out, pugi::xml_node_iterator& it, vector<int>& KBsize)
+int parseObjectPropertyAssertion(vector<std::string>& out, pugi::xml_node_iterator& it, vector<int>& KBsize)
 {	
 #ifdef debug 
 #ifdef debugparseXML
@@ -118,9 +120,10 @@ void parseObjectPropertyAssertion(vector<std::string>& out, pugi::xml_node_itera
 	acc.append(irival.substr(irival.find("#") + 1));
 	entry = acc + entry;
 	out.push_back(entry);
+	return 0;
 };
 
-void parseNegativeObjectPropertyAssertion(vector<std::string>& out, pugi::xml_node_iterator& it, vector<int>& KBsize)
+int parseNegativeObjectPropertyAssertion(vector<std::string>& out, pugi::xml_node_iterator& it, vector<int>& KBsize)
 {
 #ifdef debug 
 #ifdef debugparseXML
@@ -140,9 +143,10 @@ void parseNegativeObjectPropertyAssertion(vector<std::string>& out, pugi::xml_no
 	acc.append(irival.substr(irival.find("#") + 1));
 	entry = acc + entry;
 	out.push_back(entry);
+	return 0;
 };
 
-void parseSameIndividual(vector<std::string>& out, pugi::xml_node_iterator& it, vector<int>& KBsize)
+int parseSameIndividual(vector<std::string>& out, pugi::xml_node_iterator& it, vector<int>& KBsize)
 {
 #ifdef debug 
 #ifdef debugparseXML
@@ -157,9 +161,10 @@ void parseSameIndividual(vector<std::string>& out, pugi::xml_node_iterator& it, 
 	irival = node.attribute("IRI").as_string();
 	entry = entry + " V0{" + irival.substr(irival.find("#") + 1) + "}";
 	out.push_back(entry);
+	return 0;
 };
 
-void parseDifferentIndividuals(vector<std::string>& out, pugi::xml_node_iterator& it, vector<int>& KBsize)
+int parseDifferentIndividuals(vector<std::string>& out, pugi::xml_node_iterator& it, vector<int>& KBsize)
 {
 #ifdef debug 
 #ifdef debugparseXML
@@ -174,9 +179,10 @@ void parseDifferentIndividuals(vector<std::string>& out, pugi::xml_node_iterator
 	irival = node.attribute("IRI").as_string();
 	entry = entry + " V0{" + irival.substr(irival.find("#") + 1) + "}";
 	out.push_back(entry);
+	return 0;
 };
 
-void parseFunctionalObjectProperty(vector<std::string>& out, pugi::xml_node_iterator& it, vector<int>& KBsize)
+int parseFunctionalObjectProperty(vector<std::string>& out, pugi::xml_node_iterator& it, vector<int>& KBsize)
 {	
 #ifdef debug 
 #ifdef debugparseXML
@@ -199,10 +205,11 @@ void parseFunctionalObjectProperty(vector<std::string>& out, pugi::xml_node_iter
 		if(KBsize.at(qvar0)<3)
 		    KBsize.at(qvar0)=3;
 		out.push_back(entry);
-	}	
+	}
+	return 0;
 };
 
-void parseInverseFunctionalObjectProperty(vector<std::string>& out, pugi::xml_node_iterator& it, vector<int>& KBsize)
+int parseInverseFunctionalObjectProperty(vector<std::string>& out, pugi::xml_node_iterator& it, vector<int>& KBsize)
 {
 #ifdef debug 
 #ifdef debugparseXML
@@ -226,9 +233,10 @@ void parseInverseFunctionalObjectProperty(vector<std::string>& out, pugi::xml_no
 			KBsize.at(qvar0) = 3;
 		out.push_back(entry);
 	}
+	return 0;
 };
 
-void parseReflexiveObjectProperty(vector<std::string>& out, pugi::xml_node_iterator& it, vector<int>& KBsize)
+int parseReflexiveObjectProperty(vector<std::string>& out, pugi::xml_node_iterator& it, vector<int>& KBsize)
 {
 #ifdef debug 
 #ifdef debugparseXML
@@ -250,9 +258,10 @@ void parseReflexiveObjectProperty(vector<std::string>& out, pugi::xml_node_itera
 		if (KBsize.at(qvar0)<1)
 			KBsize.at(qvar0) = 1;
 	}
+	return 0;
 };
 
-void parseIrreflexiveObjectProperty(vector<std::string>& out, pugi::xml_node_iterator& it, vector<int>& KBsize)
+int parseIrreflexiveObjectProperty(vector<std::string>& out, pugi::xml_node_iterator& it, vector<int>& KBsize)
 {
 #ifdef debug 
 #ifdef debugparseXML
@@ -274,11 +283,12 @@ void parseIrreflexiveObjectProperty(vector<std::string>& out, pugi::xml_node_ite
 		if (KBsize.at(qvar0)<1)
 			KBsize.at(qvar0) = 1;
 	}
+	return 0;
 };
 
 
 
-void parseTransitiveObjectProperty(vector<std::string>& out, pugi::xml_node_iterator& it, vector<int>& KBsize)
+int parseTransitiveObjectProperty(vector<std::string>& out, pugi::xml_node_iterator& it, vector<int>& KBsize)
 {
 #ifdef debug 
 #ifdef debugparseXML
@@ -308,9 +318,10 @@ void parseTransitiveObjectProperty(vector<std::string>& out, pugi::xml_node_iter
 		if (KBsize.at(qvar0)<3)
 		 KBsize.at(qvar0) = 3;
 	}
+	return 0;
 };
 
-void parseSymmetricObjectProperty(vector<std::string>& out, pugi::xml_node_iterator& it, vector<int>& KBsize)
+int parseSymmetricObjectProperty(vector<std::string>& out, pugi::xml_node_iterator& it, vector<int>& KBsize)
 {
 #ifdef debug 
 #ifdef debugparseXML
@@ -335,9 +346,10 @@ void parseSymmetricObjectProperty(vector<std::string>& out, pugi::xml_node_itera
 		if (KBsize.at(qvar0)<2)
 			KBsize.at(qvar0) = 2;
 	}
+	return 0;
 };
 
-void parseAsymmetricObjectProperty(vector<std::string>& out, pugi::xml_node_iterator& it, vector<int>& KBsize)
+int parseAsymmetricObjectProperty(vector<std::string>& out, pugi::xml_node_iterator& it, vector<int>& KBsize)
 {
 #ifdef debug 
 #ifdef debugparseXML
@@ -362,9 +374,10 @@ void parseAsymmetricObjectProperty(vector<std::string>& out, pugi::xml_node_iter
 		if (KBsize.at(qvar0)<2)
 			KBsize.at(qvar0) = 2;
 	}
+	return 0;
 };
 
-void parseInverseObjectProperties(vector<std::string>& out, pugi::xml_node_iterator& it, vector<int>& KBsize)
+int parseInverseObjectProperties(vector<std::string>& out, pugi::xml_node_iterator& it, vector<int>& KBsize)
 {
 #ifdef debug 
 #ifdef debugparseXML
@@ -403,9 +416,10 @@ void parseInverseObjectProperties(vector<std::string>& out, pugi::xml_node_itera
 				KBsize.at(qvar0) = 2;
 		}
 	}
+	return 0;
 };
 
-void parseEquivalentObjectProperties(vector<std::string>& out, pugi::xml_node_iterator& it, vector<int>& KBsize)
+int parseEquivalentObjectProperties(vector<std::string>& out, pugi::xml_node_iterator& it, vector<int>& KBsize)
 {
 #ifdef debug 
 #ifdef debugparseXML
@@ -466,10 +480,10 @@ void parseEquivalentObjectProperties(vector<std::string>& out, pugi::xml_node_it
 					KBsize.at(qvar0) = 2;
 			}
 	}
-
+	return 0;
 };
 
-void parseDisjointObjectProperties(vector<std::string>& out, pugi::xml_node_iterator& it, vector<int>& KBsize)
+int parseDisjointObjectProperties(vector<std::string>& out, pugi::xml_node_iterator& it, vector<int>& KBsize)
 {
 #ifdef debug 
 #ifdef debugparseXML
@@ -531,12 +545,12 @@ void parseDisjointObjectProperties(vector<std::string>& out, pugi::xml_node_iter
 		}		
 	}
 
-
+	return 0;
 
 };
 
 
-void parseSubObjectProperty(vector<std::string>& out, pugi::xml_node_iterator& it, vector<int>& KBsize)
+int parseSubObjectProperty(vector<std::string>& out, pugi::xml_node_iterator& it, vector<int>& KBsize)
 {	
 #ifdef debug 
 #ifdef debugparseXML
@@ -608,6 +622,7 @@ void parseSubObjectProperty(vector<std::string>& out, pugi::xml_node_iterator& i
 			if (KBsize.at(qvar0)< i)
 			  KBsize.at(qvar0) = i;
 		}
+	return 0;
 };
 
 
@@ -630,7 +645,7 @@ string retrieveVarNameFromNode(pugi::xml_node_iterator const& it, string const& 
 
 
 
-void parseDLSafeRule(vector<std::string>& entry, pugi::xml_node_iterator& it, vector<int>& KBsize)
+int parseDLSafeRule(vector<std::string>& entry, pugi::xml_node_iterator& it, vector<int>& KBsize)
 {
  #ifdef debug 
  #ifdef debugparseXML
@@ -655,6 +670,7 @@ void parseDLSafeRule(vector<std::string>& entry, pugi::xml_node_iterator& it, ve
 	entry.push_back(formula);
 	if (KBsize.at(qvar0)< varSet.size())
 		KBsize.at(qvar0) = varSet.size();
+	return 0;
 };
 
 string retrieveZVariable(int num)
@@ -665,7 +681,7 @@ string retrieveZVariable(int num)
 	return var;
 }
 
-void parseDLAtom(string& atom, pugi::xml_node_iterator& it, vector<string>& varSet, string name, int vt)
+int parseDLAtom(string& atom, pugi::xml_node_iterator& it, vector<string>& varSet, string name, int vt)
 {
 #ifdef debug 
 #ifdef debugparseXML
@@ -710,7 +726,7 @@ void parseDLAtom(string& atom, pugi::xml_node_iterator& it, vector<string>& varS
 		var = retrieveZVariable(varus.at(1));		
 		atom += var + "} $AO $IN " + clprop+")";
 	}
-	
+	return 0;
 }
 int parseDLSafeBody(string& entry, pugi::xml_node_iterator& it,vector<string>& varSet)
 {	
@@ -737,7 +753,7 @@ int parseDLSafeBody(string& entry, pugi::xml_node_iterator& it,vector<string>& v
 	return 0;
 };
 
-void parseSubClassOfExpression(vector<std::string>& entry, pugi::xml_node_iterator& it, vector<int>& KBsize)
+int parseSubClassOfExpression(vector<std::string>& entry, pugi::xml_node_iterator& it, vector<int>& KBsize)
 {	
 	int varz = 0;
 	string formula = "";	
@@ -769,10 +785,10 @@ void parseSubClassOfExpression(vector<std::string>& entry, pugi::xml_node_iterat
 	entry.push_back(formula);
 	if (KBsize.at(qvar0)< varcount)
 		KBsize.at(qvar0) = varcount;
-	
+	return 0;
 }
 
-void parseDisjointUnionExpression(vector<std::string>& entry, pugi::xml_node_iterator& it, vector<int>& KBsize)
+int parseDisjointUnionExpression(vector<std::string>& entry, pugi::xml_node_iterator& it, vector<int>& KBsize)
 {	
 	int varz = 0;
 	string formula = "";
@@ -788,9 +804,10 @@ void parseDisjointUnionExpression(vector<std::string>& entry, pugi::xml_node_ite
 	entry.push_back(formula);
 	if (KBsize.at(qvar0)< varcount)
 		KBsize.at(qvar0) = varcount;
+	return 0;
 }
 
-void parseDisjointClassesExpression(vector<std::string>& entry, pugi::xml_node_iterator& it, vector<int>& KBsize)
+int parseDisjointClassesExpression(vector<std::string>& entry, pugi::xml_node_iterator& it, vector<int>& KBsize)
 {
 	int varz = 0;
 	string formula = "";
@@ -806,10 +823,11 @@ void parseDisjointClassesExpression(vector<std::string>& entry, pugi::xml_node_i
 	entry.push_back(formula);
 	if (KBsize.at(qvar0)< varcount)
 		KBsize.at(qvar0) = varcount;
+	return 0;
 }
 
 
-void parseObjectPropertyRangeExpression(vector<std::string>& entry, pugi::xml_node_iterator& it, vector<int>& KBsize)
+int parseObjectPropertyRangeExpression(vector<std::string>& entry, pugi::xml_node_iterator& it, vector<int>& KBsize)
 {
 	int varz = 0;
 	string formula = "";
@@ -825,9 +843,10 @@ void parseObjectPropertyRangeExpression(vector<std::string>& entry, pugi::xml_no
 	entry.push_back(formula);
 	if (KBsize.at(qvar0)< varcount)
 		KBsize.at(qvar0) = varcount;
+	return 0;
 }
 
-void parseObjectPropertyDomainExpression(vector<std::string>& entry, pugi::xml_node_iterator& it, vector<int>& KBsize)
+int parseObjectPropertyDomainExpression(vector<std::string>& entry, pugi::xml_node_iterator& it, vector<int>& KBsize)
 {
 	int varz = 0;
 	string formula = "";
@@ -843,9 +862,10 @@ void parseObjectPropertyDomainExpression(vector<std::string>& entry, pugi::xml_n
 	entry.push_back(formula);
 	if (KBsize.at(qvar0)< varcount)
 		KBsize.at(qvar0) = varcount;
+	return 0;
 }
 
-void parseEquivalentClassExpression(vector<std::string>& entry, pugi::xml_node_iterator& it, vector<int>& KBsize)
+int parseEquivalentClassExpression(vector<std::string>& entry, pugi::xml_node_iterator& it, vector<int>& KBsize)
 {	
 	int varz = 0;
 	string formula = "";
@@ -880,7 +900,8 @@ void parseEquivalentClassExpression(vector<std::string>& entry, pugi::xml_node_i
 	
 	entry.push_back(formula);
 	if (KBsize.at(qvar0)< varcount)
-		KBsize.at(qvar0) = varcount;	
+		KBsize.at(qvar0) = varcount;
+	return 0;
 }
 
 int parseClassExpression(string& entry, pugi::xml_node_iterator& it, int varz, int& varcount)
@@ -937,8 +958,8 @@ int parseClassExpression(string& entry, pugi::xml_node_iterator& it, int varz, i
 	}
 	else if (string(it->name()) == "ObjectExactCardinality")
 	{
-		parseObjectExactCardinality(entry, it, varz, varcount);
-		return 2;
+		//parseObjectExactCardinality(entry, it, varz, varcount);
+		return -1;
 	}
 	else if (string(it->name()) == "Class")
 	{
@@ -950,10 +971,10 @@ int parseClassExpression(string& entry, pugi::xml_node_iterator& it, int varz, i
 	else
 	{ 		
 		return -1;
-	}
-	
+	}	
 }
-void parseObjectIntersectionOf(string& entry, pugi::xml_node_iterator& it, int varz, int& varcount)
+
+int parseObjectIntersectionOf(string& entry, pugi::xml_node_iterator& it, int varz, int& varcount)
 {
 	
 #ifdef debug 
@@ -982,9 +1003,10 @@ void parseObjectIntersectionOf(string& entry, pugi::xml_node_iterator& it, int v
 		  if( node!=it->last_child())
 			  entry += "$AD ";		  
 		}	
+	return 0;
 };
 
-void parseObjectUnionOf(string& entry, pugi::xml_node_iterator& it, int varz, int& varcount)
+int parseObjectUnionOf(string& entry, pugi::xml_node_iterator& it, int varz, int& varcount)
 {
 
 #ifdef debug 
@@ -1013,9 +1035,10 @@ void parseObjectUnionOf(string& entry, pugi::xml_node_iterator& it, int varz, in
 		if (node != it->last_child())
 			entry += "$OR ";
 	}
+	return 0;
 };
 
-void parseObjectComplementOf(string& entry, pugi::xml_node_iterator& it, int varz, int& varcount)
+int parseObjectComplementOf(string& entry, pugi::xml_node_iterator& it, int varz, int& varcount)
 {
 #ifdef debug 
 #ifdef debugparseXML
@@ -1042,10 +1065,10 @@ void parseObjectComplementOf(string& entry, pugi::xml_node_iterator& it, int var
 			entry += intformula + "))";
 		}
 	}
-	
+	return 0;
 };
 
-void parseObjectPropertyDomain(string& entry, pugi::xml_node_iterator& it, int varz, int& varcount)
+int parseObjectPropertyDomain(string& entry, pugi::xml_node_iterator& it, int varz, int& varcount)
 { 
 	//(∀z1)(∀z2)(hz1, z2i ∈ XP31 ↔(hz1, z2i ∈ XP32 ∧ z1 ∈ XC1 1))
 #ifdef debug 
@@ -1076,10 +1099,11 @@ void parseObjectPropertyDomain(string& entry, pugi::xml_node_iterator& it, int v
 			string intformula = "(";
 			parseClassExpression(intformula, node, varz, varcount);
 			entry += intformula+")";
-		}		
+		}	
+		return 0;
 };
 
-void parseObjectPropertyRange(string& entry, pugi::xml_node_iterator& it, int varz, int& varcount)
+int parseObjectPropertyRange(string& entry, pugi::xml_node_iterator& it, int varz, int& varcount)
 {	
 #ifdef debug 
 #ifdef debugparseXML
@@ -1110,8 +1134,10 @@ void parseObjectPropertyRange(string& entry, pugi::xml_node_iterator& it, int va
 		parseClassExpression(intformula, node, varz+1, varcount);
 		entry += intformula + ")";
 	}
+	return 0;
 };
-void parseDisjointClasses(string& entry, pugi::xml_node_iterator& it, int varz, int& varcount)
+
+int parseDisjointClasses(string& entry, pugi::xml_node_iterator& it, int varz, int& varcount)
 {
 #ifdef debug 
 #ifdef debugparseXML
@@ -1149,11 +1175,11 @@ void parseDisjointClasses(string& entry, pugi::xml_node_iterator& it, int varz, 
 		if (nd != it->last_child())
 			entry += "$AD ";
 	}
-
+	return 0;
 };
 
 
-void parseObjectOneOf(string& entry, pugi::xml_node_iterator& it, int varz, int& varcount)
+int parseObjectOneOf(string& entry, pugi::xml_node_iterator& it, int varz, int& varcount)
 {
 
 #ifdef debug 
@@ -1177,9 +1203,10 @@ void parseObjectOneOf(string& entry, pugi::xml_node_iterator& it, int varz, int&
 		if (node != it->last_child())
 			entry += "$OR ";
 	}
+	return 0;
 };
 
-void parseObjectHasSelf(string& entry, pugi::xml_node_iterator& it, int varz, int& varcount)
+int parseObjectHasSelf(string& entry, pugi::xml_node_iterator& it, int varz, int& varcount)
 {
 #ifdef debug 
 #ifdef debugparseXML
@@ -1192,10 +1219,10 @@ void parseObjectHasSelf(string& entry, pugi::xml_node_iterator& it, int varz, in
 				var += to_string(varz);
 			string res = "($OA V0{" + var + "} $CO  V0{" + var + "} $OA $IN "+ retrieveVarNameFromNode(node, "IRI", 3) + ")";
 			entry += res;	
-	
+			return 0;
 };
 
-void parseObjectHasValue(string& entry, pugi::xml_node_iterator& it, int varz, int& varcount)
+int parseObjectHasValue(string& entry, pugi::xml_node_iterator& it, int varz, int& varcount)
 {
 #ifdef debug 
 #ifdef debugparseXML
@@ -1211,9 +1238,10 @@ void parseObjectHasValue(string& entry, pugi::xml_node_iterator& it, int varz, i
 		var += to_string(varz);
 	string res = "($OA V0{" + var + "} $CO "+ retrieveVarNameFromNode(node, "IRI", 0)+   " $OA $IN " + classn + ")";
 	entry += res;
+	return 0;
 };
 
-void parseObjectSomeValuesFrom(string& entry, pugi::xml_node_iterator& it, int varz, int& varcount)
+int parseObjectSomeValuesFrom(string& entry, pugi::xml_node_iterator& it, int varz, int& varcount)
 {
 #ifdef debug 
 #ifdef debugparseXML
@@ -1239,9 +1267,10 @@ void parseObjectSomeValuesFrom(string& entry, pugi::xml_node_iterator& it, int v
 		parseClassExpression(intformula, node, varz + 1, varcount);
 	}
 	entry += intformula+")";	
+	return 0;
 };
 
-void parseObjectAllValuesFrom(string& entry, pugi::xml_node_iterator& it, int varz, int &varcount)
+int parseObjectAllValuesFrom(string& entry, pugi::xml_node_iterator& it, int varz, int &varcount)
 { 
 #ifdef debug 
 #ifdef debugparseXML
@@ -1267,10 +1296,10 @@ void parseObjectAllValuesFrom(string& entry, pugi::xml_node_iterator& it, int va
 		parseClassExpression(intformula, node, varz + 1, varcount);
 	}
 	entry += intformula + ")";
-
+	return 0;
 };
 
-void parseDisjointUnion(string& entry, pugi::xml_node_iterator& it, int varz, int& varcount)
+int parseDisjointUnion(string& entry, pugi::xml_node_iterator& it, int varz, int& varcount)
 {
 #ifdef debug 
 #ifdef debugparseXML
@@ -1330,27 +1359,22 @@ void parseDisjointUnion(string& entry, pugi::xml_node_iterator& it, int varz, in
    
 	entry += "))";
 	
-	
+	return 0;
 };
 
 
-void parseObjectExactCardinality(string& entry, pugi::xml_node_iterator& it, int varz, int& varcount)
+int parseObjectExactCardinality(string& entry, pugi::xml_node_iterator& it, int varz, int& varcount)
 {
 #ifdef debug 
 #ifdef debugparseXML
 	logFile << "-----Found ObjectExactCardinality class expression. " << endl;
 #endif
-#endif // debug
-
-	string max = "";
-	parseObjectMaxCardinality(max, it, varz, varcount);
-	entry = "(" + max + ")" + "$AD";
-	max = "";
-	parseObjectMinCardinality(max, it, varz, varcount);
-	entry += "(" + max + ")";
+#endif // debug	
+	throw new exception();
+	return 0;
 }
 
-void parseObjectMaxCardinality(string& entry, pugi::xml_node_iterator& it, int varz, int& varcount)
+int parseObjectMaxCardinality(string& entry, pugi::xml_node_iterator& it, int varz, int& varcount)
 { 	
 #ifdef debug 
 #ifdef debugparseXML
@@ -1423,9 +1447,10 @@ void parseObjectMaxCardinality(string& entry, pugi::xml_node_iterator& it, int v
 			leftimp += "$OR";
 	}	
 	entry += leftimp+")";	
+	return 0;
 };
 
-void parseObjectMinCardinality(string& entry, pugi::xml_node_iterator& it, int varz, int&varcount)
+int parseObjectMinCardinality(string& entry, pugi::xml_node_iterator& it, int varz, int&varcount)
 { 
 #ifdef debug 
 #ifdef debugparseXML
@@ -1499,14 +1524,11 @@ void parseObjectMinCardinality(string& entry, pugi::xml_node_iterator& it, int v
 	}
 	entry += leftimp;
 	entry = "(" + entry+")";
-	
+	return 0;
 };
 
 
-
-void parseObjectExactCardinality(string& entry, pugi::xml_node_iterator& it, int varz) { throw new exception(); };
-
-void readOWLXMLOntology(string filename, vector<pair<string, string>>& ontNamespaces, vector<string>& formulae, vector<int>& KBsize)
+int readOWLXMLOntology(string filename, vector<pair<string, string>>& ontNamespaces, vector<string>& formulae, vector<int>& KBsize)
 {
 #ifdef debug 
 #ifdef debugparseXML
@@ -1530,54 +1552,61 @@ void readOWLXMLOntology(string filename, vector<pair<string, string>>& ontNamesp
         /*
 		trace << "<<<<<<<<<<<<<<<<<<<<<<<" << name << endl;
 		*/
+		int chk = 0;
 		if (name == "Declaration")
-			parseDeclaration(formulae, it, KBsize);
+			chk=parseDeclaration(formulae, it, KBsize);
 		else if (name == "ClassAssertion")
-			parseClassAssertion(formulae, it, KBsize);
+			chk=parseClassAssertion(formulae, it, KBsize);
 		else if (name == "ObjectPropertyAssertion")
-			parseObjectPropertyAssertion(formulae, it, KBsize);
+			chk = parseObjectPropertyAssertion(formulae, it, KBsize);
 		else if (name == "NegativeObjectPropertyAssertion")
-			parseNegativeObjectPropertyAssertion(formulae, it, KBsize);
+			chk = parseNegativeObjectPropertyAssertion(formulae, it, KBsize);
 		else if (name == "SameIndividual")
-			parseSameIndividual(formulae, it, KBsize);
+			chk = parseSameIndividual(formulae, it, KBsize);
 		else if (name == "DifferentIndividuals")
-			parseDifferentIndividuals(formulae, it, KBsize);
+			chk = parseDifferentIndividuals(formulae, it, KBsize);
 		else if (name == "FunctionalObjectProperty")
-		  parseFunctionalObjectProperty(formulae, it, KBsize);
+			chk = parseFunctionalObjectProperty(formulae, it, KBsize);
 		else if (name == "InverseFunctionalObjectProperty")
-			parseInverseFunctionalObjectProperty(formulae, it, KBsize);
+			chk = parseInverseFunctionalObjectProperty(formulae, it, KBsize);
 		else if (name == "ReflexiveObjectProperty")
-			parseReflexiveObjectProperty(formulae, it, KBsize);
+			chk = parseReflexiveObjectProperty(formulae, it, KBsize);
 		else if (name == "IrreflexiveObjectProperty")
-			parseIrreflexiveObjectProperty(formulae, it, KBsize);
+			chk = parseIrreflexiveObjectProperty(formulae, it, KBsize);
 		else if (name == "TransitiveObjectProperty")
 			parseTransitiveObjectProperty(formulae, it, KBsize);
 		else if (name == "SymmetricObjectProperty")
-			parseSymmetricObjectProperty(formulae, it, KBsize);
+			chk = parseSymmetricObjectProperty(formulae, it, KBsize);
 		else if (name == "AsymmetricObjectProperty")
-			parseAsymmetricObjectProperty(formulae, it, KBsize);
+			chk = parseAsymmetricObjectProperty(formulae, it, KBsize);
 		else if (name == "InverseObjectProperties")
 			parseInverseObjectProperties(formulae, it, KBsize);
 		else if (name == "EquivalentObjectProperties")
-			parseEquivalentObjectProperties(formulae, it, KBsize);
+			chk = parseEquivalentObjectProperties(formulae, it, KBsize);
 		else if (name == "DisjointObjectProperties")
-			parseDisjointObjectProperties(formulae, it, KBsize);
+			chk = parseDisjointObjectProperties(formulae, it, KBsize);
 		else if (name == "SubObjectPropertyOf")
 			parseSubObjectProperty(formulae, it, KBsize);
 		else if (name == "SubClassOf")
-			parseSubClassOfExpression(formulae, it, KBsize);
+			chk = parseSubClassOfExpression(formulae, it, KBsize);
 		else if (name == "EquivalentClasses")
-			parseEquivalentClassExpression(formulae, it, KBsize);
+			chk = parseEquivalentClassExpression(formulae, it, KBsize);
 		else if (name == "ObjectPropertyDomain")
 			parseObjectPropertyDomainExpression(formulae, it, KBsize);
 		else if (name == "ObjectPropertyRange")
-			parseObjectPropertyRangeExpression(formulae, it, KBsize);
+			chk = parseObjectPropertyRangeExpression(formulae, it, KBsize);
 		else if (name == "DisjointClasses")		
-			parseDisjointClassesExpression(formulae, it, KBsize);
+			chk = parseDisjointClassesExpression(formulae, it, KBsize);
 		else if (name == "DisjointUnion")
-			parseDisjointUnionExpression(formulae, it, KBsize);
+			chk = parseDisjointUnionExpression(formulae, it, KBsize);
 		else if (name == "DLSafeRule")
-			parseDLSafeRule(formulae, it, KBsize);
+			chk = parseDLSafeRule(formulae, it, KBsize);
+
+		
+		if (chk == -1)
+		{
+			return -1;
+		}
 		/*
 		if(formulae.size()>0)
 		  trace << formulae.back() << endl;
@@ -1591,6 +1620,7 @@ void readOWLXMLOntology(string filename, vector<pair<string, string>>& ontNamesp
 		//cout << irival.substr(irival.find("#") + 1) << endl;
 	}
 
+	
 	/*
 	   trace.close();
 		*/
@@ -1602,6 +1632,7 @@ void readOWLXMLOntology(string filename, vector<pair<string, string>>& ontNamesp
 	logFile << "----- Properties: " << KBsize.at(propertyindex) << "." << endl;
 	logFile << "----- Quantified Variables of level 0: " << KBsize.at(qvar0) << "." << endl;
 	logFile << "----End Reading OWL/XML file: " << filename << "." << endl;
+	return 0;
 #endif
 #endif // debug
 
