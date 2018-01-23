@@ -1,1058 +1,374 @@
 Debug Started
-----Reading OWL/XML file: Example/monastero.owl.
+----Reading OWL/XML file: Example/onto1.owl.
 -----Namespace found: xmlns http://www.w3.org/2002/07/owl#.
------Namespace found: xml:base http://www.semanticweb.org/mariannanicolosi/ontologies/2017/5/untitled-ontology-129.
+-----Namespace found: xml:base http://www.semanticweb.org/danie/ontologies/2018/0/untitled-ontology-500.
 -----Namespace found: xmlns:rdf http://www.w3.org/1999/02/22-rdf-syntax-ns#.
 -----Namespace found: xmlns:xml http://www.w3.org/XML/1998/namespace.
 -----Namespace found: xmlns:xsd http://www.w3.org/2001/XMLSchema#.
 -----Namespace found: xmlns:rdfs http://www.w3.org/2000/01/rdf-schema#.
------Namespace found: ontologyIRI http://www.semanticweb.org/mariannanicolosi/ontologies/2017/5/untitled-ontology-129.
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found declaration. 
------Found ObjectOneOf class expression. 
------Found ObjectIntersectionOf class expression. 
------Found ObjectHasSelf class expression. 
------Found ObjectOneOf class expression. 
------Found ObjectIntersectionOf class expression. 
------Found ObjectHasSelf class expression. 
------Found ObjectIntersectionOf class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectUnionOf class expression. 
------Found ObjectIntersectionOf class expression. 
------Found ObjectHasSelf class expression. 
------Found ObjectIntersectionOf class expression. 
------Found ObjectHasSelf class expression. 
------Found ObjectIntersectionOf class expression. 
------Found ObjectHasSelf class expression. 
------Found ObjectOneOf class expression. 
------Found ObjectOneOf class expression. 
------Found ObjectOneOf class expression. 
------Found ObjectOneOf class expression. 
------Found ObjectIntersectionOf class expression. 
------Found ObjectHasSelf class expression. 
------Found ObjectIntersectionOf class expression. 
------Found ObjectHasSelf class expression. 
------Found ObjectIntersectionOf class expression. 
------Found ObjectHasSelf class expression. 
------Found ObjectIntersectionOf class expression. 
------Found ObjectHasSelf class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectHasSelf class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectHasSelf class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectUnionOf class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectUnionOf class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectHasSelf class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectHasSelf class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectIntersectionOf class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectHasSelf class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectHasSelf class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectHasSelf class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectUnionOf class expression. 
------Found ObjectHasSelf class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectUnionOf class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectUnionOf class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectHasSelf class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectHasSelf class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectHasSelf class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectAllValuessFrom class expression. 
------Found ObjectUnionOf class expression. 
------Found ObjectHasSelf class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectIntersectionOf class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectHasSelf class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectHasSelf class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectHasSelf class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectHasSelf class expression. 
------Found ObjectHasSelf class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectHasSelf class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectHasSelf class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectHasSelf class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectHasSelf class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectHasSelf class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectIntersectionOf class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectIntersectionOf class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectIntersectionOf class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectIntersectionOf class expression. 
------Found ObjectHasSelf class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectHasSelf class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectHasSelf class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectHasSelf class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectIntersectionOf class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectIntersectionOf class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectIntersectionOf class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectUnionOf class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectHasSelf class expression. 
------Found ObjectIntersectionOf class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectHasSelf class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectHasSelf class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectHasSelf class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectHasSelf class expression. 
------Found ObjectIntersectionOf class expression. 
------Found ObjectComplementOf class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectHasSelf class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectHasSelf class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectHasSelf class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectHasSelf class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectIntersectionOf class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectIntersectionOf class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectIntersectionOf class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectUnionOf class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectHasSelf class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectIntersectionOf class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectHasSelf class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectHasSelf class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectHasSelf class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectAllValuessFrom class expression. 
------Found ObjectUnionOf class expression. 
------Found ObjectHasSelf class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectHasSelf class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectHasSelf class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectHasSelf class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectHasSelf class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectHasSelf class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectHasSelf class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectHasSelf class expression. 
------Found ObjectHasSelf class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectHasSelf class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectIntersectionOf class expression. 
------Found ObjectComplementOf class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectIntersectionOf class expression. 
------Found ObjectComplementOf class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectIntersectionOf class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectIntersectionOf class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectIntersectionOf class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectIntersectionOf class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectHasSelf class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectIntersectionOf class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectHasSelf class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectHasSelf class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectIntersectionOf class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectHasSelf class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectHasSelf class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectIntersectionOf class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectIntersectionOf class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectSomeValuesFrom class expression. 
------Found ObjectHasSelf class expression. 
------Found DisjointClasses class expression. 
------Found DisjointClasses class expression. 
------Found DisjointClasses class expression. 
------Found DisjointClasses class expression. 
------Found DisjointClasses class expression. 
------Found DisjointClasses class expression. 
------Found DisjointClasses class expression. 
------Found DisjointClasses class expression. 
------Found DisjointClasses class expression. 
------Found DisjointClasses class expression. 
------Found DisjointClasses class expression. 
------Found DisjointClasses class expression. 
------Found DisjointClasses class expression. 
------Found DisjointClasses class expression. 
------Found DisjointClasses class expression. 
------Found DisjointClasses class expression. 
------Found class assertion. 
+-----Namespace found: ontologyIRI http://www.semanticweb.org/danie/ontologies/2018/0/untitled-ontology-500.
+-----Found declaration. 
+-----Found declaration. 
+-----Found declaration. 
+-----Found declaration. 
+-----Found declaration. 
+-----Found declaration. 
+-----Found declaration. 
+-----Found transitive object-property. 
+----The Ontology Contains: 
+----- Individuals: 2.
+----- Classes: 3.
+----- Properties: 2.
+----- Quantified Variables of level 0: 3.
+----End Reading OWL/XML file: Example/onto1.owl.
+---Formula Inserted: V0{b}
+-----Analizyng input formula
+-----Computing Literal: V0{b}
+-----Extracting Data From Var. Input String: V0{b}
+-----Data From Var Computed. Name: b. Level:0
+-----Creating  Variable.  Name:b. Level: 0. Type: 0
+-----Adding Variable to Set. V0{b}
+-----Declaration Found: V0{b}
+---Formula Ended 
+---Formula Inserted: V0{a}
+-----Analizyng input formula
+-----Computing Literal: V0{a}
+-----Extracting Data From Var. Input String: V0{a}
+-----Data From Var Computed. Name: a. Level:0
+-----Creating  Variable.  Name:a. Level: 0. Type: 0
+-----Adding Variable to Set. V0{a}
+-----Declaration Found: V0{a}
+---Formula Ended 
+---Formula Inserted: V1{A}
+-----Analizyng input formula
+-----Computing Literal: V1{A}
+-----Extracting Data From Var. Input String: V1{A}
+-----Data From Var Computed. Name: A. Level:1
+-----Creating  Variable.  Name:A. Level: 1. Type: 0
+-----Adding Variable to Set. V1{A}
+-----Declaration Found: V1{A}
+---Formula Ended 
+---Formula Inserted: V1{B}
+-----Analizyng input formula
+-----Computing Literal: V1{B}
+-----Extracting Data From Var. Input String: V1{B}
+-----Data From Var Computed. Name: B. Level:1
+-----Creating  Variable.  Name:B. Level: 1. Type: 0
+-----Adding Variable to Set. V1{B}
+-----Declaration Found: V1{B}
+---Formula Ended 
+---Formula Inserted: V1{C}
+-----Analizyng input formula
+-----Computing Literal: V1{C}
+-----Extracting Data From Var. Input String: V1{C}
+-----Data From Var Computed. Name: C. Level:1
+-----Creating  Variable.  Name:C. Level: 1. Type: 0
+-----Adding Variable to Set. V1{C}
+-----Declaration Found: V1{C}
+---Formula Ended 
+---Formula Inserted: V3{P1}
+-----Analizyng input formula
+-----Computing Literal: V3{P1}
+-----Extracting Data From Var. Input String: V3{P1}
+-----Data From Var Computed. Name: P1. Level:3
+-----Creating  Variable.  Name:P1. Level: 3. Type: 0
+-----Adding Variable to Set. V3{P1}
+-----Declaration Found: V3{P1}
+---Formula Ended 
+---Formula Inserted: V3{P}
+-----Analizyng input formula
+-----Computing Literal: V3{P}
+-----Extracting Data From Var. Input String: V3{P}
+-----Data From Var Computed. Name: P. Level:3
+-----Creating  Variable.  Name:P. Level: 3. Type: 0
+-----Adding Variable to Set. V3{P}
+-----Declaration Found: V3{P}
+---Formula Ended 
+---Formula Inserted: ($FA V0{z}) ($FA V0{z1}) ($FA V0{z2}) ( (($OA V0{z} $CO V0{z1} $AO $NI V3{P}) $OR ($OA V0{z1} $CO V0{z2} $AO $NI V3{P}) ) $OR ($OA V0{z} $CO V0{z2} $AO $IN V3{P}))
+-----Analizyng input formula
+-----Candidate atom found: $FAV0{z}
+-----Computing Literal: $FAV0{z}
+-----Extracting Data From Var. Input String: V0{z}
+-----Data From Var Computed. Name: z. Level:0
+-----Creating Quantified Variable.  Name:z. Level: 0. Type: 1
+-----Adding Quantified Variable to Set.V0{z}
+-----Candidate atom found: $FAV0{z1}
+-----Computing Literal: $FAV0{z1}
+-----Extracting Data From Var. Input String: V0{z1}
+-----Data From Var Computed. Name: z1. Level:0
+-----Creating Quantified Variable.  Name:z1. Level: 0. Type: 1
+-----Adding Quantified Variable to Set.V0{z1}
+-----Candidate atom found: $FAV0{z2}
+-----Computing Literal: $FAV0{z2}
+-----Extracting Data From Var. Input String: V0{z2}
+-----Data From Var Computed. Name: z2. Level:0
+-----Creating Quantified Variable.  Name:z2. Level: 0. Type: 1
+-----Adding Quantified Variable to Set.V0{z2}
+-----Candidate atom found: $OAV0{z}$COV0{z1}$AO$NIV3{P}
+-----Computing Literal: $OAV0{z}$COV0{z1}$AO$NIV3{P}
+-----Extracting Data From Var. Input String: V0{z}
+-----Data From Var Computed. Name: z. Level:0
+-----Creating  Variable.  Name:z. Level: 0. Type: 0
+-----Variable Found in Quantified Set. V0{z}
+-----Extracting Data From Var. Input String: V0{z1}
+-----Data From Var Computed. Name: z1. Level:0
+-----Creating  Variable.  Name:z1. Level: 0. Type: 0
+-----Variable Found in Quantified Set. V0{z1}
+-----Extracting Data From Var. Input String: V3{P}
+-----Data From Var Computed. Name: P. Level:3
+-----Creating  Variable.  Name:P. Level: 3. Type: 0
+-----Variable Found in Set. V3{P}
+-----Literal created: ($OA V0{z} $CO V0{z1}$AO $NI V3{P})
+-----Candidate atom found: $OAV0{z1}$COV0{z2}$AO$NIV3{P}
+-----Computing Literal: $OAV0{z1}$COV0{z2}$AO$NIV3{P}
+-----Extracting Data From Var. Input String: V0{z1}
+-----Data From Var Computed. Name: z1. Level:0
+-----Creating  Variable.  Name:z1. Level: 0. Type: 0
+-----Variable Found in Quantified Set. V0{z1}
+-----Extracting Data From Var. Input String: V0{z2}
+-----Data From Var Computed. Name: z2. Level:0
+-----Creating  Variable.  Name:z2. Level: 0. Type: 0
+-----Variable Found in Quantified Set. V0{z2}
+-----Extracting Data From Var. Input String: V3{P}
+-----Data From Var Computed. Name: P. Level:3
+-----Creating  Variable.  Name:P. Level: 3. Type: 0
+-----Variable Found in Set. V3{P}
+-----Literal created: ($OA V0{z1} $CO V0{z2}$AO $NI V3{P})
+-----Computing subformula: ($FA V0{z})($FA V0{z1})($FA V0{z2})( ($OA V0{z} $CO V0{z1}$AO $NI V3{P})  $OR ($OA V0{z1} $CO V0{z2}$AO $NI V3{P}) )
+-----Candidate atom found: $OAV0{z}$COV0{z2}$AO$INV3{P}
+-----Computing Literal: $OAV0{z}$COV0{z2}$AO$INV3{P}
+-----Extracting Data From Var. Input String: V0{z}
+-----Data From Var Computed. Name: z. Level:0
+-----Creating  Variable.  Name:z. Level: 0. Type: 0
+-----Variable Found in Quantified Set. V0{z}
+-----Extracting Data From Var. Input String: V0{z2}
+-----Data From Var Computed. Name: z2. Level:0
+-----Creating  Variable.  Name:z2. Level: 0. Type: 0
+-----Variable Found in Quantified Set. V0{z2}
+-----Extracting Data From Var. Input String: V3{P}
+-----Data From Var Computed. Name: P. Level:3
+-----Creating  Variable.  Name:P. Level: 3. Type: 0
+-----Variable Found in Set. V3{P}
+-----Literal created: ($OA V0{z} $CO V0{z2}$AO $IN V3{P})
+-----Computing subformula: ($FA V0{z})($FA V0{z1})($FA V0{z2})( ( ($OA V0{z} $CO V0{z1}$AO $NI V3{P})  $OR ($OA V0{z1} $CO V0{z2}$AO $NI V3{P}) ) $OR ($OA V0{z} $CO V0{z2}$AO $IN V3{P}) )
+-----Final Formula: ($FA V0{z})($FA V0{z1})($FA V0{z2})( ( ($OA V0{z} $CO V0{z1}$AO $NI V3{P})  $OR ($OA V0{z1} $CO V0{z2}$AO $NI V3{P}) ) $OR ($OA V0{z} $CO V0{z2}$AO $IN V3{P}) )
+---Formula Ended 
+-----Converting KB to NNF-----
+-----Converting Formula to NNF:------
+------($FA V0{z})($FA V0{z1})($FA V0{z2})( ( ($OA V0{z} $CO V0{z1}$AO $NI V3{P})  $OR ($OA V0{z1} $CO V0{z2}$AO $NI V3{P}) ) $OR ($OA V0{z} $CO V0{z2}$AO $IN V3{P}) )
+------ Dropping Negation boleans to subformulae of:-----
+-------($FA V0{z})($FA V0{z1})($FA V0{z2})( ( ($OA V0{z} $CO V0{z1}$AO $NI V3{P})  $OR ($OA V0{z1} $CO V0{z2}$AO $NI V3{P}) ) $OR ($OA V0{z} $CO V0{z2}$AO $IN V3{P}) )
+------ Dropping Negation boleans to subformulae of:-----
+-------($FA V0{z})($FA V0{z1})($FA V0{z2})( ($OA V0{z} $CO V0{z1}$AO $NI V3{P})  $OR ($OA V0{z1} $CO V0{z2}$AO $NI V3{P}) )
+------ End converting formula to NNF
+------ Formula Computed:
+-------($FA V0{z})($FA V0{z1})($FA V0{z2})( ( ($OA V0{z} $CO V0{z1}$AO $NI V3{P})  $OR ($OA V0{z1} $CO V0{z2}$AO $NI V3{P}) ) $OR ($OA V0{z} $CO V0{z2}$AO $IN V3{P}) )
+-----End converting KB to NNF-----
+-----Converting KB to CNF-----
+-----Converting formula in CNF:
+-----($FA V0{z})($FA V0{z1})($FA V0{z2})( ( ($OA V0{z} $CO V0{z1}$AO $NI V3{P})  $OR ($OA V0{z1} $CO V0{z2}$AO $NI V3{P}) ) $OR ($OA V0{z} $CO V0{z2}$AO $IN V3{P}) )
+-----Resulting CNF formula:
+-----($FA V0{z})($FA V0{z1})($FA V0{z2})( ( ($OA V0{z} $CO V0{z1}$AO $NI V3{P})  $OR ($OA V0{z1} $CO V0{z2}$AO $NI V3{P}) ) $OR ($OA V0{z} $CO V0{z2}$AO $IN V3{P}) )
+-----End converting KB to CNF:
+---Moving quantifiers in formula: 
+-----($FA V0{z})($FA V0{z1})($FA V0{z2})( ( ($OA V0{z} $CO V0{z1}$AO $NI V3{P})  $OR ($OA V0{z1} $CO V0{z2}$AO $NI V3{P}) ) $OR ($OA V0{z} $CO V0{z2}$AO $IN V3{P}) )
+--- Applying Expansion Rule
+----- Computing Formula: ($FA V0{z})($FA V0{z1})($FA V0{z2})( ( ($OA V0{z} $CO V0{z1}$AO $NI V3{P})  $OR ($OA V0{z1} $CO V0{z2}$AO $NI V3{P}) ) $OR ($OA V0{z} $CO V0{z2}$AO $IN V3{P}) )
+------- Expanding Formula: ($FA V0{z})($FA V0{z1})($FA V0{z2})( ( ($OA V0{z} $CO V0{z1}$AO $NI V3{P})  $OR ($OA V0{z1} $CO V0{z2}$AO $NI V3{P}) ) $OR ($OA V0{z} $CO V0{z2}$AO $IN V3{P}) )
+------- Expanded Formula: ( ( ($OA V0{a} $CO V0{a}$AO $NI V3{P})  $OR ($OA V0{a} $CO V0{a}$AO $NI V3{P}) ) $OR ($OA V0{a} $CO V0{a}$AO $IN V3{P}) )
+------- Expanded Formula: ( ( ($OA V0{a} $CO V0{b}$AO $NI V3{P})  $OR ($OA V0{b} $CO V0{a}$AO $NI V3{P}) ) $OR ($OA V0{a} $CO V0{a}$AO $IN V3{P}) )
+------- Expanded Formula: ( ( ($OA V0{a} $CO V0{a}$AO $NI V3{P})  $OR ($OA V0{a} $CO V0{b}$AO $NI V3{P}) ) $OR ($OA V0{a} $CO V0{b}$AO $IN V3{P}) )
+------- Expanded Formula: ( ( ($OA V0{a} $CO V0{b}$AO $NI V3{P})  $OR ($OA V0{b} $CO V0{b}$AO $NI V3{P}) ) $OR ($OA V0{a} $CO V0{b}$AO $IN V3{P}) )
+------- Expanded Formula: ( ( ($OA V0{b} $CO V0{a}$AO $NI V3{P})  $OR ($OA V0{a} $CO V0{a}$AO $NI V3{P}) ) $OR ($OA V0{b} $CO V0{a}$AO $IN V3{P}) )
+------- Expanded Formula: ( ( ($OA V0{b} $CO V0{b}$AO $NI V3{P})  $OR ($OA V0{b} $CO V0{a}$AO $NI V3{P}) ) $OR ($OA V0{b} $CO V0{a}$AO $IN V3{P}) )
+------- Expanded Formula: ( ( ($OA V0{b} $CO V0{a}$AO $NI V3{P})  $OR ($OA V0{a} $CO V0{b}$AO $NI V3{P}) ) $OR ($OA V0{b} $CO V0{b}$AO $IN V3{P}) )
+------- Expanded Formula: ( ( ($OA V0{b} $CO V0{b}$AO $NI V3{P})  $OR ($OA V0{b} $CO V0{b}$AO $NI V3{P}) ) $OR ($OA V0{b} $CO V0{b}$AO $IN V3{P}) )
+--- End Expansion Rule
+---Checking for Clash in Vector of Formulae
+---End Check for Clash in Vector of Formulae
+---Checking for Clash in Vector of Formulae
+---End Check for Clash in Vector of Formulae
+---Checking for Clash in Vector of Formulae
+---End Check for Clash in Vector of Formulae
+---Checking for Clash in Vector of Formulae
+---End Check for Clash in Vector of Formulae
+---Checking for Clash in Vector of Formulae
+---End Check for Clash in Vector of Formulae
+---Checking for Clash in Vector of Formulae
+---End Check for Clash in Vector of Formulae
+---Checking for Clash in Vector of Formulae
+---End Check for Clash in Vector of Formulae
+------Fulfilling formula: ( ( ($OA V0{a} $CO V0{a}$AO $NI V3{P})  $OR ($OA V0{a} $CO V0{a}$AO $NI V3{P}) ) $OR ($OA V0{a} $CO V0{a}$AO $IN V3{P}) )
+-----Checking for Clash: ($OA V0{a} $CO V0{a}$AO $NI V3{P})
+-----Checking for Tautology: ($OA V0{a} $CO V0{a}$AO $NI V3{P})
+-----Checking for Clash: ($OA V0{a} $CO V0{a}$AO $NI V3{P})
+-----Checking for Tautology: ($OA V0{a} $CO V0{a}$AO $NI V3{P})
+-----Checking for Clash: ($OA V0{a} $CO V0{a}$AO $IN V3{P})
+-----Checking for Tautology: ($OA V0{a} $CO V0{a}$AO $IN V3{P})
+-----Checking for Clash: ($OA V0{a} $CO V0{a}$AO $NI V3{P}) and ($OA V0{a} $CO V0{a}$AO $IN V3{P})
+------Fulfilling formula: ( ( ($OA V0{a} $CO V0{b}$AO $NI V3{P})  $OR ($OA V0{b} $CO V0{a}$AO $NI V3{P}) ) $OR ($OA V0{a} $CO V0{a}$AO $IN V3{P}) )
+-----Checking for Clash: ($OA V0{a} $CO V0{b}$AO $NI V3{P})
+-----Checking for Tautology: ($OA V0{a} $CO V0{b}$AO $NI V3{P})
+-----Checking for Clash: ($OA V0{b} $CO V0{a}$AO $NI V3{P})
+-----Checking for Tautology: ($OA V0{b} $CO V0{a}$AO $NI V3{P})
+-----Checking for Clash: ($OA V0{a} $CO V0{b}$AO $NI V3{P}) and ($OA V0{b} $CO V0{a}$AO $NI V3{P})
+-----Checking for Clash: ($OA V0{a} $CO V0{a}$AO $IN V3{P})
+-----Checking for Tautology: ($OA V0{a} $CO V0{a}$AO $IN V3{P})
+-----Checking for Clash: ($OA V0{a} $CO V0{b}$AO $NI V3{P}) and ($OA V0{a} $CO V0{a}$AO $IN V3{P})
+-----Checking for Clash: ($OA V0{b} $CO V0{a}$AO $NI V3{P}) and ($OA V0{a} $CO V0{a}$AO $IN V3{P})
+---Applying PB-RULE
+----- Computing Literal from PB-Rule. 
+------ Computing Literal from PB-Rule. ($OA V0{a} $CO V0{b}$AO $NI V3{P})
+------ Computing Literal from PB-Rule. ($OA V0{a} $CO V0{b}$AO $IN V3{P})
+------ Computing Literal from PB-Rule. ($OA V0{b} $CO V0{a}$AO $NI V3{P})
+------ Computing Literal from PB-Rule. ($OA V0{b} $CO V0{a}$AO $IN V3{P})
+------ Computing Literal from PB-Rule. ($OA V0{a} $CO V0{a}$AO $IN V3{P})
+------Fulfilling formula: ( ( ($OA V0{a} $CO V0{a}$AO $NI V3{P})  $OR ($OA V0{a} $CO V0{b}$AO $NI V3{P}) ) $OR ($OA V0{a} $CO V0{b}$AO $IN V3{P}) )
+-----Checking for Clash: ($OA V0{a} $CO V0{a}$AO $NI V3{P})
+-----Checking for Tautology: ($OA V0{a} $CO V0{a}$AO $NI V3{P})
+-----Checking for Clash: ($OA V0{a} $CO V0{b}$AO $NI V3{P})
+-----Checking for Tautology: ($OA V0{a} $CO V0{b}$AO $NI V3{P})
+-----Checking for Clash: ($OA V0{a} $CO V0{a}$AO $NI V3{P}) and ($OA V0{a} $CO V0{b}$AO $NI V3{P})
+-----Checking for Clash: ($OA V0{a} $CO V0{b}$AO $IN V3{P})
+-----Checking for Tautology: ($OA V0{a} $CO V0{b}$AO $IN V3{P})
+-----Checking for Clash: ($OA V0{a} $CO V0{a}$AO $NI V3{P}) and ($OA V0{a} $CO V0{b}$AO $IN V3{P})
+-----Checking for Clash: ($OA V0{a} $CO V0{b}$AO $NI V3{P}) and ($OA V0{a} $CO V0{b}$AO $IN V3{P})
+-----Checking for Clash: ($OA V0{a} $CO V0{a}$AO $NI V3{P}) and ($OA V0{a} $CO V0{b}$AO $NI V3{P})
+---Applying E-RULE
+----- Computing Literal from E-Rule: ($OA V0{a} $CO V0{a}$AO $NI V3{P})
+-----Checking for Clash: ($OA V0{a} $CO V0{a}$AO $NI V3{P})
+-----Checking for Tautology: ($OA V0{a} $CO V0{a}$AO $NI V3{P})
+-----Checking for Clash: ($OA V0{a} $CO V0{b}$AO $NI V3{P})
+-----Checking for Tautology: ($OA V0{a} $CO V0{b}$AO $NI V3{P})
+-----Checking for Clash: ($OA V0{a} $CO V0{a}$AO $NI V3{P}) and ($OA V0{a} $CO V0{b}$AO $NI V3{P})
+-----Checking for Clash: ($OA V0{a} $CO V0{b}$AO $IN V3{P})
+-----Checking for Tautology: ($OA V0{a} $CO V0{b}$AO $IN V3{P})
+-----Checking for Clash: ($OA V0{a} $CO V0{a}$AO $NI V3{P}) and ($OA V0{a} $CO V0{b}$AO $IN V3{P})
+-----Checking for Clash: ($OA V0{a} $CO V0{b}$AO $NI V3{P}) and ($OA V0{a} $CO V0{b}$AO $IN V3{P})
+-----Checking for Clash: ($OA V0{a} $CO V0{a}$AO $NI V3{P}) and ($OA V0{b} $CO V0{a}$AO $NI V3{P})
+-----Checking for Clash: ($OA V0{a} $CO V0{a}$AO $NI V3{P}) and ($OA V0{a} $CO V0{b}$AO $IN V3{P})
+---Applying E-RULE
+----- Computing Literal from E-Rule: ($OA V0{a} $CO V0{a}$AO $NI V3{P})
+-----Checking for Clash: ($OA V0{a} $CO V0{a}$AO $NI V3{P})
+-----Checking for Tautology: ($OA V0{a} $CO V0{a}$AO $NI V3{P})
+-----Checking for Clash: ($OA V0{a} $CO V0{b}$AO $NI V3{P})
+-----Checking for Tautology: ($OA V0{a} $CO V0{b}$AO $NI V3{P})
+-----Checking for Clash: ($OA V0{a} $CO V0{a}$AO $NI V3{P}) and ($OA V0{a} $CO V0{b}$AO $NI V3{P})
+-----Checking for Clash: ($OA V0{a} $CO V0{b}$AO $IN V3{P})
+-----Checking for Tautology: ($OA V0{a} $CO V0{b}$AO $IN V3{P})
+-----Checking for Clash: ($OA V0{a} $CO V0{a}$AO $NI V3{P}) and ($OA V0{a} $CO V0{b}$AO $IN V3{P})
+-----Checking for Clash: ($OA V0{a} $CO V0{b}$AO $NI V3{P}) and ($OA V0{a} $CO V0{b}$AO $IN V3{P})
+-----Checking for Clash: ($OA V0{a} $CO V0{a}$AO $NI V3{P}) and ($OA V0{b} $CO V0{a}$AO $IN V3{P})
+-----Checking for Clash: ($OA V0{a} $CO V0{a}$AO $NI V3{P}) and ($OA V0{a} $CO V0{a}$AO $IN V3{P})
+------Fulfilling formula: ( ( ($OA V0{a} $CO V0{b}$AO $NI V3{P})  $OR ($OA V0{b} $CO V0{b}$AO $NI V3{P}) ) $OR ($OA V0{a} $CO V0{b}$AO $IN V3{P}) )
+-----Checking for Clash: ($OA V0{a} $CO V0{b}$AO $NI V3{P})
+-----Checking for Tautology: ($OA V0{a} $CO V0{b}$AO $NI V3{P})
+-----Checking for Clash: ($OA V0{b} $CO V0{b}$AO $NI V3{P})
+-----Checking for Tautology: ($OA V0{b} $CO V0{b}$AO $NI V3{P})
+-----Checking for Clash: ($OA V0{a} $CO V0{b}$AO $NI V3{P}) and ($OA V0{b} $CO V0{b}$AO $NI V3{P})
+-----Checking for Clash: ($OA V0{a} $CO V0{b}$AO $IN V3{P})
+-----Checking for Tautology: ($OA V0{a} $CO V0{b}$AO $IN V3{P})
+-----Checking for Clash: ($OA V0{a} $CO V0{b}$AO $NI V3{P}) and ($OA V0{a} $CO V0{b}$AO $IN V3{P})
+-----Checking for Clash: ($OA V0{b} $CO V0{b}$AO $NI V3{P}) and ($OA V0{a} $CO V0{b}$AO $NI V3{P})
+-----Checking for Clash: ($OA V0{b} $CO V0{b}$AO $NI V3{P}) and ($OA V0{a} $CO V0{a}$AO $NI V3{P})
+---Applying E-RULE
+----- Computing Literal from E-Rule: ($OA V0{b} $CO V0{b}$AO $NI V3{P})
+-----Checking for Clash: ($OA V0{a} $CO V0{b}$AO $NI V3{P})
+-----Checking for Tautology: ($OA V0{a} $CO V0{b}$AO $NI V3{P})
+-----Checking for Clash: ($OA V0{b} $CO V0{b}$AO $NI V3{P})
+-----Checking for Tautology: ($OA V0{b} $CO V0{b}$AO $NI V3{P})
+-----Checking for Clash: ($OA V0{a} $CO V0{b}$AO $NI V3{P}) and ($OA V0{b} $CO V0{b}$AO $NI V3{P})
+-----Checking for Clash: ($OA V0{a} $CO V0{b}$AO $IN V3{P})
+-----Checking for Tautology: ($OA V0{a} $CO V0{b}$AO $IN V3{P})
+-----Checking for Clash: ($OA V0{a} $CO V0{b}$AO $NI V3{P}) and ($OA V0{a} $CO V0{b}$AO $IN V3{P})
+-----Checking for Clash: ($OA V0{b} $CO V0{b}$AO $NI V3{P}) and ($OA V0{b} $CO V0{a}$AO $NI V3{P})
+-----Checking for Clash: ($OA V0{b} $CO V0{b}$AO $NI V3{P}) and ($OA V0{a} $CO V0{a}$AO $NI V3{P})
+-----Checking for Clash: ($OA V0{b} $CO V0{b}$AO $NI V3{P}) and ($OA V0{a} $CO V0{b}$AO $IN V3{P})
+---Applying E-RULE
+----- Computing Literal from E-Rule: ($OA V0{b} $CO V0{b}$AO $NI V3{P})
+------Fulfilling formula: ( ( ($OA V0{b} $CO V0{a}$AO $NI V3{P})  $OR ($OA V0{a} $CO V0{a}$AO $NI V3{P}) ) $OR ($OA V0{b} $CO V0{a}$AO $IN V3{P}) )
+-----Checking for Clash: ($OA V0{b} $CO V0{a}$AO $NI V3{P})
+-----Checking for Tautology: ($OA V0{b} $CO V0{a}$AO $NI V3{P})
+-----Checking for Clash: ($OA V0{a} $CO V0{a}$AO $NI V3{P})
+-----Checking for Tautology: ($OA V0{a} $CO V0{a}$AO $NI V3{P})
+-----Checking for Clash: ($OA V0{b} $CO V0{a}$AO $NI V3{P}) and ($OA V0{a} $CO V0{a}$AO $NI V3{P})
+-----Checking for Clash: ($OA V0{b} $CO V0{a}$AO $IN V3{P})
+-----Checking for Tautology: ($OA V0{b} $CO V0{a}$AO $IN V3{P})
+-----Checking for Clash: ($OA V0{b} $CO V0{a}$AO $NI V3{P}) and ($OA V0{b} $CO V0{a}$AO $IN V3{P})
+-----Checking for Clash: ($OA V0{a} $CO V0{a}$AO $NI V3{P}) and ($OA V0{a} $CO V0{b}$AO $NI V3{P})
+-----Checking for Clash: ($OA V0{a} $CO V0{a}$AO $NI V3{P}) and ($OA V0{a} $CO V0{a}$AO $NI V3{P})
+-----Checking for Clash: ($OA V0{b} $CO V0{a}$AO $NI V3{P})
+-----Checking for Tautology: ($OA V0{b} $CO V0{a}$AO $NI V3{P})
+-----Checking for Clash: ($OA V0{a} $CO V0{a}$AO $NI V3{P})
+-----Checking for Tautology: ($OA V0{a} $CO V0{a}$AO $NI V3{P})
+-----Checking for Clash: ($OA V0{b} $CO V0{a}$AO $NI V3{P}) and ($OA V0{a} $CO V0{a}$AO $NI V3{P})
+-----Checking for Clash: ($OA V0{b} $CO V0{a}$AO $IN V3{P})
+-----Checking for Tautology: ($OA V0{b} $CO V0{a}$AO $IN V3{P})
+-----Checking for Clash: ($OA V0{b} $CO V0{a}$AO $NI V3{P}) and ($OA V0{b} $CO V0{a}$AO $IN V3{P})
+-----Checking for Clash: ($OA V0{a} $CO V0{a}$AO $NI V3{P}) and ($OA V0{b} $CO V0{a}$AO $NI V3{P})
+-----Checking for Clash: ($OA V0{a} $CO V0{a}$AO $NI V3{P}) and ($OA V0{a} $CO V0{a}$AO $NI V3{P})
+------Fulfilling formula: ( ( ($OA V0{b} $CO V0{b}$AO $NI V3{P})  $OR ($OA V0{b} $CO V0{a}$AO $NI V3{P}) ) $OR ($OA V0{b} $CO V0{a}$AO $IN V3{P}) )
+-----Checking for Clash: ($OA V0{b} $CO V0{b}$AO $NI V3{P})
+-----Checking for Tautology: ($OA V0{b} $CO V0{b}$AO $NI V3{P})
+-----Checking for Clash: ($OA V0{b} $CO V0{a}$AO $NI V3{P})
+-----Checking for Tautology: ($OA V0{b} $CO V0{a}$AO $NI V3{P})
+-----Checking for Clash: ($OA V0{b} $CO V0{b}$AO $NI V3{P}) and ($OA V0{b} $CO V0{a}$AO $NI V3{P})
+-----Checking for Clash: ($OA V0{b} $CO V0{a}$AO $IN V3{P})
+-----Checking for Tautology: ($OA V0{b} $CO V0{a}$AO $IN V3{P})
+-----Checking for Clash: ($OA V0{b} $CO V0{b}$AO $NI V3{P}) and ($OA V0{b} $CO V0{a}$AO $IN V3{P})
+-----Checking for Clash: ($OA V0{b} $CO V0{a}$AO $NI V3{P}) and ($OA V0{b} $CO V0{a}$AO $IN V3{P})
+-----Checking for Clash: ($OA V0{b} $CO V0{b}$AO $NI V3{P}) and ($OA V0{a} $CO V0{b}$AO $NI V3{P})
+-----Checking for Clash: ($OA V0{b} $CO V0{b}$AO $NI V3{P}) and ($OA V0{a} $CO V0{a}$AO $NI V3{P})
+-----Checking for Clash: ($OA V0{b} $CO V0{b}$AO $NI V3{P}) and ($OA V0{b} $CO V0{b}$AO $NI V3{P})
+-----Checking for Clash: ($OA V0{b} $CO V0{b}$AO $NI V3{P})
+-----Checking for Tautology: ($OA V0{b} $CO V0{b}$AO $NI V3{P})
+-----Checking for Clash: ($OA V0{b} $CO V0{a}$AO $NI V3{P})
+-----Checking for Tautology: ($OA V0{b} $CO V0{a}$AO $NI V3{P})
+-----Checking for Clash: ($OA V0{b} $CO V0{b}$AO $NI V3{P}) and ($OA V0{b} $CO V0{a}$AO $NI V3{P})
+-----Checking for Clash: ($OA V0{b} $CO V0{a}$AO $IN V3{P})
+-----Checking for Tautology: ($OA V0{b} $CO V0{a}$AO $IN V3{P})
+-----Checking for Clash: ($OA V0{b} $CO V0{b}$AO $NI V3{P}) and ($OA V0{b} $CO V0{a}$AO $IN V3{P})
+-----Checking for Clash: ($OA V0{b} $CO V0{a}$AO $NI V3{P}) and ($OA V0{b} $CO V0{a}$AO $IN V3{P})
+-----Checking for Clash: ($OA V0{b} $CO V0{b}$AO $NI V3{P}) and ($OA V0{b} $CO V0{a}$AO $NI V3{P})
+-----Checking for Clash: ($OA V0{b} $CO V0{b}$AO $NI V3{P}) and ($OA V0{a} $CO V0{a}$AO $NI V3{P})
+-----Checking for Clash: ($OA V0{b} $CO V0{b}$AO $NI V3{P}) and ($OA V0{b} $CO V0{b}$AO $NI V3{P})
+------Fulfilling formula: ( ( ($OA V0{b} $CO V0{a}$AO $NI V3{P})  $OR ($OA V0{a} $CO V0{b}$AO $NI V3{P}) ) $OR ($OA V0{b} $CO V0{b}$AO $IN V3{P}) )
+-----Checking for Clash: ($OA V0{b} $CO V0{a}$AO $NI V3{P})
+-----Checking for Tautology: ($OA V0{b} $CO V0{a}$AO $NI V3{P})
+-----Checking for Clash: ($OA V0{a} $CO V0{b}$AO $NI V3{P})
+-----Checking for Tautology: ($OA V0{a} $CO V0{b}$AO $NI V3{P})
+-----Checking for Clash: ($OA V0{b} $CO V0{a}$AO $NI V3{P}) and ($OA V0{a} $CO V0{b}$AO $NI V3{P})
+-----Checking for Clash: ($OA V0{b} $CO V0{b}$AO $IN V3{P})
+-----Checking for Tautology: ($OA V0{b} $CO V0{b}$AO $IN V3{P})
+-----Checking for Clash: ($OA V0{b} $CO V0{a}$AO $NI V3{P}) and ($OA V0{b} $CO V0{b}$AO $IN V3{P})
+-----Checking for Clash: ($OA V0{a} $CO V0{b}$AO $NI V3{P}) and ($OA V0{b} $CO V0{b}$AO $IN V3{P})
+-----Checking for Clash: ($OA V0{b} $CO V0{a}$AO $NI V3{P}) and ($OA V0{a} $CO V0{b}$AO $NI V3{P})
+-----Checking for Clash: ($OA V0{b} $CO V0{a}$AO $NI V3{P}) and ($OA V0{a} $CO V0{a}$AO $NI V3{P})
+-----Checking for Clash: ($OA V0{b} $CO V0{a}$AO $NI V3{P}) and ($OA V0{b} $CO V0{b}$AO $NI V3{P})
+-----Checking for Clash: ($OA V0{a} $CO V0{b}$AO $NI V3{P}) and ($OA V0{a} $CO V0{b}$AO $NI V3{P})
+-----Checking for Clash: ($OA V0{b} $CO V0{a}$AO $NI V3{P})
+-----Checking for Tautology: ($OA V0{b} $CO V0{a}$AO $NI V3{P})
+-----Checking for Clash: ($OA V0{a} $CO V0{b}$AO $NI V3{P})
+-----Checking for Tautology: ($OA V0{a} $CO V0{b}$AO $NI V3{P})
+-----Checking for Clash: ($OA V0{b} $CO V0{a}$AO $NI V3{P}) and ($OA V0{a} $CO V0{b}$AO $NI V3{P})
+-----Checking for Clash: ($OA V0{b} $CO V0{b}$AO $IN V3{P})
+-----Checking for Tautology: ($OA V0{b} $CO V0{b}$AO $IN V3{P})
+-----Checking for Clash: ($OA V0{b} $CO V0{a}$AO $NI V3{P}) and ($OA V0{b} $CO V0{b}$AO $IN V3{P})
+-----Checking for Clash: ($OA V0{a} $CO V0{b}$AO $NI V3{P}) and ($OA V0{b} $CO V0{b}$AO $IN V3{P})
+-----Checking for Clash: ($OA V0{b} $CO V0{a}$AO $NI V3{P}) and ($OA V0{b} $CO V0{a}$AO $NI V3{P})
+------Fulfilling formula: ( ( ($OA V0{b} $CO V0{b}$AO $NI V3{P})  $OR ($OA V0{b} $CO V0{b}$AO $NI V3{P}) ) $OR ($OA V0{b} $CO V0{b}$AO $IN V3{P}) )
+-----Checking for Clash: ($OA V0{b} $CO V0{b}$AO $NI V3{P})
+-----Checking for Tautology: ($OA V0{b} $CO V0{b}$AO $NI V3{P})
+-----Checking for Clash: ($OA V0{b} $CO V0{b}$AO $NI V3{P})
+-----Checking for Tautology: ($OA V0{b} $CO V0{b}$AO $NI V3{P})
+-----Checking for Clash: ($OA V0{b} $CO V0{b}$AO $IN V3{P})
+-----Checking for Tautology: ($OA V0{b} $CO V0{b}$AO $IN V3{P})
+-----Checking for Clash: ($OA V0{b} $CO V0{b}$AO $NI V3{P}) and ($OA V0{b} $CO V0{b}$AO $IN V3{P})
+-----Checking for Clash: ($OA V0{b} $CO V0{b}$AO $NI V3{P})
+-----Checking for Tautology: ($OA V0{b} $CO V0{b}$AO $NI V3{P})
+-----Checking for Clash: ($OA V0{b} $CO V0{b}$AO $NI V3{P})
+-----Checking for Tautology: ($OA V0{b} $CO V0{b}$AO $NI V3{P})
+-----Checking for Clash: ($OA V0{b} $CO V0{b}$AO $IN V3{P})
+-----Checking for Tautology: ($OA V0{b} $CO V0{b}$AO $IN V3{P})
+-----Checking for Clash: ($OA V0{b} $CO V0{b}$AO $NI V3{P}) and ($OA V0{b} $CO V0{b}$AO $IN V3{P})
+----- Computing equivalence classes set 

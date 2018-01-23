@@ -1742,10 +1742,16 @@ void chooseRule(Tableau &T, vector<Node*> &nodeSet, Formula* f)
 {
 	vector<Node*> newNodeSet;
 	for (int b = 0; b < nodeSet.size(); b++)
-	{
+	{		
 		vector<Literal*> atoms;
 		vector<Literal*> atomset;
-		int val=getLiteralSet(f, atomset);
+		int val = getLiteralSet(f, atomset); 
+		if (val == 0 && atomset.size() == 0)
+		{
+		  newNodeSet.push_back(nodeSet.at(b));
+          continue;
+		}
+		
 		/*	if (checkLiteralsClash(atomset))
 			{
 				newNodeSet.push_back(nodeSet.at(b));
@@ -1771,7 +1777,7 @@ void chooseRule(Tableau &T, vector<Node*> &nodeSet, Formula* f)
 		switch (atoms.size())
 		{
 		case 0:       //case closed branch. 
-		{
+		{ 
 			T.getClosedBranches().push_back(nodeSet.at(b));
 			break;
 		}
@@ -1797,7 +1803,7 @@ void expandTableau(Tableau& T)
 	
 	if ( (checkNodeClash(T.getTableau()->getSetFormulae())==0) )
 	{		
-		T.getClosedBranches().push_back(T.getTableau());
+		T.getClosedBranches().push_back(T.getTableau()); 
 		return;
 	}
 	vector<Node*> nonComBranches = vector<Node*>();
