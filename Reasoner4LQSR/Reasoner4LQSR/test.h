@@ -2,7 +2,7 @@
 
 #include <fstream>;
 
-#define test
+//#define test
 #pragma once
 int counterTest = 0;
 int counterFormula = 0;

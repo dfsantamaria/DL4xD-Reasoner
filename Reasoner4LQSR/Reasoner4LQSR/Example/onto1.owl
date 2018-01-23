@@ -32,9 +32,9 @@
     <Declaration>
         <ObjectProperty IRI="#P"/>
     </Declaration>
-    <TransitiveObjectProperty>
+    <IrreflexiveObjectProperty>
         <ObjectProperty IRI="#P"/>
-    </TransitiveObjectProperty>
+    </IrreflexiveObjectProperty>
 </Ontology>
 
 
