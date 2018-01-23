@@ -6,6 +6,7 @@
      xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
      xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
      ontologyIRI="http://www.semanticweb.org/danie/ontologies/2018/0/untitled-ontology-500">
+    <Prefix name="" IRI="http://www.semanticweb.org/danie/ontologies/2018/0/untitled-ontology-500"/>
     <Prefix name="owl" IRI="http://www.w3.org/2002/07/owl#"/>
     <Prefix name="rdf" IRI="http://www.w3.org/1999/02/22-rdf-syntax-ns#"/>
     <Prefix name="xml" IRI="http://www.w3.org/XML/1998/namespace"/>
@@ -32,6 +33,25 @@
     <Declaration>
         <ObjectProperty IRI="#P"/>
     </Declaration>
+    <SubClassOf>
+        <Class IRI="#A"/>
+        <ObjectIntersectionOf>
+            <Class IRI="#B"/>
+            <ObjectUnionOf>
+                <Class IRI="#A"/>
+                <ObjectAllValuesFrom>
+                    <ObjectProperty IRI="#P"/>
+                    <ObjectUnionOf>
+                        <Class IRI="#C"/>
+                        <ObjectAllValuesFrom>
+                            <ObjectProperty IRI="#P1"/>
+                            <Class IRI="#B"/>
+                        </ObjectAllValuesFrom>
+                    </ObjectUnionOf>
+                </ObjectAllValuesFrom>
+            </ObjectUnionOf>
+        </ObjectIntersectionOf>
+    </SubClassOf>
     <IrreflexiveObjectProperty>
         <ObjectProperty IRI="#P"/>
     </IrreflexiveObjectProperty>
