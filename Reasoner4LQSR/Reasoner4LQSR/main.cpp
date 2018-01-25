@@ -11,6 +11,7 @@
 #include "Reasoner4LQSR.h"
 #include "XMLparser.h"
 #include "log.h"
+#include <chrono> 
 
 #define propertyindex 3
 #define qvar0 (propertyindex+1)
@@ -138,6 +139,12 @@ int main()
 	
 	*/
 
+    auto started = std::chrono::high_resolution_clock::now();
+
+
+
+
+
 	/*
 	    OWL/XML Reader
 	*/
@@ -244,6 +251,8 @@ int main()
 		cout << "Branch number: " << i << " Answer:" << results.at(0)->getAnswerSet().at(i) << endl;
 	}
 
+	auto done = std::chrono::high_resolution_clock::now();
+	std::cout << "Milliseconds Execution: "<< std::chrono::duration_cast<std::chrono::milliseconds>(done - started).count()<<endl;
 
 	debugEnd();
 }
