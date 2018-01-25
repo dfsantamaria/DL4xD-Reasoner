@@ -205,10 +205,45 @@ int main()
 	printOpenBranches(tableau2);
 
 	//print closed branches
-	printClosedBranches(tableau2);
-
-	
+	printClosedBranches(tableau2);	
 
 	cout << "--End reading ontology--" << endl;
+
+	/* Query Reading*/
+
+
+	cout << "---" << endl;
+	cout << "Reading Query ..." << endl;
+	string queryname = "Example/query.txt";
+	vector<Formula> querySet;
+	vector<string> stringSet = vector<string>(0);
+
+	readQueryFromFile(queryname, stringSet);
+	vector<QueryManager*> results;
+	performQuerySet(results, stringSet, querySet, tableau2);
+
+	cout << "Printing query results ..." << endl;
+	for (int i = 0; i < results.at(0)->getMatchSet().second.size(); i++)
+	{
+		cout << "Tableau branch number: " << results.at(0)->getMatchSet().first.at(i) << endl;
+		for (int j = 0; j < results.at(0)->getMatchSet().second.at(i).size(); j++)
+		{
+			cout << "Solution number: " << j << endl;
+			for (int k = 0; k < results.at(0)->getMatchSet().second.at(i).at(j).size(); k++)
+			{
+				cout << results.at(0)->getMatchSet().second.at(i).at(j).at(k).first->toString();
+				cout << ",";
+				cout << results.at(0)->getMatchSet().second.at(i).at(j).at(k).second->toString() << "; ";
+			}
+			cout << endl;
+		}
+	}
+	cout << "Printing Y/N results ..." << endl;
+	for (int i = 0; i < results.at(0)->getAnswerSet().size(); i++)
+	{
+		cout << "Branch number: " << i << " Answer:" << results.at(0)->getAnswerSet().at(i) << endl;
+	}
+
+
 	debugEnd();
 }

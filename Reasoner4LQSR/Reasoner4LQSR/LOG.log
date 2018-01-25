@@ -1435,3 +1435,29 @@ Debug Started
 -----Checking for Clash: ($OA V0{b} $CO V0{b}$AO $NI V3{P}) and ($OA V0{a} $CO V0{a}$AO $NI V3{P})
 -----Checking for Clash: ($OA V0{b} $CO V0{b}$AO $NI V3{P}) and ($OA V0{b} $CO V0{b}$AO $NI V3{P})
 ----- Computing equivalence classes set 
+-----Reading query file
+-----Parsing line:($FA V0{t}) (V0{t} $IN V1{Person})
+---Formula Inserted: ($FA V0{t}) (V0{t} $IN V1{Person})
+-----Analizyng input formula
+-----Candidate atom found: $FAV0{t}
+-----Computing Literal: $FAV0{t}
+-----Extracting Data From Var. Input String: V0{t}
+-----Data From Var Computed. Name: t. Level:0
+-----Creating Quantified Variable.  Name:t. Level: 0. Type: 1
+-----Adding Quantified Variable to Set.V0{t}
+-----Candidate atom found: V0{t}$INV1{Person}
+-----Computing Literal: V0{t}$INV1{Person}
+-----Extracting Data From Var. Input String: V0{t}
+-----Data From Var Computed. Name: t. Level:0
+-----Creating  Variable.  Name:t. Level: 0. Type: 0
+-----Variable Found in Quantified Set. V0{t}
+-----Extracting Data From Var. Input String: V1{Person}
+-----Data From Var Computed. Name: Person. Level:1
+-----Creating  Variable.  Name:Person. Level: 1. Type: 0
+-----Adding Variable to Set. V1{Person}
+-----Literal created: (V0{t} $IN V1{Person})
+-----Final Formula: ($FA V0{t})(V0{t} $IN V1{Person}) 
+---Formula Ended 
+---Executing Query
+----Query selected:($FA V0{t})(V0{t} $IN V1{Person}) 
+-----Literal computed:(V0{t} $IN V1{Person})
