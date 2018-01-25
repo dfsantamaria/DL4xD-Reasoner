@@ -1169,14 +1169,14 @@ Formula* convertFormulaToCNF(Formula* formula)
 			}
 
 		}
-		//if (lr > -1 && current->getPreviousformula() != NULL)
-		//	stack.push_back(current->getPreviousformula());
-		//else		
+		if (lr > -1 && current->getPreviousformula() != NULL)
+			stack.push_back(current->getPreviousformula());
+		else {
 			if (current->getLSubformula() != NULL)
 				stack.push_back(current->getLSubformula());
 			if (current->getRSubformula() != NULL)
 				stack.push_back(current->getRSubformula());
-		
+		}
 	}
 #ifdef debug
 #ifdef debugcnf

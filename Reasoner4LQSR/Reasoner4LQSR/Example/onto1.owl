@@ -35,22 +35,16 @@
     </Declaration>
     <SubClassOf>
         <Class IRI="#A"/>
-        <ObjectIntersectionOf>
-            <Class IRI="#B"/>
-            <ObjectUnionOf>
-                <Class IRI="#A"/>
-                <ObjectAllValuesFrom>
-                    <ObjectProperty IRI="#P"/>
-                    <ObjectUnionOf>
-                        <Class IRI="#C"/>
-                        <ObjectAllValuesFrom>
-                            <ObjectProperty IRI="#P1"/>
-                            <Class IRI="#B"/>
-                        </ObjectAllValuesFrom>
-                    </ObjectUnionOf>
-                </ObjectAllValuesFrom>
-            </ObjectUnionOf>
-        </ObjectIntersectionOf>
+        <ObjectUnionOf>
+            <ObjectAllValuesFrom>
+                <ObjectProperty IRI="#P"/>
+                <Class IRI="#C"/>
+            </ObjectAllValuesFrom>
+            <ObjectAllValuesFrom>
+                <ObjectProperty IRI="#P1"/>
+                <Class IRI="#B"/>
+            </ObjectAllValuesFrom>
+        </ObjectUnionOf>
     </SubClassOf>
     <IrreflexiveObjectProperty>
         <ObjectProperty IRI="#P"/>

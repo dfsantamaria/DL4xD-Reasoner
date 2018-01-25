@@ -1,4 +1,4 @@
 V0{Annetta}
-($FA V0{y}) (( (V0{y} $NI V1{Kid}) $OR (V0{y} $IN V1{Person})) $OR (V0{y} $QE V0{y})) 
+($FA V0{z})($FA V0{z1})($FA V0{z2})((V0{z} $IN V1{Tower})$IF(( (((V0{z1} $IN V1{WindingStaircase})$AD ($OA V0{z} $CO V0{z1} $OA $IN V3{contains}))$AD (((V0{z2} $IN V1{WindingStaircase})$AD ($OA V0{z} $CO V0{z2} $OA $IN V3{contains})))) $IF ((V0{z1} $EQ V0{z2})))$AD(( ((((V0{z1} $IN V1{WindingStaircase})$AD ($OA V0{z} $CO V0{z1} $OA $IN V3{contains})))) $IF(V0{z1} $QE V0{z2})))))
 
 //END
