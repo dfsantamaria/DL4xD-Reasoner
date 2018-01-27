@@ -2847,6 +2847,97 @@ void precomputeKBSpaceFromFile(string &name, vector<int>& KBsize, vector<int>& L
 }
 
 
+int getLiteralSetCount(Formula* f, vector<Literal*> &outf, vector<int>& counts)
+{
+	if (f->getLiteral() != NULL)
+		return -1;
+	stack <Formula*> st;
+	st.push(f->getRSubformula());
+	st.push(f->getLSubformula());
+	while (!st.empty())
+	{
+		Formula* tmp = st.top();
+		if (tmp->getLiteral() != NULL && checkLiteralClash(*tmp->getLiteral()) != 0 && checkLiteralTautology(*tmp->getLiteral()) != 0)
+		{
+			for (int i = 0; i < tmp->getLiteral()->getElements().size(); i++)
+				if (tmp->getLiteral()->getElementAt(i)->getVarType() == 1)
+					counts.at(tmp->getLiteral()->getElementAt(i)->getType())++;
+
+			int stop = 0;
+			int i = 0;
+			for (; i < outf.size() && stop == 0; i++)
+			{
+				if (outf.at(i)->equals(*tmp->getLiteral()) == 0)
+					stop = 1;
+				else if (checkLiteralClash(*outf.at(i), *tmp->getLiteral()) == 0)	// case A V \negA						
+					stop = 2;
+			}
+			if (stop == 0)
+				outf.push_back(tmp->getLiteral());//There should be only OR because of CNF formula
+			else if (stop == 2) // remove the element
+			{
+
+				outf.at(i - 1) = outf.back();
+				outf.pop_back();
+			}
+		}
+		st.pop();
+		if (tmp->getRSubformula() != NULL)
+			st.push(tmp->getRSubformula());
+		if (tmp->getLSubformula() != NULL)
+			st.push(tmp->getLSubformula());
+	}
+	return 0;
+}
+
+void generateConst(int r, int n, vector<int>& b)
+{
+	int i;
+	if (r < 2 || n < 1)          /* parameter check */
+		return;
+	r -= 1;                    /* r = max digit value */
+	do
+	{
+		i = n - 1;
+		while (b.at(i) < r)
+		{        /* increment last digit */
+			b[i]++;
+			//show(b, n);
+		}
+		/* find next digit to increment */
+		while (i >= 0 && b.at(i) == r)
+			i--;
+		if (i < 0)
+			break;         /* return if done */
+		b.at(i)++;
+		while (++i < n)          /* zero following digits */
+			b.at(i) = 0;
+		//show(b, n);
+	} while (1);
+	//free(a);
+}
+
+void expandGammaTableau(Tableau& T)
+{
+	vector<Node*> newNodeSet;
+	newNodeSet.push_back(T.getTableau());
+	for(int i=0; i<T.getTableau()->getSetFormulae().size();i++)
+	{
+		Formula* currUnfulFormula = T.getTableau()->getSetFormulae().at(i);
+		currUnfulFormula->setFulfillness(0);		
+		vector<Literal*> atomset;
+		vector<int> counters;
+		int val = getLiteralSetCount(currUnfulFormula, atomset, counters);
+		if (val == 0 && atomset.size() == 0)			
+			continue;
+		//instantiate and apply tableau rule
+        /*
+		vector<int>b = {1,1 };
+		generateConst(3, 2, b);
+		*/
+	}
+
+}
 
 
 
