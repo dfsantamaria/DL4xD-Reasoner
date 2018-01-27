@@ -2847,49 +2847,6 @@ void precomputeKBSpaceFromFile(string &name, vector<int>& KBsize, vector<int>& L
 }
 
 
-int getLiteralSetCount(Formula* f, vector<Literal*> &outf, vector<int>& counts)
-{
-	if (f->getLiteral() != NULL)
-		return -1;
-	stack <Formula*> st;
-	st.push(f->getRSubformula());
-	st.push(f->getLSubformula());
-	while (!st.empty())
-	{
-		Formula* tmp = st.top();
-		if (tmp->getLiteral() != NULL && checkLiteralClash(*tmp->getLiteral()) != 0 && checkLiteralTautology(*tmp->getLiteral()) != 0)
-		{
-			for (int i = 0; i < tmp->getLiteral()->getElements().size(); i++)
-				if (tmp->getLiteral()->getElementAt(i)->getVarType() == 1)
-					counts.at(tmp->getLiteral()->getElementAt(i)->getType())++;
-
-			int stop = 0;
-			int i = 0;
-			for (; i < outf.size() && stop == 0; i++)
-			{
-				if (outf.at(i)->equals(*tmp->getLiteral()) == 0)
-					stop = 1;
-				else if (checkLiteralClash(*outf.at(i), *tmp->getLiteral()) == 0)	// case A V \negA						
-					stop = 2;
-			}
-			if (stop == 0)
-				outf.push_back(tmp->getLiteral());//There should be only OR because of CNF formula
-			else if (stop == 2) // remove the element
-			{
-
-				outf.at(i - 1) = outf.back();
-				outf.pop_back();
-			}
-		}
-		st.pop();
-		if (tmp->getRSubformula() != NULL)
-			st.push(tmp->getRSubformula());
-		if (tmp->getLSubformula() != NULL)
-			st.push(tmp->getLSubformula());
-	}
-	return 0;
-}
-
 void generateConst(int r, int n, vector<int>& b)
 {
 	int i;
@@ -2917,19 +2874,44 @@ void generateConst(int r, int n, vector<int>& b)
 	//free(a);
 }
 
+void retrieveQVarSet(vector<Literal*>&atomset, vector<vector<Var*>>&varset)
+{
+	for (Literal* lit : atomset)
+	{
+		for (Var* var : lit->getElements())
+		{
+			if (var->getVarType() == 1)
+			{
+				int i = 0;
+				for (; i < varset.at(var->getType()).size(); i++)
+				{
+					if (var->equal(varset.at(var->getType()).at(i)))
+						break;
+				}
+				if (i < varset.at(var->getType()).size())
+					varset.at(var->getType()).push_back(var);
+			}
+		}
+	}
+}
+
+
 void expandGammaTableau(Tableau& T)
 {
+	throw new exception("Unsupported");
+
 	vector<Node*> newNodeSet;
 	newNodeSet.push_back(T.getTableau());
 	for(int i=0; i<T.getTableau()->getSetFormulae().size();i++)
 	{
 		Formula* currUnfulFormula = T.getTableau()->getSetFormulae().at(i);
 		currUnfulFormula->setFulfillness(0);		
-		vector<Literal*> atomset;
-		vector<int> counters;
-		int val = getLiteralSetCount(currUnfulFormula, atomset, counters);
+		vector<Literal*> atomset;		
+		int val = getLiteralSet(currUnfulFormula, atomset);
 		if (val == 0 && atomset.size() == 0)			
 			continue;
+		vector<vector<Var*>> varset(4);
+		retrieveQVarSet(atomset, varset);
 		//instantiate and apply tableau rule
         /*
 		vector<int>b = {1,1 };

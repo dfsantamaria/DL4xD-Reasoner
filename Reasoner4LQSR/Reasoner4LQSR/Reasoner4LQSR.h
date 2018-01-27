@@ -277,7 +277,6 @@ int expandKB(const vector<Formula*> &inpf, vector <Formula*> &out);
 void expandTableau(Tableau& T);
 void expandGammaTableau(Tableau& T);
 void generateConst(int r, int n, vector<int>& b);
-int getLiteralSetCount(Formula* f, vector<Literal*> &outf, vector<int>& counts);
 int getLiteralSet(Formula* f, vector<Literal*> &outf);
 int getVarsOrder(Var &var1, Var &var2);
 int insertFormulaKB(int keepQ, vector<vector <Var>>& varset, vector<vector <Var>>& varset2, string formula, vector<Formula> &vec, int* typeformula);
