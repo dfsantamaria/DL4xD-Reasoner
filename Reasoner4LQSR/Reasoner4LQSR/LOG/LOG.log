@@ -287,4 +287,3 @@ Debug Started
 ---Executing Query
 ----Query selected:($FA V0{t})(V0{t} $IN V1{Person}) 
 -----Literal computed:(V0{t} $IN V1{Person})
------Checking for Clash: ($OA V0{monastero} $CO V0{livello}$AO $IN V3{haLivello}) and ($OA V0{monastero} $CO V0{livello}$AO $NI V3{haLivello})
