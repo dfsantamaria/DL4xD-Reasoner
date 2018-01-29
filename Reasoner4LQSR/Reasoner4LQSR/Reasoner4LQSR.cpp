@@ -2907,8 +2907,11 @@ void expandGammaTableau(Tableau& T)
 		Formula* currUnfulFormula = T.getTableau()->getSetFormulae().at(i);
 		currUnfulFormula->setFulfillness(0);		
 		vector<Literal*> atomset;		
-		int val = getLiteralSet(currUnfulFormula, atomset);
-		
+		int val = getLiteralSet(currUnfulFormula, atomset);		
+		if (val == 0 && atomset.size() == 0)			
+			continue;
+		vector<vector<Var*>> varset(4);
+		retrieveQVarSet(atomset, varset);
 		cout << "----" << endl;
 		for (Literal* at : atomset)
 		{
@@ -2916,13 +2919,6 @@ void expandGammaTableau(Tableau& T)
 		}
 		cout << "----" << endl;
 		
-		
-		if (val == 0 && atomset.size() == 0)			
-			continue;
-		vector<vector<Var*>> varset(4);
-		retrieveQVarSet(atomset, varset);
-
-		cout << "----" << endl;
 	
 
 		//instantiate and apply tableau rule
