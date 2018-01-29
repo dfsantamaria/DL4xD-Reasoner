@@ -2898,8 +2898,8 @@ void retrieveQVarSet(vector<Literal*>&atomset, vector<vector<Var*>>&varset)
 
 void expandGammaTableau(Tableau& T)
 {
-	throw new exception("Unsupported");
-
+	//throw new exception("Unsupported");
+	cout << "GAMMA" << endl;
 	vector<Node*> newNodeSet;
 	newNodeSet.push_back(T.getTableau());
 	for(int i=0; i<T.getTableau()->getSetFormulae().size();i++)
@@ -2908,10 +2908,23 @@ void expandGammaTableau(Tableau& T)
 		currUnfulFormula->setFulfillness(0);		
 		vector<Literal*> atomset;		
 		int val = getLiteralSet(currUnfulFormula, atomset);
+		
+		cout << "----" << endl;
+		for (Literal* at : atomset)
+		{
+			cout << at->toString() << endl;
+		}
+		cout << "----" << endl;
+		
+		
 		if (val == 0 && atomset.size() == 0)			
 			continue;
 		vector<vector<Var*>> varset(4);
 		retrieveQVarSet(atomset, varset);
+
+		cout << "----" << endl;
+	
+
 		//instantiate and apply tableau rule
         /*
 		vector<int>b = {1,1 };
