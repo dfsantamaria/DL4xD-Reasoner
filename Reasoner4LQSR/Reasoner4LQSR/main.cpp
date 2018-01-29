@@ -23,7 +23,7 @@ std::fstream testFile;
 
 void debugStart()
 {
-	logFile.open("LOG.log", fstream::out);
+	logFile.open("LOG/LOG.log", fstream::out);
 #ifdef debug  
 	logFile << "Debug Started" << endl;
 #endif // debug
