@@ -245,20 +245,20 @@ public:
 void areInEqClass(Var& var1, int& varclass1, int& indx1, Var& var2, int& varclass2, int& indx2, Tableau& tab, int brindx);
 void buildEqSet(Tableau& tab);
 int checkLiteralClash(Literal &atom); //0 for clash 1 for no-clash
-int checkLiteralClash(Literal &atom1, Literal &atom2);
+int checkLiteralClash(Literal &atom1, Literal &atom2, int checkQvar);
 int checkLiteralClashEqSet(Literal &atom, Tableau& T, int& brindx); //0 for clash 1 for no-clash
 int checkLiteralClashEqSet(Literal &atom1, Literal &atom2, Tableau& t, int& brindx);
 int checkLiteralOpClash(int op1, int op2);
-int checkLiterals(Literal* atom, Node* node);
+int checkLiterals(Literal* atom, Node* node, int checkQvar);
 int checkLiteralTautology(Literal &atom);
-int checkLiteralsClash(vector<Literal*> &vec);
-int checkBranchClash(Literal* atom, Node* node);
-int checkBranchClash(Node* node, Tableau& tableau);
-int checkNodeClash(vector<Formula> &formset);
+int checkLiteralsClash(vector<Literal*> &vec, int checkQvar);
+int checkBranchClash(Literal* atom, Node* node, int checkQvar);
+int checkBranchClash(Node* node, Tableau& tableau, int checkQvar);
+int checkNodeClash(vector<Formula> &formset, int checkQvar);
 int checkNodeClashEqSet(Literal& atom, Node& node, Tableau& T, int& brind);
 void checkTableauClash(Tableau& T);
-int checkTableauRootClash(Tableau &T);
-int checkVectorClash(Literal* candidate, vector<Formula> &formset, int start);
+//int checkTableauRootClash(Tableau &T);
+int checkVectorClash(Literal* candidate, vector<Formula> &formset, int start, int checkQvar);
 void chooseRule(Tableau &T, vector<Node*> &nodeSet, Formula* f);
 void closeTableauRoot(Tableau& T);
 int containsQVar(Formula *fr, string &s);
@@ -273,11 +273,11 @@ int createLiteral(vector<vector <Var>>& vec, vector<vector <Var>>& vec2, string 
 Var* createQVarFromString(vector<vector<Var>>& vec, string *name, int *level, int *vartype, int *start);
 Var* createVarFromString(vector<vector<Var>>& vec, vector<vector<Var>>& vec2, string *name, int *level, int *vartype, int *start, int *typeformula);
 void ERule(Literal* atom, Node* node);
-int expandKB(const vector<Formula*> &inpf, vector <Formula*> &out);
-void expandTableau(Tableau& T);
+//int expandKB(const vector<Formula*> &inpf, vector <Formula*> &out);
+//void expandTableau(Tableau& T);
 void expandGammaTableau(Tableau& T);
 void generateConst(int r, int n, vector<int>& b);
-int getLiteralSet(Formula* f, vector<Literal*> &outf);
+int getLiteralSet(Formula* f, vector<Literal*> &outf, int checkQvar);
 int getVarsOrder(Var &var1, Var &var2);
 int insertFormulaKB(int keepQ, vector<vector <Var>>& varset, vector<vector <Var>>& varset2, string formula, vector<Formula> &vec, int* typeformula);
 int insertFormulaKB(int keepQ, vector<vector <Var>>& varset1, vector<vector <Var>>& varset2, string formula, Formula** ffinal, int* typeformula);

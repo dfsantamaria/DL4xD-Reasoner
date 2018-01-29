@@ -1331,74 +1331,76 @@ counterFormulaIn++;
 
 
 
-int expandKB(const vector<Formula*> &inpf, vector <Formula*> &out)
-{
-#ifdef debug  
-	logFile << "--- Applying Expansion Rule" << endl;
-#endif // debug
 
-	if (varSet.getVVLAt(0)->size() == 0) //no individual;
-	{ 		
-		varSet.getVVLAt(0)->push_back(*new Var("TOPIND", 0, 0,0));		
-		/*for (Formula* f : inpf)
-		{
-			out.push_back(f);
-		}
-		return 0;*/
-	}
+//int expandKB(const vector<Formula*> &inpf, vector <Formula*> &out)
+//{
+//#ifdef debug  
+//	logFile << "--- Applying Expansion Rule" << endl;
+//#endif // debug
+//
+//	if (varSet.getVVLAt(0)->size() == 0) //no individual;
+//	{ 		
+//		varSet.getVVLAt(0)->push_back(*new Var("TOPIND", 0, 0,0));		
+//		/*for (Formula* f : inpf)
+//		{
+//			out.push_back(f);
+//		}
+//		return 0;*/
+//	}
+//
+//
+//	int or = operators.getLogOpValue("$OR");
+//	vector <Formula*> tmp;
+//	for (int i = 0; i < inpf.size(); i++)
+//		tmp.push_back(inpf.at(i));
+//
+//	
+//	while (!tmp.empty())
+//	{
+//		Formula* f = tmp.back();
+//#ifdef debug  
+//#ifdef debugexpand
+//		logFile << "----- Computing Formula: " << f->toString() << endl;
+//#endif
+//#endif // debug
+//		tmp.pop_back();
+//		if (f->getLiteral() != NULL || f->getOperand()== or)
+//		{			
+//			instantiateFormula(f, out); 
+//		}	
+//		/*else if (f.getOperand() == 4)
+//		{			
+//			f.getRSubformula()->setPreviousFormula(NULL);
+//#ifdef debug  
+//#ifdef debugexpand			
+//			logFile << "----- Obtaining Formula: " << f.getRSubformula()->toString() << endl;
+//#endif
+//#endif // debug			
+//			tmp.push_back(*(f.getRSubformula()));
+//		}*/
+//		/*else
+//		{
+//			
+//			f->getLSubformula()->setPreviousFormula(NULL);
+//			f->getRSubformula()->setPreviousFormula(NULL);
+//#ifdef debug  
+//#ifdef debugexpand
+//			logFile << "----- Obtaining Formula: " << f.getLSubformula()->toString() << endl;
+//			logFile << "----- Obtaining Formula: " << f.getRSubformula()->toString() << endl;
+//#endif
+//#endif // debug
+//			tmp.push_back(*(f.getLSubformula()));
+//			tmp.push_back(*(f.getRSubformula()));
+//
+//			//cout << (f.getOperand()) << endl;
+//		}*/
+//	}
+//#ifdef debug  
+//	logFile << "--- End Expansion Rule" << endl;
+//#endif // debug
+//	return 0;
+//}
 
-
-	int or = operators.getLogOpValue("$OR");
-	vector <Formula*> tmp;
-	for (int i = 0; i < inpf.size(); i++)
-		tmp.push_back(inpf.at(i));
-
-	
-	while (!tmp.empty())
-	{
-		Formula* f = tmp.back();
-#ifdef debug  
-#ifdef debugexpand
-		logFile << "----- Computing Formula: " << f->toString() << endl;
-#endif
-#endif // debug
-		tmp.pop_back();
-		if (f->getLiteral() != NULL || f->getOperand()== or)
-		{			
-			instantiateFormula(f, out); 
-		}	
-		/*else if (f.getOperand() == 4)
-		{			
-			f.getRSubformula()->setPreviousFormula(NULL);
-#ifdef debug  
-#ifdef debugexpand			
-			logFile << "----- Obtaining Formula: " << f.getRSubformula()->toString() << endl;
-#endif
-#endif // debug			
-			tmp.push_back(*(f.getRSubformula()));
-		}*/
-		/*else
-		{
-			
-			f->getLSubformula()->setPreviousFormula(NULL);
-			f->getRSubformula()->setPreviousFormula(NULL);
-#ifdef debug  
-#ifdef debugexpand
-			logFile << "----- Obtaining Formula: " << f.getLSubformula()->toString() << endl;
-			logFile << "----- Obtaining Formula: " << f.getRSubformula()->toString() << endl;
-#endif
-#endif // debug
-			tmp.push_back(*(f.getLSubformula()));
-			tmp.push_back(*(f.getRSubformula()));
-
-			//cout << (f.getOperand()) << endl;
-		}*/
-	}
-#ifdef debug  
-	logFile << "--- End Expansion Rule" << endl;
-#endif // debug
-	return 0;
-}
 
 int checkLiteralOpClash(int op1, int op2)
 {
@@ -1407,23 +1409,35 @@ int checkLiteralOpClash(int op1, int op2)
 	return 1;
 }
 
-int checkLiteralClash(Literal &atom1, Literal &atom2)
-{
+int checkLiteralClash(Literal &atom1, Literal &atom2, int checkQvar)
+{ //0 checkQVar
 #ifdef debug 
 #ifdef debugclash
 	logFile << "-----Checking for Clash: " << atom1.toString() << " and " << atom2.toString() << endl;
 #endif // debug
 #endif
-	if (atom1.getElements().size() == atom2.getElements().size())
+	if (atom1.getElements().size() == atom2.getElements().size() && checkLiteralOpClash(atom1.getLiteralOp(), atom2.getLiteralOp())==0)
 	{
 		for (int i = 0; i < atom1.getElements().size(); i++)
-		{			
-			if (atom1.getElementAt(i)->equal(atom2.getElementAt(i)) != 0)
-				return 1;
+		{	
+			if (checkQvar == 0)
+			{
+				if (atom1.getElementAt(i)->getVarType() + atom2.getElementAt(i)->getVarType() == 2 || //both qvar
+					atom1.getElementAt(i)->getVarType() + atom2.getElementAt(i)->getVarType() == 1) //one is a qvar the other doesn't
+					continue;
+				else if (atom1.getElementAt(i)->equal(atom2.getElementAt(i)) != 0) 
+					return 1;
+			}
+			else if (checkQvar == 1)
+			{
+				if (atom1.getElementAt(i)->getVarType() + atom2.getElementAt(i)->getVarType() == 2 || atom1.getElementAt(i)->getVarType() + atom2.getElementAt(i)->getVarType() == 1
+					|| (atom1.getElementAt(i)->equal(atom2.getElementAt(i)) != 0))
+					return 1;				
+			}
 		}
-		return checkLiteralOpClash(atom1.getLiteralOp(), atom2.getLiteralOp());
+		return 0;
 	}
-	return 1;
+	else return 1;
 }
 
 int checkLiteralClash(Literal &atom) //0 for clash 1 for no-clash
@@ -1450,7 +1464,7 @@ int checkLiteralTautology(Literal &atom) //0 for tautology 1 for no-tautology
 	return 1;
 }
 
-int checkLiteralsClash(vector<Literal*> &vec)
+int checkLiteralsClash(vector<Literal*> &vec, int checkQvar)
 {
 
 	for (int i = 0; i < vec.size() - 1; i++)
@@ -1460,7 +1474,7 @@ int checkLiteralsClash(vector<Literal*> &vec)
 		logFile << "-----Checking for Clash: " << vec.at(i)->toString() << " and " << vec.at(i + 1)->toString() << endl;
 #endif // debug
 #endif
-		if (checkLiteralClash(*vec.at(i), *vec.at(i + 1)))
+		if (checkLiteralClash(*vec.at(i), *vec.at(i + 1), checkQvar)==0)
 			return 0;
 	}
 	return 1;
@@ -1470,7 +1484,7 @@ int checkLiteralsClash(vector<Literal*> &vec)
 /*
 Check for Clash between the given candidate and a vector of formulae starting from the given index
 */
-int checkVectorClash(Literal* candidate, vector<Formula*> &formset, int start)
+int checkVectorClash(Literal* candidate, vector<Formula*> &formset, int start, int checkQvar)
 {
 #ifdef debug  
 	logFile << "---Checking for Clash in Vector of Formulae" << endl;
@@ -1496,7 +1510,7 @@ int checkVectorClash(Literal* candidate, vector<Formula*> &formset, int start)
 #endif // debug
 					return 0;
 				}
-				if (checkLiteralClash(*candidate, *formset.at(j)->getLiteral()) == 0)
+				if (checkLiteralClash(*candidate, *formset.at(j)->getLiteral(), checkQvar) == 0)
 				{
 #ifdef debug  
 					logFile << "-----Clash at: " << candidate->toString() << "," << formset.at(j)->getLiteral()->toString() << endl;
@@ -1515,7 +1529,7 @@ int checkVectorClash(Literal* candidate, vector<Formula*> &formset, int start)
 /*
 Check for Clash in a Vector of formulae
 */
-int checkNodeClash(vector<Formula*> &formset)
+int checkNodeClash(vector<Formula*> &formset, int checkQvar)
 {
 	if (formset.size() < 2)
 	{
@@ -1523,7 +1537,7 @@ int checkNodeClash(vector<Formula*> &formset)
 	}
 	for (int i = 0; i < formset.size() - 1; i++)
 	{		
-		if (checkVectorClash(formset.at(i)->getLiteral(), formset, i + 1) == 0)
+		if (checkVectorClash(formset.at(i)->getLiteral(), formset, i + 1, checkQvar) == 0)
 			return 0;
 	}
 	return 1;
@@ -1536,7 +1550,7 @@ int checkNodeClash(vector<Formula*> &formset)
 Chech if in the current node there is a formula that makes the entire branch inconsistent
 */
 
-int checkBranchClash(Node* node, Tableau& tableau)
+int checkBranchClash(Node* node, Tableau& tableau, int checkQvar)
 {
 #ifdef debug  
 	logFile << "---Checking for Clash in the Current branch" << endl;
@@ -1548,7 +1562,7 @@ int checkBranchClash(Node* node, Tableau& tableau)
 		for (int i = 0; i < local.size(); i++)
 		{
 			Literal* at = local.at(i)->getLiteral();
-			if (at != NULL && (checkVectorClash(at, iterator->getSetFormulae(), 0) == 0))
+			if (at != NULL && (checkVectorClash(at, iterator->getSetFormulae(), 0, checkQvar) == 0))
 			{
 #ifdef debug
 #ifdef debugclash
@@ -1569,7 +1583,7 @@ int checkBranchClash(Node* node, Tableau& tableau)
 Return the set of atomic formula contained in a formula.
 */
 
-int getLiteralSet(Formula* f, vector<Literal*> &outf)
+int getLiteralSet(Formula* f, vector<Literal*> &outf, int checkQvar)
 {
 	if (f->getLiteral() != NULL)
 		return -1;
@@ -1587,7 +1601,7 @@ int getLiteralSet(Formula* f, vector<Literal*> &outf)
 				{
 					if (outf.at(i)->equals(*tmp->getLiteral()) == 0)
 						stop = 1;
-					else if (checkLiteralClash(*outf.at(i), *tmp->getLiteral()) == 0)	// case A V \negA						
+					else if (checkLiteralClash(*outf.at(i), *tmp->getLiteral(), checkQvar) == 0)	// case A V \negA						
 						stop = 2; 					
 				}
 				if (stop == 0)
@@ -1630,7 +1644,7 @@ Literal* negatedLiteral(Literal *input)
 }
 
 
-int checkBranchClash(Literal* atom, Node* node)
+int checkBranchClash(Literal* atom, Node* node, int checkQvar)
 {
 	Node* iterator = node;
 	while (iterator != NULL)
@@ -1638,7 +1652,7 @@ int checkBranchClash(Literal* atom, Node* node)
 		//	vector<Formula>local = node->getSetFormulae();
 		//	for (int i = 0; i < local.size(); i++)
 		//	{
-		if ((checkVectorClash(atom, iterator->getSetFormulae(), 0) == 0))
+		if ((checkVectorClash(atom, iterator->getSetFormulae(), 0 , checkQvar) == 0))
 			return 0;
 		//	}
 		iterator = iterator->getFather();
@@ -1716,7 +1730,7 @@ void PBRule(vector<Literal*> atoms, Node* node, vector<Node*> &nodeSet)
 
 
 
-int checkLiterals(Literal* atom, Node* node)
+int checkLiterals(Literal* atom, Node* node, int checkQvar)
 {
 	Node* iterator = node;
 	while (iterator != NULL)
@@ -1726,7 +1740,7 @@ int checkLiterals(Literal* atom, Node* node)
 		{
 			if (vec.at(i)->getLiteral() != NULL)
 			{
-				if ((checkLiteralClash(*atom, *(vec.at(i)->getLiteral())) == 0))
+				if ((checkLiteralClash(*atom, *(vec.at(i)->getLiteral()), checkQvar) == 0))
 					return 0;
 				if (atom->equals(*(vec.at(i)->getLiteral())) == 0)
 					return 2;
@@ -1745,7 +1759,7 @@ void chooseRule(Tableau &T, vector<Node*> &nodeSet, Formula* f)
 	{		
 		vector<Literal*> atoms;
 		vector<Literal*> atomset;
-		int val = getLiteralSet(f, atomset); 
+		int val = getLiteralSet(f, atomset,0); 
 		if (val == 0 && atomset.size() == 0)
 		{
 		  newNodeSet.push_back(nodeSet.at(b));
@@ -1761,7 +1775,7 @@ void chooseRule(Tableau &T, vector<Node*> &nodeSet, Formula* f)
 		int check = 0;
 		for (int j = 0; j < atomset.size(); j++)
 		{
-			check = checkLiterals(atomset.at(j), nodeSet.at(b));
+			check = checkLiterals(atomset.at(j), nodeSet.at(b),0);
 			if (check == 1)
 			{
 				atoms.push_back(atomset.at(j));
@@ -1797,50 +1811,50 @@ void chooseRule(Tableau &T, vector<Node*> &nodeSet, Formula* f)
 	}
 	nodeSet = newNodeSet;
 }
+//
+//void expandTableau(Tableau& T)
+//{ 
+//	
+//	if ( (checkNodeClash(T.getTableau()->getSetFormulae())==0) )
+//	{		
+//		T.getClosedBranches().push_back(T.getTableau()); 
+//		return;
+//	}
+//	vector<Node*> nonComBranches = vector<Node*>();
+//	nonComBranches.push_back(T.getTableau()); //initially only the root node
+//	vector<Formula*> fset = T.getTableau()->getSetFormulae();
+//	
+//	for (int i = 0; i < fset.size(); i++)
+//	{		
+//		if (fset.at(i)->getLiteral() == NULL)  //OR found
+//		{
+//#ifdef debug  
+//#ifdef debugexpand
+//			logFile << "------Fulfilling formula: " << fset.at(i)->toString() << endl;
+//#endif
+//#endif // debug
+//			chooseRule(T, nonComBranches, fset.at(i));
+//		}
+//	}
+//	T.getOpenBranches() = nonComBranches; 
+//}
 
-void expandTableau(Tableau& T)
-{ 
-	
-	if ( (checkNodeClash(T.getTableau()->getSetFormulae())==0) )
-	{		
-		T.getClosedBranches().push_back(T.getTableau()); 
-		return;
-	}
-	vector<Node*> nonComBranches = vector<Node*>();
-	nonComBranches.push_back(T.getTableau()); //initially only the root node
-	vector<Formula*> fset = T.getTableau()->getSetFormulae();
-	
-	for (int i = 0; i < fset.size(); i++)
-	{		
-		if (fset.at(i)->getLiteral() == NULL)  //OR found
-		{
-#ifdef debug  
-#ifdef debugexpand
-			logFile << "------Fulfilling formula: " << fset.at(i)->toString() << endl;
-#endif
-#endif // debug
-			chooseRule(T, nonComBranches, fset.at(i));
-		}
-	}
-	T.getOpenBranches() = nonComBranches; 
-}
 
 
-
-int checkTableauRootClash(Tableau &T)
-{
-	return (checkNodeClash(T.getTableau()->getSetFormulae()) == 1);
-	/*	for (int i = 0; i < T.getTableau()->getSetFormulae().size(); i++)
-	{
-	vector<Literal*> atomset;
-	getLiteralSet(T.getTableau()->getSetFormulae().at(i), atomset);
-	if (checkLiteralsClash(atomset))
-	{
-	return 0;
-	}
-	}
-	return 1; */
-}
+//int checkTableauRootClash(Tableau &T)
+//{
+//	return (checkNodeClash(T.getTableau()->getSetFormulae()) == 1);
+//	/*	for (int i = 0; i < T.getTableau()->getSetFormulae().size(); i++)
+//	{
+//	vector<Literal*> atomset;
+//	getLiteralSet(T.getTableau()->getSetFormulae().at(i), atomset);
+//	if (checkLiteralsClash(atomset))
+//	{
+//	return 0;
+//	}
+//	}
+//	return 1; */
+//}
 
 
 /*
@@ -2907,7 +2921,7 @@ void expandGammaTableau(Tableau& T)
 		Formula* currUnfulFormula = T.getTableau()->getSetFormulae().at(i);
 		currUnfulFormula->setFulfillness(0);		
 		vector<Literal*> atomset;		
-		int val = getLiteralSet(currUnfulFormula, atomset);		
+		int val = getLiteralSet(currUnfulFormula, atomset, 1);		
 		if (val == 0 && atomset.size() == 0)			
 			continue;
 		vector<vector<Var*>> varset(4);
