@@ -1,4 +1,6 @@
 V0{Annetta}
-($FA V0{z})($FA V0{z1})($FA V0{z2})((V0{z} $IN V1{Tower})$IF(( (((V0{z1} $IN V1{WindingStaircase})$AD ($OA V0{z} $CO V0{z1} $OA $IN V3{contains}))$AD (((V0{z2} $IN V1{WindingStaircase})$AD ($OA V0{z} $CO V0{z2} $OA $IN V3{contains})))) $IF ((V0{z1} $EQ V0{z2})))$AD(( ((((V0{z1} $IN V1{WindingStaircase})$AD ($OA V0{z} $CO V0{z1} $OA $IN V3{contains})))) $IF(V0{z1} $QE V0{z2})))))
-
+V0{Clara}
+V0{Luis}
+($FA V0{z})($FA V0{z1})($FA V0{z2})($FA V0{z3})($FA V0{z4})( ($OA V0{z1} $CO V0{z2} $OA $IN V3{prop}) $OR ($OA V0{z3} $CO V0{z4} $OA $IN V3{prop2}) )
+($FA V0{z})($FA V0{z1})($FA V0{z2})($FA V0{z3})($FA V0{z4})( ($OA V0{z1} $CO V0{z2} $OA $IN V3{prop1}) $OR ($OA V0{z3} $CO V0{z4} $OA $IN V3{prop3}) )
 //END
