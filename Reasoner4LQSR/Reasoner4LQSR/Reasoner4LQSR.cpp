@@ -1230,9 +1230,40 @@ int insertFormulaKB(int keepQ,vector<vector <Var>>& varset, vector<vector <Var>>
 	return res;
 }
 
+
 /*
 Get the first occurence of quantified variable if present
 */
+int containsQVar(Formula *fr)
+{
+	vector<Formula*> q = { fr };
+	while (!q.empty())
+	{
+		Formula* f = q.back();
+		q.pop_back();
+		if (f != NULL)
+		{
+			if (f->getLiteral() != NULL)
+			{
+			  for (Var* var : (f->getLiteral()->getElements()))
+				{					
+					if (var->getVarType() == 1)
+					{						
+						return var->getType();
+					}
+				}
+			}
+			q.push_back(f->getLSubformula());
+			q.push_back(f->getRSubformula());
+		}
+	}
+	return -1;
+}
+
+/*
+Get the first occurence of quantified variable if present
+*/
+/*
 int containsQVar(Formula *fr, string &s)
 {
 	vector<Formula*> q = { fr };
@@ -1259,75 +1290,77 @@ int containsQVar(Formula *fr, string &s)
 	}
 	return -1;
 }
-
-int instantiateFormula(Formula* f, vector<Formula*> &destination)
-{
-
-#ifdef test
-    counterFormula++;
-	cout << "Formula Num" << counterFormula << endl;
-	testFile << counterFormula << endl;
-#endif // couterformula
-
-#ifdef test
- counterFormulaIn = 0;
- testFile << f->toString() << endl;
-#endif // counterFormulaIn
-
-	
-	
-	
-	
+*/
 
 
-#ifdef debug  
-	logFile << "------- Expanding Formula: " << f->toString() << endl;
-#endif // debug
-	string s;
-	vector<Formula*> tmp;
-	tmp.push_back(f);
-	while (!tmp.empty())
-	{		
-
-		Formula* top = tmp.back(); 		
-		tmp.pop_back();
-		int type = containsQVar(top, s);
-		if (type>-1)
-		{       
-			for (int i = 0; i < varSet.getVVLAt(type)->size(); i++)
-			{				
-				tmp.push_back((copyFormula(top, NULL, &s, &varSet.getVVLAt(type)->at(i))));					
-			}
-		}
-		else
-		{
-#ifdef debug 
-#ifdef debugexpand
-			logFile << "------- Expanded Formula: " << top->toString() << endl;
-#endif
-#endif // debug	
-			
-#ifdef test
-counterTest++;
-counterFormulaIn++;
-#endif // counterFormulaIn
-
-			
-			//cout<<"------- Expanded Formula: " << counterTest << endl;
-
-			if (top->getLiteral() != NULL)
-				top->setFulfillness(0);
-			destination.push_back(top); 
-		}
-	}
-
-  #ifdef test
-	testFile << "In Formula: " << counterFormulaIn << ". Total:" << counterTest << endl;
-	cout << "------- In Formula: " << counterFormulaIn<<". Total:"<<counterTest << endl;
-#endif // counterFormulaIn
-
-	return 0;
-}
+//int instantiateFormula(Formula* f, vector<Formula*> &destination)
+//{
+//
+//#ifdef test
+//    counterFormula++;
+//	cout << "Formula Num" << counterFormula << endl;
+//	testFile << counterFormula << endl;
+//#endif // couterformula
+//
+//#ifdef test
+// counterFormulaIn = 0;
+// testFile << f->toString() << endl;
+//#endif // counterFormulaIn
+//
+//	
+//	
+//	
+//	
+//
+//
+//#ifdef debug  
+//	logFile << "------- Expanding Formula: " << f->toString() << endl;
+//#endif // debug
+//	string s;
+//	vector<Formula*> tmp;
+//	tmp.push_back(f);
+//	while (!tmp.empty())
+//	{		
+//
+//		Formula* top = tmp.back(); 		
+//		tmp.pop_back();
+//		int type = containsQVar(top, s);
+//		if (type>-1)
+//		{       
+//			for (int i = 0; i < varSet.getVVLAt(type)->size(); i++)
+//			{				
+//				tmp.push_back((copyFormula(top, NULL, &s, &varSet.getVVLAt(type)->at(i))));					
+//			}
+//		}
+//		else
+//		{
+//#ifdef debug 
+//#ifdef debugexpand
+//			logFile << "------- Expanded Formula: " << top->toString() << endl;
+//#endif
+//#endif // debug	
+//			
+//#ifdef test
+//counterTest++;
+//counterFormulaIn++;
+//#endif // counterFormulaIn
+//
+//			
+//			//cout<<"------- Expanded Formula: " << counterTest << endl;
+//
+//			if (top->getLiteral() != NULL)
+//				top->setFulfillness(0);
+//			destination.push_back(top); 
+//		}
+//	}
+//
+//  #ifdef test
+//	testFile << "In Formula: " << counterFormulaIn << ". Total:" << counterTest << endl;
+//	cout << "------- In Formula: " << counterFormulaIn<<". Total:"<<counterTest << endl;
+//#endif // counterFormulaIn
+//
+//	return 0;
+//}
 
 
 
@@ -1584,12 +1617,19 @@ Return the set of atomic formula contained in a formula.
 */
 
 int getLiteralSet(Formula* f, vector<Literal*> &outf, int checkQvar)
-{
+{	
+	if (containsQVar(f)==-1)
+     	return -1;
 	if (f->getLiteral() != NULL)
-		return -1;
+	{
+		outf.push_back(f->getLiteral());
+		return 0;
+	}
 	stack <Formula*> st;
-	st.push(f->getRSubformula());
-	st.push(f->getLSubformula());
+	if(f->getRSubformula()!=NULL)
+	  st.push(f->getRSubformula());
+	if (f->getLSubformula() != NULL)
+	  st.push(f->getLSubformula());
 	while (!st.empty())
 	{
 		Formula* tmp = st.top();
@@ -2888,7 +2928,30 @@ void generateConst(int r, int n, vector<int>& b)
 	//free(a);
 }
 
+
+/*
 void retrieveQVarSet(vector<Literal*>&atomset, vector<vector<Var*>>&varset)
+{
+for (Literal* lit : atomset)
+{
+for (Var* var : lit->getElements())
+{
+if (var->getVarType() == 1)
+{
+int i = 0;
+for (; i < varset.at(var->getType()).size(); ++i)
+{
+if (var->equal(varset.at(var->getType()).at(i))==0)
+break;
+}
+if (i == varset.at(var->getType()).size())
+varset.at(var->getType()).push_back(var);
+}
+}
+}
+}
+*/
+void retrieveQVarSet(vector<Literal*>&atomset, vector<Var*>&varset)
 {
 	for (Literal* lit : atomset)
 	{
@@ -2897,20 +2960,20 @@ void retrieveQVarSet(vector<Literal*>&atomset, vector<vector<Var*>>&varset)
 			if (var->getVarType() == 1)
 			{
 				int i = 0;
-				for (; i < varset.at(var->getType()).size(); i++)
+				for (; i < varset.size(); ++i)
 				{
-					if (var->equal(varset.at(var->getType()).at(i)))
+					if (var->equal(varset.at(i))==0)
 						break;
 				}
-				if (i < varset.at(var->getType()).size())
-					varset.at(var->getType()).push_back(var);
+				if (i == varset.size())
+					varset.push_back(var);
 			}
 		}
 	}
 }
 
 
-void expandGammaTableau(Tableau& T)
+int expandGammaTableau(Tableau& T)
 {
 	//throw new exception("Unsupported");
 	cout << "GAMMA" << endl;
@@ -2921,18 +2984,21 @@ void expandGammaTableau(Tableau& T)
 		Formula* currUnfulFormula = T.getTableau()->getSetFormulae().at(i);
 		currUnfulFormula->setFulfillness(0);		
 		vector<Literal*> atomset;		
-		int val = getLiteralSet(currUnfulFormula, atomset, 1);		
+		int val = getLiteralSet(currUnfulFormula, atomset, 1);			
 		if (val == 0 && atomset.size() == 0)			
 			continue;
-		vector<vector<Var*>> varset(4);
-		retrieveQVarSet(atomset, varset);
-		cout << "----" << endl;
+		vector<Var*> varset(0);
+		retrieveQVarSet(atomset, varset);		
+		cout << "<----" << endl;
 		for (Literal* at : atomset)
 		{
 			cout << at->toString() << endl;
 		}
-		cout << "----" << endl;
-		
+		cout << "<----" << endl;
+		for (Var* at : varset)
+		{
+			cout << at->toString() << endl;
+		}
 	
 
 		//instantiate and apply tableau rule
@@ -2941,7 +3007,7 @@ void expandGammaTableau(Tableau& T)
 		generateConst(3, 2, b);
 		*/
 	}
-
+  return 0;
 }
 
 
