@@ -2901,32 +2901,40 @@ void precomputeKBSpaceFromFile(string &name, vector<int>& KBsize, vector<int>& L
 }
 
 
-void generateConst(int r, int n, vector<int>& b)
+
+//---------------------------------------------------------------------------
+// thanks to Matteo Gattanini for the following function
+//
+// Variations with repetition in lexicographic order
+// k: length of alphabet (available symbols)
+// n: number of places
+// The number of possible variations (cardinality) is k^n (it's like counting)
+// Sequence elements must be comparable and increaseable (operator<, operator++)
+// The elements are associated to values 0÷(k-1), max=k-1
+// The iterators are at least bidirectional and point to the type of 'max'
+
+template <class Iter>
+bool next_variation(Iter first, Iter last, const typename std::iterator_traits<Iter>::value_type max)
 {
-	int i;
-	if (r < 2 || n < 1)          /* parameter check */
-		return;
-	r -= 1;                    /* r = max digit value */
-	do
+	if (first == last) return false; // empty sequence (n==0)
+
+	Iter i(last); --i; // Point to the rightmost element
+					   // Check if I can just increase it
+	if (*i < max) { ++(*i); return true; } // Increase this element and return
+
+										   // Find the rightmost element to increase
+	while (i != first)
 	{
-		i = n - 1;
-		while (b.at(i) < r)
-		{        /* increment last digit */
-			b[i]++;
-			//show(b, n);
-		}
-		/* find next digit to increment */
-		while (i >= 0 && b.at(i) == r)
-			i--;
-		if (i < 0)
-			break;         /* return if done */
-		b.at(i)++;
-		while (++i < n)          /* zero following digits */
-			b.at(i) = 0;
-		//show(b, n);
-	} while (1);
-	//free(a);
-}
+		*i = 0; // reset the right-hand element
+		--i; // point to the left adjacent
+		if (*i < max) { ++(*i); return true; } // Increase this element and return
+	}
+
+	// If here all elements are the maximum symbol (max=k-1), so there are no more variations
+	//for(i=first; i!=last; ++i) *i = 0; // Should reset to the lowest sequence (0)?
+	return false;
+} // 'next_variation'
+
 
 
 /*
@@ -2988,24 +2996,18 @@ int expandGammaTableau(Tableau& T)
 		if (val == 0 && atomset.size() == 0)			
 			continue;
 		vector<Var*> varset(0);
-		retrieveQVarSet(atomset, varset);		
-		cout << "<----" << endl;
-		for (Literal* at : atomset)
-		{
-			cout << at->toString() << endl;
-		}
-		cout << "<----" << endl;
-		for (Var* at : varset)
-		{
-			cout << at->toString() << endl;
-		}
-	
+		retrieveQVarSet(atomset, varset);
+		std::vector<int> indKB(varset.size(), 0); // four places initialized to symbol 0. 
+		do
+		{			
+		 for (int i = 0; i < indKB.size(); i++)
+		   {
+			cout << indKB.at(i) << " ";
+		   }
+		 cout <<"....."<< endl;
+			
+		} while (next_variation(indKB.begin(), indKB.end(), varSet.getVVLAt(0)->size()));
 
-		//instantiate and apply tableau rule
-        /*
-		vector<int>b = {1,1 };
-		generateConst(3, 2, b);
-		*/
 	}
   return 0;
 }
