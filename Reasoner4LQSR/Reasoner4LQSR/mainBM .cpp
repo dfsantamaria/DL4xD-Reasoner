@@ -11,6 +11,7 @@
 #include "Reasoner4LQSR.h"
 #include "XMLparser.h"
 #include "log.h"
+#include <chrono>
 
 #define propertyindex 3
 #define qvar0 (propertyindex+1)
@@ -38,7 +39,7 @@ void debugEnd()
 
 int main()
 {
-	debugStart();	
+	debugStart();
 
 	/*
 	Initialization
@@ -48,18 +49,18 @@ int main()
 /*
 	InitializeReasoner(maxLevNum, vector<int>{20,20,0,20,10,0,0,0});
 */
-	/*
-	Inserting Knowledge Base
-	*/
+/*
+Inserting Knowledge Base
+*/
 
-	/*
-	vector<Formula*> KB;
-	vector<Formula*> KBnorm;
-	vector<Formula*> KBcnf;
-	vector<Formula*> KBmq;	
-	string kbname = "Example/bg8.txt"; */
+/*
+vector<Formula*> KB;
+vector<Formula*> KBnorm;
+vector<Formula*> KBcnf;
+vector<Formula*> KBmq;
+string kbname = "Example/bg8.txt"; */
 
-	/*Precomputing Space -- to be implemented*/
+/*Precomputing Space -- to be implemented*/
 //  to be implemented
 //	vector<int>KBsize(8, 0);
 //	vector<int>Litsize(2, 0);
@@ -73,18 +74,18 @@ int main()
 	cout << "--Converting the KB to NNF --" << endl;
 	convertKBToNNF(KB, KBnorm);
 	KB.clear();
-	printTRadix(KBnorm); //print Tableau Radix	
+	printTRadix(KBnorm); //print Tableau Radix
 	cout << "--Converting Formulae to CNF--" << endl;
 	convertKBToCNF(KBnorm,KBcnf);
 	KBnorm.clear();
 	printTRadix(KBcnf); //print Tableau Radix
 	cout << "--Move Quantifiers--" << endl;
-	moveQuantifierKB(0, KBcnf, KBmq);	
+	moveQuantifierKB(0, KBcnf, KBmq);
 	printTRadix(KBmq); //print Tableau Radix
 
 	vector<Formula*> expKB;
 	cout << "Expanding Quantifiers in KB" << endl;
-	expandKB(KBmq, expKB); 	
+	expandKB(KBmq, expKB);
 	Tableau tableau = Tableau(new Node(expKB));
 	//Printing result of expansion
 	printTExpanded(tableau);
@@ -111,7 +112,7 @@ int main()
 	cout << "Reading Query ..." << endl;
 	string queryname = "Example/query.txt";
 	vector<Formula> querySet;
-	vector<string> stringSet = vector<string>(0);	
+	vector<string> stringSet = vector<string>(0);
 
 	readQueryFromFile(queryname, stringSet);
 	vector<QueryManager*> results;
@@ -138,11 +139,11 @@ int main()
 	{
 		cout << "Branch number: " << i << " Answer:" << results.at(0)->getAnswerSet().at(i) << endl;
 	}
-	
+
 	*/
 
 	/*
-	    OWL/XML Reader
+		OWL/XML Reader
 	*/
 
 	vector<pair<string, string>> ontNamespaces;
@@ -151,9 +152,17 @@ int main()
 	vector<Formula*> KB2norm;
 	vector<Formula*> KB2cnf;
 	vector<Formula*> KB2mq;
-	vector<int> KB2size(sizeofVVector,0);
+	vector<int> KB2size(sizeofVVector, 0);
 	cout << "Reading OWL File" << endl;
-	readOWLXMLOntology("Example/monastero.owl", ontNamespaces, formulae, KB2size);
+
+	auto started = std::chrono::high_resolution_clock::now();
+
+	int s = readOWLXMLOntology("Example/Dataset.owl", ontNamespaces, formulae, KB2size);
+	if (s == -1)
+	{
+		cout << "Incompatible Ontology" << endl;
+		return -1;
+	}
 	InitializeReasoner(maxLevNum, KB2size);
 	//InitializeReasoner(3, 100, 20);	
 	cout << "Metrics of the Ontology: " << endl;
@@ -163,6 +172,15 @@ int main()
 	cout << "Properties: " << KB2size.at(propertyindex) << "." << endl;
 	cout << "Quantified Variables of level 0: " << KB2size.at(qvar0) << "." << endl;
 	cout << "--Reading Ontology--" << endl;
+
+	std::fstream outkb;
+	outkb.open("monasteroKB.txt", fstream::out);
+	for (string s : formulae)
+	{
+		outkb << s << endl;
+	}
+	outkb.close();
+
 	readKBFromStrings(0, formulae, KB2);
 	//printTRadix(KB2);
 	cout << "--Converting KB2 to NNF--" << endl;
@@ -199,8 +217,10 @@ int main()
 	//print closed branches
 	//printClosedBranches(tableau2);
 
-	
-
 	cout << "--End reading ontology--" << endl;
+
+	auto done = std::chrono::high_resolution_clock::now();
+	std::cout << "Milliseconds Execution: " << std::chrono::duration_cast<std::chrono::milliseconds>(done - started).count() << endl;
+
 	debugEnd();
 }
