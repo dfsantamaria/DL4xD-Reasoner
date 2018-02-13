@@ -279,7 +279,11 @@ void ERule(Literal* atom, Node* node);
 int expandGammaTableau(Tableau& T);
 void retrieveQVarSet(vector<Literal*>&atomset, vector<Var*>&varset);
 //void retrieveQVarSet(vector<Literal*>&atomset, vector<vector<Var*>>&varset);
-void generateConst(int r, int n, vector<int>& b);
+template <class Iter>
+bool next_variation(Iter first, Iter last, const typename std::iterator_traits<Iter>::value_type max);
+int instantiateLiteral(Literal& lit, Literal* dest, vector<int>& ind, vector<Var*>& varset);
+template <typename C>
+string toStringVector(const vector <C> &data);
 int getLiteralSet(Formula* f, vector<Literal*> &outf, int checkQvar);
 int getVarsOrder(Var &var1, Var &var2);
 int insertFormulaKB(int keepQ, vector<vector <Var>>& varset, vector<vector <Var>>& varset2, string formula, vector<Formula> &vec, int* typeformula);

@@ -2981,32 +2981,85 @@ void retrieveQVarSet(vector<Literal*>&atomset, vector<Var*>&varset)
 }
 
 
-int expandGammaTableau(Tableau& T)
+
+int instantiateLiteral(Literal& lit, Literal* dest, vector<int>& ind, vector<Var*>& varset)
 {
-	//throw new exception("Unsupported");
-	cout << "GAMMA" << endl;
+
+	#ifdef debug 
+	#ifdef debugexpand
+		logFile << "------- Expanding Literal: " << lit.toString() << endl;
+		logFile << "------- Using the indexes: " << toStringVector(ind) << endl;		
+	#endif
+	#endif // debug
+	dest->setLiteralOp(lit.getLiteralOp());
+	for (Var* var : lit.getElements())
+	{
+		if (var->getVarType() == 1)
+		{
+			for (int i=0; i<varset.size(); i++)
+			{
+				if (var->getName() == varset.at(i)->getName())
+					dest->addElement(&varSet.getVVLAt(0)->at(ind.at(i)));
+			}
+		}
+		else
+		 dest->addElement(var);
+	}
+#ifdef debug 
+#ifdef debugexpand
+	logFile << "------- Expanded Literal: " << dest->toString() << endl;	
+#endif
+#endif // debug
+	return 0;
+}
+
+int expandGammaTableau(Tableau& T)
+{	
 	vector<Node*> newNodeSet;
 	newNodeSet.push_back(T.getTableau());
-	for(int i=0; i<T.getTableau()->getSetFormulae().size();i++)
+	for(int itForm=0; itForm <T.getTableau()->getSetFormulae().size(); itForm++)
 	{
-		Formula* currUnfulFormula = T.getTableau()->getSetFormulae().at(i);
+		Formula* currUnfulFormula = T.getTableau()->getSetFormulae().at(itForm);
+#ifdef debug 
+#ifdef debugexpand
+		logFile << "------- Fulfulling formula: " << currUnfulFormula->toString() << endl;		
+#endif
+#endif // debug
 		currUnfulFormula->setFulfillness(0);		
-		vector<Literal*> atomset;		
+		vector<Literal*> atomset;	
+#ifdef debug 
+#ifdef debugexpand
+		logFile << "------- Computing literals in formula" << endl;
+#endif
+#endif // debug
 		int val = getLiteralSet(currUnfulFormula, atomset, 1);			
 		if (val == 0 && atomset.size() == 0)			
 			continue;
+#ifdef debug 
+#ifdef debugexpand
+		logFile << "------- Found "<<atomset.size()<<" literal/s in formula" << endl;
+#endif
+#endif // debug
 		vector<Var*> varset(0);
 		retrieveQVarSet(atomset, varset);
-		std::vector<int> indKB(varset.size(), 0); // four places initialized to symbol 0. 
+		std::vector<int> indKB(varset.size(), 0); //initialized to symbol 0. 
+
 		do
-		{			
-		 for (int i = 0; i < indKB.size(); i++)
-		   {
-			cout << indKB.at(i) << " ";
-		   }
-		 cout <<"....."<< endl;
+		{	
+			vector<Literal*> litStack();
+			int stopTau = 0;		
+			for (int itLit=0; stopTau==0 && itLit<atomset.size(); itLit++)
+				{
+					Literal* instance = new Literal(); //remeber to destroy if unused
+					instantiateLiteral( *(atomset.at(itLit)), instance, indKB, varset);
+					cout << instance->toString() << endl;
+					for (int itNode = 0; itNode < newNodeSet.size(); itNode++)
+					{
+
+					}
+				}
 			
-		} while (next_variation(indKB.begin(), indKB.end(), varSet.getVVLAt(0)->size()));
+		} while (next_variation(indKB.begin(), indKB.end(), varSet.getVVLAt(0)->size()-1)); //tau
 
 	}
   return 0;
@@ -3017,6 +3070,18 @@ int expandGammaTableau(Tableau& T)
 /*
   Some printing function
 */
+
+
+template <typename C>
+string toStringVector(const vector <C> &data) 
+{
+	string s = "";
+	for (std::vector<typename C>::const_iterator it = data.begin(); it != data.end(); ++it) {
+		s.append(to_string(*it)).append(" ");
+	}
+	return s;	
+}
+
 void printClosedBranches(Tableau& tableau)
 {
 	cout << "Printing closed branches" << endl;

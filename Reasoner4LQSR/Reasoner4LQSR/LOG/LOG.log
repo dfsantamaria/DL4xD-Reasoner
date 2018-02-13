@@ -240,6 +240,8 @@ Debug Started
 -----($FA V0{z})($FA V0{z1})( (V0{z} $NI V1{A})  $OR ( ( ($OA V0{z} $CO V0{z1}$AO $NI V3{P})  $OR (V0{z1} $IN V1{C}) ) $OR ( ($OA V0{z} $CO V0{z1}$AO $NI V3{P1})  $OR (V0{z1} $IN V1{B}) )))
 ---Moving quantifiers in formula: 
 -----($FA V0{z})($OA V0{z} $CO V0{z}$AO $NI V3{P}) 
+------- Fulfulling formula: ($FA V0{z})($FA V0{z1})( (V0{z} $NI V1{A})  $OR ( ( ($OA V0{z} $CO V0{z1}$AO $NI V3{P})  $OR (V0{z1} $IN V1{C}) ) $OR ( ($OA V0{z} $CO V0{z1}$AO $NI V3{P1})  $OR (V0{z1} $IN V1{B}) )))
+------- Computing literals in formula
 -----Checking for Clash: (V0{z} $NI V1{A})
 -----Checking for Tautology: (V0{z} $NI V1{A})
 -----Checking for Clash: ($OA V0{z} $CO V0{z1}$AO $NI V3{P})
@@ -260,6 +262,76 @@ Debug Started
 -----Checking for Clash: ($OA V0{z} $CO V0{z1}$AO $NI V3{P}) and (V0{z1} $IN V1{B})
 -----Checking for Clash: (V0{z1} $IN V1{C}) and (V0{z1} $IN V1{B})
 -----Checking for Clash: ($OA V0{z} $CO V0{z1}$AO $NI V3{P1}) and (V0{z1} $IN V1{B})
+------- Found 5 literal/s in formula
+------- Expanding Literal: (V0{z} $NI V1{A})
+------- Using the indexes: 0 0 
+------- Expanded Literal: (V0{b} $NI V1{A})
+------- Expanding Literal: ($OA V0{z} $CO V0{z1}$AO $NI V3{P})
+------- Using the indexes: 0 0 
+------- Expanded Literal: ($OA V0{b} $CO V0{b}$AO $NI V3{P})
+------- Expanding Literal: (V0{z1} $IN V1{C})
+------- Using the indexes: 0 0 
+------- Expanded Literal: (V0{b} $IN V1{C})
+------- Expanding Literal: ($OA V0{z} $CO V0{z1}$AO $NI V3{P1})
+------- Using the indexes: 0 0 
+------- Expanded Literal: ($OA V0{b} $CO V0{b}$AO $NI V3{P1})
+------- Expanding Literal: (V0{z1} $IN V1{B})
+------- Using the indexes: 0 0 
+------- Expanded Literal: (V0{b} $IN V1{B})
+------- Expanding Literal: (V0{z} $NI V1{A})
+------- Using the indexes: 0 1 
+------- Expanded Literal: (V0{b} $NI V1{A})
+------- Expanding Literal: ($OA V0{z} $CO V0{z1}$AO $NI V3{P})
+------- Using the indexes: 0 1 
+------- Expanded Literal: ($OA V0{b} $CO V0{a}$AO $NI V3{P})
+------- Expanding Literal: (V0{z1} $IN V1{C})
+------- Using the indexes: 0 1 
+------- Expanded Literal: (V0{a} $IN V1{C})
+------- Expanding Literal: ($OA V0{z} $CO V0{z1}$AO $NI V3{P1})
+------- Using the indexes: 0 1 
+------- Expanded Literal: ($OA V0{b} $CO V0{a}$AO $NI V3{P1})
+------- Expanding Literal: (V0{z1} $IN V1{B})
+------- Using the indexes: 0 1 
+------- Expanded Literal: (V0{a} $IN V1{B})
+------- Expanding Literal: (V0{z} $NI V1{A})
+------- Using the indexes: 1 0 
+------- Expanded Literal: (V0{a} $NI V1{A})
+------- Expanding Literal: ($OA V0{z} $CO V0{z1}$AO $NI V3{P})
+------- Using the indexes: 1 0 
+------- Expanded Literal: ($OA V0{a} $CO V0{b}$AO $NI V3{P})
+------- Expanding Literal: (V0{z1} $IN V1{C})
+------- Using the indexes: 1 0 
+------- Expanded Literal: (V0{b} $IN V1{C})
+------- Expanding Literal: ($OA V0{z} $CO V0{z1}$AO $NI V3{P1})
+------- Using the indexes: 1 0 
+------- Expanded Literal: ($OA V0{a} $CO V0{b}$AO $NI V3{P1})
+------- Expanding Literal: (V0{z1} $IN V1{B})
+------- Using the indexes: 1 0 
+------- Expanded Literal: (V0{b} $IN V1{B})
+------- Expanding Literal: (V0{z} $NI V1{A})
+------- Using the indexes: 1 1 
+------- Expanded Literal: (V0{a} $NI V1{A})
+------- Expanding Literal: ($OA V0{z} $CO V0{z1}$AO $NI V3{P})
+------- Using the indexes: 1 1 
+------- Expanded Literal: ($OA V0{a} $CO V0{a}$AO $NI V3{P})
+------- Expanding Literal: (V0{z1} $IN V1{C})
+------- Using the indexes: 1 1 
+------- Expanded Literal: (V0{a} $IN V1{C})
+------- Expanding Literal: ($OA V0{z} $CO V0{z1}$AO $NI V3{P1})
+------- Using the indexes: 1 1 
+------- Expanded Literal: ($OA V0{a} $CO V0{a}$AO $NI V3{P1})
+------- Expanding Literal: (V0{z1} $IN V1{B})
+------- Using the indexes: 1 1 
+------- Expanded Literal: (V0{a} $IN V1{B})
+------- Fulfulling formula: ($FA V0{z})($OA V0{z} $CO V0{z}$AO $NI V3{P}) 
+------- Computing literals in formula
+------- Found 1 literal/s in formula
+------- Expanding Literal: ($OA V0{z} $CO V0{z}$AO $NI V3{P})
+------- Using the indexes: 0 
+------- Expanded Literal: ($OA V0{b} $CO V0{b}$AO $NI V3{P})
+------- Expanding Literal: ($OA V0{z} $CO V0{z}$AO $NI V3{P})
+------- Using the indexes: 1 
+------- Expanded Literal: ($OA V0{a} $CO V0{a}$AO $NI V3{P})
 ----- Computing equivalence classes set 
 -----Reading query file
 -----Parsing line:($FA V0{t}) (V0{t} $IN V1{Person})
