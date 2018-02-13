@@ -3040,25 +3040,29 @@ int expandGammaTableau(Tableau& T)
 		logFile << "------- Found "<<atomset.size()<<" literal/s in formula" << endl;
 #endif
 #endif // debug
-		vector<Var*> varset(0);
+		vector<Var*> varset;
 		retrieveQVarSet(atomset, varset);
 		std::vector<int> indKB(varset.size(), 0); //initialized to symbol 0. 
 
 		do
-		{	
-			vector<Literal*> litStack();
-			int stopTau = 0;		
-			for (int itLit=0; stopTau==0 && itLit<atomset.size(); itLit++)
+		{			
+			vector<Literal*> litStack;
+			litStack.reserve(atomset.size());
+			for (int itLit=0; itLit<atomset.size(); itLit++)
 				{
 					Literal* instance = new Literal(); //remeber to destroy if unused
 					instantiateLiteral( *(atomset.at(itLit)), instance, indKB, varset);
-					cout << instance->toString() << endl;
-					for (int itNode = 0; itNode < newNodeSet.size(); itNode++)
-					{
+					litStack.push_back(instance);
 
-					}
-				}
-			
+				}			
+			for (Literal* stl : litStack)
+			{
+				cout <<stl->toString() << endl;
+			}
+			for (int itNode = 0; itNode < newNodeSet.size(); itNode++)
+			{
+
+			}
 		} while (next_variation(indKB.begin(), indKB.end(), varSet.getVVLAt(0)->size()-1)); //tau
 
 	}
