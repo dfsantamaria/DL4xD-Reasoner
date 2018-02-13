@@ -3055,10 +3055,10 @@ int expandGammaTableau(Tableau& T)
 					litStack.push_back(instance);
 
 				}			
-			for (Literal* stl : litStack)
+		/*	for (Literal* stl : litStack)
 			{
 				cout <<stl->toString() << endl;
-			}
+			}*/
 			for (int itNode = 0; itNode < newNodeSet.size(); itNode++)
 			{
 
