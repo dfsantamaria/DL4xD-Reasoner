@@ -166,11 +166,11 @@ int main()
 	InitializeReasoner(maxLevNum, KB2size);
 	//InitializeReasoner(3, 100, 20);
 	cout << "Printing ontology namespaces" << endl;
-	for (pair<string, string> p : ontNamespaces)
+	/*for (pair<string, string> p : ontNamespaces)
 		cout << p.first << " " << p.second << endl;
 	cout << "Printing formulae: " << formulae.size() << endl;
 	for (string p : formulae)
-		cout << p << endl;
+		cout << p << endl;*/
 	cout << "Metrics of the Ontology: " << endl;
 	cout << "Number of formulae: " << formulae.size() << endl;
 	cout << "Individuals: " << KB2size.at(0) << "." << endl;
@@ -179,18 +179,18 @@ int main()
 	cout << "Quantified Variables of level 0: " << KB2size.at(qvar0) << "." << endl;
 	cout << "--Reading Ontology--" << endl;
 	readKBFromStrings(0, formulae, KB2);
-	printTRadix(KB2);
+	//printTRadix(KB2);
 	cout << "--Converting KB2 to NNF--" << endl;
 	convertKBToNNF(KB2, KB2norm);
 	KB2.clear();
-	printTRadix(KB2norm); //print Tableau Radix	
+	//printTRadix(KB2norm); //print Tableau Radix	
 	cout << "--Convert Formulae in CNF--" << endl;
 	convertKBToCNF(KB2norm, KB2cnf);
 	KB2norm.clear();
-	printTRadix(KB2cnf); //print Tableau Radix
+	//printTRadix(KB2cnf); //print Tableau Radix
 	cout << "--Move Quantifiers--" << endl;
 	moveQuantifierKB(0, KB2cnf, KB2mq);
-	printTRadix(KB2mq); //print Tableau Radix
+	//printTRadix(KB2mq); //print Tableau Radix
 	
 	//vector<Formula*> expKB2;
 	//cout << "Expanding Quantifiers in KB" << endl;
