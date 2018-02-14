@@ -203,6 +203,9 @@ int main()
 	cout << "Expanding Tableau" << endl;
 	expandGammaTableau(tableau2);
 	printVarSet();
+
+	/*
+
 	cout << "Building EqSet" << endl;
 	buildEqSet(tableau2);
 
@@ -215,11 +218,14 @@ int main()
 	//print closed branches
 	printClosedBranches(tableau2);	
 
-	cout << "--End reading ontology--" << endl;
+	cout << "--End reading ontology--" << endl;                       */
 
 	/* Query Reading*/
 
 
+
+
+	/*
 	cout << "---" << endl;
 	cout << "Reading Query ..." << endl;
 	string queryname = "Example/query.txt";
@@ -252,7 +258,10 @@ int main()
 		cout << "Branch number: " << i << " Answer:" << results.at(0)->getAnswerSet().at(i) << endl;
 	}
 
+	*/
 	auto done = std::chrono::high_resolution_clock::now();
 	std::cout << "Milliseconds Execution: "<< std::chrono::duration_cast<std::chrono::milliseconds>(done - started).count()<<endl;
+	cout << "Open Branch: " << tableau2.getOpenBranches().size() << endl;
+	cout << "Closed Branch: " << tableau2.getClosedBranches().size() << endl;
 	debugEnd();
 }

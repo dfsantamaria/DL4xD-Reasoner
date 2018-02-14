@@ -1565,8 +1565,9 @@ Check for Clash in a Vector of formulae
 int checkNodeClash(vector<Formula*> &formset, int checkQvar)
 {
 	if (formset.size() < 2)
-	{
-		return 1;
+	{ 
+		return checkLiteralClash(*(formset.at(0)->getLiteral()));
+		
 	}
 	for (int i = 0; i < formset.size() - 1; i++)
 	{		
@@ -1700,7 +1701,7 @@ int checkBranchClash(Literal* atom, Node* node, int checkQvar)
 	return 1;
 }
 
-void ERule(Literal* atom, Node* node)
+void EGRule(Literal* atom, Node* node)
 {
 #ifdef debug  
 	logFile << "---Applying E-RULE" << endl;
@@ -1719,7 +1720,7 @@ void ERule(Literal* atom, Node* node)
 	node->insertFormula((new Formula(copyLiteral(atom, NULL, NULL), -1)));
 }
 
-void PBRule(vector<Literal*> atoms, Node* node, vector<Node*> &nodeSet)
+void PBRule(vector<Literal*>& atoms, Node* node, vector<Node*> &nodeSet)
 {
 #ifdef debug  
 	logFile << "---Applying PB-RULE" << endl;
@@ -1792,65 +1793,65 @@ int checkLiterals(Literal* atom, Node* node, int checkQvar)
 }
 
 
-void chooseRule(Tableau &T, vector<Node*> &nodeSet, Formula* f)
-{
-	vector<Node*> newNodeSet;
-	for (int b = 0; b < nodeSet.size(); b++)
-	{		
-		vector<Literal*> atoms;
-		vector<Literal*> atomset;
-		int val = getLiteralSet(f, atomset,0); 
-		if (val == 0 && atomset.size() == 0)
-		{
-		  newNodeSet.push_back(nodeSet.at(b));
-          continue;
-		}
-		
-		/*	if (checkLiteralsClash(atomset))
-			{
-				newNodeSet.push_back(nodeSet.at(b));
-				//T.getClosedBranches().push_back(nodeSet.at(b));
-				break;
-			}*/
-		int check = 0;
-		for (int j = 0; j < atomset.size(); j++)
-		{
-			check = checkLiterals(atomset.at(j), nodeSet.at(b),0);
-			if (check == 1)
-			{
-				atoms.push_back(atomset.at(j));
-			}
-			else if (check == 2)
-			{
-				newNodeSet.push_back(nodeSet.at(b));
-				break;
-			}
-		}
-		if (check == 2)
-			continue;
-		switch (atoms.size())
-		{
-		case 0:       //case closed branch. 
-		{ 
-			T.getClosedBranches().push_back(nodeSet.at(b));
-			break;
-		}
-		case 1:  //case of ERULE	
-		{
-			ERule(atoms.at(0), nodeSet.at(b));
-			newNodeSet.push_back(nodeSet.at(b));
-			break;
-		}
-		default:  //case of PBRULE
-		{
-			PBRule(atoms, nodeSet.at(b), newNodeSet);
-			break;
-		}
-		}
-
-	}
-	nodeSet = newNodeSet;
-}
+//void chooseRule(Tableau &T, vector<Node*> &nodeSet, Formula* f)
+//{
+//	vector<Node*> newNodeSet;
+//	for (int b = 0; b < nodeSet.size(); b++)
+//	{		
+//		vector<Literal*> atoms;
+//		vector<Literal*> atomset;
+//		int val = getLiteralSet(f, atomset,0); 
+//		if (val == 0 && atomset.size() == 0)
+//		{
+//		  newNodeSet.push_back(nodeSet.at(b));
+//          continue;
+//		}
+//		
+//		/*	if (checkLiteralsClash(atomset))
+//			{
+//				newNodeSet.push_back(nodeSet.at(b));
+//				//T.getClosedBranches().push_back(nodeSet.at(b));
+//				break;
+//			}*/
+//		int check = 0;
+//		for (int j = 0; j < atomset.size(); j++)
+//		{
+//			check = checkLiterals(atomset.at(j), nodeSet.at(b),0);
+//			if (check == 1)
+//			{
+//				atoms.push_back(atomset.at(j));
+//			}
+//			else if (check == 2)
+//			{
+//				newNodeSet.push_back(nodeSet.at(b));
+//				break;
+//			}
+//		}
+//		if (check == 2)
+//			continue;
+//		switch (atoms.size())
+//		{
+//		case 0:       //case closed branch. 
+//		{ 
+//			T.getClosedBranches().push_back(nodeSet.at(b));
+//			break;
+//		}
+//		case 1:  //case of ERULE	
+//		{
+//			ERule(atoms.at(0), nodeSet.at(b));
+//			newNodeSet.push_back(nodeSet.at(b));
+//			break;
+//		}
+//		default:  //case of PBRULE
+//		{
+//			PBRule(atoms, nodeSet.at(b), newNodeSet);
+//			break;
+//		}
+//		}
+//
+//	}
+//	nodeSet = newNodeSet;
+//}
 //
 //void expandTableau(Tableau& T)
 //{ 
@@ -3013,8 +3014,69 @@ int instantiateLiteral(Literal& lit, Literal* dest, vector<int>& ind, vector<Var
 	return 0;
 }
 
+int computeRuleLiteral(Literal* litstl, Literal* lit)
+{
+	if (litstl->getElements().size() == lit->getElements().size())
+	{
+		for (int i = 0; i < litstl->getElements().size(); i++)
+		{
+			if (litstl->getElementAt(i)->equal(lit->getElementAt(i)) != 0)
+			{
+				return 0; //nothing to do
+			}
+		}
+		if (litstl->getLiteralOp() == lit->getLiteralOp())
+			return 1; //positive on the branch		
+        else return -1;
+	}	
+	return 0;
+}
+
+int computeRule(Node* leaf, vector<Literal*>& stl, vector<Literal*>& nodeLitStack)
+{
+	Node* nodeIt=leaf;	
+	while (nodeIt != NULL)
+	{
+		for (int formulaIt=0; formulaIt < nodeIt->getSetFormulae().size(); formulaIt++)
+		{
+		 Formula* formula = nodeIt->getSetFormulae().at(formulaIt);
+		 if (formula->getLiteral() != NULL && containsQVar(formula) == 0)
+		  {
+			 for (int i=0; i<nodeLitStack.size(); i++)
+			  {
+				// nodeLitStack.push_back(litstl);
+				 Literal* litstl = nodeLitStack.at(i);
+				 int res=computeRuleLiteral(litstl, formula->getLiteral());
+				 switch (res)
+				 {
+				   case 0: break;
+				   case 1: return 1; break; //positive literal
+				   case -1:
+				   { 
+					   nodeLitStack.at(i) = nodeLitStack.at(nodeLitStack.size()-1);
+					   nodeLitStack.pop_back(); 	
+					   i--;
+				       break; 
+				   } //complementary literal 
+				   default:	 break;
+				 }
+			  }			 
+		  }
+		}
+  	  nodeIt = nodeIt->getFather();
+	}
+	return 0;
+}
+
+
 int expandGammaTableau(Tableau& T)
 {	
+	int clash = checkNodeClash(T.getTableau()->getSetFormulae(), 1);
+	if (clash == -1)
+	{		
+		T.getOpenBranches() = vector<Node*>();
+		return -1;
+	}
 	vector<Node*> newNodeSet;
 	newNodeSet.push_back(T.getTableau());
 	for(int itForm=0; itForm <T.getTableau()->getSetFormulae().size(); itForm++)
@@ -3053,19 +3115,36 @@ int expandGammaTableau(Tableau& T)
 					Literal* instance = new Literal(); //remeber to destroy if unused
 					instantiateLiteral( *(atomset.at(itLit)), instance, indKB, varset);
 					litStack.push_back(instance);
-
-				}			
-		/*	for (Literal* stl : litStack)
-			{
-				cout <<stl->toString() << endl;
-			}*/
+				}	
+			
+			vector<Node*> openBranch;
 			for (int itNode = 0; itNode < newNodeSet.size(); itNode++)
 			{
-
+				vector<Literal*> nodeLitStack=litStack;				
+				int compr = computeRule(newNodeSet.at(itNode), litStack, nodeLitStack);
+				if (compr != 0)
+				{
+					openBranch.push_back(newNodeSet.at(itNode));					
+				}
+				else if (nodeLitStack.size() == 0)//close branch
+				{ 					
+					T.addClosedBranch(newNodeSet.at(itNode));					
+				}
+				else if (nodeLitStack.size() == 1)
+				{ 					
+					//ERule
+					EGRule(nodeLitStack.at(0), newNodeSet.at(itNode));
+					openBranch.push_back(newNodeSet.at(itNode));
+				}
+				else
+				{ //pbrule					
+					PBRule(nodeLitStack, newNodeSet.at(itNode), openBranch);
+				}
 			}
+			newNodeSet = openBranch;
 		} while (next_variation(indKB.begin(), indKB.end(), varSet.getVVLAt(0)->size()-1)); //tau
-
 	}
+	T.getOpenBranches() = newNodeSet;
   return 0;
 }
 
