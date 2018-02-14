@@ -13,15 +13,6 @@
     <Prefix name="xsd" IRI="http://www.w3.org/2001/XMLSchema#"/>
     <Prefix name="rdfs" IRI="http://www.w3.org/2000/01/rdf-schema#"/>
     <Declaration>
-        <NamedIndividual IRI="#c"/>
-    </Declaration>
-    <Declaration>
-        <NamedIndividual IRI="#b"/>
-    </Declaration>
-    <Declaration>
-        <NamedIndividual IRI="#a"/>
-    </Declaration>
-    <Declaration>
         <Class IRI="#A"/>
     </Declaration>
     <Declaration>
@@ -31,6 +22,39 @@
         <Class IRI="#C"/>
     </Declaration>
     <Declaration>
+        <NamedIndividual IRI="#i"/>
+    </Declaration>
+    <Declaration>
+        <ObjectProperty IRI="#P1"/>
+    </Declaration>
+    <Declaration>
+        <NamedIndividual IRI="#h"/>
+    </Declaration>
+    <Declaration>
+        <NamedIndividual IRI="#n"/>
+    </Declaration>
+    <Declaration>
+        <NamedIndividual IRI="#m"/>
+    </Declaration>
+    <Declaration>
+        <NamedIndividual IRI="#l"/>
+    </Declaration>
+    <Declaration>
+        <NamedIndividual IRI="#c"/>
+    </Declaration>
+    <Declaration>
+        <NamedIndividual IRI="#b"/>
+    </Declaration>
+    <Declaration>
+        <NamedIndividual IRI="#a"/>
+    </Declaration>
+    <Declaration>
+        <NamedIndividual IRI="#g"/>
+    </Declaration>
+    <Declaration>
+        <NamedIndividual IRI="#f"/>
+    </Declaration>
+    <Declaration>
         <NamedIndividual IRI="#e"/>
     </Declaration>
     <Declaration>
@@ -38,9 +62,6 @@
     </Declaration>
     <Declaration>
         <ObjectProperty IRI="#P"/>
-    </Declaration>
-    <Declaration>
-        <ObjectProperty IRI="#P1"/>
     </Declaration>
     <SubClassOf>
         <Class IRI="#C"/>

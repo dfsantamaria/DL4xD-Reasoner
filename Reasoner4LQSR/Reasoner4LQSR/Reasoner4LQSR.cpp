@@ -3078,7 +3078,8 @@ int expandGammaTableau(Tableau& T)
 		return -1;
 	}
 	vector<Node*> newNodeSet;
-	newNodeSet.push_back(T.getTableau());
+	Node* root = T.getTableau();
+	newNodeSet.push_back(root);
 	for(int itForm=0; itForm <T.getTableau()->getSetFormulae().size(); itForm++)
 	{
 		Formula* currUnfulFormula = T.getTableau()->getSetFormulae().at(itForm);
@@ -3105,19 +3106,29 @@ int expandGammaTableau(Tableau& T)
 		vector<Var*> varset;
 		retrieveQVarSet(atomset, varset);
 		std::vector<int> indKB(varset.size(), 0); //initialized to symbol 0. 
-
+        int jump = 0;
 		do
 		{			
 			vector<Literal*> litStack;
-			int stop = 0;
+			
 			litStack.reserve(atomset.size());
+			int counter = 0;
 			for (int itLit=0; itLit<atomset.size(); itLit++)
 				{
-				Literal instance = Literal();
-				instantiateLiteral(*(atomset.at(itLit)), &instance, indKB, varset);
-				litStack.push_back(&instance);
-				cout << instance.toString() << endl;
-				}				
+				  if (atomset.at(itLit)->containsQVariable() != 0)
+				  {
+					Literal* instance = new Literal(); //remeber to destroy if unused
+					instantiateLiteral(*(atomset.at(itLit)), instance, indKB, varset);
+					litStack.push_back(instance);
+				  }
+				  else
+				  {
+					  counter++;
+					  litStack.push_back(atomset.at(itLit));
+				  }
+				}
+			if (counter == litStack.size())
+				jump = 1;
 			vector<Node*> openBranch;	
 			
 			if (litStack.size() == 0)
@@ -3138,28 +3149,22 @@ int expandGammaTableau(Tableau& T)
 				else if (nodeLitStack.size() == 1)
 				{				
 					//ERule
-					Literal* newlit = new Literal();
-					copyLiteral(nodeLitStack.at(0), newlit);
-					nodeLitStack.at(0)->~Literal();
-					EGRule(newlit, newNodeSet.at(itNode));
-					openBranch.push_back(newNodeSet.at(itNode));										
+					if(atomset.size()==1)
+						EGRule(nodeLitStack.at(0), root);
+					else
+					{
+						EGRule(nodeLitStack.at(0), newNodeSet.at(itNode));
+						openBranch.push_back(newNodeSet.at(itNode));
+					}
 				}
 				else
-				{ //pbrule	
-					for (int i = 0; i<nodeLitStack.size(); i++)
-					{
-						Literal* old = nodeLitStack.at(i);
-						Literal* newlit = new Literal();
-						copyLiteral(nodeLitStack.at(i), newlit);
-						nodeLitStack.at(0)->~Literal();
-						nodeLitStack.at(i) = newlit;
-					}
+				{ //pbrule					
 					PBRule(nodeLitStack, newNodeSet.at(itNode), openBranch);
 					
 				}
 			}
 			newNodeSet = openBranch;
-		} while (next_variation(indKB.begin(), indKB.end(), varSet.getVVLAt(0)->size()-1)); //tau
+		} while (jump == 0 && next_variation(indKB.begin(), indKB.end(), varSet.getVVLAt(0)->size() - 1)); //tau
 	}
 	T.getOpenBranches() = newNodeSet;
   return 0;
