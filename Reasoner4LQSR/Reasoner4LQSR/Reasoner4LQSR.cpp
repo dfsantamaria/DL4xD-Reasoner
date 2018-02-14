@@ -3150,8 +3150,12 @@ int expandGammaTableau(Tableau& T)
 				else if (nodeLitStack.size() == 1)
 				{				
 					//ERule
-					if(atomset.size()==1)
+					if (atomset.size() == 1)
+					{
 						EGRule(nodeLitStack.at(0), root);
+						if(openBranch.size()==0)
+							openBranch.push_back(root);
+					}
 					else
 					{
 						EGRule(nodeLitStack.at(0), newNodeSet.at(itNode));

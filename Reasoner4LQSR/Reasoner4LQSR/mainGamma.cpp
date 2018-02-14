@@ -180,7 +180,7 @@ int main()
 	cout << "Quantified Variables of level 0: " << KB2size.at(qvar0) << "." << endl;
 	cout << "--Reading Ontology--" << endl;
 	readKBFromStrings(0, formulae, KB2);
-	//printTRadix(KB2);
+	printTRadix(KB2);
 	cout << "--Converting KB2 to NNF--" << endl;
 	convertKBToNNF(KB2, KB2norm);
 	KB2.clear();
@@ -191,7 +191,7 @@ int main()
 	//printTRadix(KB2cnf); //print Tableau Radix
 	cout << "--Move Quantifiers--" << endl;
 	moveQuantifierKB(0, KB2cnf, KB2mq);
-	//printTRadix(KB2mq); //print Tableau Radix
+	printTRadix(KB2mq); //print Tableau Radix
 	
 	//vector<Formula*> expKB2;
 	//cout << "Expanding Quantifiers in KB" << endl;
@@ -264,7 +264,8 @@ int main()
 	std::cout << "Milliseconds Execution: "<< std::chrono::duration_cast<std::chrono::milliseconds>(done - started).count()<<endl;
 	cout << "Open Branch: " << tableau2.getOpenBranches().size() << endl;
 	cout << "Closed Branch: " << tableau2.getClosedBranches().size() << endl;
-	//printOpenBranches(tableau2);
+	printOpenBranches(tableau2);
+	printClosedBranches(tableau2);
 	printVarSet();
 	debugEnd();
 }
