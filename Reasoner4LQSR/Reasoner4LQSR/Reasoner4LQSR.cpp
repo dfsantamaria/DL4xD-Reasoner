@@ -1618,13 +1618,15 @@ Return the set of atomic formula contained in a formula.
 */
 
 int getLiteralSet(Formula* f, vector<Literal*> &outf, int checkQvar)
-{	
-	if (containsQVar(f)==-1)
-     	return -1;
-	if (f->getLiteral() != NULL)
+{		
+	if (f->getLiteral() != NULL)		
 	{
-		outf.push_back(f->getLiteral());
-		return 0;
+		if (f->getLiteral()->containsQVariable() == 1)
+		{
+			outf.push_back(f->getLiteral());
+			return 0;
+		}
+		
 	}
 	stack <Formula*> st;
 	if(f->getRSubformula()!=NULL)
@@ -3088,15 +3090,15 @@ int expandGammaTableau(Tableau& T)
 		logFile << "------- Fulfulling formula: " << currUnfulFormula->toString() << endl;		
 #endif
 #endif // debug
-		currUnfulFormula->setFulfillness(0);		
+				
 		vector<Literal*> atomset;	
 #ifdef debug 
 #ifdef debugexpand
 		logFile << "------- Computing literals in formula" << endl;
 #endif
 #endif // debug
-		int val = getLiteralSet(currUnfulFormula, atomset, 1);			
-		if (val == 0 && atomset.size() == 0)			
+		getLiteralSet(currUnfulFormula, atomset, 1);			
+		if (atomset.size() == 0)			
 			continue;
 #ifdef debug 
 #ifdef debugexpand
@@ -3109,8 +3111,7 @@ int expandGammaTableau(Tableau& T)
         int jump = 0;
 		do
 		{			
-			vector<Literal*> litStack;
-			
+			vector<Literal*> litStack;			
 			litStack.reserve(atomset.size());
 			int counter = 0;
 			for (int itLit=0; itLit<atomset.size(); itLit++)
@@ -3164,6 +3165,7 @@ int expandGammaTableau(Tableau& T)
 				}
 			}
 			newNodeSet = openBranch;
+			currUnfulFormula->setFulfillness(0);
 		} while (jump == 0 && next_variation(indKB.begin(), indKB.end(), varSet.getVVLAt(0)->size() - 1)); //tau
 	}
 	T.getOpenBranches() = newNodeSet;
