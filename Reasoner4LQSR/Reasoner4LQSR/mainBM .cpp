@@ -156,7 +156,7 @@ string kbname = "Example/bg8.txt"; */
 	cout << "Reading OWL File" << endl;
 
 	
-	int s = readOWLXMLOntology("Example/onto1.owl", ontNamespaces, formulae, KB2size);
+	int s = readOWLXMLOntology("Example/onto2.owl", ontNamespaces, formulae, KB2size);
 	if (s == -1)
 	{
 		cout << "Incompatible Ontology" << endl;
