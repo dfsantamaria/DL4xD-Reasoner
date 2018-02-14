@@ -157,7 +157,7 @@ string kbname = "Example/bg8.txt"; */
 
 	auto started = std::chrono::high_resolution_clock::now();
 
-	int s = readOWLXMLOntology("Example/Dataset.owl", ontNamespaces, formulae, KB2size);
+	int s = readOWLXMLOntology("Example/onto1.owl", ontNamespaces, formulae, KB2size);
 	if (s == -1)
 	{
 		cout << "Incompatible Ontology" << endl;
@@ -205,8 +205,8 @@ string kbname = "Example/bg8.txt"; */
 	//printVarSet();
 	cout << "Expanding Tableau" << endl;
 	expandTableau(tableau2);
-	cout << "Building EqSet" << endl;
-	buildEqSet(tableau2);
+	//cout << "Building EqSet" << endl;
+	//buildEqSet(tableau2);
 
 	//print EqSet
 	//printEqSet(tableau2);
@@ -221,6 +221,7 @@ string kbname = "Example/bg8.txt"; */
 
 	auto done = std::chrono::high_resolution_clock::now();
 	std::cout << "Milliseconds Execution: " << std::chrono::duration_cast<std::chrono::milliseconds>(done - started).count() << endl;
-
+	cout << "Open branches: " << tableau2.getOpenBranches().size() << endl;
+	cout << "Closed branches: " << tableau2.getClosedBranches().size() << endl;
 	debugEnd();
 }
