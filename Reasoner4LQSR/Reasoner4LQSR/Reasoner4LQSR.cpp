@@ -3118,7 +3118,7 @@ int expandGammaTableau(Tableau& T)
 				{
 				  if (atomset.at(itLit)->containsQVariable() != 0)
 				  {
-					Literal* instance = new Literal(); //remeber to destroy if unused
+					Literal* instance = new Literal(); //remember to destroy if unused
 					instantiateLiteral(*(atomset.at(itLit)), instance, indKB, varset);
 					litStack.push_back(instance);
 				  }
@@ -3166,6 +3166,8 @@ int expandGammaTableau(Tableau& T)
 			}
 			newNodeSet = openBranch;
 			currUnfulFormula->setFulfillness(0);
+			for (Literal* l : litStack)
+				delete l;
 		} while (jump == 0 && next_variation(indKB.begin(), indKB.end(), varSet.getVVLAt(0)->size() - 1)); //tau
 	}
 	T.getOpenBranches() = newNodeSet;
