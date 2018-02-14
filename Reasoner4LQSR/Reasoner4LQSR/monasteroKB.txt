@@ -1,13 +1,20 @@
-V0{c}
-V0{b}
-V0{a}
 V1{A}
 V1{B}
 V1{C}
+V0{i}
+V3{P1}
+V0{h}
+V0{n}
+V0{m}
+V0{l}
+V0{c}
+V0{b}
+V0{a}
+V0{g}
+V0{f}
 V0{e}
 V0{d}
 V3{P}
-V3{P1}
 ($FA V0{z})((V0{z} $IN V1{C})$IF((V0{z} $IN V1{B})))
 V0{b} $IN V1{C}
 ($FA V0{z})($OA V0{z} $CO V0{z} $AO $NI V3{P})
