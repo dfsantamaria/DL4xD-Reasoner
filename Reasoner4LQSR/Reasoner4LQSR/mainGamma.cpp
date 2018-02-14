@@ -202,7 +202,7 @@ int main()
 	
 	cout << "Expanding Tableau" << endl;
 	expandGammaTableau(tableau2);
-	printVarSet();
+	//printVarSet();
 
 	/*
 
@@ -264,5 +264,6 @@ int main()
 	cout << "Open Branch: " << tableau2.getOpenBranches().size() << endl;
 	cout << "Closed Branch: " << tableau2.getClosedBranches().size() << endl;
 	printClosedBranches(tableau2);
+	printVarSet();
 	debugEnd();
 }
