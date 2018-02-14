@@ -263,7 +263,7 @@ int main()
 	std::cout << "Milliseconds Execution: "<< std::chrono::duration_cast<std::chrono::milliseconds>(done - started).count()<<endl;
 	cout << "Open Branch: " << tableau2.getOpenBranches().size() << endl;
 	cout << "Closed Branch: " << tableau2.getClosedBranches().size() << endl;
-	printClosedBranches(tableau2);
+	printOpenBranches(tableau2);
 	printVarSet();
 	debugEnd();
 }
