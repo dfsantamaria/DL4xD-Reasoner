@@ -3113,9 +3113,10 @@ int expandGammaTableau(Tableau& T)
 			litStack.reserve(atomset.size());
 			for (int itLit=0; itLit<atomset.size(); itLit++)
 				{
-					Literal* instance = new Literal(); //remeber to destroy if unused
-					instantiateLiteral( *(atomset.at(itLit)), instance, indKB, varset);
-					litStack.push_back(instance);
+				Literal instance = Literal();
+				instantiateLiteral(*(atomset.at(itLit)), &instance, indKB, varset);
+				litStack.push_back(&instance);
+				cout << instance.toString() << endl;
 				}				
 			vector<Node*> openBranch;	
 			
@@ -3137,11 +3138,22 @@ int expandGammaTableau(Tableau& T)
 				else if (nodeLitStack.size() == 1)
 				{				
 					//ERule
-					EGRule(nodeLitStack.at(0), newNodeSet.at(itNode));
-					openBranch.push_back(newNodeSet.at(itNode));					
+					Literal* newlit = new Literal();
+					copyLiteral(nodeLitStack.at(0), newlit);
+					nodeLitStack.at(0)->~Literal();
+					EGRule(newlit, newNodeSet.at(itNode));
+					openBranch.push_back(newNodeSet.at(itNode));										
 				}
 				else
-				{ //pbrule					
+				{ //pbrule	
+					for (int i = 0; i<nodeLitStack.size(); i++)
+					{
+						Literal* old = nodeLitStack.at(i);
+						Literal* newlit = new Literal();
+						copyLiteral(nodeLitStack.at(i), newlit);
+						nodeLitStack.at(0)->~Literal();
+						nodeLitStack.at(i) = newlit;
+					}
 					PBRule(nodeLitStack, newNodeSet.at(itNode), openBranch);
 					
 				}
