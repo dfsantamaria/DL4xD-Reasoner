@@ -139,7 +139,7 @@ int main()
 	
 	*/
 
-    auto started = std::chrono::high_resolution_clock::now();
+ 
 
 
 
@@ -156,7 +156,8 @@ int main()
 	vector<Formula*> KB2cnf;
 	vector<Formula*> KB2mq;
 	vector<int> KB2size(sizeofVVector,0);
-	cout << "Reading OWL File" << endl;
+	cout << "Reading OWL File" << endl; 
+	
 	int chk=readOWLXMLOntology("Example/onto1.owl", ontNamespaces, formulae, KB2size);
 	if (chk == -1)
 	{
@@ -199,7 +200,7 @@ int main()
 	//Printing result of expansion
 	//printTExpanded(tableau2);
 	//Printing content of VVL and VQL
-	
+	auto started = std::chrono::high_resolution_clock::now();
 	cout << "Expanding Tableau" << endl;
 	expandGammaTableau(tableau2);
 	//printVarSet();
@@ -263,7 +264,7 @@ int main()
 	std::cout << "Milliseconds Execution: "<< std::chrono::duration_cast<std::chrono::milliseconds>(done - started).count()<<endl;
 	cout << "Open Branch: " << tableau2.getOpenBranches().size() << endl;
 	cout << "Closed Branch: " << tableau2.getClosedBranches().size() << endl;
-	printOpenBranches(tableau2);
+	//printOpenBranches(tableau2);
 	printVarSet();
 	debugEnd();
 }
