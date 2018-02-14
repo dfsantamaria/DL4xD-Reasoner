@@ -34,13 +34,18 @@
         <ObjectProperty IRI="#P"/>
     </Declaration>
     <SubClassOf>
-        <Class IRI="#C"/>
-        <Class IRI="#B"/>
+        <Class IRI="#A"/>
+        <ObjectUnionOf>
+            <ObjectAllValuesFrom>
+                <ObjectProperty IRI="#P"/>
+                <Class IRI="#C"/>
+            </ObjectAllValuesFrom>
+            <ObjectAllValuesFrom>
+                <ObjectProperty IRI="#P1"/>
+                <Class IRI="#B"/>
+            </ObjectAllValuesFrom>
+        </ObjectUnionOf>
     </SubClassOf>
-    <ClassAssertion>
-        <Class IRI="#C"/>
-        <NamedIndividual IRI="#b"/>
-    </ClassAssertion>
     <IrreflexiveObjectProperty>
         <ObjectProperty IRI="#P"/>
     </IrreflexiveObjectProperty>

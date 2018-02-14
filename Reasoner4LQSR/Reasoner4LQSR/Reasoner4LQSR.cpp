@@ -3040,12 +3040,12 @@ int computeRule(Node* leaf, vector<Literal*>& stl, vector<Literal*>& nodeLitStac
 		for (int formulaIt=0; formulaIt < nodeIt->getSetFormulae().size(); formulaIt++)
 		{
 		 Formula* formula = nodeIt->getSetFormulae().at(formulaIt);
-		 if (formula->getLiteral() != NULL && containsQVar(formula) == 0)
+		 if (formula->getLiteral() != NULL && formula->getLiteral()->containsQVariable() == 0)
 		  {
 			 for (int i=0; i<nodeLitStack.size(); i++)
 			  {
 				// nodeLitStack.push_back(litstl);
-				 Literal* litstl = nodeLitStack.at(i);
+				 Literal* litstl = nodeLitStack.at(i);				 
 				 int res=computeRuleLiteral(litstl, formula->getLiteral());
 				 switch (res)
 				 {
@@ -3109,20 +3109,24 @@ int expandGammaTableau(Tableau& T)
 		do
 		{			
 			vector<Literal*> litStack;
+			int stop = 0;
 			litStack.reserve(atomset.size());
 			for (int itLit=0; itLit<atomset.size(); itLit++)
 				{
 					Literal* instance = new Literal(); //remeber to destroy if unused
 					instantiateLiteral( *(atomset.at(itLit)), instance, indKB, varset);
 					litStack.push_back(instance);
-				}	
+				}				
+			vector<Node*> openBranch;	
 			
-			vector<Node*> openBranch;
+			if (litStack.size() == 0)
+				continue;
+
 			for (int itNode = 0; itNode < newNodeSet.size(); itNode++)
 			{
-				vector<Literal*> nodeLitStack=litStack;				
+				vector<Literal*> nodeLitStack=litStack;					
 				int compr = computeRule(newNodeSet.at(itNode), litStack, nodeLitStack);
-				if (compr != 0)
+				if (compr == 1)
 				{
 					openBranch.push_back(newNodeSet.at(itNode));					
 				}
@@ -3131,14 +3135,15 @@ int expandGammaTableau(Tableau& T)
 					T.addClosedBranch(newNodeSet.at(itNode));					
 				}
 				else if (nodeLitStack.size() == 1)
-				{ 					
+				{				
 					//ERule
 					EGRule(nodeLitStack.at(0), newNodeSet.at(itNode));
-					openBranch.push_back(newNodeSet.at(itNode));
+					openBranch.push_back(newNodeSet.at(itNode));					
 				}
 				else
 				{ //pbrule					
 					PBRule(nodeLitStack, newNodeSet.at(itNode), openBranch);
+					
 				}
 			}
 			newNodeSet = openBranch;
