@@ -155,8 +155,7 @@ string kbname = "Example/bg8.txt"; */
 	vector<int> KB2size(sizeofVVector, 0);
 	cout << "Reading OWL File" << endl;
 
-	auto started = std::chrono::high_resolution_clock::now();
-
+	
 	int s = readOWLXMLOntology("Example/onto1.owl", ontNamespaces, formulae, KB2size);
 	if (s == -1)
 	{
@@ -173,13 +172,13 @@ string kbname = "Example/bg8.txt"; */
 	cout << "Quantified Variables of level 0: " << KB2size.at(qvar0) << "." << endl;
 	cout << "--Reading Ontology--" << endl;
 
-	std::fstream outkb;
+	/*std::fstream outkb;
 	outkb.open("monasteroKB.txt", fstream::out);
 	for (string s : formulae)
 	{
 		outkb << s << endl;
 	}
-	outkb.close();
+	outkb.close();*/
 
 	readKBFromStrings(0, formulae, KB2);
 	//printTRadix(KB2);
@@ -196,6 +195,7 @@ string kbname = "Example/bg8.txt"; */
 	//printTRadix(KB2mq); //print Tableau Radix
 	
 	vector<Formula*> expKB2;
+	auto started = std::chrono::high_resolution_clock::now();
 	cout << "Expanding Quantifiers in KB" << endl;
 	expandKB(KB2mq, expKB2);
 	Tableau tableau2 = Tableau(new Node(expKB2));
