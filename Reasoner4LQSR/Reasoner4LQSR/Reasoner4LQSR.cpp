@@ -3073,12 +3073,12 @@ int computeRule(Node* leaf, vector<Literal*>& stl, vector<Literal*>& nodeLitStac
 
 int expandGammaTableau(Tableau& T)
 {	
-	int clash = checkNodeClash(T.getTableau()->getSetFormulae(), 1);
+	int clash = checkNodeClash(T.getTableau()->getSetFormulae(), 1); //check
 	if (clash == -1)
 	{		
 		T.getOpenBranches() = vector<Node*>();
 		return -1;
-	}
+	} 
 	vector<Node*> newNodeSet;
 	Node* root = T.getTableau();
 	newNodeSet.push_back(root);
