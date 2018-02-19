@@ -86,5 +86,6 @@ int main()
 
 	cout << "open branches: " << tableau.getOpenBranches().size() << endl;
 	cout << "closed branches: " << tableau.getClosedBranches().size() << endl;
+	cout << "total branches: " << tableau.getOpenBranches().size() + tableau.getClosedBranches().size() << endl;
 	debugEnd();
 }
