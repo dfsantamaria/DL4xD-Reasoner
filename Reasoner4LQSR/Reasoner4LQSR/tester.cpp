@@ -54,7 +54,7 @@ int main()
 	vector<Formula*> KBnorm;
 	vector<Formula*> KBcnf;
 	vector<Formula*> KBmq;
-	string kbname = "Tester/tester2.txt";
+	string kbname = "Tester/tester2-a.txt";
 
 	/*Precomputing Space -- to be implemented*/
 	//  to be implemented
@@ -110,6 +110,7 @@ int main()
 
 	cout << "Open branches: " << tableau.getOpenBranches().size() << endl;
 	cout << "Closed branches: " << tableau.getClosedBranches().size() << endl;
+	cout << "Total branches: " << tableau.getOpenBranches().size() + tableau.getClosedBranches().size() << endl;
 
 	debugEnd();
 }
