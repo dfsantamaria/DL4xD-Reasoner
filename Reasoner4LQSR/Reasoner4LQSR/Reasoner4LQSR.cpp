@@ -1564,14 +1564,20 @@ Check for Clash in a Vector of formulae
 */
 int checkNodeClash(vector<Formula*> &formset, int checkQvar)
 {
+	if (formset.size() == 0)
+		return 1;
 	if (formset.size() < 2)
-	{ 
-		return checkLiteralClash(*(formset.at(0)->getLiteral()));
-		
+	{		
+		if (formset.at(0)->getLiteral() != NULL)
+		{			
+            return checkLiteralClash(*(formset.at(0)->getLiteral()));
+		} 
+		else return 1;
 	}
 	for (int i = 0; i < formset.size() - 1; i++)
-	{		
-		if (checkVectorClash(formset.at(i)->getLiteral(), formset, i + 1, checkQvar) == 0)
+	{	
+		for(int j=i+1; j< formset.size(); j++)
+	   	 if (checkVectorClash(formset.at(i)->getLiteral(), formset, j, checkQvar) == 0)
 			return 0;
 	}
 	return 1;
@@ -3073,12 +3079,13 @@ int computeRule(Node* leaf, vector<Literal*>& stl, vector<Literal*>& nodeLitStac
 
 int expandGammaTableau(Tableau& T)
 {	
-	int clash = checkNodeClash(T.getTableau()->getSetFormulae(), 1); //check
-	if (clash == -1)
+	int clash = checkNodeClash(T.getTableau()->getSetFormulae(), 1); //check	
+	if (clash == 0)
 	{		
 		T.getOpenBranches() = vector<Node*>();
 		return -1;
 	} 
+	
 	vector<Node*> newNodeSet;
 	Node* root = T.getTableau();
 	newNodeSet.push_back(root);
