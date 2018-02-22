@@ -1,7 +1,8 @@
-(V0{Ann} $IN V1{Person}) 
-//(V0{Ann} $EQ V0{Anna}) 
-($FA V0{x}) ((V0{x} $NI V1{Kid}) $OR (V0{x} $IN V1{Person}))
-($FA V0{y}) ((V0{y} $NI V1{Kid}) $OR (V0{y} $IN V1{VeryYoung}))
-($FA V0{z}) (( (V0{z} $NI V1{Person}) $OR (V0{z} $NI V1{VeryYoung})) $OR (V0{z} $IN V1{Kid})) 	
-
-//END
+( (V0{Ann} $IN V1{Person})  $OR (V0{Ann} $NI V1{Kid}) )
+( ( (V0{Ann} $NI V1{Person})  $OR (V0{Ann} $NI V1{VeryYoung}) ) $OR (V0{Ann} $IN V1{Kid}) )
+( (V0{Ann} $IN V1{VeryYoung})  $OR (V0{Ann} $NI V1{Kid}) )
+(V0{Ann} $IN V1{Person})
+( (V0{Annette} $IN V1{Person})  $OR (V0{Annette} $NI V1{Kid}) )
+( ( (V0{Annette} $NI V1{Person})  $OR (V0{Annette} $NI V1{VeryYoung}) ) $OR (V0{Annette} $IN V1{Kid}) )
+( (V0{Annette} $IN V1{VeryYoung})  $OR (V0{Annette} $NI V1{Kid}) )
+(V0{Annette} $IN V1{Person})
