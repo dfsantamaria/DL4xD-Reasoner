@@ -6,6 +6,7 @@
      xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
      xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
      ontologyIRI="http://www.semanticweb.org/danie/ontologies/2018/1/untitled-ontology-513">
+    <Prefix name="" IRI="http://www.semanticweb.org/danie/ontologies/2018/1/untitled-ontology-513"/>
     <Prefix name="owl" IRI="http://www.w3.org/2002/07/owl#"/>
     <Prefix name="rdf" IRI="http://www.w3.org/1999/02/22-rdf-syntax-ns#"/>
     <Prefix name="xml" IRI="http://www.w3.org/XML/1998/namespace"/>
@@ -33,6 +34,14 @@
             <Class IRI="#VeryYoung"/>
         </ObjectIntersectionOf>
     </EquivalentClasses>
+    <ClassAssertion>
+        <Class IRI="#Person"/>
+        <NamedIndividual IRI="#Ann"/>
+    </ClassAssertion>
+    <ClassAssertion>
+        <Class IRI="#Person"/>
+        <NamedIndividual IRI="#Annette"/>
+    </ClassAssertion>
     <SameIndividual>
         <NamedIndividual IRI="#Ann"/>
         <NamedIndividual IRI="#Annette"/>

@@ -1,4 +1,2 @@
-//(V0{Annetta} $IN V1{Kid})
-//
-//($FA V0{t}) ($FA V1{t1})(( (V0{Annetta} $IN V1{Person}) $AD (V0{t} $IN V1{VeryYoung})) $AD (V0{t} $IN V1{t1}))
-($FA V0{t}) (V0{t} $IN V1{Person})
+
+($FA V0{z})((V0{z} $IN V1{Person}) $AD (V0{z} $IN V1{VeryYoung}))
