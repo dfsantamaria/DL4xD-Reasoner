@@ -13,6 +13,7 @@
 #include "log.h"
 #include <chrono>
 
+
 #define propertyindex 3
 #define qvar0 (propertyindex+1)
 #define maxLevNum 3
