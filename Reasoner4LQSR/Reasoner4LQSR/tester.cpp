@@ -45,7 +45,7 @@ int main()
 	//InitializeReasoner(3, 100, 20);
 
 	InitializeReasoner(maxLevNum, vector<int>{5, 5, 0, 5, 5, 5, 0, 5});
-
+	
 	/*
 	Inserting Knowledge Base
 	*/
