@@ -84,6 +84,7 @@ int main()
 	auto done = std::chrono::high_resolution_clock::now();
 	std::cout << "Milliseconds Execution: " << std::chrono::duration_cast<std::chrono::milliseconds>(done - started).count() << endl;
 
+
 	cout << "open branches: " << tableau.getOpenBranches().size() << endl;
 	cout << "closed branches: " << tableau.getClosedBranches().size() << endl;
 	cout << "total branches: " << tableau.getOpenBranches().size() + tableau.getClosedBranches().size() << endl;
