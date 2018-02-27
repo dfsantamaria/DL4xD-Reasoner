@@ -1,0 +1,7 @@
+V0{a}
+V0{b}
+V0{c}
+V0{d}
+($OA V0{d} $CO V0{b}$AO $NI V3{P1})
+($OA V0{b} $CO V0{d}$AO $NI V3{P1})
+($FA V0{z})($FA V0{z1})( (V0{z} $NI V1{A})  $OR ( ( ($OA V0{z} $CO V0{z1}$AO $NI V3{P})  $OR (V0{z1} $IN V1{C}) ) $OR ($OA V0{z} $CO V0{z1}$AO $NI V3{P1})))
