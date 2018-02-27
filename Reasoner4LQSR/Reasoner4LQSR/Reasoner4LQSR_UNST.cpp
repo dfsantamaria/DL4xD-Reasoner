@@ -22,26 +22,26 @@ using namespace std;
 VariablesSet varSet;
 Operators operators;
 
-									/*
-									L0 has type 0
-									L1 has type 1
-									L2 has type 2
-									L3 as ObjectProperty has type 3
-									L3 as DataProperty has type 4
-									*/
-									//const int minVarSize = -1;
-									//const int maxVarSize = 3;   //size of variable
+/*
+L0 has type 0
+L1 has type 1
+L2 has type 2
+L3 as ObjectProperty has type 3
+L3 as DataProperty has type 4
+*/
+//const int minVarSize = -1;
+//const int maxVarSize = 3;   //size of variable
 
 
 void InitializeReasoner(int sizeV, int sizeQ, int sizet)
 {
-	varSet= VariablesSet(sizeV, sizeQ, sizet);
+	varSet = VariablesSet(sizeV, sizeQ, sizet);
 	operators = Operators();
 };
 
 void InitializeReasoner(int sizeV, vector<int>& KBsize)
-{	
-	varSet = VariablesSet(sizeV, KBsize); 
+{
+	varSet = VariablesSet(sizeV, KBsize);
 	operators = Operators();
 };
 
@@ -50,56 +50,56 @@ void InitializeReasoner(int sizeV, vector<int>& KBsize)
  Start Var
 */
 Var::Var(string _name, int _type, int _var, int _index)
-	{
-		setName(_name);
-		setType(_type);
-		setVarType(_var);
-		index = _index;
-	};
+{
+	setName(_name);
+	setType(_type);
+	setVarType(_var);
+	index = _index;
+};
 Var::~Var() {};
-	//int isValidType() { return isValidType(type);};
-	//int isValidVar() { return isValidVar(var); };
+//int isValidType() { return isValidType(type);};
+//int isValidVar() { return isValidVar(var); };
 int Var::getType() { return type; };
 string Var::getName() { return name; };
 int Var::getVarType() { return var; };
 int Var::getIndex() { return index; };
 void Var::setIndex(int _index) { index = _index; }
 int Var::setName(string _name)
-	{
-		name = _name;
-		return type;
-	};
+{
+	name = _name;
+	return type;
+};
 void Var::setType(int _type)
-	{
-		type = _type;
-	};
+{
+	type = _type;
+};
 
 void Var::setVarType(int _var)
-	{
-		var = _var;
-	};
+{
+	var = _var;
+};
 
 int Var::equal(Var* match)
-	{
-		if ((getName().compare(match->getName()) == 0) && (getType() == match->getType()) && (getVarType() == match->getVarType()))
-			return 0;
-		return 1;
-	};
+{
+	if ((getName().compare(match->getName()) == 0) && (getType() == match->getType()) && (getVarType() == match->getVarType()))
+		return 0;
+	return 1;
+};
 int Var::equal(string _name, int _type, int _varType)
-	{
-		if (getName().compare(_name) == 0 && (getType() == _type) && (getVarType() == _varType))
-			return 0;
-		return 1;
-	}
+{
+	if (getName().compare(_name) == 0 && (getType() == _type) && (getVarType() == _varType))
+		return 0;
+	return 1;
+}
 string Var::toString()
-	{
-		string out = "V";
-		out.append(to_string(getType()));
-		out.append("{");
-		out.append(getName());
-		out.append("}");
-		return out;
-	};
+{
+	string out = "V";
+	out.append(to_string(getType()));
+	out.append("{");
+	out.append(getName());
+	out.append("}");
+	return out;
+};
 
 /*
   End Var
@@ -114,25 +114,25 @@ string Var::toString()
 */
 VariablesSet::VariablesSet() {};
 VariablesSet::VariablesSet(int maxNVariable, int maxVSize, int maxQSize)
+{
+	//nlevel = maxNVariable;
+	//capacity = maxVSize;
+	VQL.reserve(maxNVariable);  //initialize vectors for variables
+	//QVQL.reserve(maxNVariable);  //initialize vectors for variables
+	VVL.reserve(maxNVariable);
+	for (int i = 0; i <= maxNVariable; i++)
 	{
-		//nlevel = maxNVariable;
-		//capacity = maxVSize;
-		VQL.reserve(maxNVariable);  //initialize vectors for variables
-		//QVQL.reserve(maxNVariable);  //initialize vectors for variables
-		VVL.reserve(maxNVariable);
-		for (int i = 0; i <= maxNVariable; i++)
-		{
-			VQL.push_back(vector<Var>());
-			VVL.push_back(vector<Var>());
-			//	QVQL.push_back(vector<Var>());
-		}
-		for (int i = 0; i <= maxNVariable; i++)
-		{
-			VQL.at(i).reserve(maxQSize);
-			VVL.at(i).reserve(maxVSize);
-			//	QVQL.at(i).reserve(maxQQSize);
-		}
-	};
+		VQL.push_back(vector<Var>());
+		VVL.push_back(vector<Var>());
+		//	QVQL.push_back(vector<Var>());
+	}
+	for (int i = 0; i <= maxNVariable; i++)
+	{
+		VQL.at(i).reserve(maxQSize);
+		VVL.at(i).reserve(maxVSize);
+		//	QVQL.at(i).reserve(maxQQSize);
+	}
+};
 
 VariablesSet::VariablesSet(int maxNVariable, vector<int>& KBsize)
 {
@@ -149,74 +149,74 @@ VariablesSet::VariablesSet(int maxNVariable, vector<int>& KBsize)
 		//	QVQL.push_back(vector<Var>());
 	}
 	for (int i = 0; i <= maxNVariable; i++)
-	{		
-		VVL.at(i).reserve(KBsize.at(i));	
+	{
+		VVL.at(i).reserve(KBsize.at(i));
 	}
 
 	for (int i = 0; i <= maxNVariable; i++)
 	{
-		VQL.at(i).reserve(KBsize.at(1+maxNVariable+i)); 
+		VQL.at(i).reserve(KBsize.at(1 + maxNVariable + i));
 		//	QVQL.at(i).reserve(maxQQSize);
 	}
 };
 
 vector<Var>* VariablesSet::getAt(vector<vector<Var>>& vec, int level)
-	{
-		if (level < vec.size())
-			return &vec.at(level);
-		return NULL;
+{
+	if (level < vec.size())
+		return &vec.at(level);
+	return NULL;
 };
 
 vector<Var>* VariablesSet::getVVLAt(int level)
-	{
-		if (level < VVL.size())
-			return &VVL.at(level);
-		return NULL;
-	};
+{
+	if (level < VVL.size())
+		return &VVL.at(level);
+	return NULL;
+};
 
 vector<Var>* VariablesSet::getVQLAt(int level)
-	{
-		if (level < VQL.size())
-			return &VQL.at(level);
-		return NULL;
-	};
+{
+	if (level < VQL.size())
+		return &VQL.at(level);
+	return NULL;
+};
 
-	//vector<Var>* getQVQLAt(int level)
-	//{
-	//	if (level < QVQL.size())
-	//		return &QVQL.at(level);
-	//	return NULL;
-	//};
+//vector<Var>* getQVQLAt(int level)
+//{
+//	if (level < QVQL.size())
+//		return &QVQL.at(level);
+//	return NULL;
+//};
 int VariablesSet::pushBack(vector<vector <Var>>& vec, int inslevel, string name, int level, int vartype)
+{
+	if (vec.at(inslevel).size() < vec.at(inslevel).capacity())
 	{
-		if (vec.at(inslevel).size() < vec.at(inslevel).capacity())
-		{
-			vec.at(inslevel).push_back(*new Var(name, level, vartype, getSizeAt(vec, inslevel)));
-			return 0;
-		}
-		return 1;
+		vec.at(inslevel).push_back(*new Var(name, level, vartype, getSizeAt(vec, inslevel)));
+		return 0;
+	}
+	return 1;
 };
 
 int VariablesSet::VVLPushBack(int inslevel, string name, int level, int vartype)
-	{
+{
 #ifdef debug 
 #ifdef debuginsertf
-		logFile << "-----Inserting Data in Variable Set of level: " << inslevel << ". Name: " << name << ". Level: " << level << ". Type: " << vartype << endl;
-		logFile << "-----Variable Set of level: " << inslevel << " has size: " << VVL.at(inslevel).size() << " and capacity: " << VVL.at(inslevel).capacity() << endl;
+	logFile << "-----Inserting Data in Variable Set of level: " << inslevel << ". Name: " << name << ". Level: " << level << ". Type: " << vartype << endl;
+	logFile << "-----Variable Set of level: " << inslevel << " has size: " << VVL.at(inslevel).size() << " and capacity: " << VVL.at(inslevel).capacity() << endl;
 #endif
 #endif // debug
 
-		if (VVL.at(inslevel).size() < VVL.at(inslevel).capacity())
-		{
-			VVL.at(inslevel).push_back(*new Var(name, level, vartype, VVLGetSizeAt(inslevel)));
-			return 0;
-		}
-		return 1;
+	if (VVL.at(inslevel).size() < VVL.at(inslevel).capacity())
+	{
+		VVL.at(inslevel).push_back(*new Var(name, level, vartype, VVLGetSizeAt(inslevel)));
+		return 0;
+	}
+	return 1;
 };
 
-	/*
-	int VQLPushBack(int inslevel, string name, int level, int vartype)
-	{
+/*
+int VQLPushBack(int inslevel, string name, int level, int vartype)
+{
 #ifdef debug
 #ifdef debuginsertf
 		logFile << "-----Inserting Data in Quantified Variable Set of level: " << inslevel << ". Name: " << name << ". Level: " << level << ". Type: " << vartype << endl;
@@ -251,16 +251,16 @@ vector<vector <Var>>& VariablesSet::getVQL() { return VQL; };
 vector<vector <Var>>& VariablesSet::getVVL() { return VVL; };
 Var* VariablesSet::getBack(vector<vector <Var>>& vec, int level) { return &vec.at(level).back(); };
 Var* VariablesSet::VVLGetBack(int level) { return &VVL.at(level).back(); };
-	//	Var* VQLGetBack(int level) { return &VQL.at(level).back(); }
-	//	Var* QVQLGetBack(int level) { return &QVQL.at(level).back(); }
+//	Var* VQLGetBack(int level) { return &VQL.at(level).back(); }
+//	Var* QVQLGetBack(int level) { return &QVQL.at(level).back(); }
 size_t VariablesSet::getSize(vector<vector <Var>>& vec) { return vec.size(); };
-	//	size_t VVLGetSize() { return VVL.size(); }
+//	size_t VVLGetSize() { return VVL.size(); }
 size_t VariablesSet::VQLGetSize() { return VQL.size(); };
-	//	size_t QVQLGetSize() { return QVQL.size(); }
+//	size_t QVQLGetSize() { return QVQL.size(); }
 size_t VariablesSet::getSizeAt(vector<vector <Var>>& vec, int level) { return vec.at(level).size(); };
 size_t VariablesSet::VVLGetSizeAt(int level) { return VVL.at(level).size(); };
 size_t VariablesSet::VQLGetSizeAt(int level) { return VQL.at(level).size(); };
-	//	size_t QVQLGetSizeAt(int level) { return QVQL.at(level).size(); }
+//	size_t QVQLGetSizeAt(int level) { return QVQL.at(level).size(); }
 
 /*
 End VariableSet
@@ -275,69 +275,69 @@ size_t Operators::getLogOpSize() { return logOp.size(); };
 size_t Operators::getSetOpSize() { return setOp.size(); };
 size_t Operators::getQuantiOpSize() { return qutOp.size(); };
 int Operators::getLogOpValue(string s)
+{
+	for (int i = 0; i < getLogOpSize(); i++)
 	{
-		for (int i = 0; i < getLogOpSize(); i++)
-		{
-			if (logOp[i].compare(s) == 0)
-				return i;
-		}
-		return -1;
-	};
+		if (logOp[i].compare(s) == 0)
+			return i;
+	}
+	return -1;
+};
 
 int Operators::getSetOpValue(string s)
+{
+	int i = 0;
+	for (; i < getSetOpSize(); i++)
 	{
-		int i = 0;
-		for (; i < getSetOpSize(); i++)
-		{
-			if (setOp[i].compare(s) == 0)
-				return i;
-		}
-		return -1;
-	};
+		if (setOp[i].compare(s) == 0)
+			return i;
+	}
+	return -1;
+};
 
 int Operators::getQuantiOpValue(string s)
+{
+	for (int i = 0; i < getQuantiOpSize(); i++)
 	{
-		for (int i = 0; i < getQuantiOpSize(); i++)
-		{
-			if (qutOp[i].compare(s) == 0)
-				return i;
-		}
-		return -1;
-	};
+		if (qutOp[i].compare(s) == 0)
+			return i;
+	}
+	return -1;
+};
 
 string Operators::getLogOpElement(int index)
-	{
-		if (index < getLogOpSize())
-			return logOp[index];
-		return NULL;
-	};
+{
+	if (index < getLogOpSize())
+		return logOp[index];
+	return NULL;
+};
 
 string Operators::getSetOpElement(int index)
-	{
-		if (index < getSetOpSize())
-			return setOp[index];
-		return NULL;
-	};
+{
+	if (index < getSetOpSize())
+		return setOp[index];
+	return NULL;
+};
 
 string Operators::getQuantiOpElement(int index)
-	{
-		if (index < getQuantiOpSize())
-			return qutOp[index];
-		return NULL;
-	};
+{
+	if (index < getQuantiOpSize())
+		return qutOp[index];
+	return NULL;
+};
 
-	/*
-	Return the value of the given string representing a logic operator
-	*/
+/*
+Return the value of the given string representing a logic operator
+*/
 int Operators::checkLogOp(string *s)
-{	
+{
 	for (const string &op : logOp)
-		{
-			if (op.compare(*s) == 0)
-				return 1;
-		}
-		return 0;
+	{
+		if (op.compare(*s) == 0)
+			return 1;
 	}
+	return 0;
+}
 
 /**
    End Operators
@@ -350,102 +350,102 @@ int Operators::checkLogOp(string *s)
 Literal::Literal() {};
 
 Literal::Literal(int op, vector<Var*> vec)
-	{
-		//components.reserve(maxVarSize);
-		setLiteralOp(op);
-		components = vec;
-	};
+{
+	//components.reserve(maxVarSize);
+	setLiteralOp(op);
+	components = vec;
+};
 
 vector<Var*>& Literal::getElements()
-	{
-		return components;
-	};
+{
+	return components;
+};
 
 int Literal::getLiteralOp()
-	{
-		return literalOp;
-	};
+{
+	return literalOp;
+};
 
 void Literal::setLiteralOp(int value)
-	{
-		literalOp = value;
-	};
+{
+	literalOp = value;
+};
 
 Var* Literal::getElementAt(int index)
-	{
-		if (index < components.size())
-			return components.at(index);
-		return NULL;
-	}
+{
+	if (index < components.size())
+		return components.at(index);
+	return NULL;
+}
 
 Literal::~Literal() {};
 
-	/*
-	Use Carefully. Remember the position of the left/right operand
-	*/
+/*
+Use Carefully. Remember the position of the left/right operand
+*/
 void Literal::addElement(Var* element)
-	{
-		getElements().push_back(element);
-	};
+{
+	getElements().push_back(element);
+};
 
 int Literal::setElementAt(int index, Var* element)
+{
+	if (index < components.size())
 	{
-		if (index < components.size())
-		{
-			components.at(index) = element;
-			return 0;
-		}
-		return 1;
-     };
+		components.at(index) = element;
+		return 0;
+	}
+	return 1;
+};
 
 string Literal::toString()
+{
+	string out = "(";
+	if (getElements().size() > 2)
 	{
-		string out = "(";
-		if (getElements().size() > 2)
-		{
-			out.append("$OA ");
-			out.append(getElementAt(1)->toString());
-			out.append(" $CO ");
-			out.append(getElementAt(2)->toString());
-			out.append("$AO");
-		}
-		else
-			out.append(getElementAt(1)->toString());
-		out.append(" ");
-		out.append(operators.getSetOpElement(getLiteralOp()));
-		out.append(" ");
-		out.append(getElementAt(0)->toString());
-		out.append(")");
-		return out;
-	};
+		out.append("$OA ");
+		out.append(getElementAt(1)->toString());
+		out.append(" $CO ");
+		out.append(getElementAt(2)->toString());
+		out.append("$AO");
+	}
+	else
+		out.append(getElementAt(1)->toString());
+	out.append(" ");
+	out.append(operators.getSetOpElement(getLiteralOp()));
+	out.append(" ");
+	out.append(getElementAt(0)->toString());
+	out.append(")");
+	return out;
+};
 
 int Literal::containsQVariable()
-	{		
-		for (Var* var: getElements())
-		{
-			if (var->getVarType() == 1)
-				return 1;
-		}
-		return 0;
+{
+	for (Var* var : getElements())
+	{
+		if (var->getVarType() == 1)
+			return 1;
+	}
+	return 0;
 };
 
 int Literal::equals(Literal &atom)
+{
+	if ((this->getElements().size() == atom.getElements().size()) && (this->getLiteralOp() == atom.getLiteralOp()))
 	{
-		if ((this->getElements().size() == atom.getElements().size()) && (this->getLiteralOp() == atom.getLiteralOp()))
+		int j = 0;
+		for (; j < this->getElements().size(); j++)
 		{
-			int j = 0;
-			for (; j < this->getElements().size(); j++)
-			{
-				if (this->getElementAt(j)->equal(atom.getElementAt(j)) != 0)
-					break;
-			}
-			if (j == this->getElements().size())
-			{
-				return 0;
-			}
+			if (this->getElementAt(j)->equal(atom.getElementAt(j)) != 0)
+				break;
 		}
-		return 1;
-	};
+		if (j == this->getElements().size())
+		{
+			return 0;
+		}
+	}
+	return 1;
+};
 /**
 End Literal
 */
@@ -455,35 +455,35 @@ End Literal
   Start Formula
 */
 Formula::Formula()
-	{
-		setLiteral(NULL);
-		setOperand(-1);
-		fulfilled = 1;
-		setLSubformula(NULL);
-		setRSubformula(NULL);
-		setPreviousFormula(NULL);
-	};
+{
+	setLiteral(NULL);
+	setOperand(-1);
+	fulfilled = 1;
+	setLSubformula(NULL);
+	setRSubformula(NULL);
+	setPreviousFormula(NULL);
+};
 
 Formula::Formula(Literal *at, int op)
-	{
-		setLiteral(at);
-		setOperand(op);
-		fulfilled = 1;
-		setLSubformula(NULL);
-		setRSubformula(NULL);
-		setPreviousFormula(NULL);
-	};
+{
+	setLiteral(at);
+	setOperand(op);
+	fulfilled = 1;
+	setLSubformula(NULL);
+	setRSubformula(NULL);
+	setPreviousFormula(NULL);
+};
 
 Formula::Formula(Literal *at, int op, Formula *lf, Formula *rf)
-	{
-		setLiteral(at);
-		setOperand(op);
-		lsubformula = lf;
-		rsubformula = rf;
-		fulfilled = 1;
-		(*lsubformula).setPreviousFormula(this);
-		(*rsubformula).setPreviousFormula(this);
-	};
+{
+	setLiteral(at);
+	setOperand(op);
+	lsubformula = lf;
+	rsubformula = rf;
+	fulfilled = 1;
+	(*lsubformula).setPreviousFormula(this);
+	(*rsubformula).setPreviousFormula(this);
+};
 
 // vector<Var*>* getQuantifiedSet() { return &quantified; };
 Literal* Formula::getLiteral() { return atom; };
@@ -501,31 +501,31 @@ int Formula::getFulfillness() { return fulfilled; };
 Formula::~Formula() { delete atom;  lsubformula = NULL; rsubformula = NULL; pformula = NULL; };
 void Formula::toStringQVar(vector<Var*>& qu)
 {
- if(getLiteral()!=NULL)
-	for (int i = 0; i < getLiteral()->getElements().size(); i++)
-	{
-		int j = 0;
-		for (; j < qu.size(); j++)
+	if (getLiteral() != NULL)
+		for (int i = 0; i < getLiteral()->getElements().size(); i++)
 		{
-			if (getLiteral()->getElementAt(i)->getVarType() == 1 && qu.at(j)->getVarType() == 1)
-				if (!getLiteral()->getElementAt(i)->getName().compare(qu.at(j)->getName()))
-					break;
-		}
+			int j = 0;
+			for (; j < qu.size(); j++)
+			{
+				if (getLiteral()->getElementAt(i)->getVarType() == 1 && qu.at(j)->getVarType() == 1)
+					if (!getLiteral()->getElementAt(i)->getName().compare(qu.at(j)->getName()))
+						break;
+			}
 
-		if (j >= qu.size() && getLiteral()->getElementAt(i)->getVarType() == 1)
-			qu.push_back(getLiteral()->getElementAt(i));
-	}
- if (getLSubformula() != NULL)
-	 getLSubformula()->toStringQVar(qu);
- if (getRSubformula() != NULL)
-	 getRSubformula()->toStringQVar(qu);
+			if (j >= qu.size() && getLiteral()->getElementAt(i)->getVarType() == 1)
+				qu.push_back(getLiteral()->getElementAt(i));
+		}
+	if (getLSubformula() != NULL)
+		getLSubformula()->toStringQVar(qu);
+	if (getRSubformula() != NULL)
+		getRSubformula()->toStringQVar(qu);
 };
 
 string Formula::toString()
 {
 	vector<Var*> q;
 	toStringQVar(q);
-	string r=toStringNoQVar();
+	string r = toStringNoQVar();
 	string quanti = "";
 	for (Var* v : q)
 	{
@@ -533,38 +533,38 @@ string Formula::toString()
 		quanti.append("$FA ");
 		quanti.append(v->toString());
 		quanti.append(")");
-	}	
+	}
 	quanti.append(r);
 	return quanti;
 }
 string Formula::toStringNoQVar()
+{
+	if (getLiteral() != NULL)
 	{
-		if (getLiteral() != NULL)
-		{		
-			return (getLiteral()->toString().append(" "));
-		}
-		else if (getOperand()==4 && getRSubformula() != NULL)
-		{
-			string ret=("( ");
-			ret.append(operators.getLogOpElement(getOperand()));			
-			ret.append(getRSubformula()->toStringNoQVar());
-			ret.append(")");
-			return ret;
-		}
-		else if (getOperand() > -1 && getLSubformula() != NULL && getRSubformula() != NULL)
-		{			
-			string ret = "( ";			
-            ret.append(getLSubformula()->toStringNoQVar());
-			ret.append(" ");						
-			ret.append(operators.getLogOpElement(getOperand()));
-			ret.append(" ");
-			ret.append(getRSubformula()->toStringNoQVar());
-			ret.append(")");
-			return ret;		
-		}		
-		else if (getOperand() > -1)
-			return (operators.getLogOpElement(getOperand()));
-		else return "NULL";
+		return (getLiteral()->toString().append(" "));
+	}
+	else if (getOperand() == 4 && getRSubformula() != NULL)
+	{
+		string ret = ("( ");
+		ret.append(operators.getLogOpElement(getOperand()));
+		ret.append(getRSubformula()->toStringNoQVar());
+		ret.append(")");
+		return ret;
+	}
+	else if (getOperand() > -1 && getLSubformula() != NULL && getRSubformula() != NULL)
+	{
+		string ret = "( ";
+		ret.append(getLSubformula()->toStringNoQVar());
+		ret.append(" ");
+		ret.append(operators.getLogOpElement(getOperand()));
+		ret.append(" ");
+		ret.append(getRSubformula()->toStringNoQVar());
+		ret.append(")");
+		return ret;
+	}
+	else if (getOperand() > -1)
+		return (operators.getLogOpElement(getOperand()));
+	else return "NULL";
 };
 
 /**
@@ -577,20 +577,20 @@ End Formula
 */
 
 int Node::containsFormula(Formula* F) //to be completed and performed
+{
+	for (int i = 0; i < this->getSetFormulae().size(); i++)
 	{
-		for (int i = 0; i < this->getSetFormulae().size(); i++)
+		Literal* locAt = this->getSetFormulae().at(i)->getLiteral();
+		if (locAt != NULL && F->getLiteral() != NULL)
 		{
-			Literal* locAt = this->getSetFormulae().at(i)->getLiteral();
-			if (locAt != NULL && F->getLiteral() != NULL)
+			if (locAt->equals(*(F->getLiteral())) == 0)
 			{
-				if (locAt->equals(*(F->getLiteral())) == 0)
-				{
-					return 0;
-				}
+				return 0;
 			}
-
 		}
-		return 1;
+
+	}
+	return 1;
 };
 
 Node::Node(int size) { setFormula.reserve(size); leftChild = rightChild = father = NULL; };
@@ -603,14 +603,14 @@ void Node::setRightChild(Node* child) { rightChild = child; child->setFather(thi
 void Node::setLeftChild(Node* child) { leftChild = child; child->setFather(this); };
 void Node::setFather(Node* f) { father = f; };
 void Node::insertFormula(Formula* f)
-	{
-		setFormula.push_back(f);
-	};
+{
+	setFormula.push_back(f);
+};
 void Node::insertCheckFormula(Formula* f)
-	{
-		if (this->containsFormula(f) == 1)
-			setFormula.push_back(f);
-	};
+{
+	if (this->containsFormula(f) == 1)
+		setFormula.push_back(f);
+};
 vector<Formula*> Node::getSetFormulae() { return setFormula; };
 void Node::setSetFormulae(vector<Formula*> input) { setFormula = input; };
 Node::~Node() {};
@@ -631,83 +631,83 @@ vector<Node*>& Tableau::getClosedBranches() { return closedBranches; };
 vector < vector < vector <Var*> > >& Tableau::getEqSet() { return EqSet; };
 void Tableau::addClosedBranch(Node* node) { getClosedBranches().push_back(node); };
 void Tableau::areInEqClass(Var& var1, int& varclass1, int& indx1, Var& var2, int& varclass2, int& indx2, int brindx)
+{
+	for (int i = 0; i < getEqSet().at(brindx).size(); i++)
 	{
-		for (int i = 0; i < getEqSet().at(brindx).size(); i++)
+		for (int j = 0; j < getEqSet().at(brindx).at(i).size(); j++)
 		{
-			for (int j = 0; j < getEqSet().at(brindx).at(i).size(); j++)
+			if (var1.equal(getEqSet().at(brindx).at(i).at(j)) == 0)
 			{
-				if (var1.equal(getEqSet().at(brindx).at(i).at(j)) == 0)
-				{
-					indx1 = j;
-					varclass1 = i;
-				}
-				if (var2.equal(getEqSet().at(brindx).at(i).at(j)) == 0)
-				{
-					indx2 = j;
-					varclass2 = i;
-				}
+				indx1 = j;
+				varclass1 = i;
+			}
+			if (var2.equal(getEqSet().at(brindx).at(i).at(j)) == 0)
+			{
+				indx2 = j;
+				varclass2 = i;
 			}
 		}
+	}
 };
 
 int Tableau::sameEqClass(Var& var1, Var& var2, int brindx)
+{
+	for (int i = 0; i < getEqSet().at(brindx).size(); i++)
 	{
-		for (int i = 0; i < getEqSet().at(brindx).size(); i++)
+		int varclass1 = -1;
+		int varclass2 = -1;
+		for (int j = 0; j < getEqSet().at(brindx).at(i).size(); j++)
 		{
-			int varclass1 = -1;
-			int varclass2 = -1;
-			for (int j = 0; j < getEqSet().at(brindx).at(i).size(); j++)
-			{
-				if (var1.equal(getEqSet().at(brindx).at(i).at(j)) == 0)
-					varclass1 = i;
-				if (var2.equal(getEqSet().at(brindx).at(i).at(j)) == 0)
-					varclass2 = i;
-				if (varclass1 > -1 && varclass2 > -1)
-					return 0;
-			}
+			if (var1.equal(getEqSet().at(brindx).at(i).at(j)) == 0)
+				varclass1 = i;
+			if (var2.equal(getEqSet().at(brindx).at(i).at(j)) == 0)
+				varclass2 = i;
+			if (varclass1 > -1 && varclass2 > -1)
+				return 0;
 		}
-		return 1;
+	}
+	return 1;
 };
 
 void Tableau::mergeEqClass(int brindx, int indx1, int indx2)
-	{
+{
 #ifdef debug 
 #ifdef eqsetdebug
-		logFile << "------- Merging equivalence classes with representative " << getEqSet().at(brindx).at(indx1).at(0)->toString() << " and " << getEqSet().at(brindx).at(indx2).at(0)->toString() << " in branch " << brindx << endl;
+	logFile << "------- Merging equivalence classes with representative " << getEqSet().at(brindx).at(indx1).at(0)->toString() << " and " << getEqSet().at(brindx).at(indx2).at(0)->toString() << " in branch " << brindx << endl;
 #endif
 #endif // debug
 
-		getEqSet().at(brindx).at(indx1).insert(getEqSet().at(brindx).at(indx1).end(), getEqSet().at(brindx).at(indx2).begin(), getEqSet().at(brindx).at(indx2).end());
-		getEqSet().at(brindx).erase(getEqSet().at(brindx).begin() + indx2);
-	};
+	getEqSet().at(brindx).at(indx1).insert(getEqSet().at(brindx).at(indx1).end(), getEqSet().at(brindx).at(indx2).begin(), getEqSet().at(brindx).at(indx2).end());
+	getEqSet().at(brindx).erase(getEqSet().at(brindx).begin() + indx2);
+};
 
 void Tableau::mergeEqClass(int brindx, int indx1, Var& var)
-	{
+{
 #ifdef debug 
 #ifdef eqsetdebug
-		logFile << "------- Merging equivalence class with representative " << getEqSet().at(brindx).at(indx1).at(0)->toString() << " and " << var.toString() << " in branch " << brindx << endl;
+	logFile << "------- Merging equivalence class with representative " << getEqSet().at(brindx).at(indx1).at(0)->toString() << " and " << var.toString() << " in branch " << brindx << endl;
 #endif
 #endif // debug
 
 
-		int i = 0;
-		for (; i < getEqSet().at(brindx).at(indx1).size() && (getEqSet().at(brindx).at(indx1).at(i)->equal(&var) == 1); i++)
-		{
-		}
-		if (i == getEqSet().at(brindx).at(indx1).size())
-			getEqSet().at(brindx).at(indx1).push_back(&var);
-	};
+	int i = 0;
+	for (; i < getEqSet().at(brindx).at(indx1).size() && (getEqSet().at(brindx).at(indx1).at(i)->equal(&var) == 1); i++)
+	{
+	}
+	if (i == getEqSet().at(brindx).at(indx1).size())
+		getEqSet().at(brindx).at(indx1).push_back(&var);
+};
 
 void Tableau::mergeEqClass(int brindx, Var& var, int indx1)
-	{
+{
 #ifdef debug 
 #ifdef eqsetdebug
-		logFile << "------- Merging " << var.toString() << " and equivalence class with representative " << getEqSet().at(brindx).at(indx1).at(0)->toString() << " in branch " << brindx << endl;
+	logFile << "------- Merging " << var.toString() << " and equivalence class with representative " << getEqSet().at(brindx).at(indx1).at(0)->toString() << " in branch " << brindx << endl;
 #endif
 #endif // debug
-		getEqSet().at(brindx).at(indx1).insert(getEqSet().at(brindx).at(indx1).begin(), &var);
+	getEqSet().at(brindx).at(indx1).insert(getEqSet().at(brindx).at(indx1).begin(), &var);
 
-	};
+};
 Tableau::~Tableau() {};
 /*
   End Tableau
@@ -855,7 +855,7 @@ Var* createQVarFromString(vector<vector<Var>>& vec, string *name, int *level, in
 Create an Literal from the given string
 */
 int createLiteral(vector<vector <Var>>& vec, vector<vector <Var>>& vec2, string input, Formula **formula, vector<int>& startQuantVect, int typeformula)
-{	
+{
 #ifdef debug  
 #ifdef debuginsertf
 	logFile << "-----Computing Literal: " << input << endl;
@@ -869,7 +869,7 @@ int createLiteral(vector<vector <Var>>& vec, vector<vector <Var>>& vec2, string 
 	Literal* atom = NULL;
 	if (input[0] == '$') //case pair or quantifier
 	{
-		string head = input.substr(0, 3); 	
+		string head = input.substr(0, 3);
 		string match = input;
 		if (head.compare("$OA") == 0)  //case  pair
 		{
@@ -889,7 +889,7 @@ int createLiteral(vector<vector <Var>>& vec, vector<vector <Var>>& vec2, string 
 			var3 = createVarFromString(vec, vec2, &name, &level, new int(0), &startQuantVect.at(level), &typeformula);
 			atom = new Literal(op, { var3, var1, var2 });
 			//Literal* atom = new Literal(0, { new Var(name,level,0), new Var("b1",0,0), new Var("c1",0,0) });
-			*formula = (new Formula(atom, -1));						
+			*formula = (new Formula(atom, -1));
 		}
 		else if (head.compare("$FA") == 0)  //case quantified variable
 		{
@@ -913,13 +913,13 @@ int createLiteral(vector<vector <Var>>& vec, vector<vector <Var>>& vec2, string 
 		}
 		else
 		{
-		  retrieveVarData(input.substr(0, found), &name, &level);
-		  var1=createVarFromString(vec, vec2, &name, &level, new int(0), &startQuantVect.at(level), &typeformula);
-          #ifdef debug  
-            #ifdef debuginsertf		 
-			  logFile << "-----Declaration Found: " << var1->toString() << endl;
-              #endif
-            #endif // debug
+			retrieveVarData(input.substr(0, found), &name, &level);
+			var1 = createVarFromString(vec, vec2, &name, &level, new int(0), &startQuantVect.at(level), &typeformula);
+#ifdef debug  
+#ifdef debuginsertf		 
+			logFile << "-----Declaration Found: " << var1->toString() << endl;
+#endif
+#endif // debug
 		}
 	}
 #ifdef debug  
@@ -946,7 +946,7 @@ int parseInternalFormula(vector<vector <Var>>& vec, vector<vector <Var>>& vec2, 
 //	stackFormula.push(*inputformula);
 //	string top = stackFormula.top();
 	string top = *inputformula;
-//	stackFormula.pop();
+	//	stackFormula.pop();
 	string atom = string();
 	string operand = string();
 	Formula* formula = NULL;
@@ -956,62 +956,62 @@ int parseInternalFormula(vector<vector <Var>>& vec, vector<vector <Var>>& vec2, 
 		switch (c)
 		{
 		case '(': stackFormula.push(string(1, c)); break;
-		case ')':    
+		case ')':
 			if (!atom.empty())
-			{				
+			{
 				if (!stackFormula.empty())
-				  stackFormula.pop();				
-                 #ifdef debug 
-                   #ifdef debuginsertf
-				     logFile << "-----Candidate atom found: " << atom << endl;
-                   #endif
-                 #endif // debug                
-				createLiteral(vec, vec2, atom, &formula, startQuantVect, typeformula);				
+					stackFormula.pop();
+#ifdef debug 
+#ifdef debuginsertf
+				logFile << "-----Candidate atom found: " << atom << endl;
+#endif
+#endif // debug                
+				createLiteral(vec, vec2, atom, &formula, startQuantVect, typeformula);
 				if (formula != NULL) // creation of the formula 
-				{						
-					stformula.push(formula); 
-				}				
+				{
+					stformula.push(formula);
+				}
 				atom.clear();
-				
+
 			}
-			else if(stformula.size()>1)       //if(stformula.size()>1)
-			{				
-				Formula *rightf = stformula.top(); 
-				stformula.pop();					
-				Formula *centerf = stformula.top(); 
-				stformula.pop();			
+			else if (stformula.size() > 1)       //if(stformula.size()>1)
+			{
+				Formula *rightf = stformula.top();
+				stformula.pop();
+				Formula *centerf = stformula.top();
+				stformula.pop();
 				centerf->setRSubformula(rightf);
 				rightf->setPreviousFormula(centerf);
 
-				if (centerf->getLiteral()==NULL && centerf->getOperand()==4) //$NG has one branch
-				{					
-					centerf->setLSubformula(NULL); 
+				if (centerf->getLiteral() == NULL && centerf->getOperand() == 4) //$NG has one branch
+				{
+					centerf->setLSubformula(NULL);
 				}
 				else
 				{
-					Formula *leftf = stformula.top(); 
+					Formula *leftf = stformula.top();
 					stformula.pop();
 					centerf->setLSubformula(leftf);
 					leftf->setPreviousFormula(centerf);
 				}
-				
+
 #ifdef debug 
 #ifdef debuginsertf
 				logFile << "-----Computing subformula: " << centerf->toString() << endl;
 #endif
 #endif // debug
-				stformula.push(centerf); 
+				stformula.push(centerf);
 				if (!stackFormula.empty())
-				 stackFormula.pop();				
+					stackFormula.pop();
 			}
 			break;
 		case '$': operand = string(1, c) + string(1, top.at(i + 1)) + string(1, top.at(i + 2));
 			i = i + 2;
 			if (operators.checkLogOp(&operand) != 0)
-			{		
+			{
 				int isNg = operators.getLogOpValue(operand);
 				stformula.push(new Formula(NULL, isNg));
-				
+
 			}
 			else
 			{
@@ -1022,22 +1022,22 @@ int parseInternalFormula(vector<vector <Var>>& vec, vector<vector <Var>>& vec2, 
 		case ' ': break; case '\f': break; case '\n': break;  case '\r': break;  case '\t': break; case '\v': break;
 		default:	atom.append(string(1, c)); break;
 		}
-	}	
-	
-	if (!atom.empty())
-	{ 		
-		createLiteral(vec, vec2, atom, &formula, startQuantVect, typeformula);		
-		if (formula != NULL)
-			stformula.push(formula);		
 	}
-    
+
+	if (!atom.empty())
+	{
+		createLiteral(vec, vec2, atom, &formula, startQuantVect, typeformula);
+		if (formula != NULL)
+			stformula.push(formula);
+	}
+
 	if (!stformula.empty())
 	{
 		*outformula = (stformula.top());
-           #ifdef debug  
-		         logFile << "-----Final Formula: " << (*outformula)->toString() << endl;
-          #endif // debug
-		 return 1;
+#ifdef debug  
+		logFile << "-----Final Formula: " << (*outformula)->toString() << endl;
+#endif // debug
+		return 1;
 	}
 	return 0;
 }
@@ -1117,7 +1117,7 @@ Formula* copyFormula(Formula* formula, Formula* father)
 Formula* convertFormulaToCNF(Formula* formula)
 {
 	vector<Formula*> stack;
-	stack.push_back(formula); 	
+	stack.push_back(formula);
 #ifdef debug
 #ifdef debugcnf
 	logFile << "-----Converting formula in CNF:" << endl;
@@ -1190,7 +1190,7 @@ Formula* convertFormulaToCNF(Formula* formula)
 /*
 Create an object of type Formula  from the given string representing a formula.
 */
-int insertFormulaKB(int keepQ,vector<vector <Var>>& varset1, vector<vector <Var>>& varset2, string formula, Formula** ffinal, int* typeformula)
+int insertFormulaKB(int keepQ, vector<vector <Var>>& varset1, vector<vector <Var>>& varset2, string formula, Formula** ffinal, int* typeformula)
 {
 	/*
 	The following vector of int represents the position of the quantified variables of the current formula.
@@ -1204,14 +1204,14 @@ int insertFormulaKB(int keepQ,vector<vector <Var>>& varset1, vector<vector <Var>
 	if (keepQ == 0)
 	{
 		for (int i = 0; i < varset1.size(); i++)
-		 vqlsize.push_back(0); //formulas share quantified variables
+			vqlsize.push_back(0); //formulas share quantified variables
 	}
 	else
 	{
 		for (int i = 0; i < varset1.size(); i++)
 			vqlsize.push_back((int)varset1.at(i).size());
 	}
-	int res=parseInternalFormula(varset1, varset2, &formula, ffinal, vqlsize, *typeformula);
+	int res = parseInternalFormula(varset1, varset2, &formula, ffinal, vqlsize, *typeformula);
 	//vec.push_back(*ffinal);
 #ifdef debug  
 	logFile << "---Formula Ended " << endl;
@@ -1221,12 +1221,12 @@ int insertFormulaKB(int keepQ,vector<vector <Var>>& varset1, vector<vector <Var>
 }
 
 //if insertFormulaKB returns 1, the parsed formula should be inserted in KB, otherwise is a declaration
-int insertFormulaKB(int keepQ,vector<vector <Var>>& varset, vector<vector <Var>>& varset2, string formula, vector<Formula*> &vec, int* typeformula)
+int insertFormulaKB(int keepQ, vector<vector <Var>>& varset, vector<vector <Var>>& varset2, string formula, vector<Formula*> &vec, int* typeformula)
 {
 	Formula* f = NULL;
 	int res = insertFormulaKB(keepQ, varset, varset2, formula, &f, typeformula);
-	if ( res == 1)	
-	  vec.push_back(f);	
+	if (res == 1)
+		vec.push_back(f);
 	return res;
 }
 
@@ -1245,10 +1245,10 @@ int containsQVar(Formula *fr)
 		{
 			if (f->getLiteral() != NULL)
 			{
-			  for (Var* var : (f->getLiteral()->getElements()))
-				{					
+				for (Var* var : (f->getLiteral()->getElements()))
+				{
 					if (var->getVarType() == 1)
-					{						
+					{
 						return var->getType();
 					}
 				}
@@ -1449,23 +1449,23 @@ int checkLiteralClash(Literal &atom1, Literal &atom2, int checkQvar)
 	logFile << "-----Checking for Clash: " << atom1.toString() << " and " << atom2.toString() << endl;
 #endif // debug
 #endif
-	if (atom1.getElements().size() == atom2.getElements().size() && checkLiteralOpClash(atom1.getLiteralOp(), atom2.getLiteralOp())==0)
+	if (atom1.getElements().size() == atom2.getElements().size() && checkLiteralOpClash(atom1.getLiteralOp(), atom2.getLiteralOp()) == 0)
 	{
 		for (int i = 0; i < atom1.getElements().size(); i++)
-		{	
+		{
 			if (checkQvar == 0)
 			{
 				if (atom1.getElementAt(i)->getVarType() + atom2.getElementAt(i)->getVarType() == 2 || //both qvar
 					atom1.getElementAt(i)->getVarType() + atom2.getElementAt(i)->getVarType() == 1) //one is a qvar the other doesn't
 					continue;
-				else if (atom1.getElementAt(i)->equal(atom2.getElementAt(i)) != 0) 
+				else if (atom1.getElementAt(i)->equal(atom2.getElementAt(i)) != 0)
 					return 1;
 			}
 			else if (checkQvar == 1)
 			{
 				if (atom1.getElementAt(i)->getVarType() + atom2.getElementAt(i)->getVarType() == 2 || atom1.getElementAt(i)->getVarType() + atom2.getElementAt(i)->getVarType() == 1
 					|| (atom1.getElementAt(i)->equal(atom2.getElementAt(i)) != 0))
-					return 1;				
+					return 1;
 			}
 		}
 		return 0;
@@ -1507,7 +1507,7 @@ int checkLiteralsClash(vector<Literal*> &vec, int checkQvar)
 		logFile << "-----Checking for Clash: " << vec.at(i)->toString() << " and " << vec.at(i + 1)->toString() << endl;
 #endif // debug
 #endif
-		if (checkLiteralClash(*vec.at(i), *vec.at(i + 1), checkQvar)==0)
+		if (checkLiteralClash(*vec.at(i), *vec.at(i + 1), checkQvar) == 0)
 			return 0;
 	}
 	return 1;
@@ -1522,7 +1522,7 @@ int checkVectorClash(Literal* candidate, vector<Formula*> &formset, int start, i
 #ifdef debug  
 	logFile << "---Checking for Clash in Vector of Formulae" << endl;
 #endif // debug
-	
+
 	if (candidate != NULL) //atomic formula
 	{
 		if (checkLiteralClash(*candidate) == 0)  // type a != a
@@ -1567,18 +1567,18 @@ int checkNodeClash(vector<Formula*> &formset, int checkQvar)
 	if (formset.size() == 0)
 		return 1;
 	if (formset.size() < 2)
-	{		
+	{
 		if (formset.at(0)->getLiteral() != NULL)
-		{			
-            return checkLiteralClash(*(formset.at(0)->getLiteral()));
-		} 
+		{
+			return checkLiteralClash(*(formset.at(0)->getLiteral()));
+		}
 		else return 1;
 	}
 	for (int i = 0; i < formset.size() - 1; i++)
-	{	
-		for(int j=i+1; j< formset.size(); j++)
-	   	 if (checkVectorClash(formset.at(i)->getLiteral(), formset, j, checkQvar) == 0)
-			return 0;
+	{
+		for (int j = i + 1; j < formset.size(); j++)
+			if (checkVectorClash(formset.at(i)->getLiteral(), formset, j, checkQvar) == 0)
+				return 0;
 	}
 	return 1;
 }
@@ -1624,44 +1624,44 @@ Return the set of atomic formula contained in a formula.
 */
 
 int getLiteralSet(Formula* f, vector<Literal*> &outf, int checkQvar)
-{		
-	if (f->getLiteral() != NULL)		
+{
+	if (f->getLiteral() != NULL)
 	{
 		if (f->getLiteral()->containsQVariable() == 1)
 		{
 			outf.push_back(f->getLiteral());
 			return 0;
 		}
-		
+
 	}
 	stack <Formula*> st;
-	if(f->getRSubformula()!=NULL)
-	  st.push(f->getRSubformula());
+	if (f->getRSubformula() != NULL)
+		st.push(f->getRSubformula());
 	if (f->getLSubformula() != NULL)
-	  st.push(f->getLSubformula());
+		st.push(f->getLSubformula());
 	while (!st.empty())
 	{
 		Formula* tmp = st.top();
-		if (tmp->getLiteral() != NULL &&checkLiteralClash(*tmp->getLiteral()) != 0 && checkLiteralTautology(*tmp->getLiteral()) != 0)
+		if (tmp->getLiteral() != NULL && checkLiteralClash(*tmp->getLiteral()) != 0 && checkLiteralTautology(*tmp->getLiteral()) != 0)
 		{
-		  int stop = 0;
-				int i = 0;
-				for (; i < outf.size() && stop == 0; i++)
-				{
-					if (outf.at(i)->equals(*tmp->getLiteral()) == 0)
-						stop = 1;
-					else if (checkLiteralClash(*outf.at(i), *tmp->getLiteral(), checkQvar) == 0)	// case A V \negA						
-						stop = 2; 					
-				}
-				if (stop == 0)
-					outf.push_back(tmp->getLiteral());//There should be only OR because of CNF formula
-				else if (stop == 2) // remove the element
-				{
+			int stop = 0;
+			int i = 0;
+			for (; i < outf.size() && stop == 0; i++)
+			{
+				if (outf.at(i)->equals(*tmp->getLiteral()) == 0)
+					stop = 1;
+				else if (checkLiteralClash(*outf.at(i), *tmp->getLiteral(), checkQvar) == 0)	// case A V \negA						
+					stop = 2;
+			}
+			if (stop == 0)
+				outf.push_back(tmp->getLiteral());//There should be only OR because of CNF formula
+			else if (stop == 2) // remove the element
+			{
 
-					outf.at(i - 1) = outf.back(); 
-					outf.pop_back();
-				}						
-		}                      	
+				outf.at(i - 1) = outf.back();
+				outf.pop_back();
+			}
+		}
 		st.pop();
 		if (tmp->getRSubformula() != NULL)
 			st.push(tmp->getRSubformula());
@@ -1701,7 +1701,7 @@ int checkBranchClash(Literal* atom, Node* node, int checkQvar)
 		//	vector<Formula>local = node->getSetFormulae();
 		//	for (int i = 0; i < local.size(); i++)
 		//	{
-		if ((checkVectorClash(atom, iterator->getSetFormulae(), 0 , checkQvar) == 0))
+		if ((checkVectorClash(atom, iterator->getSetFormulae(), 0, checkQvar) == 0))
 			return 0;
 		//	}
 		iterator = iterator->getFather();
@@ -1750,7 +1750,7 @@ void PBRule(vector<Literal*>& atoms, Node* node, vector<Node*> &nodeSet)
 				nodeSet.insert(nodeSet.end(), newNodeSet.begin(), newNodeSet.end());
 				return;
 			}
-		} //15/01/18 inserted 
+		} //15/01/18 inserted
 	tmp = node;*/
 	for (int i = 0; i < atoms.size() - 1; i++)
 	{
@@ -2112,7 +2112,7 @@ int checkLiteralClashEqSet(Literal &atom, Tableau& T, int& brindx) //0 for clash
 #endif
 #endif // debug
 	if (atom.getElements().size() == 2 && atom.getLiteralOp() == 3)
-	{		
+	{
 		return (T.sameEqClass(*(atom.getElementAt(0)), *(atom.getElementAt(1)), brindx));
 	}
 	return 1;
@@ -2179,9 +2179,9 @@ void renameQVariables(Formula* formula, vector<vector <Var>>& varset1)
 	for (int i = 0; i < varset1.size(); i++)
 	{
 		npos.push_back(varset1.at(i).size());
-		
+
 	}
-	
+
 	vector<Formula*> stackformula;
 	stackformula.push_back(formula);
 	while (!stackformula.empty())
@@ -2195,20 +2195,20 @@ void renameQVariables(Formula* formula, vector<vector <Var>>& varset1)
 			{
 				if (atm->getElementAt(i)->getVarType() == 1)
 				{
-					
-					int vecpos = atm->getElementAt(i)->getType(); 
-					int position = npos.at(vecpos);					
-					int j = position; 
+
+					int vecpos = atm->getElementAt(i)->getType();
+					int position = npos.at(vecpos);
+					int j = position;
 					for (; j < varset1.at(vecpos).size(); j++)
 					{
-						if ( (atm->getElementAt(i)->equal(&varset1.at(vecpos).at(j))) == 0)
-						{							
+						if ((atm->getElementAt(i)->equal(&varset1.at(vecpos).at(j))) == 0)
+						{
 							atm->setElementAt(i, &varset1.at(vecpos).at(j));
 							break;
 						}
 					}
 					if (j == varset1.at(vecpos).size())
-					{ 						
+					{
 						varset1.at(vecpos).push_back(*atm->getElementAt(i));
 						varset1.at(vecpos).back().setIndex(j);
 						atm->setElementAt(i, &varset1.at(vecpos).back());
@@ -2216,9 +2216,9 @@ void renameQVariables(Formula* formula, vector<vector <Var>>& varset1)
 				}
 			}
 		}
-		if( tmp->getLSubformula()!= NULL)
-		  stackformula.push_back(tmp->getLSubformula());
-		if(tmp->getRSubformula()!=NULL)
+		if (tmp->getLSubformula() != NULL)
+			stackformula.push_back(tmp->getLSubformula());
+		if (tmp->getRSubformula() != NULL)
 			stackformula.push_back(tmp->getRSubformula());
 	}
 }
@@ -2228,7 +2228,7 @@ void moveQuantifier(int qFlag, Formula* formula, vector<vector <Var>>& varset1, 
 #ifdef debug 
 #ifdef debugmvq
 	logFile << "---Moving quantifiers in formula: " << endl;
-	logFile << "-----"<<formula->toString()<< endl;	
+	logFile << "-----" << formula->toString() << endl;
 #endif
 #endif // debug
 	if (formula->getOperand() != 1)
@@ -2236,38 +2236,38 @@ void moveQuantifier(int qFlag, Formula* formula, vector<vector <Var>>& varset1, 
 		data.push_back(formula);
 		return;
 	}
-	vector<Formula*> tmp;	
+	vector<Formula*> tmp;
 	tmp.push_back(formula);
 	while (!tmp.empty())
 	{
-		
-	 Formula* current = tmp.back(); 
-	  tmp.pop_back();	 
-	  if (current->getOperand() == 1) //AND found
+
+		Formula* current = tmp.back();
+		tmp.pop_back();
+		if (current->getOperand() == 1) //AND found
 		{
 			Formula* fL = current->getLSubformula();
 			Formula* fR = current->getRSubformula();
 			fL->setPreviousFormula(NULL);
 			fR->setPreviousFormula(NULL);
-			
+
 			delete(current);
 			tmp.push_back(fL);
 			if (qFlag == 1)
-			  renameQVariables(fR, varset1);
-			tmp.push_back(fR);	
-			
+				renameQVariables(fR, varset1);
+			tmp.push_back(fR);
+
 		}
-		else 
+		else
 		{
 			data.push_back(current);
-             #ifdef debug 
-             #ifdef debugmvq			     
-		         logFile << "-----Formula inserted: " << current->toString() << endl;
-            #endif
-            #endif // debug
-				 
+#ifdef debug 
+#ifdef debugmvq			     
+			logFile << "-----Formula inserted: " << current->toString() << endl;
+#endif
+#endif // debug
+
 		}
-	}	
+	}
 }
 
 
@@ -2279,14 +2279,14 @@ void convertKBToNNF(vector<Formula*>& KB, vector<Formula*>& KBnorm)
 	logFile << "-----Converting KB to NNF-----" << endl;
 #endif
 #endif // debug
-  for (int i = 0; i < KB.size(); i++)
-	{		
-		Formula* newf=convertFormulaToNNF(KB.at(i)); 
+	for (int i = 0; i < KB.size(); i++)
+	{
+		Formula* newf = convertFormulaToNNF(KB.at(i));
 		KBnorm.push_back(newf);
 	}
 #ifdef debug
 #ifdef debugnorm
-  logFile << "-----End converting KB to NNF-----" << endl;
+	logFile << "-----End converting KB to NNF-----" << endl;
 #endif
 #endif // debug
 }
@@ -2295,14 +2295,14 @@ void convertKBToCNF(vector<Formula*>& KB, vector<Formula*>& KBcnf)
 {
 #ifdef debug
 #ifdef debugcnf
-	logFile << "-----Converting KB to CNF-----" << endl;	
+	logFile << "-----Converting KB to CNF-----" << endl;
 #endif
 #endif // debug
 
 	for (int i = 0; i < KB.size(); i++)
 	{
-	  Formula* newf=convertFormulaToCNF(KB.at(i));
-	  KBcnf.push_back(newf);
+		Formula* newf = convertFormulaToCNF(KB.at(i));
+		KBcnf.push_back(newf);
 	}
 #ifdef debug
 #ifdef debugcnf
@@ -2312,29 +2312,29 @@ void convertKBToCNF(vector<Formula*>& KB, vector<Formula*>& KBcnf)
 }
 
 void moveQuantifierKB(int qflag, vector<Formula*>& KB, vector<Formula*>& KBout)
-{	
-	for(int i=0; i<KB.size();i++)
-	{		
-		moveQuantifier(qflag, KB.at(i) , varSet.getVQL(), KBout);		
+{
+	for (int i = 0; i < KB.size(); i++)
+	{
+		moveQuantifier(qflag, KB.at(i), varSet.getVQL(), KBout);
 	}
 }
 
 void readKBFromStrings(int qflag, vector<string>&names, vector<Formula*>& KB)
-{	
+{
 	cout << "Knowledge Base" << endl;
 	int typeformula = 0;
-	for(string str: names)
+	for (string str : names)
 	{
 		if ((str.rfind("//", 0) == 0) || str.empty())
-			continue;			
-		insertFormulaKB(qflag,varSet.getVQL(), varSet.getVVL(), str, KB, &typeformula);
-	}	
+			continue;
+		insertFormulaKB(qflag, varSet.getVQL(), varSet.getVVL(), str, KB, &typeformula);
+	}
 }
 
 void readKBFromFile(int qflag, string &name, vector<Formula*>& KB)
 {
 	std::ifstream file(name);
-	std::string str;		
+	std::string str;
 	vector<string> lines;
 	while (std::getline(file, str))
 	{
@@ -2345,15 +2345,15 @@ void readKBFromFile(int qflag, string &name, vector<Formula*>& KB)
 
 void readQueryFromFile(string& name, vector<string>& stringSet)
 {
-  #ifdef debug 
-  #ifdef debugquery
+#ifdef debug 
+#ifdef debugquery
 	logFile << "-----Reading query file" << endl;
-  #endif
-  #endif // debug
+#endif
+#endif // debug
 	std::ifstream file(name);
-	std::string str;	
+	std::string str;
 	while (std::getline(file, str))
-	{		
+	{
 		if ((str.rfind("//", 0) == 0) || str.empty())
 			continue;
 		stringSet.push_back(str);
@@ -2366,55 +2366,55 @@ Start QueryManager
 */
 
 QueryManager::QueryManager(int _nlevel, int _maxQQSize)
+{
+	nlevel = _nlevel;
+	maxQQSize = _maxQQSize;
+	QVQL.reserve(nlevel);
+	QVVL.reserve(nlevel);
+	Match = pair <vector<int>, vector<vector<vector<pair<Var*, Var*>>>>>(vector<int>(), vector<vector<vector<pair<Var*, Var*>>>>());
+	ynAnswer = vector<int>();
+	for (int i = 0; i <= nlevel; i++)
 	{
-		nlevel = _nlevel;
-		maxQQSize = _maxQQSize;
-		QVQL.reserve(nlevel);
-		QVVL.reserve(nlevel);
-		Match = pair <vector<int>, vector<vector<vector<pair<Var*, Var*>>>>>(vector<int>(), vector<vector<vector<pair<Var*, Var*>>>>());
-		ynAnswer = vector<int>();
-		for (int i = 0; i <= nlevel; i++)
-		{
-			QVQL.push_back(vector<Var>());
-			QVVL.push_back(vector<Var>());
-		}
-		for (int i = 0; i <= nlevel; i++)
-		{
-			QVVL.at(i).reserve(maxQQSize);
-			QVQL.at(i).reserve(maxQQSize);
-		}
-	};
+		QVQL.push_back(vector<Var>());
+		QVVL.push_back(vector<Var>());
+	}
+	for (int i = 0; i <= nlevel; i++)
+	{
+		QVVL.at(i).reserve(maxQQSize);
+		QVQL.at(i).reserve(maxQQSize);
+	}
+};
 
 void QueryManager::extractLiterals(Formula& f, vector<Literal*> &atoms)
-	{
+{
 #ifdef debug 
 #ifdef debugquery
-		logFile << "---Executing Query" << endl;
-		logFile << "----Query selected:" << f.toString() << endl;
+	logFile << "---Executing Query" << endl;
+	logFile << "----Query selected:" << f.toString() << endl;
 #endif
 #endif // debug
-		vector<Formula*> tmp;
-		tmp.push_back(&f);
-		while (!tmp.empty())
+	vector<Formula*> tmp;
+	tmp.push_back(&f);
+	while (!tmp.empty())
+	{
+		Formula* back = tmp.back();
+		tmp.pop_back();
+		if (back != NULL)
 		{
-			Formula* back = tmp.back();
-			tmp.pop_back();
-			if (back != NULL)
+			if (back->getLiteral() != NULL)
 			{
-				if (back->getLiteral() != NULL)
-				{
-					atoms.push_back(back->getLiteral());
+				atoms.push_back(back->getLiteral());
 #ifdef debug 
 #ifdef debugquery
-					logFile << "-----Literal computed:" << atoms.back()->toString() << endl;
+				logFile << "-----Literal computed:" << atoms.back()->toString() << endl;
 #endif
 #endif // debug					 
-				}
-				tmp.push_back(back->getLSubformula());
-				tmp.push_back(back->getRSubformula());
 			}
+			tmp.push_back(back->getLSubformula());
+			tmp.push_back(back->getRSubformula());
 		}
-	};
+	}
+};
 
 
 vector<vector<Var>>& QueryManager::getQVQL() { return QVQL; };
@@ -2424,125 +2424,125 @@ pair <vector<int>, vector<vector<vector<pair<Var*, Var*>>>>>& QueryManager::getM
 void QueryManager::setMatchSet(pair <vector<int>, vector<vector<vector<pair<Var*, Var*>>>>>& input) { Match = input; };
 void QueryManager::setAnswerSet(vector<int> input) { ynAnswer = input; };
 int QueryManager::checkQueryLiteralMatchInBranch(Node* branch, Literal* query)
+{
+	Node* iterator = branch;
+	while (iterator != NULL)
 	{
-		Node* iterator = branch;
-		while (iterator != NULL)
+		for (Formula* formula : iterator->getSetFormulae())
 		{
-			for (Formula* formula : iterator->getSetFormulae())
+			if (formula->getLiteral() != NULL)
 			{
-				if (formula->getLiteral() != NULL)
+				if (formula->getLiteral()->equals(*(query)) == 0)
 				{
-					if (formula->getLiteral()->equals( *(query))==0)
-					{						
-						return 1;
-					}
+					return 1;
 				}
 			}
-			iterator = iterator->getFather();
 		}
-		return 0;	
+		iterator = iterator->getFather();
+	}
+	return 0;
 };
 
 int QueryManager::checkQueryVariableMatchInBranch(Node* branch, Literal* query, vector<pair<Var*, Var*>>& currentMatch, vector<vector<pair<Var*, Var*>>>& matches)
+{
+	int res = 0;
+	Node* iterator = branch;
+	while (iterator != NULL)
 	{
-		int res = 0;
-		Node* iterator = branch;
-		while (iterator != NULL)
+		for (Formula* formula : iterator->getSetFormulae())
 		{
-			for (Formula* formula : iterator->getSetFormulae())
+			if (formula->getLiteral() != NULL)
 			{
-				if (formula->getLiteral() != NULL)
+				if (formula->getLiteral()->getElements().size() == query->getElements().size() && formula->getLiteral()->getLiteralOp() == query->getLiteralOp())
 				{
-					if (formula->getLiteral()->getElements().size() == query->getElements().size() && formula->getLiteral()->getLiteralOp() == query->getLiteralOp())
+					int matchN = 0;
+					int noq = 0; //check if the query is a literal and there is a match
+					vector<pair<Var*, Var*>> temp = vector<pair<Var*, Var*>>();
+					for (int varIt = 0; varIt < formula->getLiteral()->getElements().size(); varIt++)
 					{
-						int matchN = 0;
-						int noq = 0; //check if the query is a literal and there is a match
-						vector<pair<Var*, Var*>> temp = vector<pair<Var*, Var*>>();
-						for (int varIt = 0; varIt < formula->getLiteral()->getElements().size(); varIt++)
+						if (query->getElementAt(varIt)->getVarType() == 0 && query->getElementAt(varIt)->equal(formula->getLiteral()->getElements().at(varIt)) == 0)
 						{
-							if (query->getElementAt(varIt)->getVarType() == 0 && query->getElementAt(varIt)->equal(formula->getLiteral()->getElements().at(varIt)) == 0)
-							{
-								// cout << query->toString() << "++" << formula.getLiteral()->toString() << endl;
-								matchN++;								
-							}
-							else if (query->getElementAt(varIt)->getVarType() == 1)
-							{
-								// cout << query->toString() << ".." << formula.getLiteral()->toString() << endl;
-								temp.push_back(pair<Var*, Var*>(query->getElementAt(varIt), formula->getLiteral()->getElementAt(varIt)));
-								matchN++;
-								// cout<<temp.back().first->toString() << " pair " << temp.back().second->toString()<< " " <<endl;
-							}
+							// cout << query->toString() << "++" << formula.getLiteral()->toString() << endl;
+							matchN++;
 						}
-						if (matchN == query->getElements().size())
+						else if (query->getElementAt(varIt)->getVarType() == 1)
 						{
-							//currentMatch.insert(currentMatch.end(), temp.begin(), temp.end());
-							vector<pair<Var*, Var*>> c = currentMatch;
-							for (pair<Var*, Var*> m : temp)
-							{
-								c.push_back(m);
-							}
-							matches.push_back(c);
-							res = 1;
-						}						
+							// cout << query->toString() << ".." << formula.getLiteral()->toString() << endl;
+							temp.push_back(pair<Var*, Var*>(query->getElementAt(varIt), formula->getLiteral()->getElementAt(varIt)));
+							matchN++;
+							// cout<<temp.back().first->toString() << " pair " << temp.back().second->toString()<< " " <<endl;
+						}
+					}
+					if (matchN == query->getElements().size())
+					{
+						//currentMatch.insert(currentMatch.end(), temp.begin(), temp.end());
+						vector<pair<Var*, Var*>> c = currentMatch;
+						for (pair<Var*, Var*> m : temp)
+						{
+							c.push_back(m);
+						}
+						matches.push_back(c);
+						res = 1;
 					}
 				}
 			}
-			iterator = iterator->getFather();
 		}
-		return res;
+		iterator = iterator->getFather();
+	}
+	return res;
 };
-	
-Literal QueryManager::applySubstitution(Literal* result, Literal* query, const vector<pair<Var*,Var*>>& matches)
-	{				
-		copyLiteral(query,result);				
-		for (int sigIt = 0; sigIt < matches.size(); sigIt++)
+
+Literal QueryManager::applySubstitution(Literal* result, Literal* query, const vector<pair<Var*, Var*>>& matches)
+{
+	copyLiteral(query, result);
+	for (int sigIt = 0; sigIt < matches.size(); sigIt++)
+	{
+		for (int i = 0; i < query->getElements().size(); i++)
 		{
-			for (int i = 0; i < query->getElements().size(); i++)
+			if (query->getElementAt(i)->equal(matches.at(sigIt).first) == 0)
 			{
-				if (query->getElementAt(i)->equal(matches.at(sigIt).first)==0)
-				{
-					result->setElementAt(i, matches.at(sigIt).second);					
-				}
+				result->setElementAt(i, matches.at(sigIt).second);
 			}
-		}		
-		return *result;
+		}
+	}
+	return *result;
 };
 
 int QueryManager::executeQuery(Formula& f, Tableau& tableau, pair <vector<int>, vector<vector<vector<pair<Var*, Var*>>>>>& result, int YN, vector<int>& ynAnswer)
+{
+	vector<Literal*> qLits;
+	formula = f;
+	extractLiterals(formula, qLits);
+	int matchFound = -1; //use -1 for errors
+	//Print Literals from Query
+	/*cout << "Literals from query: " << qLits.size() << endl;
+	for (Literal* a : qLits)
+		cout << a->toString() << endl;
+	//---------------------------------
+	*/
+	for (int branchIt = 0; branchIt < tableau.getOpenBranches().size(); branchIt++)
 	{
-		vector<Literal*> qLits;
-		formula = f;
-		extractLiterals(formula, qLits);
-		int matchFound = -1; //use -1 for errors
-		//Print Literals from Query
-		/*cout << "Literals from query: " << qLits.size() << endl;
-		for (Literal* a : qLits)
-			cout << a->toString() << endl;
-		//---------------------------------
-		*/
-		for (int branchIt=0; branchIt<tableau.getOpenBranches().size();branchIt++)
+		int res = 0;
+		vector<vector<pair<Var*, Var*>>> matchSet(0, vector<pair<Var*, Var*>>(0)); //partial solutions set for the current branch
+		int qIter = 0;
+		for (; qIter < qLits.size(); qIter++)
 		{
-			int res=0;
-			vector<vector<pair<Var*, Var*>>> matchSet(0, vector<pair<Var*,Var*>>(0)); //partial solutions set for the current branch
-            int qIter=0; 
-			for (; qIter < qLits.size(); qIter++)
+			res = 0;
+			if (qLits.at(qIter)->containsQVariable() == 0)
 			{
-				res = 0;
-				if (qLits.at(qIter)->containsQVariable() == 0)
+				res = checkQueryLiteralMatchInBranch(tableau.getOpenBranches().at(branchIt), qLits.at(qIter));
+			}
+			else
+			{
+				if (matchSet.empty())
 				{
-					res = checkQueryLiteralMatchInBranch(tableau.getOpenBranches().at(branchIt), qLits.at(qIter)); 
+					res = checkQueryVariableMatchInBranch(tableau.getOpenBranches().at(branchIt), qLits.at(qIter), vector<pair<Var*, Var*>>(), matchSet);
 				}
 				else
 				{
-				  if (matchSet.empty())
-				    {
-					  res = checkQueryVariableMatchInBranch(tableau.getOpenBranches().at(branchIt), qLits.at(qIter), vector<pair<Var*, Var*>>(), matchSet);
-				    }
-				   else
-				    {
-					 vector <vector<pair<Var*, Var*>>> tmp(0);
-					 for (int solIter = 0; solIter < matchSet.size(); solIter++) //iterate over partial solutions
-					   {
+					vector <vector<pair<Var*, Var*>>> tmp(0);
+					for (int solIter = 0; solIter < matchSet.size(); solIter++) //iterate over partial solutions
+					{
 						Literal sigq = Literal(-1, vector<Var*>(0));
 						applySubstitution(&sigq, qLits.at(qIter), matchSet.at(solIter));
 						if (sigq.containsQVariable() == 0)
@@ -2552,37 +2552,37 @@ int QueryManager::executeQuery(Formula& f, Tableau& tableau, pair <vector<int>, 
 							else { tmp.clear(); break; }
 
 						}
-						else 
+						else
 							checkQueryVariableMatchInBranch(tableau.getOpenBranches().at(branchIt), &sigq, matchSet.at(solIter), tmp);
 						// apply partial solution to q_i
 						//then call checkQueryMatchInbranch wiht sigma(q_i)
-					   }
+					}
 					matchSet = tmp;
 					if (matchSet.empty())
-					  res = 0;
-					else 
-					  res = 1;					
+						res = 0;
+					else
+						res = 1;
 				}
-			}				
-				if (res == 0)
-					break;
-			}				
-			if (!matchSet.empty())
-			{
-				result.first.push_back(branchIt);
-				result.second.push_back(matchSet);
-				matchFound = 1;
-				if (YN == 1)
-					ynAnswer.at(branchIt) = 1;
 			}
-			else if (YN == 1)
-			{
-				ynAnswer.at(branchIt) = res;
-				matchFound = (res?res:0);
-			}
+			if (res == 0)
+				break;
 		}
-		return matchFound;
-	};
+		if (!matchSet.empty())
+		{
+			result.first.push_back(branchIt);
+			result.second.push_back(matchSet);
+			matchFound = 1;
+			if (YN == 1)
+				ynAnswer.at(branchIt) = 1;
+		}
+		else if (YN == 1)
+		{
+			ynAnswer.at(branchIt) = res;
+			matchFound = (res ? res : 0);
+		}
+	}
+	return matchFound;
+};
 
 /**
 End QueryManager
@@ -2594,24 +2594,24 @@ End QueryManager
 
 int performQuery(QueryManager*& queryManager, string& str, Formula** formula, Tableau& tableau, int yn)
 {
-	
-	queryManager = (new QueryManager(5, 50)); 
-	int typeformula = 1; 
-	insertFormulaKB(0, queryManager->getQVQL(), queryManager->getQVVL(), str, formula, &typeformula);	
-	
+
+	queryManager = (new QueryManager(5, 50));
+	int typeformula = 1;
+	insertFormulaKB(0, queryManager->getQVQL(), queryManager->getQVVL(), str, formula, &typeformula);
+
 	pair <vector<int>, vector<vector<vector<pair<Var*, Var*>>>>> result(vector<int>(0), vector<vector<vector<pair<Var*, Var*>>>>(0));
 	vector<int> ynanswer;
 	if (yn == 0)
 		ynanswer = vector<int>(0);
 	else
 		ynanswer = vector<int>(tableau.getOpenBranches().size());
-	int matchFound=queryManager->executeQuery(**formula, tableau, result, yn, ynanswer); 
+	int matchFound = queryManager->executeQuery(**formula, tableau, result, yn, ynanswer);
 	queryManager->setMatchSet(result);
-	queryManager->setAnswerSet(ynanswer);	
-	return matchFound;	
+	queryManager->setAnswerSet(ynanswer);
+	return matchFound;
 };
 
-void performQuerySet(vector<QueryManager*>& results,vector<string>& strings, vector<Formula>& formulae, Tableau& tableau)
+void performQuerySet(vector<QueryManager*>& results, vector<string>& strings, vector<Formula>& formulae, Tableau& tableau)
 {
 #ifdef debug 
 #ifdef debugquery
@@ -2620,12 +2620,12 @@ void performQuerySet(vector<QueryManager*>& results,vector<string>& strings, vec
 #endif // debug		
 	for (string s : strings) // Manage multiple query
 	{
-		Formula *f = NULL;  
-		QueryManager* manager=NULL; 
-		int result = performQuery(manager, s, &f, tableau, 1);       
+		Formula *f = NULL;
+		QueryManager* manager = NULL;
+		int result = performQuery(manager, s, &f, tableau, 1);
 		formulae.push_back(*f);
 		results.push_back(manager); //Multiple query to be managed
-	}	
+	}
 };
 
 
@@ -2633,8 +2633,8 @@ void propagateNegation(Formula* current, vector<bool>& isNegated, vector<Formula
 {
 #ifdef debug
 #ifdef debugnorm		
-	logFile << "------ Dropping Negation boleans to subformulae of:-----" << endl;	
-	logFile << "-------"<<current->toString() << endl;
+	logFile << "------ Dropping Negation boleans to subformulae of:-----" << endl;
+	logFile << "-------" << current->toString() << endl;
 #endif
 #endif // debug
 
@@ -2651,7 +2651,7 @@ void propagateNegation(Formula* current, vector<bool>& isNegated, vector<Formula
 }
 
 void dropLRImplication(Formula* f)
-{	
+{
 #ifdef debug
 #ifdef debugnorm		
 	logFile << "------ Dropping II from:" << endl;
@@ -2676,36 +2676,36 @@ void dropLRImplication(Formula* f)
 }
 
 Formula* dropNegation(Formula *f, Formula **topform)
-{	
+{
 #ifdef debug
 #ifdef debugnorm		
 	logFile << "------ Dropping Negation from:" << endl;
 	logFile << "-------" << f->toString() << endl;
 #endif
 #endif // debug
-	Formula* father = f->getPreviousformula(); 
-	Formula* tmp = f->getRSubformula();	
+	Formula* father = f->getPreviousformula();
+	Formula* tmp = f->getRSubformula();
 	if (tmp == NULL)
-		tmp = f->getLSubformula();	
+		tmp = f->getLSubformula();
 	if (father == NULL)
-	{		
-	  (*topform) = tmp;	
+	{
+		(*topform) = tmp;
 	}
-	else 
+	else
 	{
 		if (father->getLSubformula() == f)
 			father->setLSubformula(tmp);
 		else
 			father->setRSubformula(tmp);
 		tmp->setPreviousFormula(father);
-	}	
-	delete(f);	
-	return(tmp); 	
+	}
+	delete(f);
+	return(tmp);
 }
 
 Formula* convertFormulaToNNF(Formula* formula)
 {
-	
+
 #ifdef debug
 #ifdef debugnorm
 	logFile << "-----Converting Formula to NNF:------" << endl;
@@ -2725,48 +2725,49 @@ Formula* convertFormulaToNNF(Formula* formula)
 	Formula* startFormula = formula;
 	vector<bool> isNegated;
 	vector<Formula*> stackF;
-	stackF.push_back(startFormula);	
-	isNegated.push_back(false);	
-	
+	stackF.push_back(startFormula);
+	isNegated.push_back(false);
+
 	while (!stackF.empty())
 	{
 		Formula* current = stackF.back();
 		bool neg = isNegated.back();
 		stackF.pop_back();
-		isNegated.pop_back();		
-		if (current->getLiteral() != NULL )
+		isNegated.pop_back();
+		if (current->getLiteral() != NULL)
 		{
-			
+
 			if (neg)
-			{	;
+			{
+				;
 #ifdef debug
 #ifdef debugnorm		
 				logFile << "------ Found Negation on Literal:" << endl;
 				logFile << "-------" << current->toString() << endl;
 #endif
 #endif // debug
-			  int  newOp = (current->getLiteral()->getLiteralOp() >= 2 ? -2 : 2);			  
-			  current->getLiteral()->setLiteralOp(current->getLiteral()->getLiteralOp() + newOp);
+				int  newOp = (current->getLiteral()->getLiteralOp() >= 2 ? -2 : 2);
+				current->getLiteral()->setLiteralOp(current->getLiteral()->getLiteralOp() + newOp);
 #ifdef debug
 #ifdef debugnorm		
-			  logFile << "------ Computing:" << endl;
-			  logFile << "-------" << current->getLiteral()->toString() << endl;
+				logFile << "------ Computing:" << endl;
+				logFile << "-------" << current->getLiteral()->toString() << endl;
 #endif
 #endif // debug
-			 }
+			}
 		}
 		else
-		{			
-		 switch (current->getOperand())
-		  {
+		{
+			switch (current->getOperand())
+			{
 			case 0:
 				if (neg)
-				{					
+				{
 					current->setOperand(1);
 #ifdef debug
 #ifdef debugnorm		
 					logFile << "------ Found Negation on \"OR\":" << endl;
-					
+
 #endif
 #endif // debug
 				}
@@ -2822,7 +2823,7 @@ Formula* convertFormulaToNNF(Formula* formula)
 
 #endif
 #endif // debug			
-				stackF.push_back(dropNegation(current, &startFormula));					
+				stackF.push_back(dropNegation(current, &startFormula));
 				isNegated.push_back(!neg);
 				break;
 
@@ -2884,7 +2885,7 @@ Formula* convertFormulaToNNF(Formula* formula)
 	logFile << "-------" << startFormula->toString() << endl;
 #endif
 #endif // debug
-	return startFormula;		
+	return startFormula;
 }
 
 
@@ -2898,15 +2899,15 @@ int precomputeKBSpaceFromString(string& inputformula, vector<int>& KBsize, vecto
 void precomputeKBSpaceFromFile(string &name, vector<int>& KBsize, vector<int>& Litsize)
 {
 	std::ifstream file(name);
-	std::string str;	
+	std::string str;
 	while (std::getline(file, str))
-	{		
+	{
 		if ((str.rfind("//", 0) != 0) || !str.empty())
 		{
-		  precomputeKBSpaceFromString(str, KBsize, Litsize);
+			precomputeKBSpaceFromString(str, KBsize, Litsize);
 		}
 	}
-	
+
 }
 
 
@@ -2979,7 +2980,7 @@ void retrieveQVarSet(vector<Literal*>&atomset, vector<Var*>&varset)
 				int i = 0;
 				for (; i < varset.size(); ++i)
 				{
-					if (var->equal(varset.at(i))==0)
+					if (var->equal(varset.at(i)) == 0)
 						break;
 				}
 				if (i == varset.size())
@@ -2994,194 +2995,193 @@ void retrieveQVarSet(vector<Literal*>&atomset, vector<Var*>&varset)
 int instantiateLiteral(Literal& lit, Literal* dest, vector<int>& ind, vector<Var*>& varset)
 {
 
-	#ifdef debug 
-	#ifdef debugexpand
-		logFile << "------- Expanding Literal: " << lit.toString() << endl;
-		logFile << "------- Using the indexes: " << toStringVector(ind) << endl;		
-	#endif
-	#endif // debug
+#ifdef debug 
+#ifdef debugexpand
+	logFile << "------- Expanding Literal: " << lit.toString() << endl;
+	logFile << "------- Using the indexes: " << toStringVector(ind) << endl;
+#endif
+#endif // debug
 	dest->setLiteralOp(lit.getLiteralOp());
 	for (Var* var : lit.getElements())
 	{
 		if (var->getVarType() == 1)
 		{
-			for (int i=0; i<varset.size(); i++)
+			for (int i = 0; i < varset.size(); i++)
 			{
 				if (var->getName() == varset.at(i)->getName())
 					dest->addElement(&varSet.getVVLAt(0)->at(ind.at(i)));
 			}
 		}
 		else
-		 dest->addElement(var);
+			dest->addElement(var);
 	}
 #ifdef debug 
 #ifdef debugexpand
-	logFile << "------- Expanded Literal: " << dest->toString() << endl;	
+	logFile << "------- Expanded Literal: " << dest->toString() << endl;
 #endif
 #endif // debug
 	return 0;
 }
 
-int computeRuleLiteral(Literal* litstl, Literal* lit)
+int computeRuleLiteral(Literal* litstl, Literal* lit, vector<Var*> varset, vector<int>& indKB)
 {
 	if (litstl->getElements().size() == lit->getElements().size())
 	{
 		for (int i = 0; i < litstl->getElements().size(); i++)
 		{
-			if (litstl->getElementAt(i)->equal(lit->getElementAt(i)) != 0)
+			if (litstl->getElementAt(i)->equal(lit->getElementAt(i), varset, indKB) != 0)
 			{
 				return 0; //nothing to do
 			}
+
 		}
 		if (litstl->getLiteralOp() == lit->getLiteralOp())
 			return 1; //positive on the branch		
-        else return -1;
-	}	
+		else return -1;
+	}
 	return 0;
 }
 
-int computeRule(Node* leaf, vector<Literal*>& stl, vector<Literal*>& nodeLitStack)
+int computeRule(Node* leaf, vector<Var*>varset, vector<int>& indKB, vector<Literal*>& nodeLitStack)
 {
-	Node* nodeIt=leaf;	
+	Node* nodeIt = leaf;
 	while (nodeIt != NULL)
 	{
-		for (int formulaIt=0; formulaIt < nodeIt->getSetFormulae().size(); formulaIt++)
+		for (int formulaIt = 0; formulaIt < nodeIt->getSetFormulae().size(); formulaIt++)
 		{
-		 Formula* formula = nodeIt->getSetFormulae().at(formulaIt);
-		 if (formula->getLiteral() != NULL && formula->getLiteral()->containsQVariable() == 0)
-		  {
-			 for (int i=0; i<nodeLitStack.size(); i++)
-			  {
-				// nodeLitStack.push_back(litstl);
-				 Literal* litstl = nodeLitStack.at(i);				 
-				 int res=computeRuleLiteral(litstl, formula->getLiteral());
-				 switch (res)
-				 {
-				   case 0: break;
-				   case 1: return 1; break; //positive literal
-				   case -1:
-				   { 
-					   nodeLitStack.at(i) = nodeLitStack.at(nodeLitStack.size()-1);
-					   nodeLitStack.pop_back(); 	
-					   i--;
-				       break; 
-				   } //complementary literal 
-				   default:	 break;
-				 }
-			  }			 
-		  }
+			Formula* formula = nodeIt->getSetFormulae().at(formulaIt);
+			if (formula->getLiteral() != NULL && formula->getLiteral()->containsQVariable() == 0)
+			{
+				for (int i = 0; i < nodeLitStack.size(); i++)
+				{
+					// nodeLitStack.push_back(litstl);
+					Literal* litstl = nodeLitStack.at(i);
+					int res = computeRuleLiteral(litstl, formula->getLiteral(), varset, indKB);
+					switch (res)
+					{
+					case 0: break;
+					case 1: return 1; break; //positive literal
+					case -1:
+					{
+						nodeLitStack.at(i) = nodeLitStack.at(nodeLitStack.size() - 1);
+						nodeLitStack.pop_back();
+						i--;
+						break;
+					} //complementary literal 
+					default:	 break;
+					}
+				}
+			}
 		}
-  	  nodeIt = nodeIt->getFather();
+		nodeIt = nodeIt->getFather();
 	}
 	return 0;
 }
 
 
 int expandGammaTableau(Tableau& T)
-{	
+{
 	int clash = checkNodeClash(T.getTableau()->getSetFormulae(), 1); //check	
 	if (clash == 0)
-	{		
+	{
 		T.getOpenBranches() = vector<Node*>();
 		return -1;
-	} 
-	
+	}
+
 	vector<Node*> newNodeSet;
 	Node* root = T.getTableau();
 	newNodeSet.push_back(root);
-	for(int itForm=0; itForm <T.getTableau()->getSetFormulae().size(); itForm++)
+	for (int itForm = 0; itForm < T.getTableau()->getSetFormulae().size(); itForm++)
 	{
 		Formula* currUnfulFormula = T.getTableau()->getSetFormulae().at(itForm);
 #ifdef debug 
 #ifdef debugexpand
-		logFile << "------- Fulfulling formula: " << currUnfulFormula->toString() << endl;		
+		logFile << "------- Fulfulling formula: " << currUnfulFormula->toString() << endl;
 #endif
 #endif // debug
-				
-		vector<Literal*> atomset;	
+
+		vector<Literal*> atomset;
 #ifdef debug 
 #ifdef debugexpand
 		logFile << "------- Computing literals in formula" << endl;
 #endif
 #endif // debug
-		getLiteralSet(currUnfulFormula, atomset, 1);			
-		if (atomset.size() == 0)			
+		getLiteralSet(currUnfulFormula, atomset, 1);
+		if (atomset.size() == 0)
 			continue;
 #ifdef debug 
 #ifdef debugexpand
-		logFile << "------- Found "<<atomset.size()<<" literal/s in formula" << endl;
+		logFile << "------- Found " << atomset.size() << " literal/s in formula" << endl;
 #endif
 #endif // debug
 		vector<Var*> varset;
 		retrieveQVarSet(atomset, varset);
 		std::vector<int> indKB(varset.size(), 0); //initialized to symbol 0. 
-        int jump = 0;
+		//int jump = 0;
 		do
-		{			
-			vector<Literal*> litStack;			
-			litStack.reserve(atomset.size());
-			int counter = 0;
-			for (int itLit=0; itLit<atomset.size(); itLit++)
-				{
-				  if (atomset.at(itLit)->containsQVariable() != 0)
-				  {
-					Literal* instance = new Literal(); //remember to destroy if unused
-					instantiateLiteral(*(atomset.at(itLit)), instance, indKB, varset);
-					litStack.push_back(instance);
-				  }
-				  else
-				  {
-					  counter++;
-					  litStack.push_back(atomset.at(itLit));
-				  }
-				}
-			if (counter == litStack.size())
-				jump = 1;
-			vector<Node*> openBranch;	
-			
-			if (litStack.size() == 0)
-				continue;
+		{
+			//vector<Literal*> litStack;			
+			//litStack.reserve(atomset.size());
+			//int counter = 0;			
+			//if (counter == litStack.size())
+			//	jump = 1;
+			vector<Node*> openBranch;
+
+			//if (litStack.size() == 0)
+			//	continue;
 
 			for (int itNode = 0; itNode < newNodeSet.size(); itNode++)
 			{
-				vector<Literal*> nodeLitStack=litStack;					
-				int compr = computeRule(newNodeSet.at(itNode), litStack, nodeLitStack);
+				vector<Literal*> nodeLitStack = atomset;
+				int compr = computeRule(newNodeSet.at(itNode), varset, indKB, nodelitStack);
 				if (compr == 1)
 				{
-					openBranch.push_back(newNodeSet.at(itNode));					
+					openBranch.push_back(newNodeSet.at(itNode));
 				}
 				else if (nodeLitStack.size() == 0)//close branch
-				{ 					
-					T.addClosedBranch(newNodeSet.at(itNode));					
-				}
-				else if (nodeLitStack.size() == 1)
-				{				
-					//ERule
-					if (newNodeSet.size() == 1)       //if (atomset.size() == 1) 
-					{
-						EGRule(nodeLitStack.at(0), root);
-						if(openBranch.size()==0)
-							openBranch.push_back(root);
-					}
-					else
-					{
-						EGRule(nodeLitStack.at(0), newNodeSet.at(itNode));
-						openBranch.push_back(newNodeSet.at(itNode));
-					}
+				{
+					T.addClosedBranch(newNodeSet.at(itNode));
 				}
 				else
-				{ //pbrule					
-					PBRule(nodeLitStack, newNodeSet.at(itNode), openBranch);					
+				{
+					for (int itLit = 0; itLit < nodelitStack.size(); itLit++)
+					{
+						if (nodelitStack.at(itLit)->containsQVariable() != 0)
+						{
+							Literal* instance = new Literal(); 
+							instantiateLiteral(*(nodelitStack.at(itLit)), instance, indKB, varset);
+							litStack.at(itLit) = instance;
+						}
+					}
+					if (nodeLitStack.size() == 1)
+					{
+						//ERule
+						if (newNodeSet.size() == 1)       //if (atomset.size() == 1) 
+						{
+							EGRule(nodeLitStack.at(0), root);
+							if (openBranch.size() == 0)
+								openBranch.push_back(root);
+						}
+						else
+						{
+							EGRule(nodeLitStack.at(0), newNodeSet.at(itNode));
+							openBranch.push_back(newNodeSet.at(itNode));
+						}
+					}
+					else
+					{ //pbrule					
+						PBRule(nodeLitStack, newNodeSet.at(itNode), openBranch);
+					}
 				}
 			}
 			newNodeSet = openBranch;
 			currUnfulFormula->setFulfillness(0);
 			for (Literal* l : litStack)
 				delete l;
-		} while (jump == 0 && next_variation(indKB.begin(), indKB.end(), varSet.getVVLAt(0)->size() - 1)); //tau
+		} while (next_variation(indKB.begin(), indKB.end(), varSet.getVVLAt(0)->size() - 1)); //tau
 	}
 	T.getOpenBranches() = newNodeSet;
-  return 0;
+	return 0;
 }
 
 
@@ -3192,13 +3192,13 @@ int expandGammaTableau(Tableau& T)
 
 
 template <typename C>
-string toStringVector(const vector <C> &data) 
+string toStringVector(const vector <C> &data)
 {
 	string s = "";
 	for (std::vector<typename C>::const_iterator it = data.begin(); it != data.end(); ++it) {
 		s.append(to_string(*it)).append(" ");
 	}
-	return s;	
+	return s;
 }
 
 void printClosedBranches(Tableau& tableau)
@@ -3239,10 +3239,10 @@ void printTRadix(vector<Formula*>& KB)
 {
 	cout << "---Radix Content ---" << endl;
 	for (int i = 0; i < KB.size(); i++)
-	{		
+	{
 		cout << KB.at(i)->toString() << endl;
 	}
-	
+
 }
 
 void printTExpanded(Tableau& tableau)
