@@ -103,7 +103,7 @@ int main()
 	//printEqSet(tableau);
 
 	//print open branches
-	//printOpenBranches(tableau);
+	printOpenBranches(tableau);
 
 	//print closed branches
 	//printClosedBranches(tableau);
