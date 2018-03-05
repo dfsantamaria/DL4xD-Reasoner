@@ -55,7 +55,7 @@ int main()
 	vector<Formula*> KBnorm;
 	vector<Formula*> KBcnf;
 	vector<Formula*> KBmq;
-	string kbname = "Tester/tester10.txt";
+	string kbname = "Tester/tester9.txt";
 
 	/*Precomputing Space -- to be implemented*/
 	//  to be implemented
@@ -88,7 +88,7 @@ int main()
 	expandKB(KBmq, expKB);
 	Tableau tableau = Tableau(new Node(expKB));
 	//Printing result of expansion
-	//printTExpanded(tableau);
+	printTExpanded(tableau);
 	//Printing content of VVL and VQL
 	
 	cout << "Expanding Tableau" << endl;
