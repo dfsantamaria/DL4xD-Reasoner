@@ -1535,7 +1535,7 @@ void istantiateFormula(Formula* currOutF, vector<int>& indKB, vector<Var*>& vars
 					{
 						if (varset.at(j)->equal(var) == 0)
 						{
-							cout << varset.at(j)->toString() << endl;
+							//cout << varset.at(j)->toString() << endl;
 							break;
 						}
 						
@@ -1581,7 +1581,7 @@ int expandKB(const vector<Formula*> &inpf, vector <Formula*> &out)
 			Formula* currOutF = NULL;
 			currOutF=copyFormula(currUnfulFormula, currOutF);
 			out.push_back(currOutF);	
-			cout << "----"<<currOutF->toString() << endl;
+			//cout << "----"<<currOutF->toString() << endl;
 			istantiateFormula(currOutF, indKB, varset);
 		} while (next_variation(indKB.begin(), indKB.end(), varSet.getVVLAt(0)->size() - 1));		
 	}
