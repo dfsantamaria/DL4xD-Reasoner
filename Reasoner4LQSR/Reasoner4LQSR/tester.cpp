@@ -88,7 +88,7 @@ int main()
 	expandKB(KBmq, expKB);
 	Tableau tableau = Tableau(new Node(expKB));
 	//Printing result of expansion
-	printTExpanded(tableau);
+	//printTExpanded(tableau);
 	//Printing content of VVL and VQL
 	
 	cout << "Expanding Tableau" << endl;
