@@ -1574,7 +1574,10 @@ int expandKB(const vector<Formula*> &inpf, vector <Formula*> &out)
 		getLiteralSet(currUnfulFormula, atomset, 1);
 		retrieveQVarSet(atomset, varset);
 		if (atomset.size() == 0)
+		{
+			out.push_back(currUnfulFormula);
 			continue;
+		}
 		std::vector<int> indKB(varset.size(), 0); //initialized to symbol 0. 		
 		do
 		{				

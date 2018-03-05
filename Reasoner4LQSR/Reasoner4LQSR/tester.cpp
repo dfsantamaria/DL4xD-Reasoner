@@ -55,7 +55,7 @@ int main()
 	vector<Formula*> KBnorm;
 	vector<Formula*> KBcnf;
 	vector<Formula*> KBmq;
-	string kbname = "Tester/local.txt";
+	string kbname = "Tester/tester10.txt";
 
 	/*Precomputing Space -- to be implemented*/
 	//  to be implemented
@@ -103,7 +103,7 @@ int main()
 	//printEqSet(tableau);
 
 	//print open branches
-	printOpenBranches(tableau);
+	//printOpenBranches(tableau);
 
 	//print closed branches
 	//printClosedBranches(tableau);

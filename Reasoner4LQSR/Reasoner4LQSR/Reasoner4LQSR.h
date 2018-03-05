@@ -275,7 +275,7 @@ Var* createVarFromString(vector<vector<Var>>& vec, vector<vector<Var>>& vec2, st
 void ERule(Literal* atom, Node* node);
 int expandKB(const vector<Formula*> &inpf, vector <Formula*> &out);
 void expandTableau(Tableau& T);
-void expandGammaTableau(Tableau& T);
+//void expandGammaTableau(Tableau& T);
 void generateConst(int r, int n, vector<int>& b);
 int getLiteralSet(Formula* f, vector<Literal*> &outf);
 int getVarsOrder(Var &var1, Var &var2);
