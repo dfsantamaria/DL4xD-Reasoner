@@ -75,10 +75,10 @@ int main()
 	cout << "--Converting Formulae to CNF--" << endl;
 	convertKBToCNF(KBnorm, KBcnf);
 	KBnorm.clear();
-	printTRadix(KBcnf); //print Tableau Radix
+	//printTRadix(KBcnf); //print Tableau Radix
 	cout << "--Move Quantifiers--" << endl;
 	moveQuantifierKB(0, KBcnf, KBmq);
-	//printTRadix(KBmq); //print Tableau Radix
+	printTRadix(KBmq); //print Tableau Radix
 
 	vector<Formula*> expKB;
 	cout << "Expanding Quantifiers in KB" << endl;
@@ -88,7 +88,7 @@ int main()
 	expandKB(KBmq, expKB);
 	Tableau tableau = Tableau(new Node(expKB));
 	//Printing result of expansion
-	//printTExpanded(tableau);
+	printTExpanded(tableau);
 	//Printing content of VVL and VQL
 	
 	cout << "Expanding Tableau" << endl;
