@@ -1274,12 +1274,6 @@ int instantiateFormula(Formula* f, vector<Formula*> &destination)
  testFile << f->toString() << endl;
 #endif // counterFormulaIn
 
-	
-	
-	
-	
-
-
 #ifdef debug  
 	logFile << "------- Expanding Formula: " << f->toString() << endl;
 #endif // debug
@@ -1329,7 +1323,236 @@ counterFormulaIn++;
 	return 0;
 }
 
+//int expandKB(const vector<Formula*> &inpf, vector <Formula*> &out)
+//{
+//#ifdef debug  
+//	logFile << "--- Applying Expansion Rule" << endl;
+//#endif // debug
+//
+//	if (varSet.getVVLAt(0)->size() == 0) //no individual;
+//	{
+//		varSet.getVVLAt(0)->push_back(*new Var("TOPIND", 0, 0, 0));
+//		/*for (Formula* f : inpf)
+//		{
+//		out.push_back(f);
+//		}
+//		return 0;*/
+//}
+//
+//
+//	int or = operators.getLogOpValue("$OR");
+//	vector <Formula*> tmp;
+//	for (int i = 0; i < inpf.size(); i++)
+//		tmp.push_back(inpf.at(i));
+//
+//
+//	while (!tmp.empty())
+//	{
+//		Formula* f = tmp.back();
+//#ifdef debug  
+//#ifdef debugexpand
+//		logFile << "----- Computing Formula: " << f->toString() << endl;
+//#endif
+//#endif // debug
+//		tmp.pop_back();
+//		if (f->getLiteral() != NULL || f->getOperand()== or)
+//		{
+//			instantiateFormula(f, out);
+//		}
+//		/*else if (f.getOperand() == 4)
+//		{
+//		f.getRSubformula()->setPreviousFormula(NULL);
+//		#ifdef debug
+//		#ifdef debugexpand
+//		logFile << "----- Obtaining Formula: " << f.getRSubformula()->toString() << endl;
+//		#endif
+//		#endif // debug
+//		tmp.push_back(*(f.getRSubformula()));
+//		}*/
+//		/*else
+//		{
+//
+//		f->getLSubformula()->setPreviousFormula(NULL);
+//		f->getRSubformula()->setPreviousFormula(NULL);
+//		#ifdef debug
+//		#ifdef debugexpand
+//		logFile << "----- Obtaining Formula: " << f.getLSubformula()->toString() << endl;
+//		logFile << "----- Obtaining Formula: " << f.getRSubformula()->toString() << endl;
+//		#endif
+//		#endif // debug
+//		tmp.push_back(*(f.getLSubformula()));
+//		tmp.push_back(*(f.getRSubformula()));
+//
+//		//cout << (f.getOperand()) << endl;
+//		}*/
+//	}
+//#ifdef debug  
+//	logFile << "--- End Expansion Rule" << endl;
+//#endif // debug
+//	return 0;
+//}
+int checkLiteralClash(Literal &atom1, Literal &atom2, int checkQvar)
+{ //0 checkQVar
+#ifdef debug 
+#ifdef debugclash
+	logFile << "-----Checking for Clash: " << atom1.toString() << " and " << atom2.toString() << endl;
+#endif // debug
+#endif
+	if (atom1.getElements().size() == atom2.getElements().size() && checkLiteralOpClash(atom1.getLiteralOp(), atom2.getLiteralOp()) == 0)
+	{
+		for (int i = 0; i < atom1.getElements().size(); i++)
+		{
+			if (checkQvar == 0)
+			{
+				if (atom1.getElementAt(i)->getVarType() + atom2.getElementAt(i)->getVarType() == 2 || //both qvar
+					atom1.getElementAt(i)->getVarType() + atom2.getElementAt(i)->getVarType() == 1) //one is a qvar the other doesn't
+					continue;
+				else if (atom1.getElementAt(i)->equal(atom2.getElementAt(i)) != 0)
+					return 1;
+			}
+			else if (checkQvar == 1)
+			{
+				if (atom1.getElementAt(i)->getVarType() + atom2.getElementAt(i)->getVarType() == 2 || atom1.getElementAt(i)->getVarType() + atom2.getElementAt(i)->getVarType() == 1
+					|| (atom1.getElementAt(i)->equal(atom2.getElementAt(i)) != 0))
+					return 1;
+			}
+		}
+		return 0;
+	}
+	else return 1;
+}
 
+template <class Iter>
+bool next_variation(Iter first, Iter last, const typename std::iterator_traits<Iter>::value_type max)
+{
+	if (first == last) return false; // empty sequence (n==0)
+
+	Iter i(last); --i; // Point to the rightmost element
+					   // Check if I can just increase it
+	if (*i < max) { ++(*i); return true; } // Increase this element and return
+
+										   // Find the rightmost element to increase
+	while (i != first)
+	{
+		*i = 0; // reset the right-hand element
+		--i; // point to the left adjacent
+		if (*i < max) { ++(*i); return true; } // Increase this element and return
+	}
+
+	// If here all elements are the maximum symbol (max=k-1), so there are no more variations
+	//for(i=first; i!=last; ++i) *i = 0; // Should reset to the lowest sequence (0)?
+	return false;
+} // 'next_variation'
+
+int getLiteralSet(Formula* f, vector<Literal*> &outf, int checkQvar)
+{
+	if (f->getLiteral() != NULL)
+	{
+		if (f->getLiteral()->containsQVariable() == 1)
+		{
+			outf.push_back(f->getLiteral());
+			return 0;
+		}
+
+		}
+	stack <Formula*> st;
+	if (f->getRSubformula() != NULL)
+		st.push(f->getRSubformula());
+	if (f->getLSubformula() != NULL)
+		st.push(f->getLSubformula());
+	while (!st.empty())
+	{
+		Formula* tmp = st.top();
+		if (tmp->getLiteral() != NULL && checkLiteralClash(*tmp->getLiteral()) != 0 && checkLiteralTautology(*tmp->getLiteral()) != 0)
+		{
+			int stop = 0;
+			int i = 0;
+			for (; i < outf.size() && stop == 0; i++)
+			{
+				if (outf.at(i)->equals(*tmp->getLiteral()) == 0)
+					stop = 1;
+				else if (checkLiteralClash(*outf.at(i), *tmp->getLiteral(), checkQvar) == 0)	// case A V \negA						
+					stop = 2;
+			}
+			if (stop == 0)
+				outf.push_back(tmp->getLiteral());//There should be only OR because of CNF formula
+			else if (stop == 2) // remove the element
+			{
+
+				outf.at(i - 1) = outf.back();
+				outf.pop_back();
+			}
+		}
+		st.pop();
+		if (tmp->getRSubformula() != NULL)
+			st.push(tmp->getRSubformula());
+		if (tmp->getLSubformula() != NULL)
+			st.push(tmp->getLSubformula());
+	}
+	return 0;
+	}
+
+void retrieveQVarSet(vector<Literal*>&atomset, vector<Var*>&varset)
+{
+	for (Literal* lit : atomset)
+	{
+		for (Var* var : lit->getElements())
+		{
+			if (var->getVarType() == 1)
+			{
+				int i = 0;
+				for (; i < varset.size(); ++i)
+				{
+					if (var->equal(varset.at(i)) == 0)
+						break;
+				}
+				if (i == varset.size())
+					varset.push_back(var);
+			}
+	}
+}
+}
+
+void istantiateFormula(Formula* currOutF, vector<int>& indKB, vector<Var*>& varset)
+{
+	vector<Formula*> tmp;
+	tmp.push_back(currOutF);
+	while (!tmp.empty())
+	{
+		Formula* top = tmp.back();
+		
+		tmp.pop_back();
+		if (top->getLiteral() != NULL)
+		{
+			for (int i = 0; i < top->getLiteral()->getElements().size(); i++)
+			{
+				Var* var = top->getLiteral()->getElements().at(i);
+				if (var->getVarType() == 1)
+				{
+					
+					int j = 0;
+					for (;j < varset.size(); j++)
+					{
+						if (varset.at(j)->equal(var) == 0)
+						{
+							//cout << varset.at(j)->toString() << endl;
+							break;
+						}
+						
+					}
+					top->getLiteral()->getElements().at(i) = &(varSet.getVVLAt(0)->at(indKB.at(j)));
+				}
+			}
+		}
+		else
+		{
+			if (top->getLSubformula() != NULL)
+				tmp.push_back(top->getLSubformula());
+			if (top->getRSubformula() != NULL)
+				tmp.push_back(top->getRSubformula());
+		}
+	}
+}
 
 int expandKB(const vector<Formula*> &inpf, vector <Formula*> &out)
 {
@@ -1338,68 +1561,35 @@ int expandKB(const vector<Formula*> &inpf, vector <Formula*> &out)
 #endif // debug
 
 	if (varSet.getVVLAt(0)->size() == 0) //no individual;
-	{ 		
-		varSet.getVVLAt(0)->push_back(*new Var("TOPIND", 0, 0,0));		
-		/*for (Formula* f : inpf)
-		{
-			out.push_back(f);
-		}
-		return 0;*/
-	}
-
-
-	int or = operators.getLogOpValue("$OR");
-	vector <Formula*> tmp;
-	for (int i = 0; i < inpf.size(); i++)
-		tmp.push_back(inpf.at(i));
-
-	
-	while (!tmp.empty())
 	{
-		Formula* f = tmp.back();
-#ifdef debug  
-#ifdef debugexpand
-		logFile << "----- Computing Formula: " << f->toString() << endl;
-#endif
-#endif // debug
-		tmp.pop_back();
-		if (f->getLiteral() != NULL || f->getOperand()== or)
-		{			
-			instantiateFormula(f, out); 
-		}	
-		/*else if (f.getOperand() == 4)
-		{			
-			f.getRSubformula()->setPreviousFormula(NULL);
-#ifdef debug  
-#ifdef debugexpand			
-			logFile << "----- Obtaining Formula: " << f.getRSubformula()->toString() << endl;
-#endif
-#endif // debug			
-			tmp.push_back(*(f.getRSubformula()));
-		}*/
-		/*else
-		{
-			
-			f->getLSubformula()->setPreviousFormula(NULL);
-			f->getRSubformula()->setPreviousFormula(NULL);
-#ifdef debug  
-#ifdef debugexpand
-			logFile << "----- Obtaining Formula: " << f.getLSubformula()->toString() << endl;
-			logFile << "----- Obtaining Formula: " << f.getRSubformula()->toString() << endl;
-#endif
-#endif // debug
-			tmp.push_back(*(f.getLSubformula()));
-			tmp.push_back(*(f.getRSubformula()));
-
-			//cout << (f.getOperand()) << endl;
-		}*/
+		varSet.getVVLAt(0)->push_back(*new Var("TOPIND", 0, 0, 0));	
 	}
-#ifdef debug  
-	logFile << "--- End Expansion Rule" << endl;
-#endif // debug
+	int or = operators.getLogOpValue("$OR");
+	
+	for (int itForm = 0; itForm < inpf.size(); itForm++)
+	{
+		Formula* currUnfulFormula = inpf.at(itForm);
+		vector<Var*> varset;
+		vector<Literal*> atomset;
+		getLiteralSet(currUnfulFormula, atomset, 1);
+		retrieveQVarSet(atomset, varset);
+		if (atomset.size() == 0)
+		{
+			out.push_back(currUnfulFormula);
+			continue;
+		}
+		std::vector<int> indKB(varset.size(), 0); //initialized to symbol 0. 		
+		do
+		{				
+			Formula* currOutF = NULL;
+			currOutF=copyFormula(currUnfulFormula, currOutF);
+			out.push_back(currOutF);	
+			//cout << "----"<<currOutF->toString() << endl;
+			istantiateFormula(currOutF, indKB, varset);
+		} while (next_variation(indKB.begin(), indKB.end(), varSet.getVVLAt(0)->size() - 1));		
+	}
 	return 0;
 }
-
 int checkLiteralOpClash(int op1, int op2)
 {
 	if (abs(op1 - op2) == 2)
@@ -1745,7 +1935,7 @@ void chooseRule(Tableau &T, vector<Node*> &nodeSet, Formula* f)
 	{		
 		vector<Literal*> atoms;
 		vector<Literal*> atomset;
-		int val = getLiteralSet(f, atomset); 
+		int val = getLiteralSet(f, atomset,1); 
 		if (val == 0 && atomset.size() == 0)
 		{
 		  newNodeSet.push_back(nodeSet.at(b));

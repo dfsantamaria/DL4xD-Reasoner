@@ -55,7 +55,7 @@ int main()
 	vector<Formula*> KBnorm;
 	vector<Formula*> KBcnf;
 	vector<Formula*> KBmq;
-	string kbname = "Tester/local.txt";
+	string kbname = "Tester/tester9.txt";
 
 	/*Precomputing Space -- to be implemented*/
 	//  to be implemented
@@ -75,10 +75,10 @@ int main()
 	cout << "--Converting Formulae to CNF--" << endl;
 	convertKBToCNF(KBnorm, KBcnf);
 	KBnorm.clear();
-	printTRadix(KBcnf); //print Tableau Radix
+	//printTRadix(KBcnf); //print Tableau Radix
 	cout << "--Move Quantifiers--" << endl;
 	moveQuantifierKB(0, KBcnf, KBmq);
-	//printTRadix(KBmq); //print Tableau Radix
+	printTRadix(KBmq); //print Tableau Radix
 
 	vector<Formula*> expKB;
 	cout << "Expanding Quantifiers in KB" << endl;
