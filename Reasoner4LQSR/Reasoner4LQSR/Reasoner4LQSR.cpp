@@ -1935,7 +1935,7 @@ void chooseRule(Tableau &T, vector<Node*> &nodeSet, Formula* f)
 	{		
 		vector<Literal*> atoms;
 		vector<Literal*> atomset;
-		int val = getLiteralSet(f, atomset); 
+		int val = getLiteralSet(f, atomset,1); 
 		if (val == 0 && atomset.size() == 0)
 		{
 		  newNodeSet.push_back(nodeSet.at(b));
