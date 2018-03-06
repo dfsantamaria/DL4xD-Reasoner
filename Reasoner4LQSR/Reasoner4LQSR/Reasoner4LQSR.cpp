@@ -3117,7 +3117,11 @@ int expandGammaTableau(Tableau& T)
 		std::vector<int> indKB(varset.size(), 0); //initialized to symbol 0. 
         int jump = 0;
 		do
-		{			
+		{	
+
+			for (int i=0; i < indKB.size(); i++)
+				cout << indKB.at(i)<<";";
+			cout << endl;
 			vector<Literal*> litStack;			
 			litStack.reserve(atomset.size());
 			int counter = 0;
