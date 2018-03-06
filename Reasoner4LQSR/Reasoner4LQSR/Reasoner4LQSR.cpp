@@ -3043,6 +3043,7 @@ int computeRuleLiteral(Literal* litstl, Literal* lit)
 int computeRule(Node* leaf, vector<Literal*>& stl, vector<Literal*>& nodeLitStack)
 {
 	Node* nodeIt=leaf;	
+	vector<Literal*> nodeLitOut(0);
 	while (nodeIt != NULL)
 	{
 		for (int formulaIt=0; formulaIt < nodeIt->getSetFormulae().size(); formulaIt++)
@@ -3057,13 +3058,17 @@ int computeRule(Node* leaf, vector<Literal*>& stl, vector<Literal*>& nodeLitStac
 				 int res=computeRuleLiteral(litstl, formula->getLiteral());
 				 switch (res)
 				 {
-				   case 0: break;
-				   case 1: return 1; break; //positive literal
+				   case 0: 					    
+					     break;
+				   case 1: 
+					   return 1;
+					   //break; //positive literal
 				   case -1:
 				   { 
-					   nodeLitStack.at(i) = nodeLitStack.at(nodeLitStack.size()-1);
-					   nodeLitStack.pop_back(); 	
-					   i--;
+					   for(int j=i; j<nodeLitStack.size()-1; j++)
+					      nodeLitStack.at(j) = nodeLitStack.at(j+1);
+					  nodeLitStack.pop_back();
+					  i--;
 				       break; 
 				   } //complementary literal 
 				   default:	 break;
@@ -3117,11 +3122,7 @@ int expandGammaTableau(Tableau& T)
 		std::vector<int> indKB(varset.size(), 0); //initialized to symbol 0. 
         int jump = 0;
 		do
-		{	
-
-			for (int i=0; i < indKB.size(); i++)
-				cout << indKB.at(i)<<";";
-			cout << endl;
+		{				
 			vector<Literal*> litStack;			
 			litStack.reserve(atomset.size());
 			int counter = 0;
