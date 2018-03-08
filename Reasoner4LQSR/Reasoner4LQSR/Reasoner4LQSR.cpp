@@ -1989,30 +1989,39 @@ void chooseRule(Tableau &T, vector<Node*> &nodeSet, Formula* f)
 }
 
 void expandTableau(Tableau& T)
-{ 
-	
+{ 	
+	if (varSet.getVVLAt(0)->size() == 0) //no individual;
+	{
+		varSet.getVVLAt(0)->push_back(*new Var("TOPIND", 0, 0, 0));
+	}
 	if ( (checkNodeClash(T.getTableau()->getSetFormulae())==0) )
 	{		
 		T.getClosedBranches().push_back(T.getTableau()); 
 		return;
 	}
+	
 	vector<Node*> nonComBranches = vector<Node*>();
 	nonComBranches.push_back(T.getTableau()); //initially only the root node
-	vector<Formula*> fset = T.getTableau()->getSetFormulae();
-	
-	for (int i = 0; i < fset.size(); i++)
-	{		
-		if (fset.at(i)->getLiteral() == NULL)  //OR found
+	for (int itForm = 0; itForm < T.getTableau()->getSetFormulae().size() ; itForm++)
 		{
-#ifdef debug  
-#ifdef debugexpand
-			logFile << "------Fulfilling formula: " << fset.at(i)->toString() << endl;
-#endif
-#endif // debug
-			chooseRule(T, nonComBranches, fset.at(i));
-		}
-	}
-	T.getOpenBranches() = nonComBranches; 
+			Formula* currUnfulFormula = T.getTableau()->getSetFormulae().at(itForm);
+			cout << currUnfulFormula->toString() << endl;
+			vector<Var*> varset;
+			vector<Literal*> atomset;
+			getLiteralSet(currUnfulFormula, atomset, 1);
+			retrieveQVarSet(atomset, varset);
+			std::vector<int> indKB(varset.size(), 0); //initialized to symbol 0. 		
+			do
+			{
+				Formula* currOutF = NULL;
+				currOutF = copyFormula(currUnfulFormula, currOutF);
+				//cout << "----"<<currOutF->toString() << endl;
+				istantiateFormula(currOutF, indKB, varset);									
+		        chooseRule(T, nonComBranches, currOutF);		
+
+			} while (next_variation(indKB.begin(), indKB.end(), varSet.getVVLAt(0)->size() - 1));
+		}	
+	T.getOpenBranches() = nonComBranches;
 }
 
 

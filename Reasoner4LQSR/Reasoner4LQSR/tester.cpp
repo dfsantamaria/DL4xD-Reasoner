@@ -80,13 +80,13 @@ int main()
 	moveQuantifierKB(0, KBcnf, KBmq);
 	printTRadix(KBmq); //print Tableau Radix
 
-	vector<Formula*> expKB;
+	//vector<Formula*> expKB;
 	cout << "Expanding Quantifiers in KB" << endl;
 
 	auto started = std::chrono::high_resolution_clock::now();
 
-	expandKB(KBmq, expKB);
-	Tableau tableau = Tableau(new Node(expKB));
+	//expandKB(KBmq, expKB);
+	Tableau tableau = Tableau(new Node(KBmq));
 	//Printing result of expansion
 	//printTExpanded(tableau);
 	//Printing content of VVL and VQL
