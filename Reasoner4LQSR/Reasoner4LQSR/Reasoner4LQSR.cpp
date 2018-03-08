@@ -2968,7 +2968,7 @@ varset.at(var->getType()).push_back(var);
 }
 }
 */
-void retrieveQVarSet(vector<Literal*>&atomset, vector<Var*>&varset)
+void retrieveQVarSet(vector<Literal*>&atomset, vector<int>&varset)
 {
 	for (Literal* lit : atomset)
 	{
@@ -2979,11 +2979,11 @@ void retrieveQVarSet(vector<Literal*>&atomset, vector<Var*>&varset)
 				int i = 0;
 				for (; i < varset.size(); ++i)
 				{
-					if (var->equal(varset.at(i))==0)
+					if (var->equal(&(varSet.getVQL().at(0).at(varset.at(i))))==0)
 						break;
 				}
 				if (i == varset.size())
-					varset.push_back(var);
+					varset.push_back(var->getIndex());
 			}
 		}
 	}
@@ -2991,7 +2991,7 @@ void retrieveQVarSet(vector<Literal*>&atomset, vector<Var*>&varset)
 
 
 
-int instantiateLiteral(Literal& lit, Literal* dest, vector<int>& ind, vector<Var*>& varset)
+int instantiateLiteral(Literal& lit, Literal* dest, vector<int>& ind, vector<int>& varset)
 {
 
 	#ifdef debug 
@@ -3007,7 +3007,7 @@ int instantiateLiteral(Literal& lit, Literal* dest, vector<int>& ind, vector<Var
 		{
 			for (int i=0; i<varset.size(); i++)
 			{
-				if (var->getName() == varset.at(i)->getName())
+				if (var->getIndex() == varset.at(i))
 					dest->addElement(&varSet.getVVLAt(0)->at(ind.at(i)));
 			}
 		}
@@ -3117,7 +3117,7 @@ int expandGammaTableau(Tableau& T)
 		logFile << "------- Found "<<atomset.size()<<" literal/s in formula" << endl;
 #endif
 #endif // debug
-		vector<Var*> varset;
+		vector<int> varset;
 		retrieveQVarSet(atomset, varset);
 		std::vector<int> indKB(varset.size(), 0); //initialized to symbol 0. 
         int jump = 0;
