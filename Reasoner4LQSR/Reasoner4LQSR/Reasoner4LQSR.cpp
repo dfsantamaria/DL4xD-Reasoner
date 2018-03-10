@@ -2005,7 +2005,7 @@ void expandTableau(Tableau& T)
 	for (int itForm = 0; itForm < T.getTableau()->getSetFormulae().size() ; itForm++)
 		{
 			Formula* currUnfulFormula = T.getTableau()->getSetFormulae().at(itForm);
-			cout << currUnfulFormula->toString() << endl;
+			//cout << currUnfulFormula->toString() << endl;
 			vector<Var*> varset;
 			vector<Literal*> atomset;
 			getLiteralSet(currUnfulFormula, atomset, 1);
