@@ -158,7 +158,7 @@ int main()
 	vector<int> KB2size(sizeofVVector,0);
 	cout << "Reading OWL File" << endl; 
 	
-	int chk=readOWLXMLOntology("Example/onto2.owl", ontNamespaces, formulae, KB2size);
+	int chk=readOWLXMLOntology("Example/paar.owl", ontNamespaces, formulae, KB2size);
 	if (chk == -1)
 	{
 		cout << "Ontology not supported" << endl;
@@ -205,7 +205,7 @@ int main()
 	expandGammaTableau(tableau2);
 	//printVarSet();
 
-	/*
+	
 
 	cout << "Building EqSet" << endl;
 	buildEqSet(tableau2);
@@ -219,14 +219,14 @@ int main()
 	//print closed branches
 	printClosedBranches(tableau2);	
 
-	cout << "--End reading ontology--" << endl;                       */
+	cout << "--End reading ontology--" << endl;                       
 
 	/* Query Reading*/
 
 
 
 
-	/*
+	
 	cout << "---" << endl;
 	cout << "Reading Query ..." << endl;
 	string queryname = "Example/query.txt";
@@ -259,7 +259,7 @@ int main()
 		cout << "Branch number: " << i << " Answer:" << results.at(0)->getAnswerSet().at(i) << endl;
 	}
 
-	*/
+	
 	auto done = std::chrono::high_resolution_clock::now();
 	std::cout << "Milliseconds Execution: "<< std::chrono::duration_cast<std::chrono::milliseconds>(done - started).count()<<endl;
 	cout << "Open Branch: " << tableau2.getOpenBranches().size() << endl;
