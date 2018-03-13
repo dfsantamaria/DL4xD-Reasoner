@@ -204,8 +204,7 @@ int main()
 	cout << "Expanding Tableau" << endl;
 	expandGammaTableau(tableau2);
 	//printVarSet();
-
-	
+		
 
 	cout << "Building EqSet" << endl;
 	buildEqSet(tableau2);	
