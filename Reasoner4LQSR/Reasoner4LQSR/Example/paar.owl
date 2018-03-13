@@ -43,10 +43,6 @@
         <ObjectProperty IRI="#Mother"/>
         <ObjectProperty IRI="#Relative"/>
     </SubObjectPropertyOf>
-    <SubObjectPropertyOf>
-        <ObjectProperty IRI="#Relative"/>
-        <ObjectProperty abbreviatedIRI="owl:topObjectProperty"/>
-    </SubObjectPropertyOf>
 </Ontology>
 
 
