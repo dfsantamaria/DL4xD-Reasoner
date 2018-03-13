@@ -651,11 +651,12 @@ void Tableau::areInEqClass(Var& var1, int& varclass1, int& indx1, Var& var2, int
 };
 
 int Tableau::sameEqClass(Var& var1, Var& var2, int brindx)
-	{
-		for (int i = 0; i < getEqSet().at(brindx).size(); i++)
+	{	
+	  for (int i = 0; i < getEqSet().at(brindx).size(); i++)
 		{
 			int varclass1 = -1;
 			int varclass2 = -1;
+			
 			for (int j = 0; j < getEqSet().at(brindx).at(i).size(); j++)
 			{
 				if (var1.equal(getEqSet().at(brindx).at(i).at(j)) == 0)
@@ -2069,6 +2070,7 @@ void buildEqSet(Tableau& tab)
 			node = node->getFather();
 		}
 	}
+	checkTableauClash(tab);
 }
 
 
@@ -2430,7 +2432,7 @@ int QueryManager::checkQueryLiteralMatchInBranch(Node* branch, Literal* query)
 		{
 			for (Formula* formula : iterator->getSetFormulae())
 			{
-				if (formula->getLiteral() != NULL)
+				if (formula->getLiteral() != NULL && containsQVar(formula) != 0)
 				{
 					if (formula->getLiteral()->equals( *(query))==0)
 					{						
@@ -2451,7 +2453,7 @@ int QueryManager::checkQueryVariableMatchInBranch(Node* branch, Literal* query, 
 		{
 			for (Formula* formula : iterator->getSetFormulae())
 			{
-				if (formula->getLiteral() != NULL)
+				if (formula->getLiteral() != NULL && containsQVar(formula) != 0)
 				{
 					if (formula->getLiteral()->getElements().size() == query->getElements().size() && formula->getLiteral()->getLiteralOp() == query->getLiteralOp())
 					{

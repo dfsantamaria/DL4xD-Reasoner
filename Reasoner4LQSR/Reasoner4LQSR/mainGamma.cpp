@@ -208,8 +208,7 @@ int main()
 	
 
 	cout << "Building EqSet" << endl;
-	buildEqSet(tableau2);
-
+	buildEqSet(tableau2);	
 	//print EqSet
 	printEqSet(tableau2);
 
