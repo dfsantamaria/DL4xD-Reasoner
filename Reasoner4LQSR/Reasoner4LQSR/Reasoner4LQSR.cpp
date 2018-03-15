@@ -81,7 +81,7 @@ void Var::setVarType(int _var)
 
 int Var::equal(Var* match)
 	{
-		if ((getName().compare(match->getName()) == 0) && (getType() == match->getType()) && (getVarType() == match->getVarType()))
+		if ((getType() == match->getType()) && (getVarType() == match->getVarType())&& (getIndex() == match->getIndex()))
 			return 0;
 		return 1;
 	};
