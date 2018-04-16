@@ -36,7 +36,7 @@ public:
 	void setType(int _type);
 	void setVarType(int _var);
 	int equal(Var* match);
-	int equal(string _name, int _type, int _varType);
+	int equal(string _name, int _type, int _varType);	
 	string toString();
 };
 
@@ -238,6 +238,8 @@ public:
 	int checkQueryVariableMatchInBranch(Node* branch, Literal* query, vector<pair<Var*, Var*>>& currentMatch, vector<vector<pair<Var*, Var*>>>& matches);
 	Literal applySubstitution(Literal* result, Literal* query, const vector<pair<Var*, Var*>>& matches);
 	int executeQuery(Formula& f, Tableau& tableau, pair <vector<int>, vector<vector<vector<pair<Var*, Var*>>>>>& result, int YN, vector<int>& ynAnswer);
+	//int QueryManager::executeQueryEq(Formula& f, Tableau& tableau, pair <vector<int>, vector<vector<vector<pair<Var*, Var*>>>>>& result, int YN, vector<int>& ynAnswer);
+	//void QueryManager::computeQueryPartialSolution(Tableau& tableau, int branchIt, Literal& query, vector<pair<Var*, Var*>>& partSol, vector<vector<pair<Var*, Var*>>>& matchSet);
 };
 
 

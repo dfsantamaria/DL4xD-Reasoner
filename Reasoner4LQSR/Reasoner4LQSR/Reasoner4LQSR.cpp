@@ -85,6 +85,7 @@ int Var::equal(Var* match)
 			return 0;
 		return 1;
 	};
+
 int Var::equal(string _name, int _type, int _varType)
 	{
 		if (getName().compare(_name) == 0 && (getType() == _type) && (getVarType() == _varType))
@@ -1947,6 +1948,22 @@ int getVarsOrder(Var &var1, Var &var2)
 /*
    Check if the given vars are in some EqClass end returns the corresponding EqClass index and position.
 */
+
+int areInEqClass(Var& var1,  Var& var2, Tableau& tab, int brindx)
+{
+	int varclass1 = -1;
+	int varclass2 = -1;
+	int indx1 = -1;
+	int indx2 = -1;
+	areInEqClass(var1, varclass1, indx1, var2, varclass2, indx2, tab, brindx);
+	if (varclass1 == -1 || varclass2 == -1)
+		return -1;
+	if (varclass1 != varclass2)
+		return 1;
+	return 0;
+
+}
+
 void areInEqClass(Var& var1, int& varclass1, int& indx1, Var& var2, int& varclass2, int& indx2, Tableau& tab, int brindx)
 {
 	for (int i = 0; i < tab.getEqSet().at(brindx).size(); i++)
@@ -2458,23 +2475,25 @@ int QueryManager::checkQueryVariableMatchInBranch(Node* branch, Literal* query, 
 					if (formula->getLiteral()->getElements().size() == query->getElements().size() && formula->getLiteral()->getLiteralOp() == query->getLiteralOp())
 					{
 						int matchN = 0;
-						int noq = 0; //check if the query is a literal and there is a match
+						//int noq = 0; //check if the query is a literal and there is a match
 						vector<pair<Var*, Var*>> temp = vector<pair<Var*, Var*>>();
 						for (int varIt = 0; varIt < formula->getLiteral()->getElements().size(); varIt++)
 						{
-							if (query->getElementAt(varIt)->getVarType() == 0 && query->getElementAt(varIt)->equal(formula->getLiteral()->getElements().at(varIt)) == 0)
+							//cout << "---" << query->toString() << ",,,,,,,,,,," << formula->toString() << endl;
+							if (query->getElementAt(varIt)->getVarType() == 0 && 
+								 formula->getLiteral()->getElements().at(varIt)->equal(query->getElementAt(varIt)))
 							{
-								// cout << query->toString() << "++" << formula.getLiteral()->toString() << endl;
+								//cout << query->getElementAt(varIt)->getVarType() << "...." << formula->getLiteral()->getElements().at(varIt)->getType() << endl;
+								//cout << query->getElementAt(varIt)->toString() << "++" << formula->getLiteral()->getElements().at(varIt)->toString() << endl;
 								matchN++;								
 							}
 							else if (query->getElementAt(varIt)->getVarType() == 1)
 							{
-								// cout << query->toString() << ".." << formula.getLiteral()->toString() << endl;
+								//cout << query->getElementAt(varIt)->toString() << "++" << formula->getLiteral()->getElements().at(varIt)->toString() << endl;
 								temp.push_back(pair<Var*, Var*>(query->getElementAt(varIt), formula->getLiteral()->getElementAt(varIt)));
-								matchN++;
-								// cout<<temp.back().first->toString() << " pair " << temp.back().second->toString()<< " " <<endl;
-							}
-						}
+								matchN++;								
+							}							
+						}//cout << matchN << endl;
 						if (matchN == query->getElements().size())
 						{
 							//currentMatch.insert(currentMatch.end(), temp.begin(), temp.end());
@@ -2496,7 +2515,8 @@ int QueryManager::checkQueryVariableMatchInBranch(Node* branch, Literal* query, 
 	
 Literal QueryManager::applySubstitution(Literal* result, Literal* query, const vector<pair<Var*,Var*>>& matches)
 	{				
-		copyLiteral(query,result);				
+		copyLiteral(query,result);	
+		if(!matches.empty())
 		for (int sigIt = 0; sigIt < matches.size(); sigIt++)
 		{
 			for (int i = 0; i < query->getElements().size(); i++)
@@ -2509,6 +2529,9 @@ Literal QueryManager::applySubstitution(Literal* result, Literal* query, const v
 		}		
 		return *result;
 };
+
+
+
 
 int QueryManager::executeQuery(Formula& f, Tableau& tableau, pair <vector<int>, vector<vector<vector<pair<Var*, Var*>>>>>& result, int YN, vector<int>& ynAnswer)
 	{
@@ -2531,7 +2554,8 @@ int QueryManager::executeQuery(Formula& f, Tableau& tableau, pair <vector<int>, 
 			{
 				res = 0;
 				if (qLits.at(qIter)->containsQVariable() == 0)
-				{
+				{ 
+					
 					res = checkQueryLiteralMatchInBranch(tableau.getOpenBranches().at(branchIt), qLits.at(qIter)); 
 				}
 				else
@@ -2591,6 +2615,56 @@ End QueryManager
 */
 
 
+///*
+//Query Manager Refactoring
+//*/
+//
+//void QueryManager::computeQueryPartialSolution(Tableau& tableau, int branchNum, Literal& query, vector<pair<Var*, Var*>>& partSol, vector<vector<pair<Var*, Var*>>>& matchSet)
+//{
+//
+//
+//
+//}
+//
+//int QueryManager::executeQueryEq(Formula& f, Tableau& tableau, pair <vector<int>, vector<vector<vector<pair<Var*, Var*>>>>>& result, int YN, vector<int>& ynAnswer)
+//{
+//	vector<Literal*> qLits;
+//	formula = f;
+//	extractLiterals(formula, qLits);
+//	int matchFound = -1; //use -1 for errors
+//	for (int branchIt = 0; branchIt < tableau.getOpenBranches().size(); branchIt++)
+//	{
+//		int res = 0;
+//		vector<vector<pair<Var*, Var*>>> matchSet(0, vector<pair<Var*, Var*>>(0)); //partial solutions set for the current branch
+//		int qIter = 0;
+//		for (; qIter < qLits.size(); qIter++) //iterate over query literals
+//		{
+//			while (!matchSet.empty()) //iterate over partial solutions
+//			{
+//				vector<pair<Var*, Var*>> partSol = matchSet.back();
+//				Literal sigq = Literal(-1, vector<Var*>(0)); //query conjunct to which partial solution is applied
+//				applySubstitution(&sigq, qLits.at(qIter), partSol);
+//				computeQueryPartialSolution(tableau, branchIt, sigq, partSol, matchSet);
+//
+//				
+//			}
+//		}
+//		if (!matchSet.empty())
+//		{
+//			result.first.push_back(branchIt);
+//			result.second.push_back(matchSet);
+//			matchFound = 1;
+//			if (YN == 1)
+//				ynAnswer.at(branchIt) = 1;
+//		}
+//		else if (YN == 1)
+//		{
+//			ynAnswer.at(branchIt) = res;
+//			matchFound = (res ? res : 0);
+//		}
+//		return matchFound;
+//	}
+//}
 
 
 
