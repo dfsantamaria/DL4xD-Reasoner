@@ -55,7 +55,7 @@ int main()
 	vector<Formula*> KBnorm;
 	vector<Formula*> KBcnf;
 	vector<Formula*> KBmq;
-	string kbname = "Tester/testEq.txt";
+	string kbname = "Tester/swrl.txt";
 
 	/*Precomputing Space -- to be implemented*/
 	//  to be implemented
@@ -90,7 +90,7 @@ int main()
 	//printOpenBranches(tableau);
 
 
-	string queryname = "Example/query2.txt";
+	/*string queryname = "Example/query2.txt";
 	vector<Formula> querySet;
 	vector<string> stringSet = vector<string>(0);
 
@@ -118,7 +118,7 @@ int main()
 	for (int i = 0; i < results.at(0)->getAnswerSet().size(); i++)
 	{
 		cout << "Branch number: " << i << " Answer:" << results.at(0)->getAnswerSet().at(i) << endl;
-	}
+	}*/
 
 	debugEnd();
 }
