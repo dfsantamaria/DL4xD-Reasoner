@@ -154,7 +154,7 @@
     <ClInclude Include="XMLparser.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="tester.cpp" />
+    <ClCompile Include="mainSourceST.cpp" />
     <ClCompile Include="XMLparser.cpp" />
     <ClCompile Include="Reasoner4LQSR.cpp" />
     <ClCompile Include="stdafx.cpp">
