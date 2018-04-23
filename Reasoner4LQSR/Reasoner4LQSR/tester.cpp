@@ -77,9 +77,9 @@ int main()
 	KBnorm.clear();	
 	cout << "--Move Quantifiers--" << endl;
 	moveQuantifierKB(0, KBcnf, KBmq);
-	Tableau tableau = Tableau(new Node(KBmq));
-	auto started = std::chrono::high_resolution_clock::now();
+	Tableau tableau = Tableau(new Node(KBmq));	
 	cout << "Expanding Tableau" << endl;
+	auto started = std::chrono::high_resolution_clock::now();
 	expandGammaTableau(tableau);
 	auto done = std::chrono::high_resolution_clock::now();
 	std::cout << "Milliseconds Execution: " << std::chrono::duration_cast<std::chrono::milliseconds>(done - started).count() << endl;
