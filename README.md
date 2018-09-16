@@ -1,7 +1,7 @@
 # DL4xD-Reasoner
 A Reasoner for DL4xD Knowledge Bases in term of the 4LQSR computable set theoretic language.
 
-Copyright 2015 Domenico Cantone, Daniele Francesco Santamaria, Marianna Nicolosi Asmundo
+Copyright 2015 Domenico Cantone,  Marianna Nicolosi Asmundo, Daniele Francesco Santamaria
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -17,14 +17,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 Compile instructions:
 
-The software has been implemented in the Microsoft Visual Studio 2017 enviroment. Please refer to VS17 documentation for compiling instructions. If you decide to compile the program with GCC remove all the #include "stdafx.h" instructions. Always refer to the "main" branch for the last (stable) version of the sofware.
+The software has been implemented in the Microsoft Visual Studio 2017 environment. Please refer to VS17 documentation for compiling instructions. If you decide to compile the program with GCC remove all the #include "stdafx.h" instructions. Always refer to the "main" branch for the last (stable) version of the sofware.
 
 Software downloaded from this repository is provided 'as is' without warranty of any kind, either express or implied, including, but not limited to, the implied warranties of fitness for a purpose, or the warranty of non-infringement. Without limiting the foregoing, the authors make no warranty that:
 
--the software will meet your requirements
--the software will be uninterrupted, timely, secure or error-free
--the results that may be obtained from the use of the software will be effective, accurate or reliable
--the quality of the software will meet your expectations
+-the software will meet your requirements;
+-the software will be uninterrupted, timely, secure or error-free;
+-the results that may be obtained from the use of the software will be effective, accurate or reliable;
+-the quality of the software will meet your expectations;
 -any errors in the software obtained from this repository e will be corrected.
 
 Software and its documentation made available on this repository:
