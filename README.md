@@ -1,5 +1,5 @@
 # DL4xD-Reasoner
-A Reasoner for DL4xD Knowledge Bases in term of the 4LQSR computable set theoretic language.
+A Reasoner for DL4xD Knowledge Bases in term of the 4LQSR computable set theoretic fragment.
 
 Copyright 2015 Domenico Cantone,  Marianna Nicolosi Asmundo, Daniele Francesco Santamaria
 
