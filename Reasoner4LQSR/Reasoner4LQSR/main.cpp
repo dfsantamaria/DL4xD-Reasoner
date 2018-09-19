@@ -162,7 +162,7 @@ int main()
 	{
 		cout << "Ontology not supported" << endl;
 		return -1;
-	}
+	} 
 	InitializeReasoner(maxLevNum, KB2size);
 	//InitializeReasoner(3, 100, 20);
 	cout << "Printing ontology namespaces" << endl;

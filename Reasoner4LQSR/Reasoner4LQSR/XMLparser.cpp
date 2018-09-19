@@ -1686,8 +1686,9 @@ int readOWLXMLOntology(string filename, vector<pair<string, string>>& ontNamespa
 		
 		if (chk == -1)
 		{
-			return -1;
+			return chk;
 		}
+		
 		/*
 		if(formulae.size()>0)
 		  trace << formulae.back() << endl;
@@ -1716,5 +1717,5 @@ int readOWLXMLOntology(string filename, vector<pair<string, string>>& ontNamespa
 	return 0;
 #endif
 #endif // debug
-
+	return 0;
 };

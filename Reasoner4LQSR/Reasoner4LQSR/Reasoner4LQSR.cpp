@@ -2663,7 +2663,8 @@ int QueryManager::executeQuery(Formula& f, Tableau& tableau, pair <vector<int>, 
 				{
 				  if (matchSet.empty())
 				    {
-					  res = checkQueryVariableMatchInBranch(tableau.getOpenBranches().at(branchIt), qLits.at(qIter), vector<pair<Var*, Var*>>(), matchSet);
+					  vector<pair<Var*, Var*>> tmpVec;
+					  res = checkQueryVariableMatchInBranch(tableau.getOpenBranches().at(branchIt), qLits.at(qIter), tmpVec, matchSet);
 				    }
 				   else
 				    {
@@ -2749,7 +2750,7 @@ void performQuerySet(vector<QueryManager*>& results,vector<string>& strings, vec
 	{
 		Formula *f = NULL;  
 		QueryManager* manager=NULL; 
-		int result = performQuery(manager, s, &f, tableau, 1);       
+		performQuery(manager, s, &f, tableau, 1);       //can use output of performQuery for diagnostic
 		formulae.push_back(*f);
 		results.push_back(manager); //Multiple query to be managed
 	}	
@@ -3019,6 +3020,9 @@ Formula* convertFormulaToNNF(Formula* formula)
 int precomputeKBSpaceFromString(string& inputformula, vector<int>& KBsize, vector<int>& Litsize)
 {
 	throw new exception("Function to be implemented");
+	inputformula;
+	KBsize;
+	Litsize;
 	return -1;
 }
 
