@@ -71,7 +71,7 @@ int parseDeclaration(vector<std::string>& out, pugi::xml_node_iterator& it, vect
 	return 0;
 };
 
-int parseClassAssertion(vector<std::string>& out, pugi::xml_node_iterator& it, vector<int>& KBsize)
+int parseClassAssertion(vector<std::string>& out, pugi::xml_node_iterator& it)
 {
 #ifdef debug 
 #ifdef debugparseXML
@@ -100,7 +100,7 @@ int parseClassAssertion(vector<std::string>& out, pugi::xml_node_iterator& it, v
 	return 0;
 };
 
-int parseObjectPropertyAssertion(vector<std::string>& out, pugi::xml_node_iterator& it, vector<int>& KBsize)
+int parseObjectPropertyAssertion(vector<std::string>& out, pugi::xml_node_iterator& it)
 {	
 #ifdef debug 
 #ifdef debugparseXML
@@ -123,7 +123,7 @@ int parseObjectPropertyAssertion(vector<std::string>& out, pugi::xml_node_iterat
 	return 0;
 };
 
-int parseNegativeObjectPropertyAssertion(vector<std::string>& out, pugi::xml_node_iterator& it, vector<int>& KBsize)
+int parseNegativeObjectPropertyAssertion(vector<std::string>& out, pugi::xml_node_iterator& it)
 {
 #ifdef debug 
 #ifdef debugparseXML
@@ -146,7 +146,7 @@ int parseNegativeObjectPropertyAssertion(vector<std::string>& out, pugi::xml_nod
 	return 0;
 };
 
-int parseSameIndividual(vector<std::string>& out, pugi::xml_node_iterator& it, vector<int>& KBsize)
+int parseSameIndividual(vector<std::string>& out, pugi::xml_node_iterator& it)
 {
 #ifdef debug 
 #ifdef debugparseXML
@@ -164,7 +164,7 @@ int parseSameIndividual(vector<std::string>& out, pugi::xml_node_iterator& it, v
 	return 0;
 };
 
-int parseDifferentIndividuals(vector<std::string>& out, pugi::xml_node_iterator& it, vector<int>& KBsize)
+int parseDifferentIndividuals(vector<std::string>& out, pugi::xml_node_iterator& it)
 {
 #ifdef debug 
 #ifdef debugparseXML
@@ -1637,15 +1637,15 @@ int readOWLXMLOntology(string filename, vector<pair<string, string>>& ontNamespa
 		if (name == "Declaration")
 			chk=parseDeclaration(formulae, it, KBsize);
 		else if (name == "ClassAssertion")
-			chk=parseClassAssertion(formulae, it, KBsize);
+			chk=parseClassAssertion(formulae, it);
 		else if (name == "ObjectPropertyAssertion")
-			chk = parseObjectPropertyAssertion(formulae, it, KBsize);
+			chk = parseObjectPropertyAssertion(formulae, it);
 		else if (name == "NegativeObjectPropertyAssertion")
-			chk = parseNegativeObjectPropertyAssertion(formulae, it, KBsize);
+			chk = parseNegativeObjectPropertyAssertion(formulae, it);
 		else if (name == "SameIndividual")
-			chk = parseSameIndividual(formulae, it, KBsize);
+			chk = parseSameIndividual(formulae, it);
 		else if (name == "DifferentIndividuals")
-			chk = parseDifferentIndividuals(formulae, it, KBsize);
+			chk = parseDifferentIndividuals(formulae, it);
 		else if (name == "FunctionalObjectProperty")
 			chk = parseFunctionalObjectProperty(formulae, it, KBsize);
 		else if (name == "InverseFunctionalObjectProperty")
