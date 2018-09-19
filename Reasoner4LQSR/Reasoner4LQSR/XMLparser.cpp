@@ -632,7 +632,7 @@ int parseSubObjectProperty(vector<std::string>& out, pugi::xml_node_iterator& it
 
 string retrieveNameFromNode(pugi::xml_node_iterator const& it, string const& attribute)
 {
-	string irival = it->attribute("IRI").as_string();
+	string irival = it->attribute(attribute.c_str()).as_string();
 	irival = irival.substr(irival.find("#") + 1);
 	return irival;
 }
