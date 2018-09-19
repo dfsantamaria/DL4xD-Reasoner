@@ -854,7 +854,7 @@ Var* createQVarFromString(vector<vector<Var>>& vec, string *name, int *level, in
 /*
 Create an Literal from the given string
 */
-int createLiteral(vector<vector <Var>>& vec, vector<vector <Var>>& vec2, string input, Formula **formula, vector<int>& startQuantVect, int typeformula)
+int createLiteral(vector<vector <Var>>& vec, vector<vector <Var>>& vec2, string input, Formula **formula, vector<int>& startQuantVect)
 {	
 #ifdef debug  
 #ifdef debuginsertf
@@ -966,7 +966,7 @@ int parseInternalFormula(vector<vector <Var>>& vec, vector<vector <Var>>& vec2, 
 				     logFile << "-----Candidate atom found: " << atom << endl;
                    #endif
                  #endif // debug                
-				createLiteral(vec, vec2, atom, &formula, startQuantVect, typeformula);				
+				createLiteral(vec, vec2, atom, &formula, startQuantVect);				
 				if (formula != NULL) // creation of the formula 
 				{						
 					stformula.push(formula); 
@@ -1026,7 +1026,7 @@ int parseInternalFormula(vector<vector <Var>>& vec, vector<vector <Var>>& vec2, 
 	
 	if (!atom.empty())
 	{ 		
-		createLiteral(vec, vec2, atom, &formula, startQuantVect, typeformula);		
+		createLiteral(vec, vec2, atom, &formula, startQuantVect);		
 		if (formula != NULL)
 			stformula.push(formula);		
 	}

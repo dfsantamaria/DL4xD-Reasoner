@@ -269,7 +269,7 @@ Literal* copyLiteral(Literal* atom, const string *qvar, Var* dest);
 void copyLiteral(Literal* source, Literal* dest);
 Formula* copyFormula(Formula* formula, Formula* father);
 Formula* copyFormula(Formula* formula, Formula* father, const string *qvar, Var* dest);
-int createLiteral(vector<vector <Var>>& vec, vector<vector <Var>>& vec2, string input, Formula **formula, vector<int>& startQuantVect, int typeformula);
+int createLiteral(vector<vector <Var>>& vec, vector<vector <Var>>& vec2, string input, Formula **formula, vector<int>& startQuantVect);
 Var* createQVarFromString(vector<vector<Var>>& vec, string *name, int *level, int *vartype, int *start);
 Var* createVarFromString(vector<vector<Var>>& vec, vector<vector<Var>>& vec2, string *name, int *level, int *vartype, int *start);
 void ERule(Literal* atom, Node* node);
