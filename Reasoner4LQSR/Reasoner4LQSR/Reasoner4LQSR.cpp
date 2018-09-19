@@ -2635,7 +2635,7 @@ Literal QueryManager::applySubstitution(Literal* result, Literal* query, const v
 		return *result;
 };
 
-int QueryManager::executeQuery(Formula& f, Tableau& tableau, pair <vector<int>, vector<vector<vector<pair<Var*, Var*>>>>>& result, int YN, vector<int>& ynAnswer)
+int QueryManager::executeQuery(Formula& f, Tableau& tableau, pair <vector<int>, vector<vector<vector<pair<Var*, Var*>>>>>& result, int YN, vector<int>& ynanswer)
 	{
 		vector<Literal*> qLits;
 		formula = f;
@@ -2701,11 +2701,11 @@ int QueryManager::executeQuery(Formula& f, Tableau& tableau, pair <vector<int>, 
 				result.second.push_back(matchSet);
 				matchFound = 1;
 				if (YN == 1)
-					ynAnswer.at(branchIt) = 1;
+					ynanswer.at(branchIt) = 1;
 			}
 			else if (YN == 1)
 			{
-				ynAnswer.at(branchIt) = res;
+				ynanswer.at(branchIt) = res;
 				matchFound = (res?res:0);
 			}
 		}
