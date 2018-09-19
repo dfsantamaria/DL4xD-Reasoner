@@ -760,8 +760,8 @@ int parseSubClassOfExpression(vector<std::string>& entry, pugi::xml_node_iterato
 	string res = "(V0{z} $IN " + retrieveVarNameFromNode(it->first_child(), "IRI", 1) + ")";
 	pugi::xml_node_iterator node = it->first_child().next_sibling();
 	int varcount = 1;
-	int val = -1;
-	if (node->name() == "Class")
+	int val = -1;  
+	if ( (string(node->name())).compare("Class")==0)
 	{		
 		formula = "(" + res + "$IF" + "(V0{z} $IN " + retrieveVarNameFromNode(node, "IRI", 1) + "))";
 	}
@@ -886,7 +886,7 @@ int parseEquivalentClassExpression(vector<std::string>& entry, pugi::xml_node_it
 	pugi::xml_node_iterator node = it->first_child().next_sibling();
 	int varcount = 1;
 	int val = -1;
-	if (node->name() == "Class")
+	if (string(node->name()).compare("Class")==0)
 	{		
 		formula = "(" + res + "$II" + "(V0{z} $IN " + retrieveVarNameFromNode(node, "IRI", 1) + "))";
 	}
@@ -942,17 +942,17 @@ int parseClassExpression(string& entry, pugi::xml_node_iterator& it, int varz, i
 	}
 	else if (string(it->name()) == "ObjectOneOf")
 	{
-	chk = parseObjectOneOf(entry, it, varz, varcount);
+	chk = parseObjectOneOf(entry, it, varz);
 		
 	}
 	else if (string(it->name()) == "ObjectHasSelf")
 	{
-		chk = parseObjectHasSelf(entry, it, varz, varcount);
+		chk = parseObjectHasSelf(entry, it, varz);
 		
 	}
 	else if (string(it->name()) == "ObjectHasValue")
 	{
-		chk = parseObjectHasValue(entry, it, varz, varcount);
+		chk = parseObjectHasValue(entry, it, varz);
 		
 	}	
 	else if (string(it->name()) == "ObjectSomeValuesFrom")
@@ -1125,7 +1125,7 @@ int parseObjectComplementOf(string& entry, pugi::xml_node_iterator& it, int varz
 	return chk;
 };
 
-int parseObjectPropertyDomain(string& entry, pugi::xml_node_iterator& it, int varz, int& varcount, int& exprtype)
+int parseObjectPropertyDomain(string& entry, pugi::xml_node_iterator& it, int varz, int& varcount, int &exprtype)
 { 
 	
 #ifdef debug 
@@ -1155,7 +1155,7 @@ int parseObjectPropertyDomain(string& entry, pugi::xml_node_iterator& it, int va
 		else
 		{
 			string intformula = "(";
-			int exprtype = 2;
+			//int exprtype = 2;
 			chk=parseClassExpression(intformula, node, varz, varcount, exprtype);
 			if (chk == -1)
 				return -1;
@@ -1192,7 +1192,7 @@ int parseObjectPropertyRange(string& entry, pugi::xml_node_iterator& it, int var
 	else
 	{
 		string intformula = "(";
-		int exprtype = 2;
+		//int exprtype = 2;
 		chk= parseClassExpression(intformula, node, varz+1, varcount, exprtype);
 		if (chk == -1)
 			return -1;
@@ -1222,11 +1222,11 @@ int parseDisjointClasses(string& entry, pugi::xml_node_iterator& it, int varz, i
 		if (string(nd->name()) == "Class")
 		{
 			
-			string var = "z";
+			string zvar = "z";
 			if (varz > 0)
-				var += to_string(varz);
-			string res = "($NG (V0{" + var + "} $IN " + retrieveVarNameFromNode(nd, "IRI", 1) + "))";
-			entry += res;
+				zvar += to_string(varz);
+			string tres = "($NG (V0{" + zvar + "} $IN " + retrieveVarNameFromNode(nd, "IRI", 1) + "))";
+			entry += tres;
 			if (nd != node)
 				entry = "(" + entry + ")";
 		}
@@ -1245,7 +1245,7 @@ int parseDisjointClasses(string& entry, pugi::xml_node_iterator& it, int varz, i
 };
 
 
-int parseObjectOneOf(string& entry, pugi::xml_node_iterator& it, int varz, int& varcount)
+int parseObjectOneOf(string& entry, pugi::xml_node_iterator& it, int varz)
 {
 
 #ifdef debug 
@@ -1272,7 +1272,7 @@ int parseObjectOneOf(string& entry, pugi::xml_node_iterator& it, int varz, int& 
 	return 0;
 };
 
-int parseObjectHasSelf(string& entry, pugi::xml_node_iterator& it, int varz, int& varcount)
+int parseObjectHasSelf(string& entry, pugi::xml_node_iterator& it, int varz)
 {
 #ifdef debug 
 #ifdef debugparseXML
@@ -1288,7 +1288,7 @@ int parseObjectHasSelf(string& entry, pugi::xml_node_iterator& it, int varz, int
 			return 0;
 };
 
-int parseObjectHasValue(string& entry, pugi::xml_node_iterator& it, int varz, int& varcount)
+int parseObjectHasValue(string& entry, pugi::xml_node_iterator& it, int varz)
 {
 #ifdef debug 
 #ifdef debugparseXML
@@ -1440,6 +1440,8 @@ int parseDisjointUnion(string& entry, pugi::xml_node_iterator& it, int varz, int
 
 int parseObjectExactCardinality(string& entry, pugi::xml_node_iterator& it, int varz, int& varcount)
 {
+	entry; it; varz; varcount;
+
 #ifdef debug 
 #ifdef debugparseXML
 	logFile << "-----Found ObjectExactCardinality class expression. " << endl;

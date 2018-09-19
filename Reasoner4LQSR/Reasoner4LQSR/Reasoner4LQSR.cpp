@@ -191,7 +191,7 @@ int VariablesSet::pushBack(vector<vector <Var>>& vec, int inslevel, string name,
 	{
 		if (vec.at(inslevel).size() < vec.at(inslevel).capacity())
 		{
-			vec.at(inslevel).push_back(*new Var(name, level, vartype, getSizeAt(vec, inslevel)));
+			vec.at(inslevel).push_back(*new Var(name, level, vartype, (int)getSizeAt(vec, inslevel)));
 			return 0;
 		}
 		return 1;
@@ -208,7 +208,7 @@ int VariablesSet::VVLPushBack(int inslevel, string name, int level, int vartype)
 
 		if (VVL.at(inslevel).size() < VVL.at(inslevel).capacity())
 		{
-			VVL.at(inslevel).push_back(*new Var(name, level, vartype, VVLGetSizeAt(inslevel)));
+			VVL.at(inslevel).push_back(*new Var(name, level, vartype, (int)VVLGetSizeAt(inslevel)));
 			return 0;
 		}
 		return 1;
@@ -935,7 +935,7 @@ int createLiteral(vector<vector <Var>>& vec, vector<vector <Var>>& vec2, string 
 Parse a string representing an internal formula and return the corresponding internal formula.
 Return 1 if a formula is created, 0 in case of declarations.
 */
-int parseInternalFormula(vector<vector <Var>>& vec, vector<vector <Var>>& vec2, const string *inputformula, Formula **outformula, vector<int>& startQuantVect, int typeformula)
+int parseInternalFormula(vector<vector <Var>>& vec, vector<vector <Var>>& vec2, const string *inputformula, Formula **outformula, vector<int>& startQuantVect)
 {
 
 #ifdef debug  
@@ -1190,7 +1190,7 @@ Formula* convertFormulaToCNF(Formula* formula)
 /*
 Create an object of type Formula  from the given string representing a formula.
 */
-int insertFormulaKB(int keepQ,vector<vector <Var>>& varset1, vector<vector <Var>>& varset2, string formula, Formula** ffinal, int* typeformula)
+int insertFormulaKB(int keepQ,vector<vector <Var>>& varset1, vector<vector <Var>>& varset2, string formula, Formula** ffinal)
 {
 	/*
 	The following vector of int represents the position of the quantified variables of the current formula.
@@ -1211,7 +1211,7 @@ int insertFormulaKB(int keepQ,vector<vector <Var>>& varset1, vector<vector <Var>
 		for (int i = 0; i < varset1.size(); i++)
 			vqlsize.push_back((int)varset1.at(i).size());
 	}
-	int res=parseInternalFormula(varset1, varset2, &formula, ffinal, vqlsize, *typeformula);
+	int res=parseInternalFormula(varset1, varset2, &formula, ffinal, vqlsize);
 	//vec.push_back(*ffinal);
 #ifdef debug  
 	logFile << "---Formula Ended " << endl;
@@ -1221,10 +1221,10 @@ int insertFormulaKB(int keepQ,vector<vector <Var>>& varset1, vector<vector <Var>
 }
 
 //if insertFormulaKB returns 1, the parsed formula should be inserted in KB, otherwise is a declaration
-int insertFormulaKB(int keepQ,vector<vector <Var>>& varset, vector<vector <Var>>& varset2, string formula, vector<Formula*> &vec, int* typeformula)
+int insertFormulaKB(int keepQ,vector<vector <Var>>& varset, vector<vector <Var>>& varset2, string formula, vector<Formula*> &vec)
 {
 	Formula* f = NULL;
-	int res = insertFormulaKB(keepQ, varset, varset2, formula, &f, typeformula);
+	int res = insertFormulaKB(keepQ, varset, varset2, formula, &f);
 	if ( res == 1)	
 	  vec.push_back(f);	
 	return res;
@@ -2456,12 +2456,12 @@ void moveQuantifierKB(int qflag, vector<Formula*>& KB, vector<Formula*>& KBout)
 void readKBFromStrings(int qflag, vector<string>&names, vector<Formula*>& KB)
 {	
 	cout << "Knowledge Base" << endl;
-	int typeformula = 0;
+	//int typeformula = 0;
 	for(string str: names)
 	{
 		if ((str.rfind("//", 0) == 0) || str.empty())
 			continue;			
-		insertFormulaKB(qflag,varSet.getVQL(), varSet.getVVL(), str, KB, &typeformula);
+		insertFormulaKB(qflag,varSet.getVQL(), varSet.getVVL(), str, KB);
 	}	
 }
 
@@ -2731,8 +2731,8 @@ int performQuery(QueryManager*& queryManager, string& str, Formula** formula, Ta
 {
 	
 	queryManager = (new QueryManager(5, 50)); 
-	int typeformula = 1; 
-	insertFormulaKB(0, queryManager->getQVQL(), queryManager->getQVVL(), str, formula, &typeformula);	
+	//int typeformula = 1; 
+	insertFormulaKB(0, queryManager->getQVQL(), queryManager->getQVVL(), str, formula);	
 	
 	pair <vector<int>, vector<vector<vector<pair<Var*, Var*>>>>> result(vector<int>(0), vector<vector<vector<pair<Var*, Var*>>>>(0));
 	vector<int> ynanswer;
