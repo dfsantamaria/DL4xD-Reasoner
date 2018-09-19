@@ -669,7 +669,7 @@ int parseDLSafeRule(vector<std::string>& entry, pugi::xml_node_iterator& it, vec
 	formula = body + formula;
 	entry.push_back(formula);
 	if (KBsize.at(qvar0)< varSet.size())
-		KBsize.at(qvar0) = varSet.size();
+		KBsize.at(qvar0) = (int)varSet.size();
 	return 0;
 };
 
@@ -1147,7 +1147,7 @@ int parseObjectPropertyDomain(string& entry, pugi::xml_node_iterator& it, int va
 		{			
 			string var = "z";
 			if (varz > 0)
-				var += varz;
+				var += static_cast<char>(varz);
 			string res = "(V0{" + var + "} $IN " + retrieveVarNameFromNode(node, "IRI", 1) + ") )";
 			entry += res;
 			

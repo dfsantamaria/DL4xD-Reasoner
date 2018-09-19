@@ -779,7 +779,7 @@ int retrieveVarData(const string input, string* name, int* level)
 }
 
 
-Var* createVarFromString(vector<vector<Var>>& vec, vector<vector<Var>>& vec2, string *name, int *level, int *vartype, int *start, int *typeformula)
+Var* createVarFromString(vector<vector<Var>>& vec, vector<vector<Var>>& vec2, string *name, int *level, int *vartype, int *start)
 {
 	Var* ret;
 #ifdef debug 
@@ -877,16 +877,16 @@ int createLiteral(vector<vector <Var>>& vec, vector<vector <Var>>& vec2, string 
 			match = input.substr(3, input.size() - 1);
 			size_t found = match.find("$");
 			retrieveVarData(match.substr(0, found), &name, &level);
-			var1 = createVarFromString(vec, vec2, &name, &level, new int(0), &startQuantVect.at(level), &typeformula);
+			var1 = createVarFromString(vec, vec2, &name, &level, new int(0), &startQuantVect.at(level));
 			match = match.substr(found + 3, match.size() - 1); //here the comma
 			found = match.find("$");
 			retrieveVarData(match.substr(0, found), &name, &level);
-			var2 = createVarFromString(vec, vec2, &name, &level, new int(0), &startQuantVect.at(level), &typeformula);
+			var2 = createVarFromString(vec, vec2, &name, &level, new int(0), &startQuantVect.at(level));
 			match = match.substr(found + 3, match.size() - 1);
 			int op = operators.getSetOpValue(match.substr(0, 3));
 			match = match.substr(3, match.size() - 1);
 			retrieveVarData(match, &name, &level);
-			var3 = createVarFromString(vec, vec2, &name, &level, new int(0), &startQuantVect.at(level), &typeformula);
+			var3 = createVarFromString(vec, vec2, &name, &level, new int(0), &startQuantVect.at(level));
 			atom = new Literal(op, { var3, var1, var2 });
 			//Literal* atom = new Literal(0, { new Var(name,level,0), new Var("b1",0,0), new Var("c1",0,0) });
 			*formula = (new Formula(atom, -1));						
@@ -904,17 +904,17 @@ int createLiteral(vector<vector <Var>>& vec, vector<vector <Var>>& vec2, string 
 		if (found != string::npos)
 		{
 			retrieveVarData(input.substr(0, found), &name, &level);
-			var1 = createVarFromString(vec, vec2, &name, &level, new int(0), &startQuantVect.at(level), &typeformula);
+			var1 = createVarFromString(vec, vec2, &name, &level, new int(0), &startQuantVect.at(level));
 			int op = operators.getSetOpValue(input.substr(found, 3));
 			retrieveVarData(input.substr(found + 3, input.size() - 1), &name, &level);
-			var2 = createVarFromString(vec, vec2, &name, &level, new int(0), &startQuantVect.at(level), &typeformula);
+			var2 = createVarFromString(vec, vec2, &name, &level, new int(0), &startQuantVect.at(level));
 			atom = new Literal(op, { var2, var1 });
 			*formula = (new Formula(atom, -1));
 		}
 		else
 		{
 		  retrieveVarData(input.substr(0, found), &name, &level);
-		  var1=createVarFromString(vec, vec2, &name, &level, new int(0), &startQuantVect.at(level), &typeformula);
+		  var1=createVarFromString(vec, vec2, &name, &level, new int(0), &startQuantVect.at(level));
           #ifdef debug  
             #ifdef debuginsertf		 
 			  logFile << "-----Declaration Found: " << var1->toString() << endl;
@@ -1564,7 +1564,7 @@ int expandKB(const vector<Formula*> &inpf, vector <Formula*> &out)
 	{
 		varSet.getVVLAt(0)->push_back(*new Var("TOPIND", 0, 0, 0));	
 	}
-	int or = operators.getLogOpValue("$OR");
+//	int or = operators.getLogOpValue("$OR");
 	
 	for (int itForm = 0; itForm < inpf.size(); itForm++)
 	{
@@ -1586,7 +1586,7 @@ int expandKB(const vector<Formula*> &inpf, vector <Formula*> &out)
 			out.push_back(currOutF);	
 			//cout << "----"<<currOutF->toString() << endl;
 			istantiateFormula(currOutF, indKB, varset);
-		} while (next_variation(indKB.begin(), indKB.end(), varSet.getVVLAt(0)->size() - 1));		
+		} while (next_variation(indKB.begin(), indKB.end(), (int)varSet.getVVLAt(0)->size() - 1));		
 	}
 	return 0;
 }
@@ -1738,7 +1738,8 @@ int checkBranchClash(Node* node, Tableau& tableau)
 		for (int i = 0; i < local.size(); i++)
 		{
 			Literal* at = local.at(i)->getLiteral();
-			if (at != NULL && (checkVectorClash(at, iterator->getSetFormulae(), 0) == 0))
+			vector<Formula*> F = iterator->getSetFormulae();
+			if (at != NULL && (checkVectorClash(at, F, 0) == 0))
 			{
 #ifdef debug
 #ifdef debugclash
@@ -1828,7 +1829,8 @@ int checkBranchClash(Literal* atom, Node* node)
 		//	vector<Formula>local = node->getSetFormulae();
 		//	for (int i = 0; i < local.size(); i++)
 		//	{
-		if ((checkVectorClash(atom, iterator->getSetFormulae(), 0) == 0))
+		vector<Formula*> F = iterator->getSetFormulae();
+		if ((checkVectorClash(atom, F , 0) == 0))
 			return 0;
 		//	}
 		iterator = iterator->getFather();
@@ -1848,9 +1850,9 @@ void ERule(Literal* atom, Node* node)
 #endif
 #endif // debug
 
-	Node* tmp = node;
+//	Node* tmp = node;
 	vector<Node*> newNodeSet;
-	Literal* neg = negatedLiteral(atom);
+//	Literal* neg = negatedLiteral(atom);
 	//	if (checkBranchClash(neg, tmp) == 1)		  //solve thi inefficiency
 	node->insertFormula((new Formula(copyLiteral(atom, NULL, NULL), -1)));
 }
@@ -1887,7 +1889,7 @@ void PBRule(vector<Literal*> atoms, Node* node, vector<Node*> &nodeSet)
 		logFile << "------ Computing Literal from PB-Rule. " << (negatedLiteral(atoms.at(i)))->toString() << endl;
 #endif
 #endif // debug
-		Literal* neg = negatedLiteral(atoms.at(i));
+		//Literal* neg = negatedLiteral(atoms.at(i));
 		tmp->setLeftChild(new Node(vector<Formula*> {(new Formula(copyLiteral(atoms.at(i), NULL, NULL), -1))}));
 		newNodeSet.push_back(tmp->getLeftChild());
 		tmp->setRightChild(new Node(vector<Formula*> {(new Formula(negatedLiteral(atoms.at(i)), -1))}));
@@ -1990,8 +1992,9 @@ void chooseRule(Tableau &T, vector<Node*> &nodeSet, Formula* f)
 
 void expandTableau(Tableau& T)
 { 
-	
-	if ( (checkNodeClash(T.getTableau()->getSetFormulae())==0) )
+	vector<Formula*> F=T.getTableau()->getSetFormulae();
+	int  res = checkNodeClash(F);
+	if ( res==0 )
 	{		
 		T.getClosedBranches().push_back(T.getTableau()); 
 		return;
@@ -2019,7 +2022,11 @@ void expandTableau(Tableau& T)
 
 int checkTableauRootClash(Tableau &T)
 {
-	return (checkNodeClash(T.getTableau()->getSetFormulae()) == 1);
+
+	vector<Formula*> F=T.getTableau()->getSetFormulae();
+
+	int res = checkNodeClash(F);
+	return (res == 1);
 	/*	for (int i = 0; i < T.getTableau()->getSetFormulae().size(); i++)
 	{
 	vector<Literal*> atomset;
@@ -2270,7 +2277,7 @@ void checkTableauClash(Tableau& T)
 	{
 		int tobreak = 0;
 		Node* currentNode = T.getOpenBranches().at(i);
-		int clash = 1;
+		//int clash = 1;
 		for (int j = 0; j < currentNode->getSetFormulae().size() - 1; j++)
 		{
 			if (currentNode->getSetFormulae().at(j)->getLiteral() != NULL)
@@ -2305,7 +2312,7 @@ void renameQVariables(Formula* formula, vector<vector <Var>>& varset1)
 	vector<int> npos;
 	for (int i = 0; i < varset1.size(); i++)
 	{
-		npos.push_back(varset1.at(i).size());
+		npos.push_back( (int) varset1.at(i).size());
 		
 	}
 	
@@ -2555,11 +2562,11 @@ int QueryManager::checkQueryLiteralMatchInBranch(Node* branch, Literal* query)
 		Node* iterator = branch;
 		while (iterator != NULL)
 		{
-			for (Formula* formula : iterator->getSetFormulae())
+			for (Formula* tmpformula : iterator->getSetFormulae())
 			{
-				if (formula->getLiteral() != NULL)
+				if (tmpformula->getLiteral() != NULL)
 				{
-					if (formula->getLiteral()->equals( *(query))==0)
+					if ( tmpformula->getLiteral()->equals( *(query))==0)
 					{						
 						return 1;
 					}
@@ -2576,18 +2583,18 @@ int QueryManager::checkQueryVariableMatchInBranch(Node* branch, Literal* query, 
 		Node* iterator = branch;
 		while (iterator != NULL)
 		{
-			for (Formula* formula : iterator->getSetFormulae())
+			for (Formula* tmpformula : iterator->getSetFormulae())
 			{
-				if (formula->getLiteral() != NULL)
+				if (tmpformula->getLiteral() != NULL)
 				{
-					if (formula->getLiteral()->getElements().size() == query->getElements().size() && formula->getLiteral()->getLiteralOp() == query->getLiteralOp())
+					if (tmpformula->getLiteral()->getElements().size() == query->getElements().size() && tmpformula->getLiteral()->getLiteralOp() == query->getLiteralOp())
 					{
 						int matchN = 0;
-						int noq = 0; //check if the query is a literal and there is a match
+						//int noq = 0; //check if the query is a literal and there is a match
 						vector<pair<Var*, Var*>> temp = vector<pair<Var*, Var*>>();
-						for (int varIt = 0; varIt < formula->getLiteral()->getElements().size(); varIt++)
+						for (int varIt = 0; varIt < tmpformula->getLiteral()->getElements().size(); varIt++)
 						{
-							if (query->getElementAt(varIt)->getVarType() == 0 && query->getElementAt(varIt)->equal(formula->getLiteral()->getElements().at(varIt)) == 0)
+							if (query->getElementAt(varIt)->getVarType() == 0 && query->getElementAt(varIt)->equal(tmpformula->getLiteral()->getElements().at(varIt)) == 0)
 							{
 								// cout << query->toString() << "++" << formula.getLiteral()->toString() << endl;
 								matchN++;								
@@ -2595,7 +2602,7 @@ int QueryManager::checkQueryVariableMatchInBranch(Node* branch, Literal* query, 
 							else if (query->getElementAt(varIt)->getVarType() == 1)
 							{
 								// cout << query->toString() << ".." << formula.getLiteral()->toString() << endl;
-								temp.push_back(pair<Var*, Var*>(query->getElementAt(varIt), formula->getLiteral()->getElementAt(varIt)));
+								temp.push_back(pair<Var*, Var*>(query->getElementAt(varIt), tmpformula->getLiteral()->getElementAt(varIt)));
 								matchN++;
 								// cout<<temp.back().first->toString() << " pair " << temp.back().second->toString()<< " " <<endl;
 							}
