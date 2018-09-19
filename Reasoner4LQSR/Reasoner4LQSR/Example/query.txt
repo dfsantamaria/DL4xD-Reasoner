@@ -1,2 +1,2 @@
 
-($FA V0{z})((V0{z} $IN V1{Person}) $AD (V0{z} $IN V1{VeryYoung}))
+($FA V0{z})($FA V3{z1})($OA V0{z} $CO V0{Ann}$AO $IN V3{z1}))
