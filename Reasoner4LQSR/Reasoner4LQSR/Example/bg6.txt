@@ -1,5 +1,0 @@
-//($FA V0{y}) (( (V0{y} $NI V1{Person}) $AD (V0{y} $NI V1{VeryYoung})) $OR ($NG (V0{y} $IN V1{Kid}) )) 
-(V0{Annetta})
-(V0{Ann})
-(V0{George})
-($FA V0{x})( $NG (V0{x} $NI V1{Person}) )

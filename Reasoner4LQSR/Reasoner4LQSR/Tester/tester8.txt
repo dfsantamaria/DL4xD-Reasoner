@@ -1,7 +1,0 @@
-V0{a}
-V0{b}
-($OA V0{b} $CO V0{a} $AO $IN V3{P})
-($OA V0{a} $CO V0{a} $AO $IN V3{R})
-($OA V0{b} $CO V0{a} $AO $IN V3{R})
-($FA V0{z})($FA V0{z1})( ($OA V0{z} $CO V0{z1}$AO $IN V3{R})  $OR  ($NG ($OA V0{z1} $CO V0{z}$AO $IN V3{P}) ) )
-
