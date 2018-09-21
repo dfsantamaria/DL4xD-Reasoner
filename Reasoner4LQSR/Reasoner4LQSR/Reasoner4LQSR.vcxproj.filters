@@ -44,6 +44,9 @@
     <ClCompile Include="main.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
+    <ClCompile Include="Var_Tester.cpp">
+      <Filter>File di intestazione</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Reasoner4LQSR.rc">

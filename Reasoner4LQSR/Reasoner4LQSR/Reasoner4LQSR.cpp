@@ -16,55 +16,110 @@ using namespace std;
 /// This Class define a single 4LQSR variable
 /// </summary>
 /// <param name="_name"> Name of the variable</param>
-/// <param name="_type"> Quantified (value 1) or constant (value 0)</param>
-/// <param name="_var">Sort of the variable</param>
+/// <param name="_sort"> Sort of the variable</param>
+/// <param name="_qvar">Quantified (value 1) or constant (value 0) </param>
 /// <param name="_index">Position in the vector</param>
-Var::Var(string _name, int _type, int _var, int _index)
+Var::Var(string _name, int _sort, int _qvar, int _index)
 {
 	setName(_name);
-	setType(_type);
-	setVarType(_var);
+	setSort(_sort);
+	setVarType(_qvar);
 	index = _index;
 };
-Var::~Var() {};
-//int isValidType() { return isValidType(type);};
-//int isValidVar() { return isValidVar(var); };
-int Var::getType() { return type; };
+/// <summary>
+/// The destructor
+/// </summary>
+/// 
+Var::~Var(){};
+/// <summary>
+/// Return the sort of the variable
+/// </summary>
+/// 
+int Var::getSort() { return sort; };
+/// <summary>
+/// Reeturn the name of the variable
+/// </summary>
 string Var::getName() { return name; };
-int Var::getVarType() { return var; };
+/// <summary>
+/// Return wheter or not the variable is quantified (1 for quantification, 0 for constant)
+/// </summary>
+int Var::getVarType() { return qvar; };
+/// <summary>
+/// Return the index of the variable in the corresponding vector
+/// </summary>
 int Var::getIndex() { return index; };
+
+/// <summary>
+///  Set the index of the variable
+/// </summary>
+/// <param name="_index">Index of the variable</param>
 void Var::setIndex(int _index) { index = _index; }
-int Var::setName(string _name)
+
+/// <summary>
+/// Set the name of the variable
+/// </summary>
+/// <param name="_name">Name of the variable</param>
+void Var::setName(string _name)
 {
 	name = _name;
-	return type;
-};
-void Var::setType(int _type)
-{
-	type = _type;
 };
 
-void Var::setVarType(int _var)
+/// <summary>
+/// Set the sort of the variable
+/// </summary>
+/// <param name="_sort">Sort of the variable</param>
+void Var::setSort(int _sort)
 {
-	var = _var;
+	sort = _sort;
 };
 
+/// <summary>
+/// Set the quantification of the variable
+/// </summary>
+/// <param name="_qvar">0 for constant 1 for quantified variable</param>
+void Var::setVarType(int _qvar)
+{
+	qvar = _qvar;
+};
+
+/// <summary>
+/// Compare two variable, given an object of type Var. Return 0 if two variables coincides, 1 otherwise
+/// </summary>
+/// <param name="match"></param>
+/// <returns></returns>
 int Var::equal(Var* match)
 {
-	if ((getName().compare(match->getName()) == 0) && (getType() == match->getType()) && (getVarType() == match->getVarType()))
-		return 0;
+	if ((getSort() == match->getSort()) && 
+		(getVarType() == match->getVarType()) && 
+		(getName().compare(match->getName()) == 0)
+		)
+	  return 0;
 	return 1;
 };
-int Var::equal(string _name, int _type, int _varType)
+
+/// <summary>
+/// Compare two variable, given a variable name, sort of the variable, and quantification of variable. Return 0 if two variables coincides, 1 otherwise
+/// </summary>
+/// <param name="_name"></param>
+/// <param name="_sort"></param>
+/// <param name="_varType"></param>
+/// <returns></returns>
+int Var::equal(string _name, int _sort, int _varType)
 {
-	if (getName().compare(_name) == 0 && (getType() == _type) && (getVarType() == _varType))
+	if ( (getSort() == _sort)  && (getVarType() == _varType) && (getName().compare(_name)) == 0 )
 		return 0;
 	return 1;
 }
+
+
+/// <summary>
+/// Return a string representing the variable.
+/// </summary>
+/// <returns></returns>
 string Var::toString()
 {
 	string out = "V";
-	out.append(to_string(getType()));
+	out.append(to_string(getSort()));
 	out.append("{");
 	out.append(getName());
 	out.append("}");

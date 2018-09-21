@@ -18,22 +18,20 @@ using namespace std;
 class Var
 {
 private:
-	int type;
-	int var;
-	int index;
-	string name;
+	int sort; //sort of the variable
+	int qvar; //establish wheter the variable is quantified (value 1) or not (value 0)
+	int index; //index of the variable in the corresponding vector
+	string name; //name of the varaible
 public:
-	Var(string _name, int _type, int _var, int _index);
-	~Var();
-	//int isValidType() { return isValidType(type);};
-	//int isValidVar() { return isValidVar(var); };
-	int getType();
+	Var(string _name, int _sort, int _qvar, int _index);
+	~Var();	
+	int getSort();
 	string getName();
 	int getVarType();
 	int getIndex();
 	void setIndex(int _index);
-	int setName(string _name);
-	void setType(int _type);
+	void setName(string _name);
+	void setSort(int _type);
 	void setVarType(int _var);
 	int equal(Var* match);
 	int equal(string _name, int _type, int _varType);
