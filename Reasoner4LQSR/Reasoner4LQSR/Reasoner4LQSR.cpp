@@ -23,32 +23,46 @@ VariablesSet varSet;
 Operators operators;
 
 									/*
-									L0 has type 0
-									L1 has type 1
-									L2 has type 2
-									L3 as ObjectProperty has type 3
-									L3 as DataProperty has type 4
+									L0 means type 0
+									L1 means type 1
+									L2 means type 2
+									L3 as ObjectProperty means type 3
+									L3 as DataProperty means type 4
 									*/
-									//const int minVarSize = -1;
+									//const int minVarSize = -1; for unsetted
 									//const int maxVarSize = 3;   //size of variable
 
-
+/// <summary>
+/// Initialize the reasoner by initializing its datastructure
+/// </summary>
+/// <param name="sizeV"> Number of sorts of variable</param>
+/// <param name="sizeQ">Size of the vector for quantified variables</param>
+/// <param name="sizet">Size of the vector for constants</param>
 void InitializeReasoner(int sizeV, int sizeQ, int sizet)
 {
 	varSet= VariablesSet(sizeV, sizeQ, sizet);
 	operators = Operators();
 };
 
+/// <summary>
+/// Initialize the reasoner by initializing its datastructure
+/// </summary>
+/// <param name="sizeV">Number of sorts of variable</param>
+/// <param name="KBsize">This vector contains at position 0 the ize of the vector for quantified variables and at position 1 the size of the vector for constants</param>
 void InitializeReasoner(int sizeV, vector<int>& KBsize)
 {	
 	varSet = VariablesSet(sizeV, KBsize); 
 	operators = Operators();
 };
 
-//Class of the single Var
-/*
- Start Var
-*/
+
+/// <summary>
+/// This Class define a single 4LQSR variable
+/// </summary>
+/// <param name="_name"> Name of the variable</param>
+/// <param name="_type"> Quantified (value 1) or constant (value 0)</param>
+/// <param name="_var">Sort of the variable</param>
+/// <param name="_index">Position in the vector</param>
 Var::Var(string _name, int _type, int _var, int _index)
 	{
 		setName(_name);
