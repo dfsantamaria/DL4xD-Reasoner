@@ -76,7 +76,7 @@ void Var::setSort(int _sort)
 /// <summary>
 /// Set the quantification of the variable
 /// </summary>
-/// <param name="_qvar">0 for constant 1 for quantified variable</param>
+/// <param name="_qvar">0 for constant, 1 for U-quantified variable, 2 for E-quantified variable</param>
 void Var::setVarType(int _qvar)
 {
 	qvar = _qvar;
@@ -98,7 +98,7 @@ int Var::equal(Var* match)
 };
 
 /// <summary>
-/// Compare two variable, given a variable name, sort of the variable, and quantification of variable. Return 0 if two variables coincides, 1 otherwise
+/// Compare two variable, given a variable name, sort of the variable, and quantification of variable. Return 0 if two variables coincide, 1 otherwise
 /// </summary>
 /// <param name="_name"></param>
 /// <param name="_sort"></param>
