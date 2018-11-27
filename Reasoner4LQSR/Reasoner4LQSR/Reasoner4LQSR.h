@@ -19,21 +19,21 @@ class Var
 {
 private:
 	int sort; //sort of the variable
-	int qvar; //establish wheter the variable is quantified (value 1) or not (value 0)
+	int qvar; //establish wheter the variable is quantified (value 1-2) or not (value 0)
 	int index; //index of the variable in the corresponding vector
 	string name; //name of the varaible
 public:
-	Var(string _name, int _sort, int _qvar, int _index);
+	Var(const string _name, const int _sort, const int _qvar, const int _index);
 	~Var();	
-	int getSort();
-	string getName();
-	int getVarType();
-	int getIndex();
-	void setIndex(int _index);
-	void setName(string _name);
-	void setSort(int _type);
-	void setVarType(int _var);
-	int equal(Var* match);
-	int equal(string _name, int _type, int _varType);
+	int getSort() const ;
+	string getName() const;
+	int getVarType() const;
+	int getIndex() const;
+	void setIndex(const int _index);
+	void setName(const string _name);
+	void setSort(const int _type);
+	void setVarType(const int _var);
+	int equal(const Var& match);
+	int equal(const string _name, const int _type, const int _varType);
 	string toString();
 };

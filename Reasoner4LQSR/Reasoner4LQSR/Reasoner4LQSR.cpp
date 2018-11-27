@@ -19,7 +19,7 @@ using namespace std;
 /// <param name="_sort"> Sort of the variable</param>
 /// <param name="_qvar">Quantified (value 1) or constant (value 0) </param>
 /// <param name="_index">Position in the vector</param>
-Var::Var(string _name, int _sort, int _qvar, int _index)
+Var::Var(const string _name,const int _sort, const int _qvar,const int _index)
 {
 	setName(_name);
 	setSort(_sort);
@@ -35,31 +35,31 @@ Var::~Var(){};
 /// Return the sort of the variable
 /// </summary>
 /// 
-int Var::getSort() { return sort; };
+int  Var::getSort() const{ return sort; };
 /// <summary>
 /// Reeturn the name of the variable
 /// </summary>
-string Var::getName() { return name; };
+string Var::getName() const { return name; };
 /// <summary>
 /// Return wheter or not the variable is quantified (1 for quantification, 0 for constant)
 /// </summary>
-int Var::getVarType() { return qvar; };
+int Var::getVarType() const { return qvar; };
 /// <summary>
 /// Return the index of the variable in the corresponding vector
 /// </summary>
-int Var::getIndex() { return index; };
+int Var::getIndex() const { return index; };
 
 /// <summary>
 ///  Set the index of the variable
 /// </summary>
 /// <param name="_index">Index of the variable</param>
-void Var::setIndex(int _index) { index = _index; }
+void Var::setIndex(const int _index) { index = _index; }
 
 /// <summary>
 /// Set the name of the variable
 /// </summary>
 /// <param name="_name">Name of the variable</param>
-void Var::setName(string _name)
+void Var::setName(const string _name)
 {
 	name = _name;
 };
@@ -68,7 +68,7 @@ void Var::setName(string _name)
 /// Set the sort of the variable
 /// </summary>
 /// <param name="_sort">Sort of the variable</param>
-void Var::setSort(int _sort)
+void Var::setSort(const int _sort)
 {
 	sort = _sort;
 };
@@ -77,7 +77,7 @@ void Var::setSort(int _sort)
 /// Set the quantification of the variable
 /// </summary>
 /// <param name="_qvar">0 for constant, 1 for U-quantified variable, 2 for E-quantified variable</param>
-void Var::setVarType(int _qvar)
+void Var::setVarType(const int _qvar)
 {
 	qvar = _qvar;
 };
@@ -87,11 +87,11 @@ void Var::setVarType(int _qvar)
 /// </summary>
 /// <param name="match"></param>
 /// <returns></returns>
-int Var::equal(Var* match)
+int Var::equal(const Var& match)
 {
-	if ((getSort() == match->getSort()) && 
-		(getVarType() == match->getVarType()) && 
-		(getName().compare(match->getName()) == 0)
+	if ((getSort() == match.getSort()) && 
+		(getVarType() == match.getVarType()) && 
+		(getName().compare(match.getName()) == 0)
 		)
 	  return 0;
 	return 1;
@@ -104,7 +104,7 @@ int Var::equal(Var* match)
 /// <param name="_sort"></param>
 /// <param name="_varType"></param>
 /// <returns></returns>
-int Var::equal(string _name, int _sort, int _varType)
+int Var::equal(const string _name, const int _sort, const int _varType)
 {
 	if ( (getSort() == _sort)  && (getVarType() == _varType) && (getName().compare(_name)) == 0 )
 		return 0;

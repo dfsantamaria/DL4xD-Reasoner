@@ -1,17 +1,26 @@
 #pragma once
 #include "stdafx.h" // only on windows
-#include <fstream>
-#include <string>
+#include "Var_Tester.h"
 #include <iostream>
-#include <typeinfo>
 #include <vector>
-#include <array>
-#include <stack>
-#include <sstream>
-#include "Reasoner4LQSR.h"
-#include <chrono> 
+#include <string>
+
+using namespace std;
+
+void printOutput(vector<pair<string, int>> output)
+{
+	int results = 0;
+	for (pair< string, int> p : output)
+	{
+		cout << "Test " << p.first << " result " << p.second<<endl;
+		results += p.second;
+	}
+	cout << "Final result: " << results << endl;
+}
 
 int main()
 {
-	
+	vector<pair< string, int>> output = vector<pair< string, int>>(0);
+	testVar(output);
+	printOutput(output);
 }

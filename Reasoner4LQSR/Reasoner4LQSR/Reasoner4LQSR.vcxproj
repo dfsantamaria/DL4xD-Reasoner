@@ -145,6 +145,7 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Var_Tester.h" />
     <ClInclude Include="log.h" />
     <ClInclude Include="Reasoner4LQSR.h" />
     <ClInclude Include="resource.h" />
