@@ -1,6 +1,7 @@
 #pragma once
 #include "stdafx.h" // only on windows
 #include "Var_Tester.h"
+#include "VariablesSet_Tester.h"
 #include <iostream>
 #include <vector>
 #include <string>
@@ -22,5 +23,6 @@ int main()
 {
 	vector<pair< string, int>> output = vector<pair< string, int>>(0);
 	testVar(output);
+	testVariablesSet(output);
 	printOutput(output);
 }

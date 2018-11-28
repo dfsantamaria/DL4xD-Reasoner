@@ -87,7 +87,7 @@ void Var::setVarType(const int _qvar)
 /// </summary>
 /// <param name="match"></param>
 /// <returns></returns>
-int Var::equal(const Var& match)
+int Var::equal (const Var& match) const
 {
 	if ((getSort() == match.getSort()) && 
 		(getVarType() == match.getVarType()) && 
@@ -104,7 +104,7 @@ int Var::equal(const Var& match)
 /// <param name="_sort"></param>
 /// <param name="_varType"></param>
 /// <returns></returns>
-int Var::equal(const string _name, const int _sort, const int _varType)
+int Var::equal(const string _name, const int _sort, const int _varType) const
 {
 	if ( (getSort() == _sort)  && (getVarType() == _varType) && (getName().compare(_name)) == 0 )
 		return 0;
@@ -129,3 +129,124 @@ string Var::toString()
 /*
   End Var
 */
+
+/*
+  Start Variable Set
+*/
+/// <summary>
+/// This Class is delegated to masks the datastructures of the variables used by a knowledge base
+/// </summary>
+
+VariablesSet::VariablesSet() {};
+
+/// <summary>
+/// This Class is delegated to masks the datastructures of the variables used by a knowledge base. This constructor builds maxNsorts+1 vectors of lenght maxNConstants
+/// for the constants, maxNsorts+1 vectors of lenght maxNUniQuantified for universal quantified variables, and maxNsorts+1 vectors of lenght maxNExistQuantified for existential quantified
+/// </summary>
+/// <param name="_maxNsorts"> Maximum sorting </param>
+/// <param name="_maxNconstants"> Max number of constants</param>
+/// <param name="_qvar">Quantified (value 1) or constant (value 0) </param>
+/// <param name="_index">Position in the vector</param>
+VariablesSet::VariablesSet(const size_t maxNsorts, const size_t maxNConstants, const size_t maxNUniQuantified, const size_t maxNExistQuantified)
+{	
+	setConstants.reserve(maxNsorts);  //initialize vectors of constants 
+	setUniQuantified.reserve(maxNsorts); //initialize vectors of Univ. quantified variables
+	setExistQuantified.reserve(maxNsorts); //initialize vectors of Exist. quantified variables	
+	
+	for (int i = 0; i <= maxNsorts; i++) // for each vector we allocate space for all the sorts
+	{
+		setConstants.push_back(vector<Var>());
+		setUniQuantified.push_back(vector<Var>());
+		setExistQuantified.push_back(vector<Var>());
+
+		setConstants.at(i).reserve(maxNConstants);
+		setUniQuantified.at(i).reserve(maxNUniQuantified);
+		setExistQuantified.at(i).reserve(maxNExistQuantified);
+		//	QVQL.at(i).reserve(maxQQSize);
+	}
+};
+/// <summary>
+/// This Class is delegated to masks the datastructures of the variables used by a knowledge base. This constructor builds maxNsorts vectors whose sizes
+/// are provided by the vector kbSizeVector.
+/// </summary>
+/// <param name="_maxNsorts"> Numerber of sorts </param>
+/// <param name="_kbSizeVector"> vector of sizes of each vector</param>
+
+VariablesSet::VariablesSet(const size_t maxNsorts, const vector<size_t>& kbSizeVector)
+{
+  setConstants.reserve(maxNsorts);  //initialize vectors of constants 
+  setUniQuantified.reserve(maxNsorts); //initialize vectors of Univ. quantified variables
+  setExistQuantified.reserve(maxNsorts); //initialize vectors of Exist. quantified variables	
+
+  for (int i = 0; i <= maxNsorts; i++) // for each vector we allocate space for all the sorts
+  {
+	  setConstants.push_back(vector<Var>());
+	  setUniQuantified.push_back(vector<Var>());
+	  setExistQuantified.push_back(vector<Var>());
+
+	  setConstants.at(i).reserve(kbSizeVector.at(i));
+	  setUniQuantified.at(i).reserve(kbSizeVector.at(i+maxNsorts+1));
+	  setExistQuantified.at(i).reserve(i + 2*maxNsorts + 2);	 
+  }
+
+};
+/// <summary>
+/// This function returns the maximum sorting used
+/// </summary>
+size_t VariablesSet::getSorting() { return setConstants.size()-1; };
+
+/// <summary>
+/// This function returns the number of constants of the sort specified by the parameter 
+/// </summary>
+/// <param name="vectorSort"> The sorting of the vector</param>
+size_t VariablesSet::getNumberOfConstantsOfSort(const int vectorSort)
+{
+	if (vectorSort <= setConstants.size())
+		return setConstants.at(vectorSort).size(); 
+	return 0;
+};
+
+/// <summary>
+/// This function returns the number of universally quantified variables of the sort specified by the parameter 
+/// </summary>
+/// <param name="vectorSort"> The sorting of the vector</param>
+size_t VariablesSet::getNumberOfQuantVariablesOfSort(int vectorSort)
+{
+	if (vectorSort <= setUniQuantified.size())
+		return setUniQuantified.at(vectorSort).size();
+	return 0;
+};
+
+/// <summary>
+/// This function returns the number of existentially quantified variables of the sort specified by the parameter 
+/// </summary>
+/// <param name="vectorSort"> The sorting of the vector</param>
+size_t VariablesSet::getNumberOfExistVariablesOfSort(int vectorSort)
+{
+	if (vectorSort <= setExistQuantified.size())
+		return setExistQuantified.at(vectorSort).size();
+	return 0;
+};
+
+/// <summary>
+/// This private function get the references of constants vector of the given sort.  
+/// </summary>
+/// <param name="vectorSort"> The sort of the vector to get access</param>
+vector<Var>& VariablesSet::getAccessToConstantsOfSort(int vectorSort)
+{
+	return setConstants.at(vectorSort);
+};
+
+/// <summary>
+/// This function inserts a constant in the vector of the given sort. This insertion is unsafe.  
+/// </summary>
+/// <param name="variable"> The constant to be inserted</param>
+/// <param name="vectorSort"> The sort of the vector where constant is inserted</param>
+int  VariablesSet::insertConstant(const Var& variable, const int vectorSort)
+{
+	getAccessToConstantsOfSort(vectorSort).push_back(variable);
+	int pos = getAccessToConstantsOfSort(vectorSort).size() - 1;
+	getAccessToConstantsOfSort(vectorSort).back().setIndex(pos);
+	return pos;
+	
+};

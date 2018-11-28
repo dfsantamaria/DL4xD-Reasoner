@@ -145,6 +145,7 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="VariablesSet_Tester.h" />
     <ClInclude Include="Var_Tester.h" />
     <ClInclude Include="log.h" />
     <ClInclude Include="Reasoner4LQSR.h" />
@@ -161,6 +162,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="VariablesSet_Tester.cpp" />
     <ClCompile Include="Var_Tester.cpp" />
   </ItemGroup>
   <ItemGroup>

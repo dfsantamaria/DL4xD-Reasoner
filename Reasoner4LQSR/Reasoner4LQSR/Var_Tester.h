@@ -1,7 +1,12 @@
 #pragma once
 #include <string>
 #include <vector>
-
+#include "Reasoner4LQSR.h"
 
 void testVar(std::vector<std::pair<std::string, int>>& results);
+int testVar_getName(Var& variable, std::string name);
+int testVar_setName(Var& variable, std::string name);
+int testVar_getSort(Var& variable, int sort);
+int testVar_setSort(Var& variable, int sort);
+int testVar_equal(Var& variable, Var& variable2, int aspected);
 int testVarCreation();
