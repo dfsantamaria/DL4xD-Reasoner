@@ -33,9 +33,9 @@ public:
 	void setName(const string _name);
 	void setSort(const int _type);
 	void setVarType(const int _var);
-	int equal(const Var& match) const;
+	int equal(const Var& match) const ;
 	int equal(const string _name, const int _type, const int _varType) const;
-	string toString();
+	string toString() const;
 };
 
 
@@ -46,7 +46,7 @@ private:
 	vector< vector <Var> > setConstants; //vector of constants
 	vector< vector <Var> > setUniQuantified; //vector of quantified variables
 	vector< vector <Var> > setExistQuantified; //vector of existential quantified variables 
-	vector<Var>& getAccessToConstantsOfSort(int vectorSort);
+	vector<Var>& getUnsafeAccessToConstantsOfSort(const int vectorSort);
 public:
 	VariablesSet();
 	
@@ -56,18 +56,10 @@ public:
 	size_t getNumberOfConstantsOfSort(const int vectorSort);
 	size_t getNumberOfQuantVariablesOfSort(const int vectorSort);
 	size_t getNumberOfExistVariablesOfSort(const int vectorSort);
+	
+	const vector<Var>& getAccessToConstantsOfSort(const int vectorSort) const;
 	int  insertConstant(const Var& variable, const int vectorSort);
+	int  insertConstant(const string& name, const int vectorSort);	
 
-/*	vector<Var>& getVectorAt(vector<vector<Var>>& vec, int level);
-	vector<Var>* getVVLAt(int level);
-	vector<Var>* getVQLAt(int level);
-	int pushBack(vector<vector <Var>>& vec, int inslevel, string name, int level, int vartype);
-	int VVLPushBack(int inslevel, string name, int level, int vartype);
-	vector<vector <Var>>& getVQL();
-	vector<vector <Var>>& getVVL();
-	Var* getBack(vector<vector <Var>>& vec, int level);
-	Var* VVLGetBack(int level);
-	//	Var* VQLGetBack(int level) { return &VQL.at(level).back(); }
-	//	Var* QVQLGetBack(int level) { return &QVQL.at(level).back(); }
-	*/
+
 };

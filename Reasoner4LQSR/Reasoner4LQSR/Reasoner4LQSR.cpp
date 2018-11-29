@@ -35,7 +35,7 @@ Var::~Var(){};
 /// Return the sort of the variable
 /// </summary>
 /// 
-int  Var::getSort() const{ return sort; };
+ int  Var::getSort() const { return sort; };
 /// <summary>
 /// Reeturn the name of the variable
 /// </summary>
@@ -116,7 +116,7 @@ int Var::equal(const string _name, const int _sort, const int _varType) const
 /// Return a string representing the variable.
 /// </summary>
 /// <returns></returns>
-string Var::toString()
+string Var::toString() const
 {
 	string out = "V";
 	out.append(to_string(getSort()));
@@ -232,21 +232,40 @@ size_t VariablesSet::getNumberOfExistVariablesOfSort(int vectorSort)
 /// This private function get the references of constants vector of the given sort.  
 /// </summary>
 /// <param name="vectorSort"> The sort of the vector to get access</param>
-vector<Var>& VariablesSet::getAccessToConstantsOfSort(int vectorSort)
+vector<Var>& VariablesSet::getUnsafeAccessToConstantsOfSort(const int vectorSort)
 {
 	return setConstants.at(vectorSort);
 };
 
 /// <summary>
-/// This function inserts a constant in the vector of the given sort. This insertion is unsafe.  
+/// This function inserts a constant  in the vector of the given sort. This insertion is unsafe. It can cause the reallocation of the vector.  
 /// </summary>
 /// <param name="variable"> The constant to be inserted</param>
 /// <param name="vectorSort"> The sort of the vector where constant is inserted</param>
 int  VariablesSet::insertConstant(const Var& variable, const int vectorSort)
 {
-	getAccessToConstantsOfSort(vectorSort).push_back(variable);
-	int pos = getAccessToConstantsOfSort(vectorSort).size() - 1;
-	getAccessToConstantsOfSort(vectorSort).back().setIndex(pos);
+	if (variable.getVarType() != 0 || variable.getSort() != vectorSort)
+		return -1;
+	getUnsafeAccessToConstantsOfSort(vectorSort).push_back(variable);
+	int pos = getUnsafeAccessToConstantsOfSort(vectorSort).size() - 1;
+	getUnsafeAccessToConstantsOfSort(vectorSort).back().setIndex(pos);
+	return pos;	
+};
+
+/// <summary>
+/// This function inserts a constant  in the vector of the given sort. This insertion is unsafe. It can cause the reallocation of the vector.  
+/// </summary>
+/// <param name="variable_name"> The name of the constant to be inserted</param>
+/// <param name="vectorSort"> The sort of the vector where constant is inserted</param>
+int  VariablesSet::insertConstant(const string& name, const int vectorSort)
+{	
+	getUnsafeAccessToConstantsOfSort(vectorSort).push_back(Var(name, vectorSort, 0, 0));
+	int pos = getUnsafeAccessToConstantsOfSort(vectorSort).size() - 1;
+	getUnsafeAccessToConstantsOfSort(vectorSort).back().setIndex(pos);
 	return pos;
-	
+};
+
+const vector<Var>& VariablesSet::getAccessToConstantsOfSort (const int vectorSort) const
+{
+	return setConstants.at(vectorSort);
 };
