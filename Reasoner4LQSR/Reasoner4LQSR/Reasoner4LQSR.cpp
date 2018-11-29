@@ -17,7 +17,7 @@ using namespace std;
 /// </summary>
 /// <param name="_name"> Name of the variable</param>
 /// <param name="_sort"> Sort of the variable</param>
-/// <param name="_qvar">Quantified (value 1) or constant (value 0) </param>
+/// <param name="_qvar">Existential Quantified (value 2), Universally Quantified (value 1), or constant (value 0) </param>
 /// <param name="_index">Position in the vector</param>
 Var::Var(const string _name,const int _sort, const int _qvar,const int _index)
 {
