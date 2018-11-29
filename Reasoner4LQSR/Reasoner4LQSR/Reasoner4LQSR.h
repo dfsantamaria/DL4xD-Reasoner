@@ -56,8 +56,8 @@ public:
 	VariablesSet(const size_t maxNSorts, const vector<size_t>& kbSizeVector);
 	size_t getSorting();
 	size_t getNumberOfConstantsOfSort(const int vectorSort);
-	size_t getNumberOfQuantVariablesOfSort(const int vectorSort);
-	size_t getNumberOfExistVariablesOfSort(const int vectorSort);
+	size_t getNumberOfUniQuantifiedVarsOfSort(const int vectorSort);
+	size_t getNumberOfExQuantifiedVarsOfSort(const int vectorSort);
 	
 	const vector<Var>& getAccessToConstantsOfSort(const int vectorSort) const;
 	const vector<Var>& getAccessToUniQuantifiedVarsOfSort(const int vectorSort) const;
@@ -66,8 +66,8 @@ public:
 	int  insertConstant(const Var& variable, const int vectorSort);
 	int  insertConstant(const string& name, const int vectorSort);	
 
-	int  insertUniVar(const Var& variable, const int vectorSort);
-	int  insertUniVar(const string& name, const int vectorSort);
+	int  insertUniQuantifiedVar(const Var& variable, const int vectorSort);
+	int  insertUniQuantifiedVar(const string& name, const int vectorSort);
 
 	int  insertExQuantifiedVar(const Var& variable, const int vectorSort);
 	int  insertExQuantifiedVar(const string& name, const int vectorSort);

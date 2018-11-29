@@ -210,7 +210,7 @@ size_t VariablesSet::getNumberOfConstantsOfSort(const int vectorSort)
 /// This function returns the number of universally quantified variables of the sort specified by the parameter 
 /// </summary>
 /// <param name="vectorSort"> The sorting of the vector</param>
-size_t VariablesSet::getNumberOfQuantVariablesOfSort(int vectorSort)
+size_t VariablesSet::getNumberOfUniQuantifiedVarsOfSort(int vectorSort)
 {
 	if (vectorSort <= setUniQuantified.size())
 		return setUniQuantified.at(vectorSort).size();
@@ -221,7 +221,7 @@ size_t VariablesSet::getNumberOfQuantVariablesOfSort(int vectorSort)
 /// This function returns the number of existentially quantified variables of the sort specified by the parameter 
 /// </summary>
 /// <param name="vectorSort"> The sorting of the vector</param>
-size_t VariablesSet::getNumberOfExistVariablesOfSort(int vectorSort)
+size_t VariablesSet::getNumberOfExQuantifiedVarsOfSort(int vectorSort)
 {
 	if (vectorSort <= setExistQuantified.size())
 		return setExistQuantified.at(vectorSort).size();
@@ -272,13 +272,14 @@ int  VariablesSet::insertConstant(const Var& variable, const int vectorSort)
 	return pos;	
 };
 
-//to be tested
+
+
 /// <summary>
 /// This function inserts a universally quantified variable  in the vector of the given sort. This insertion is unsafe. It can cause the reallocation of the vector.  
 /// </summary>
 /// <param name="variable"> The universally quantified variable to be inserted</param>
 /// <param name="vectorSort"> The sort of the vector where variable is inserted</param>
-int  VariablesSet::insertUniVar(const Var& variable, const int vectorSort)
+int  VariablesSet::insertUniQuantifiedVar(const Var& variable, const int vectorSort)
 {
 	if (variable.getVarType() != 1 || variable.getSort() != vectorSort)
 		return -1;
@@ -289,7 +290,7 @@ int  VariablesSet::insertUniVar(const Var& variable, const int vectorSort)
 };
 
 
-//to be tested
+
 /// <summary>
 /// This function inserts a existentially quantified variable  in the vector of the given sort. This insertion is unsafe. It can cause the reallocation of the vector.  
 /// </summary>
@@ -319,13 +320,13 @@ int  VariablesSet::insertConstant(const string& name, const int vectorSort)
 	return pos;
 };
 
-//to be tested
+
 /// <summary>
 /// This function inserts a uni. quantified variable  in the vector of the given sort. This insertion is unsafe. It can cause the reallocation of the vector.  
 /// </summary>
 /// <param name="variable_name"> The name of the universally quantified variable to be inserted</param>
 /// <param name="vectorSort"> The sort of the vector where the variable is inserted</param>
-int  VariablesSet::insertUniVar(const string& name, const int vectorSort)
+int  VariablesSet::insertUniQuantifiedVar(const string& name, const int vectorSort)
 {
 	getUnsafeAccessToUniQuantifiedVarsOfSort(vectorSort).push_back(Var(name, vectorSort, 0, 0));
 	int pos = getUnsafeAccessToUniQuantifiedVarsOfSort(vectorSort).size() - 1;
@@ -333,7 +334,7 @@ int  VariablesSet::insertUniVar(const string& name, const int vectorSort)
 	return pos;
 };
 
-//to be tested
+
 /// <summary>
 /// This function inserts a exist. quantified variable  in the vector of the given sort. This insertion is unsafe. It can cause the reallocation of the vector.  
 /// </summary>
@@ -357,7 +358,7 @@ const vector<Var>& VariablesSet::getAccessToConstantsOfSort (const int vectorSor
 	return setConstants.at(vectorSort);
 };
 
-//to be tested
+
 /// <summary>
 /// This function get a constant reference of the vector of universally quantified variables of the given sort.  
 /// </summary>
@@ -367,7 +368,7 @@ const vector<Var>& VariablesSet::getAccessToUniQuantifiedVarsOfSort(const int ve
 	return setUniQuantified.at(vectorSort);
 };
 
-//to be tested
+
 /// <summary>
 /// This function get a constant reference of the vector of exist. quantified variables of the given sort.  
 /// </summary>
