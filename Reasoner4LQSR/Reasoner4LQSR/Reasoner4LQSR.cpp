@@ -229,7 +229,7 @@ size_t VariablesSet::getNumberOfExistVariablesOfSort(int vectorSort)
 };
 
 /// <summary>
-/// This private function get the references of constants vector of the given sort.  
+/// This private function get a reference of the vector of constants of the given sort.  
 /// </summary>
 /// <param name="vectorSort"> The sort of the vector to get access</param>
 vector<Var>& VariablesSet::getUnsafeAccessToConstantsOfSort(const int vectorSort)
@@ -266,10 +266,9 @@ int  VariablesSet::insertConstant(const string& name, const int vectorSort)
 };
 
 /// <summary>
-/// This function inserts a constant  in the vector of the given sort. This insertion is unsafe. It can cause the reallocation of the vector.  
+/// This function get a constant reference of  the vector of constants of the given sort.  
 /// </summary>
-/// <param name="variable_name"> The name of the constant to be inserted</param>
-/// <param name="vectorSort"> The sort of the vector where constant is inserted</param>
+/// <param name="vectorSort"> The sort of the vector to get access</param>
 const vector<Var>& VariablesSet::getAccessToConstantsOfSort (const int vectorSort) const
 {
 	return setConstants.at(vectorSort);
