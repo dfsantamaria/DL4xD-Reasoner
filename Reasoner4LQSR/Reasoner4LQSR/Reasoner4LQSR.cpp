@@ -237,6 +237,26 @@ vector<Var>& VariablesSet::getUnsafeAccessToConstantsOfSort(const int vectorSort
 	return setConstants.at(vectorSort);
 };
 
+
+/// <summary>
+/// This private function get a reference of the vector of universally quantified variables of the given sort.  
+/// </summary>
+/// <param name="vectorSort"> The sort of the vector to get access</param>
+vector<Var>& VariablesSet::getUnsafeAccessToUniQuantifiedVarsOfSort(const int vectorSort)
+{
+	return setUniQuantified.at(vectorSort);
+};
+
+/// <summary>
+/// This private function get a reference of the vector of existentially quantified variables of the given sort.  
+/// </summary>
+/// <param name="vectorSort"> The sort of the vector to get access</param>
+vector<Var>& VariablesSet::getUnsafeAccessToExQuantifiedVarsOfSort(const int vectorSort)
+{
+	return setExistQuantified.at(vectorSort);
+};
+
+
 /// <summary>
 /// This function inserts a constant  in the vector of the given sort. This insertion is unsafe. It can cause the reallocation of the vector.  
 /// </summary>
@@ -252,11 +272,45 @@ int  VariablesSet::insertConstant(const Var& variable, const int vectorSort)
 	return pos;	
 };
 
+//to be tested
+/// <summary>
+/// This function inserts a universally quantified variable  in the vector of the given sort. This insertion is unsafe. It can cause the reallocation of the vector.  
+/// </summary>
+/// <param name="variable"> The universally quantified variable to be inserted</param>
+/// <param name="vectorSort"> The sort of the vector where variable is inserted</param>
+int  VariablesSet::insertUniVar(const Var& variable, const int vectorSort)
+{
+	if (variable.getVarType() != 1 || variable.getSort() != vectorSort)
+		return -1;
+	getUnsafeAccessToUniQuantifiedVarsOfSort(vectorSort).push_back(variable);
+	int pos = getUnsafeAccessToUniQuantifiedVarsOfSort(vectorSort).size() - 1;
+	getUnsafeAccessToUniQuantifiedVarsOfSort(vectorSort).back().setIndex(pos);
+	return pos;
+};
+
+
+//to be tested
+/// <summary>
+/// This function inserts a existentially quantified variable  in the vector of the given sort. This insertion is unsafe. It can cause the reallocation of the vector.  
+/// </summary>
+/// <param name="variable"> The existentially quantified variable to be inserted</param>
+/// <param name="vectorSort"> The sort of the vector where variable is inserted</param>
+int  VariablesSet::insertExQuantifiedVar(const Var& variable, const int vectorSort)
+{
+	if (variable.getVarType() != 2 || variable.getSort() != vectorSort)
+		return -1;
+	getUnsafeAccessToExQuantifiedVarsOfSort(vectorSort).push_back(variable);
+	int pos = getUnsafeAccessToExQuantifiedVarsOfSort(vectorSort).size() - 1;
+	getUnsafeAccessToExQuantifiedVarsOfSort(vectorSort).back().setIndex(pos);
+	return pos;
+};
+
+
 /// <summary>
 /// This function inserts a constant  in the vector of the given sort. This insertion is unsafe. It can cause the reallocation of the vector.  
 /// </summary>
 /// <param name="variable_name"> The name of the constant to be inserted</param>
-/// <param name="vectorSort"> The sort of the vector where constant is inserted</param>
+/// <param name="vectorSort"> The sort of the vector where the constant is inserted</param>
 int  VariablesSet::insertConstant(const string& name, const int vectorSort)
 {	
 	getUnsafeAccessToConstantsOfSort(vectorSort).push_back(Var(name, vectorSort, 0, 0));
@@ -265,6 +319,35 @@ int  VariablesSet::insertConstant(const string& name, const int vectorSort)
 	return pos;
 };
 
+//to be tested
+/// <summary>
+/// This function inserts a uni. quantified variable  in the vector of the given sort. This insertion is unsafe. It can cause the reallocation of the vector.  
+/// </summary>
+/// <param name="variable_name"> The name of the universally quantified variable to be inserted</param>
+/// <param name="vectorSort"> The sort of the vector where the variable is inserted</param>
+int  VariablesSet::insertUniVar(const string& name, const int vectorSort)
+{
+	getUnsafeAccessToUniQuantifiedVarsOfSort(vectorSort).push_back(Var(name, vectorSort, 0, 0));
+	int pos = getUnsafeAccessToUniQuantifiedVarsOfSort(vectorSort).size() - 1;
+	getUnsafeAccessToUniQuantifiedVarsOfSort(vectorSort).back().setIndex(pos);
+	return pos;
+};
+
+//to be tested
+/// <summary>
+/// This function inserts a exist. quantified variable  in the vector of the given sort. This insertion is unsafe. It can cause the reallocation of the vector.  
+/// </summary>
+/// <param name="variable_name"> The name of the existantially quantified variable to be inserted</param>
+/// <param name="vectorSort"> The sort of the vector where the variable is inserted</param>
+int  VariablesSet::insertExQuantifiedVar(const string& name, const int vectorSort)
+{
+	getUnsafeAccessToExQuantifiedVarsOfSort(vectorSort).push_back(Var(name, vectorSort, 0, 0));
+	int pos = getUnsafeAccessToExQuantifiedVarsOfSort(vectorSort).size() - 1;
+	getUnsafeAccessToExQuantifiedVarsOfSort(vectorSort).back().setIndex(pos);
+	return pos;
+};
+
+
 /// <summary>
 /// This function get a constant reference of  the vector of constants of the given sort.  
 /// </summary>
@@ -272,4 +355,24 @@ int  VariablesSet::insertConstant(const string& name, const int vectorSort)
 const vector<Var>& VariablesSet::getAccessToConstantsOfSort (const int vectorSort) const
 {
 	return setConstants.at(vectorSort);
+};
+
+//to be tested
+/// <summary>
+/// This function get a constant reference of the vector of universally quantified variables of the given sort.  
+/// </summary>
+/// <param name="vectorSort"> The sort of the vector to get access</param>
+const vector<Var>& VariablesSet::getAccessToUniQuantifiedVarsOfSort(const int vectorSort) const
+{
+	return setUniQuantified.at(vectorSort);
+};
+
+//to be tested
+/// <summary>
+/// This function get a constant reference of the vector of exist. quantified variables of the given sort.  
+/// </summary>
+/// <param name="vectorSort"> The sort of the vector to get access</param>
+const vector<Var>& VariablesSet::getAccessToExQuantifiedVarsOfSort(const int vectorSort) const
+{
+	return setExistQuantified.at(vectorSort);
 };

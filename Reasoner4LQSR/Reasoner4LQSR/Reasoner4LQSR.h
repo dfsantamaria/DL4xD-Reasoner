@@ -47,6 +47,8 @@ private:
 	vector< vector <Var> > setUniQuantified; //vector of quantified variables
 	vector< vector <Var> > setExistQuantified; //vector of existential quantified variables 
 	vector<Var>& getUnsafeAccessToConstantsOfSort(const int vectorSort);
+	vector<Var>& getUnsafeAccessToUniQuantifiedVarsOfSort(const int vectorSort);
+	vector<Var>& getUnsafeAccessToExQuantifiedVarsOfSort(const int vectorSort);
 public:
 	VariablesSet();
 	
@@ -58,8 +60,16 @@ public:
 	size_t getNumberOfExistVariablesOfSort(const int vectorSort);
 	
 	const vector<Var>& getAccessToConstantsOfSort(const int vectorSort) const;
+	const vector<Var>& getAccessToUniQuantifiedVarsOfSort(const int vectorSort) const;
+	const vector<Var>& getAccessToExQuantifiedVarsOfSort(const int vectorSort) const;
+
 	int  insertConstant(const Var& variable, const int vectorSort);
 	int  insertConstant(const string& name, const int vectorSort);	
 
+	int  insertUniVar(const Var& variable, const int vectorSort);
+	int  insertUniVar(const string& name, const int vectorSort);
+
+	int  insertExQuantifiedVar(const Var& variable, const int vectorSort);
+	int  insertExQuantifiedVar(const string& name, const int vectorSort);
 
 };
