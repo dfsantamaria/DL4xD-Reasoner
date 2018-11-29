@@ -265,6 +265,11 @@ int  VariablesSet::insertConstant(const string& name, const int vectorSort)
 	return pos;
 };
 
+/// <summary>
+/// This function inserts a constant  in the vector of the given sort. This insertion is unsafe. It can cause the reallocation of the vector.  
+/// </summary>
+/// <param name="variable_name"> The name of the constant to be inserted</param>
+/// <param name="vectorSort"> The sort of the vector where constant is inserted</param>
 const vector<Var>& VariablesSet::getAccessToConstantsOfSort (const int vectorSort) const
 {
 	return setConstants.at(vectorSort);
