@@ -84,13 +84,37 @@ private:
 	vector<string> quantifiers = { "$FA", "$EX"};	//quantifiers {FORALL,EXISTS}
 public:
 	Operators();
-	size_t getLogConnectSize();
-	size_t getSetOpSize();
-	size_t getQuantSize();
-	int getLogConnectValue(string connect);
-	int getSetOpValue(string setOperator);
-	int getQuantValue(string quantifier);
-	string getLogConnectElement(int index_log);
-	string getSetOpElement(int index_op);
-	string getQuantElement(int index_quant);
+	size_t getLogConnectSize() const;
+	size_t getSetOpSize() const;
+	size_t getQuantSize() const;
+	int getLogConnectValue(string connect) const;
+	int getSetOpValue(string setOperator) const;
+	int getQuantValue(string quantifier) const;
+	string getLogConnectElement(int index_log)const;
+	string getSetOpElement(int index_op) const;
+	string getQuantElement(int index_quant) const;
+};
+
+//This class manages a 4LQSR literal
+class Literal
+{
+private:
+	int literalOp;//-1 if unsetted, otherwise a value corresponding to an index of the setOp vector	
+	vector<Var*> components;
+	/*
+	Right Operand is the first element of the vector.
+	Pair is the second and the third.	
+	*/
+public:
+	Literal();
+	Literal(const int literalOp_, const vector<Var*>& components_);
+	Literal(const int literalOp_, const int componentsSize);
+	~Literal();
+	const vector<Var*>& getElements() const;
+	int getLiteralOp() const;
+	void setLiteralOp(const int literalOp_);
+	const Var* getElementAt(const int index) const;		
+	void addElement(Var* element);
+	void setElementAt(const int index,  Var* element);	
+	int equals(const Literal &literal) const;
 };

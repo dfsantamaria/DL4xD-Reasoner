@@ -388,7 +388,7 @@ Operators::Operators() {};
 /// This function returns the size of the logic connectives vector.  
 /// </summary>
 
-size_t Operators::getLogConnectSize() 
+size_t Operators::getLogConnectSize()  const
 {
 	return logConnect.size();
 };
@@ -397,7 +397,7 @@ size_t Operators::getLogConnectSize()
 /// <summary>
 /// This function returns the size of the logic connectives vector.  
 /// </summary>
-size_t Operators::getSetOpSize()
+size_t Operators::getSetOpSize() const
 {
 	return setOp.size();
 };
@@ -406,7 +406,7 @@ size_t Operators::getSetOpSize()
 /// <summary>
 /// This function returns the size of the quantifies vector.  
 /// </summary>
-size_t Operators::getQuantSize()
+size_t Operators::getQuantSize() const
 {
 	return quantifiers.size();
 };
@@ -415,7 +415,7 @@ size_t Operators::getQuantSize()
 /// This function returns the integer representing the given logic connective. Such number corresponds to the position of the connective in the vector.  Returns -1 if the connective does not exist.
 /// </summary>
 /// <param name="connective"> The logic connective</param>
-int Operators::getLogConnectValue(string connective)
+int Operators::getLogConnectValue(string connective) const
 {
 	for (int i = 0; i < logConnect.size(); i++)
 		if (logConnect.at(i).compare(connective) == 0)
@@ -427,7 +427,7 @@ int Operators::getLogConnectValue(string connective)
 /// This function returns the integer representing the given set operator. Such number corresponds to the position of the operator in the vector.  Returns -1 if the operator does not exist.
 /// </summary>
 /// <param name="setOperator"> The set operator</param>
-int Operators::getSetOpValue(string setOperator)
+int Operators::getSetOpValue(string setOperator) const
 {
 	for (int i = 0; i < setOp.size(); i++)
 		if (setOp.at(i).compare(setOperator) == 0)
@@ -439,7 +439,7 @@ int Operators::getSetOpValue(string setOperator)
 /// This function returns the integer representing the given quantifier. Such number corresponds to the position of the quantifier in the vector.  Returns -1 if the quantifier does not exist.
 /// </summary>
 /// <param name="quantifier"> The quantifier</param>
-int Operators::getQuantValue(string quantifier)
+int Operators::getQuantValue(string quantifier) const
 {
 	for (int i = 0; i < quantifiers.size(); i++)
 		if (quantifiers.at(i).compare(quantifier) == 0)
@@ -451,7 +451,7 @@ int Operators::getQuantValue(string quantifier)
 /// This function returns the logic connective represented by the given integer. Such number corresponds to the position of the connective in the vector.  Returns null if the connective does not exist.
 /// </summary>
 /// <param name="index_log"> The integer representing the logic connective</param>
-string Operators::getLogConnectElement(int index_log)
+string Operators::getLogConnectElement(int index_log) const
 {
 	if (index_log < logConnect.size())
 		return logConnect.at(index_log);
@@ -462,7 +462,7 @@ string Operators::getLogConnectElement(int index_log)
 /// This function returns the set operator represented by the given integer. Such number corresponds to the position of the operator in the vector.  Returns null if the operator does not exist.
 /// </summary>
 /// <param name="index_op"> The integer representing the operator</param>
-string Operators::getSetOpElement(int index_op)
+string Operators::getSetOpElement(int index_op) const
 {
 	if (index_op < setOp.size())
 		return setOp.at(index_op);
@@ -473,9 +473,120 @@ string Operators::getSetOpElement(int index_op)
 /// This function returns the quantifier represented by the given integer. Such number corresponds to the position of the quantifier in the vector.  Returns null if the quantifier does not exist.
 /// </summary>
 /// <param name="index_quant"> The integer representing the quantifier</param>
-string Operators::getQuantElement(int index_quant) 
+string Operators::getQuantElement(int index_quant) const
 {
 	if (index_quant < quantifiers.size())
 		return quantifiers.at(index_quant);
 	return "";
+};
+
+/// <summary>
+/// This class represents a 4LQSR literal
+/// </summary>
+Literal::Literal() 
+{
+	literalOp = -1;
+	components = vector<Var*>(0);
+};
+
+
+/// <summary>
+/// This class represents a 4LQSR literal
+/// </summary>
+/// <param name="literalOp_"> The value of the set operator</param>
+/// <param name="components_"> The vector of vars</param>
+Literal::Literal(const int literalOp_, const vector<Var*>& components_)
+{
+	literalOp = literalOp_;
+	components = components_;
+};
+
+/// <summary>
+/// This class represents a 4LQSR literal
+/// </summary>
+/// <param name="literalOp_"> The value of the set operator</param>
+/// <param name="componentsSize"> The size of vector of vars</param>
+Literal::Literal(const int literalOp_, const int componentsSize)
+{
+	literalOp = literalOp_;
+	components = vector<Var*>(componentsSize);
+};
+
+Literal::~Literal() { literalOp = -1; components.clear(); };
+
+/// <summary>
+/// This function returns the vector of vars
+/// </summary>
+const vector<Var*>& Literal::getElements() const
+{
+	return components;
+};
+
+/// <summary>
+/// This function returns the set operator
+/// </summary>
+int Literal::getLiteralOp() const
+{
+	return literalOp;
+};
+
+/// <summary>
+/// This function changes the set operator
+/// </summary>
+/// <param name="literalOp_"> The value of the set operator</param>
+void Literal::setLiteralOp(const int literalOp_)
+{
+	literalOp = literalOp_;
+};
+
+/// <summary>
+/// This function returns the variable at the given position. Returns null if the index is greater than the size of the vector.
+/// </summary>
+/// <param name="index"> The index of the var to be returned</param>
+const Var* Literal::getElementAt(const int index) const
+{
+	if(index<components.size())
+	 return components.at(index);
+	return NULL;
+};
+
+/// <summary>
+/// This function inserts the given variable in the vector of variables.
+/// </summary>
+/// <param name="element"> The element to insert</param>
+void Literal::addElement(Var* element)
+{
+	components.push_back(element);
+};
+
+/// <summary>
+/// This function replaces the element at the given index in the vector of variables.
+/// </summary>
+/// <param name="index"> The index of the variable to replace</param>
+/// <param name="element"> The element to insert</param>
+void Literal::setElementAt(const int index, Var* element)
+{
+	if (index < components.size())
+		components.at(index) = element;
+};
+
+
+/// <summary>
+/// This function compares the current literal with the given one. Returns 0 if they are equals, 1 otherwise.
+/// </summary>
+/// <param name="literal"> The literal to compare with</param>
+int Literal::equals(const Literal &literal) const
+{
+  if ((this->getElements().size() == literal.getElements().size()) &&
+	  (this->getLiteralOp() == literal.getLiteralOp()) ) //same size and same set operator allows for a deeper check
+	{
+		int j = 0;
+		for (;j < this->getElements().size(); j++) //lets check each single var		
+		 if ( this->getElementAt(j) -> equal( *(literal.getElementAt(j))) != 0)
+			break;
+		
+		 if (j == this->getElements().size())		
+			return 0;		
+	}
+	return 1;
 };
