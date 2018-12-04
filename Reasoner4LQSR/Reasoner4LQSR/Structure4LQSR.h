@@ -73,3 +73,24 @@ public:
 	int  insertExQuantifiedVar(const string& name, const int vectorSort);
 
 };
+
+
+//This Class contains  the operators used by 4LQSR formulae
+class Operators
+{
+private:
+	vector<string> logConnect = { "$OR","$AD","$RO","$DA", "$NG", "$IF", "$FI", "$II" }; //logic connectors {OR,AND,NOR,NAND,NOT,RIMPLIES,LIMPLIES,DIMPLIES}
+	vector<string> setOp = { "$IN", "$EQ", "$NI", "$QE", "$OA", "$AO", "$CO" }; //set operators {IN,EQUIVALENT,NOTIN,NOTEQUIVALENT, LEFTANGLE, RIGHTANGLE, COMMA}
+	vector<string> quantifiers = { "$FA", "$EX"};	//quantifiers {FORALL,EXISTS}
+public:
+	Operators();
+	size_t getLogConnectSize();
+	size_t getSetOpSize();
+	size_t getQuantSize();
+	int getLogConnectValue(string connect);
+	int getSetOpValue(string setOperator);
+	int getQuantValue(string quantifier);
+	string getLogConnectElement(int index_log);
+	string getSetOpElement(int index_op);
+	string getQuantElement(int index_quant);
+};

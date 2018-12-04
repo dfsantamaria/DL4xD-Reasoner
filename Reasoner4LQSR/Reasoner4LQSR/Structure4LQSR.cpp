@@ -8,7 +8,7 @@
 #include <array>
 #include <stack>
 #include <sstream>
-#include "Reasoner4LQSR.h"
+#include "Structure4LQSR.h"
 
 using namespace std;
 
@@ -376,4 +376,106 @@ const vector<Var>& VariablesSet::getAccessToUniQuantifiedVarsOfSort(const int ve
 const vector<Var>& VariablesSet::getAccessToExQuantifiedVarsOfSort(const int vectorSort) const
 {
 	return setExistQuantified.at(vectorSort);
+};
+
+
+/// <summary>
+/// This function constructs the objects containg all the operators and connectives used by a 4LQSR formula.   
+/// </summary>
+Operators::Operators() {};
+
+/// <summary>
+/// This function returns the size of the logic connectives vector.  
+/// </summary>
+
+size_t Operators::getLogConnectSize() 
+{
+	return logConnect.size();
+};
+
+
+/// <summary>
+/// This function returns the size of the logic connectives vector.  
+/// </summary>
+size_t Operators::getSetOpSize()
+{
+	return setOp.size();
+};
+
+
+/// <summary>
+/// This function returns the size of the quantifies vector.  
+/// </summary>
+size_t Operators::getQuantSize()
+{
+	return quantifiers.size();
+};
+
+/// <summary>
+/// This function returns the integer representing the given logic connective. Such number corresponds to the position of the connective in the vector.  Returns -1 if the connective does not exist.
+/// </summary>
+/// <param name="connective"> The logic connective</param>
+int Operators::getLogConnectValue(string connective)
+{
+	for (int i = 0; i < logConnect.size(); i++)
+		if (logConnect.at(i).compare(connective) == 0)
+			return i;
+	return -1;
+};
+
+/// <summary>
+/// This function returns the integer representing the given set operator. Such number corresponds to the position of the operator in the vector.  Returns -1 if the operator does not exist.
+/// </summary>
+/// <param name="setOperator"> The set operator</param>
+int Operators::getSetOpValue(string setOperator)
+{
+	for (int i = 0; i < setOp.size(); i++)
+		if (setOp.at(i).compare(setOperator) == 0)
+			return i;
+	return -1;
+};
+
+/// <summary>
+/// This function returns the integer representing the given quantifier. Such number corresponds to the position of the quantifier in the vector.  Returns -1 if the quantifier does not exist.
+/// </summary>
+/// <param name="quantifier"> The quantifier</param>
+int Operators::getQuantValue(string quantifier)
+{
+	for (int i = 0; i < quantifiers.size(); i++)
+		if (quantifiers.at(i).compare(quantifier) == 0)
+			return i;
+	return -1;
+};
+
+/// <summary>
+/// This function returns the logic connective represented by the given integer. Such number corresponds to the position of the connective in the vector.  Returns null if the connective does not exist.
+/// </summary>
+/// <param name="index_log"> The integer representing the logic connective</param>
+string Operators::getLogConnectElement(int index_log)
+{
+	if (index_log < logConnect.size())
+		return logConnect.at(index_log);
+	return "";
+};
+
+/// <summary>
+/// This function returns the set operator represented by the given integer. Such number corresponds to the position of the operator in the vector.  Returns null if the operator does not exist.
+/// </summary>
+/// <param name="index_op"> The integer representing the operator</param>
+string Operators::getSetOpElement(int index_op)
+{
+	if (index_op < setOp.size())
+		return setOp.at(index_op);
+	return "";
+};
+
+/// <summary>
+/// This function returns the quantifier represented by the given integer. Such number corresponds to the position of the quantifier in the vector.  Returns null if the quantifier does not exist.
+/// </summary>
+/// <param name="index_quant"> The integer representing the quantifier</param>
+string Operators::getQuantElement(int index_quant) 
+{
+	if (index_quant < quantifiers.size())
+		return quantifiers.at(index_quant);
+	return "";
 };

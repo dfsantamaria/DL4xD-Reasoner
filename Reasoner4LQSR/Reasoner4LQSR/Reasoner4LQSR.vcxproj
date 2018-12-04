@@ -145,17 +145,18 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Operators_Tester.h" />
     <ClInclude Include="VariablesSet_Tester.h" />
     <ClInclude Include="Var_Tester.h" />
-    <ClInclude Include="log.h" />
-    <ClInclude Include="Reasoner4LQSR.h" />
+    <ClInclude Include="Structure4LQSR.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="Reasoner4LQSR.cpp" />
+    <ClCompile Include="mainTester.cpp" />
+    <ClCompile Include="Operators_Tester.cpp" />
+    <ClCompile Include="Structure4LQSR.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

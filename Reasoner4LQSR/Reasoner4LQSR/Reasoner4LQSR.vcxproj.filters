@@ -13,48 +13,69 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="File di intestazione\Test">
+      <UniqueIdentifier>{e2fb1f45-3248-4bd8-9f48-0e7abe9095cd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="File di intestazione\Structure">
+      <UniqueIdentifier>{b34c51f2-4b08-4a8a-bf6a-a6be76c2a75a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="File di intestazione\Enviroment">
+      <UniqueIdentifier>{e968d387-a21d-4a35-8af1-e0a73d5a67ae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="File di origine\Structure">
+      <UniqueIdentifier>{342b4a5e-74b5-4600-801a-89368cbd0c17}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="File di origine\Test">
+      <UniqueIdentifier>{050c14b2-50c7-47cf-a5d2-72ef64db278d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="File di origine\Enviroment">
+      <UniqueIdentifier>{33773e53-ce6f-4f73-b5ae-09474c9b1da0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="stdafx.h">
-      <Filter>File di intestazione</Filter>
-    </ClInclude>
-    <ClInclude Include="targetver.h">
-      <Filter>File di intestazione</Filter>
-    </ClInclude>
-    <ClInclude Include="Reasoner4LQSR.h">
-      <Filter>File di intestazione</Filter>
-    </ClInclude>
-    <ClInclude Include="log.h">
-      <Filter>File di intestazione</Filter>
-    </ClInclude>
-    <ClInclude Include="resource.h">
-      <Filter>File di intestazione</Filter>
+    <ClInclude Include="Operators_Tester.h">
+      <Filter>File di intestazione\Test</Filter>
     </ClInclude>
     <ClInclude Include="Var_Tester.h">
-      <Filter>File di intestazione</Filter>
+      <Filter>File di intestazione\Test</Filter>
     </ClInclude>
     <ClInclude Include="VariablesSet_Tester.h">
-      <Filter>File di intestazione</Filter>
+      <Filter>File di intestazione\Test</Filter>
+    </ClInclude>
+    <ClInclude Include="Structure4LQSR.h">
+      <Filter>File di intestazione\Structure</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>File di intestazione\Enviroment</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>File di intestazione\Enviroment</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>File di intestazione\Enviroment</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="stdafx.cpp">
-      <Filter>File di origine</Filter>
-    </ClCompile>
-    <ClCompile Include="Reasoner4LQSR.cpp">
-      <Filter>File di origine</Filter>
-    </ClCompile>
-    <ClCompile Include="main.cpp">
-      <Filter>File di origine</Filter>
+    <ClCompile Include="Structure4LQSR.cpp">
+      <Filter>File di origine\Structure</Filter>
     </ClCompile>
     <ClCompile Include="Var_Tester.cpp">
-      <Filter>File di origine</Filter>
+      <Filter>File di origine\Test</Filter>
     </ClCompile>
     <ClCompile Include="VariablesSet_Tester.cpp">
-      <Filter>File di origine</Filter>
+      <Filter>File di origine\Test</Filter>
+    </ClCompile>
+    <ClCompile Include="Operators_Tester.cpp">
+      <Filter>File di origine\Test</Filter>
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>File di origine\Enviroment</Filter>
+    </ClCompile>
+    <ClCompile Include="mainTester.cpp">
+      <Filter>File di origine\Test</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
