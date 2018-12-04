@@ -87,11 +87,11 @@ void Var::setVarType(const int _qvar)
 /// </summary>
 /// <param name="match"></param>
 /// <returns></returns>
-int Var::equal (const Var& match) const
+int Var::equal (const Var* match) const
 {
-	if ((getSort() == match.getSort()) && 
-		(getVarType() == match.getVarType()) && 
-		(getName().compare(match.getName()) == 0)
+	if ((getSort() == match->getSort()) && 
+		(getVarType() == match->getVarType()) && 
+		(getName().compare(match->getName()) == 0)
 		)
 	  return 0;
 	return 1;
@@ -582,7 +582,7 @@ int Literal::equals(const Literal &literal) const
 	{
 		int j = 0;
 		for (;j < this->getElements().size(); j++) //lets check each single var		
-		 if ( this->getElementAt(j) -> equal( *(literal.getElementAt(j))) != 0)
+		 if ( this->getElementAt(j)->equal(literal.getElementAt(j)) != 0)
 			break;
 		
 		 if (j == this->getElements().size())		

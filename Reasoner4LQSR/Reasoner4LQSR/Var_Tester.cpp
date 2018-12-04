@@ -45,7 +45,7 @@ int testVar_setSort(Var& variable, int sort)
 
 int testVar_equal(Var& variable, Var& variable2, int aspected)
 {
-	int val = variable.equal(variable2);
+	int val = variable.equal(&variable2);
 	if (val == aspected)
 		return 0;
 	return 1;
@@ -100,7 +100,7 @@ void testVar(vector<pair<string, int>>& results)
 	results.push_back(std::make_pair("testVar_setSort input Var(x_0, 0, 0, 0), 1", testVar_setSort(Var("x_0", 0, 0, 0), 1)));
 	results.push_back(std::make_pair("testVar_getIndex input Var(x_1, 1, 0, 34), 34", testVar_getIndex(Var("x_1", 1, 0, 34), 34)));
 	results.push_back(std::make_pair("testVar_setIndex input Var(x_1, 1, 0, 0), 34", testVar_setIndex(Var("x_1", 1, 0, 0), 34)));
-	results.push_back(std::make_pair("testVar_getVarType input Var(x_1, 1, 1, 0), 1", testVar_getVarType(Var("x_1", 1, 1, 0), 1)));
+	results.push_back(std::make_pair("testVar_getVarType input Var(x_1, 1, 1, 0), 1", testVar_getVarType( Var("x_1", 1, 1, 0), 1)));
 	results.push_back(std::make_pair("testVar_setVarType input Var(x_1, 1, 1, 0), 3", testVar_setVarType(Var("x_1", 1, 1, 0), 3)));
 	//Checking var equality
 	results.push_back(std::make_pair("testVar_equal input Var(one, 1, 0, 0), Var(one, 1, 0, 0), 0 ", testVar_equal(Var("one", 1, 0, 0), Var("one", 1, 0, 0), 0)));

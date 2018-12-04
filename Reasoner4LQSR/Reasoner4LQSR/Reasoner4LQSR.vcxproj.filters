@@ -57,6 +57,9 @@
     <ClInclude Include="targetver.h">
       <Filter>File di intestazione\Enviroment</Filter>
     </ClInclude>
+    <ClInclude Include="Literal_Tester.h">
+      <Filter>File di intestazione\Test</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Structure4LQSR.cpp">
@@ -75,6 +78,9 @@
       <Filter>File di origine\Enviroment</Filter>
     </ClCompile>
     <ClCompile Include="mainTester.cpp">
+      <Filter>File di origine\Test</Filter>
+    </ClCompile>
+    <ClCompile Include="Literal_Tester.cpp">
       <Filter>File di origine\Test</Filter>
     </ClCompile>
   </ItemGroup>

@@ -3,6 +3,7 @@
 #include "Var_Tester.h"
 #include "VariablesSet_Tester.h"
 #include "Operators_Tester.h"
+#include "Literal_Tester.h"
 #include <iostream>
 #include <vector>
 #include <string>
@@ -26,5 +27,9 @@ int main()
 	testVar(output);
 	testVariablesSet(output);
 	testOperators(output);
+	testLiteral(output); 
+
+
 	printOutput(output);
+	
 }

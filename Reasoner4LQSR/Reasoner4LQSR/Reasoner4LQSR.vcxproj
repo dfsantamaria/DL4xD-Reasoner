@@ -145,6 +145,7 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Literal_Tester.h" />
     <ClInclude Include="Operators_Tester.h" />
     <ClInclude Include="VariablesSet_Tester.h" />
     <ClInclude Include="Var_Tester.h" />
@@ -163,6 +164,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Literal_Tester.cpp" />
     <ClCompile Include="VariablesSet_Tester.cpp" />
     <ClCompile Include="Var_Tester.cpp" />
   </ItemGroup>

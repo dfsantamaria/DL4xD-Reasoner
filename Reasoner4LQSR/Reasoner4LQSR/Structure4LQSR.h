@@ -33,7 +33,7 @@ public:
 	void setName(const string _name);
 	void setSort(const int _type);
 	void setVarType(const int _var);
-	int equal(const Var& match) const ;
+	int equal(const Var* match) const ;
 	int equal(const string _name, const int _type, const int _varType) const;
 	string toString() const;
 };
@@ -115,6 +115,6 @@ public:
 	void setLiteralOp(const int literalOp_);
 	const Var* getElementAt(const int index) const;		
 	void addElement(Var* element);
-	void setElementAt(const int index,  Var* element);	
+	void setElementAt(const int index, Var* element);	
 	int equals(const Literal &literal) const;
 };
