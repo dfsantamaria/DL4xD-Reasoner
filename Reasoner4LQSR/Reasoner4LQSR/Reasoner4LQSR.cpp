@@ -2765,8 +2765,18 @@ int performQuery(QueryManager*& queryManager, string& str, Formula** formula, Ta
 			out.push_back(currOutF);
 			//cout << "----"<<currOutF->toString() << endl;
 			istantiateFormula(currOutF, indKB, varset);
+#ifdef debug 
+#ifdef debugquery
+			logFile << "-----Instatiating query:" << currOutF->toString() << endl;
+#endif
+#endif // debug
 		} while (next_variation(indKB.begin(), indKB.end(), (int)varSet.getVVLAt(0)->size() - 1));
 	}
+#ifdef debug 
+#ifdef debugquery
+	logFile << "-----Computed Conjunction of Query Expansion -----" << endl;
+#endif
+#endif // debug
 		Formula* fquery;
 	if (out.size() > 1)
 	{
@@ -2787,17 +2797,55 @@ int performQuery(QueryManager*& queryManager, string& str, Formula** formula, Ta
 		fquery = out.at(0);
 	}
 	out.clear();
+#ifdef debug 
+#ifdef debugquery
+	logFile << "-----Computed Conjunction of Query Expansion:" << fquery->toString() << endl;
+#endif
+#endif // debug
+
+
+#ifdef debug 
+#ifdef debugquery
+	logFile << "-----Computing NNF Query :" << fquery->toString() << endl;
+#endif
+#endif // debug
 	fquery = convertFormulaToNNF(fquery);
+#ifdef debug 
+#ifdef debugquery
+	logFile << "-----Computed NNF Query :" << fquery->toString() << endl;
+#endif
+#endif // debug
+
+#ifdef debug 
+#ifdef debugquery
+	logFile << "-----Computing DNF Query :" << fquery->toString() << endl;
+#endif
+#endif // debug
 	fquery = convertFormulaToDNF(fquery);
+#ifdef debug 
+#ifdef debugquery
+	logFile << "-----Computed DNF Query :" << fquery->toString() << endl;
+#endif
+#endif // debug
+
+	
 	cout << "TEST: " << fquery->toString() << endl;
+	
 	out.push_back(fquery);
 	vector <Formula*> disjQuery = vector<Formula*>(0);
 	while (!out.empty())
 	{
 		Formula* tmp = out.back();
 		out.pop_back();
-		if (tmp->getLiteral()!=NULL || tmp->getOperand()==1)
+		if (tmp->getLiteral() != NULL || tmp->getOperand() == 1)
+		{
 			disjQuery.push_back(tmp);
+#ifdef debug 
+#ifdef debugquery
+			logFile << "-----Computed Conjunctive Query :" << tmp->toString() << endl;
+#endif
+#endif // debug
+		}
 		else
 		{
 			out.push_back(tmp->getLSubformula());
