@@ -2745,7 +2745,7 @@ int performQuery(QueryManager*& queryManager, string& str, Formula** formula, Ta
  /*
   Edit
 */
-	vector <Formula*> &out = vector<Formula*>(0);
+	vector <Formula*> out = vector<Formula*>(0);
 	vector<Var*> varset;
 	vector<Literal*> atomset;
 	getLiteralSet(*formula, atomset, 1);
@@ -2786,10 +2786,27 @@ int performQuery(QueryManager*& queryManager, string& str, Formula** formula, Ta
 	{
 		fquery = out.at(0);
 	}
-
+	out.clear();
 	fquery = convertFormulaToNNF(fquery);
 	fquery = convertFormulaToDNF(fquery);
-	cout << fquery->toString() << endl;
+	cout << "TEST: " << fquery->toString() << endl;
+	out.push_back(fquery);
+	vector <Formula*> disjQuery = vector<Formula*>(0);
+	while (!out.empty())
+	{
+		Formula* tmp = out.back();
+		out.pop_back();
+		if (tmp->getLiteral()!=NULL || tmp->getOperand()==1)
+			disjQuery.push_back(tmp);
+		else
+		{
+			out.push_back(tmp->getLSubformula());
+			out.push_back(tmp->getRSubformula());
+		}
+	}
+
+	for (int i = 0; i < disjQuery.size(); i++)
+		cout << "Test dis:" << disjQuery.at(i)->toString() << endl;
 
 	/*
 	  End Edit
