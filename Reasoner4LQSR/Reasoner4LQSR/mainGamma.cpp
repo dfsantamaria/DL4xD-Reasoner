@@ -158,7 +158,7 @@ int main()
 	vector<int> KB2size(sizeofVVector,0);
 	cout << "Reading OWL File" << endl; 
 	
-	int chk=readOWLXMLOntology("Example/paar.owl", ontNamespaces, formulae, KB2size);
+	int chk=readOWLXMLOntology("Example/hierarchy.owl", ontNamespaces, formulae, KB2size);
 	if (chk == -1)
 	{
 		cout << "Ontology not supported" << endl;
@@ -265,5 +265,10 @@ int main()
 	printOpenBranches(tableau2);
 	printClosedBranches(tableau2);
 	printVarSet();
+	
+	cout << "Computing Class Hierarchy "<< endl;
+	vector<vector<int>> hierarchy = vector<vector<int>>(KB2size.at(1));	
+	computeClassHierarchy(hierarchy, KB2mq);
+	printClassHierarchy(hierarchy);
 	debugEnd();
 }
