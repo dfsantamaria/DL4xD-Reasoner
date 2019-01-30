@@ -2469,7 +2469,14 @@ QueryManager::QueryManager(int _nlevel, int _maxQQSize)
 			QVQL.at(i).reserve(maxQQSize);
 		}
 	};
-
+void QueryManager::setFormula(Formula& f)
+{
+	formula = f;
+}
+Formula QueryManager::getFormula()
+{
+	return formula;
+}
 void QueryManager::extractLiterals(Formula& f, vector<Literal*> &atoms)
 	{
 #ifdef debug 
@@ -2601,9 +2608,9 @@ Literal QueryManager::applySubstitution(Literal* result, Literal* query, const v
 
 int QueryManager::executeQuery(Formula& f, Tableau& tableau, pair <vector<int>, vector<vector<vector<pair<Var*, Var*>>>>>& result, int YN, vector<int>& ynAnswer)
 	{
-		vector<Literal*> qLits;
-		formula = f;
-		extractLiterals(formula, qLits);
+	   
+		vector<Literal*> qLits;		
+		extractLiterals(f, qLits);		
 		int matchFound = -1; //use -1 for errors
 		//Print Literals from Query
 		/*cout << "Literals from query: " << qLits.size() << endl;
@@ -2658,9 +2665,9 @@ int QueryManager::executeQuery(Formula& f, Tableau& tableau, pair <vector<int>, 
 			}				
 				if (res == 0)
 					break;
-			}				
+			}		
 			if (!matchSet.empty())
-			{
+			{  
 				result.first.push_back(branchIt);
 				result.second.push_back(matchSet);
 				matchFound = 1;
@@ -2669,10 +2676,10 @@ int QueryManager::executeQuery(Formula& f, Tableau& tableau, pair <vector<int>, 
 			}
 			else if (YN == 1)
 			{
-				ynAnswer.at(branchIt) = res;
+				ynAnswer.at(branchIt) = res; 
 				matchFound = (res?res:0);
 			}
-		}
+		} 
 		return matchFound;
 	};
 
@@ -2777,7 +2784,7 @@ int performQuery(QueryManager*& queryManager, string& str, Formula** formula, Ta
 	logFile << "-----Computed Conjunction of Query Expansion -----" << endl;
 #endif
 #endif // debug
-		Formula* fquery;
+	Formula* fquery;	
 	if (out.size() > 1)
 	{
 		fquery = new Formula(NULL, 1);
@@ -2829,8 +2836,8 @@ int performQuery(QueryManager*& queryManager, string& str, Formula** formula, Ta
 #endif // debug
 
 	
-	cout << "TEST: " << fquery->toString() << endl;
-	
+	cout << "TEST: " << fquery->toString() << endl;	
+	queryManager->setFormula(*fquery);
 	out.push_back(fquery);
 	vector <Formula*> disjQuery = vector<Formula*>(0);
 	while (!out.empty())
@@ -2860,17 +2867,35 @@ int performQuery(QueryManager*& queryManager, string& str, Formula** formula, Ta
 	  End Edit
 	*/
 
-
 	pair <vector<int>, vector<vector<vector<pair<Var*, Var*>>>>> result(vector<int>(0), vector<vector<vector<pair<Var*, Var*>>>>(0));
 	vector<int> ynanswer;
-	if (yn == 0)
-		ynanswer = vector<int>(0);
-	else
-		ynanswer = vector<int>(tableau.getOpenBranches().size());
-	int matchFound = queryManager->executeQuery(*fquery, tableau, result, yn, ynanswer);
+	int matchFound = 0;
+	for (int i = 0; i < disjQuery.size(); i++)
+	{
+		pair <vector<int>, vector<vector<vector<pair<Var*, Var*>>>>> singleResult(vector<int>(0), vector<vector<vector<pair<Var*, Var*>>>>(0));
+		vector<int> singleynanswer;
+
+		if (yn == 0)
+		{
+			singleynanswer = vector<int>(0);
+			ynanswer = vector<int>(0);
+		}
+		else
+		{
+			singleynanswer = vector<int>(tableau.getOpenBranches().size());
+			ynanswer = vector<int>(tableau.getOpenBranches().size());
+		}		
+		Formula* toSolve = disjQuery.at(i);
+		matchFound = queryManager->executeQuery(*toSolve, tableau, singleResult, yn, singleynanswer);
+		//Merge solution to be completed
+		result = singleResult;
+		ynanswer = singleynanswer;
+		//End merge solution
+	}
 	queryManager->setMatchSet(result);
-	queryManager->setAnswerSet(ynanswer);	
-	return matchFound;	
+	queryManager->setAnswerSet(ynanswer);
+	delete fquery;	
+	return matchFound;
 };
 
 void performQuerySet(vector<QueryManager*>& results,vector<string>& strings, vector<Formula>& formulae, Tableau& tableau)

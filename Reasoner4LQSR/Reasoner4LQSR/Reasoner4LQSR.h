@@ -236,6 +236,8 @@ public:
 	pair <vector<int>, vector<vector<vector<pair<Var*, Var*>>>>>& getMatchSet();
 	void setMatchSet(pair <vector<int>, vector<vector<vector<pair<Var*, Var*>>>>>& input);
 	void setAnswerSet(vector<int> input);
+	void setFormula(Formula& f);
+	Formula getFormula();
 	int checkQueryLiteralMatchInBranch(Node* branch, Literal* query);
 	int checkQueryVariableMatchInBranch(Node* branch, Literal* query, vector<pair<Var*, Var*>>& currentMatch, vector<vector<pair<Var*, Var*>>>& matches);
 	Literal applySubstitution(Literal* result, Literal* query, const vector<pair<Var*, Var*>>& matches);
