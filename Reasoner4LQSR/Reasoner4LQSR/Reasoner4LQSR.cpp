@@ -2742,161 +2742,23 @@ End QueryManager
 
 
 int performQuery(QueryManager*& queryManager, string& str, Formula** formula, Tableau& tableau, int yn)
-{
-	
-	queryManager = (new QueryManager(5, 50)); 
-	int typeformula = 1; 
-	insertFormulaKB(0, queryManager->getQVQL(), queryManager->getQVVL(), str, formula, &typeformula);	
-	
-
- /*
-  Edit
-*/
-	vector <Formula*> out = vector<Formula*>(0);
-	vector<Var*> varset;
-	vector<Literal*> atomset;
-	getLiteralSet(*formula, atomset, 1);
-	retrieveQVarSet(atomset, varset);
-	if (atomset.size() == 0)
 	{
-		out.push_back(*formula);
 
-	}
-	else
-	{
-		std::vector<int> indKB(varset.size(), 0); //initialized to symbol 0. 		
-		do
-		{
-			Formula* currOutF = NULL;
-			currOutF = copyFormula(*formula, currOutF);
-			out.push_back(currOutF);
-			//cout << "----"<<currOutF->toString() << endl;
-			istantiateFormula(currOutF, indKB, varset);
-#ifdef debug 
-#ifdef debugquery
-			logFile << "-----Instatiating query:" << currOutF->toString() << endl;
-#endif
-#endif // debug
-		} while (next_variation(indKB.begin(), indKB.end(), (int)varSet.getVVLAt(0)->size() - 1));
-	}
-#ifdef debug 
-#ifdef debugquery
-	logFile << "-----Computed Conjunction of Query Expansion -----" << endl;
-#endif
-#endif // debug
-	Formula* fquery;	
-	if (out.size() > 1)
-	{
-		fquery = new Formula(NULL, 1);
-		while (out.size() > 1)
-		{
-			fquery->setRSubformula(out.back());
-			out.pop_back();
-			fquery->setLSubformula(out.back());
-			out.pop_back();
-			if (out.size() > 1)
-				fquery->setPreviousFormula(out.back());
-			out.push_back(fquery);
-		}
-	}
-	else
-	{
-		fquery = out.at(0);
-	}
-	out.clear();
-#ifdef debug 
-#ifdef debugquery
-	logFile << "-----Computed Conjunction of Query Expansion:" << fquery->toString() << endl;
-#endif
-#endif // debug
+		queryManager = (new QueryManager(5, 50));
+		int typeformula = 1;
+		insertFormulaKB(0, queryManager->getQVQL(), queryManager->getQVVL(), str, formula, &typeformula);
 
-
-#ifdef debug 
-#ifdef debugquery
-	logFile << "-----Computing NNF Query :" << fquery->toString() << endl;
-#endif
-#endif // debug
-	fquery = convertFormulaToNNF(fquery);
-#ifdef debug 
-#ifdef debugquery
-	logFile << "-----Computed NNF Query :" << fquery->toString() << endl;
-#endif
-#endif // debug
-
-#ifdef debug 
-#ifdef debugquery
-	logFile << "-----Computing DNF Query :" << fquery->toString() << endl;
-#endif
-#endif // debug
-	fquery = convertFormulaToDNF(fquery);
-#ifdef debug 
-#ifdef debugquery
-	logFile << "-----Computed DNF Query :" << fquery->toString() << endl;
-#endif
-#endif // debug
-
-	
-	cout << "TEST: " << fquery->toString() << endl;	
-	queryManager->setFormula(*fquery);
-	out.push_back(fquery);
-	vector <Formula*> disjQuery = vector<Formula*>(0);
-	while (!out.empty())
-	{
-		Formula* tmp = out.back();
-		out.pop_back();
-		if (tmp->getLiteral() != NULL || tmp->getOperand() == 1)
-		{
-			disjQuery.push_back(tmp);
-#ifdef debug 
-#ifdef debugquery
-			logFile << "-----Computed Conjunctive Query :" << tmp->toString() << endl;
-#endif
-#endif // debug
-		}
-		else
-		{
-			out.push_back(tmp->getLSubformula());
-			out.push_back(tmp->getRSubformula());
-		}
-	}
-
-	for (int i = 0; i < disjQuery.size(); i++)
-		cout << "Test dis:" << disjQuery.at(i)->toString() << endl;
-
-	/*
-	  End Edit
-	*/
-
-	pair <vector<int>, vector<vector<vector<pair<Var*, Var*>>>>> result(vector<int>(0), vector<vector<vector<pair<Var*, Var*>>>>(0));
-	vector<int> ynanswer;
-	int matchFound = 0;
-	for (int i = 0; i < disjQuery.size(); i++)
-	{
-		pair <vector<int>, vector<vector<vector<pair<Var*, Var*>>>>> singleResult(vector<int>(0), vector<vector<vector<pair<Var*, Var*>>>>(0));
-		vector<int> singleynanswer;
-
+		pair <vector<int>, vector<vector<vector<pair<Var*, Var*>>>>> result(vector<int>(0), vector<vector<vector<pair<Var*, Var*>>>>(0));
+		vector<int> ynanswer;
 		if (yn == 0)
-		{
-			singleynanswer = vector<int>(0);
 			ynanswer = vector<int>(0);
-		}
 		else
-		{
-			singleynanswer = vector<int>(tableau.getOpenBranches().size());
 			ynanswer = vector<int>(tableau.getOpenBranches().size());
-		}		
-		Formula* toSolve = disjQuery.at(i);
-		matchFound = queryManager->executeQuery(*toSolve, tableau, singleResult, yn, singleynanswer);
-		//Merge solution to be completed
-		result = singleResult;
-		ynanswer = singleynanswer;
-		//End merge solution
-	}
-	queryManager->setMatchSet(result);
-	queryManager->setAnswerSet(ynanswer);
-	delete fquery;	
-	return matchFound;
-};
+		int matchFound = queryManager->executeQuery(**formula, tableau, result, yn, ynanswer);
+		queryManager->setMatchSet(result);
+		queryManager->setAnswerSet(ynanswer);
+		return matchFound;
+	};
 
 void performQuerySet(vector<QueryManager*>& results,vector<string>& strings, vector<Formula>& formulae, Tableau& tableau)
 {
