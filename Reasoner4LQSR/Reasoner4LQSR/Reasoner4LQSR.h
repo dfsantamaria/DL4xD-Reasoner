@@ -306,6 +306,8 @@ void dropLRImplication(Formula* f);
 Formula* dropNegation(Formula *f, Formula **topform);
 void precomputeKBSpaceFromFile(string &name, vector<int>& KBsize, vector<int>& Litsize);
 int precomputeKBSpaceFromString(string& line, vector<int>& KBsize, vector<int>& Litsize);
+void computeClassHierarchy(vector<vector<int>>& hierarchy, vector<Formula*>& KB);
+void printClassHierarchy(vector<vector<int>>& hierarchy);
 
 //Printing Function;
 void printClosedBranches(Tableau& tableau);

@@ -3110,6 +3110,45 @@ void retrieveQVarSet(vector<Literal*>&atomset, vector<vector<Var*>>&varset)
 	}
 }
 
+void computeClassHierarchy(vector<vector<int>>& hierarchy, vector<Formula*>& KB)
+{
+	for (int i = 0; i < hierarchy.size(); i++)
+		hierarchy.at(i).push_back(i);
+	Var* sup;
+	Var* sub;
+	for (int i = 0; i < KB.size(); i++)
+	{
+		Formula* tmp = KB.at(i);
+		if (tmp->getLiteral() == NULL && tmp->getOperand() == 0)
+			if (tmp->getLSubformula()->getLiteral() != NULL && tmp->getRSubformula()->getLiteral() != NULL)
+			{
+				Formula* left = tmp->getLSubformula();
+				Formula* right = tmp->getRSubformula();
+				if (left->getLiteral()->getElements().size() == 2 && right->getLiteral()->getElements().size() == 2)
+					if (abs(left->getLiteral()->getLiteralOp() - right->getLiteral()->getLiteralOp()) == 2)
+						if (left->getLiteral()->getElementAt(1)->equal(right->getLiteral()->getElementAt(1)) == 0)
+						{
+
+							if (left->getLiteral()->getLiteralOp() == 2)
+							{
+								sub = left->getLiteral()->getElementAt(0);
+								sup = right->getLiteral()->getElementAt(0);
+							}
+							else
+							{
+								sub = right->getLiteral()->getElementAt(0);
+								sup = left->getLiteral()->getElementAt(0);
+							}
+
+							hierarchy.at(sup->getIndex()).push_back(sub->getIndex());
+							sup = NULL;
+							sub = NULL;
+						}
+
+
+			}
+	}
+}
 
 /*
   Some printing function
@@ -3201,6 +3240,18 @@ void printEqSet(Tableau& tableau)
 				cout << tableau.getEqSet().at(i).at(j).at(k)->toString() << endl;
 			}
 		}
+	}
+
+}
+
+void printClassHierarchy(vector<vector<int>>& hierarchy)
+{
+	for (int i = 0; i < hierarchy.size(); i++)
+	{
+		cout << "Hierarchy for: " << (*varSet.getVVLAt(1)).at(i).toString() << endl;
+		for (int j = 1; j < hierarchy.at(i).size(); j++)
+			cout << "-> " << (*varSet.getVVLAt(1)).at(hierarchy.at(i).at(j)).toString();
+		cout << endl;
 	}
 
 }

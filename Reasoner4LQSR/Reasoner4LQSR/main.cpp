@@ -254,5 +254,11 @@ int main()
 	auto done = std::chrono::high_resolution_clock::now();
 	std::cout << "Milliseconds Execution: "<< std::chrono::duration_cast<std::chrono::milliseconds>(done - started).count()<<endl;
 
+
+	cout << "Computing Class Hierarchy " << endl;
+	vector<vector<int>> hierarchy = vector<vector<int>>(KB2size.at(1));
+	computeClassHierarchy(hierarchy, KB2mq);
+	printClassHierarchy(hierarchy);
+
 	debugEnd();
 }
