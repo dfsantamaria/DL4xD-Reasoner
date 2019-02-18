@@ -53,7 +53,7 @@ int main()
 	vector<Formula*> KBnorm;
 	vector<Formula*> KBcnf;
 	vector<Formula*> KBmq;	
-	string kbname = "Tester/swrl.txt"; 
+	string kbname = "Example/bg2.txt"; 
 
 	/*Precomputing Space -- to be implemented*/
 //  to be implemented
@@ -78,17 +78,16 @@ int main()
 	moveQuantifierKB(0, KBcnf, KBmq);	
 	printTRadix(KBmq); //print Tableau Radix
 
-	/*vector<Formula*> expKB;
+	vector<Formula*> expKB;
 	cout << "Expanding Quantifiers in KB" << endl;
 	expandKB(KBmq, expKB); 	
-	*/
+	Tableau tableau = Tableau(new Node(expKB));
 	//Printing result of expansion
-	//printTExpanded(tableau);
+	printTExpanded(tableau);
 	//Printing content of VVL and VQL
 	printVarSet();
-	Tableau tableau = Tableau(new Node(KBmq));
 	cout << "Expanding Tableau" << endl;
-	expandGammaTableau(tableau);
+	expandTableau(tableau);
 	cout << "Building EqSet" << endl;
 	buildEqSet(tableau);
 
@@ -137,7 +136,6 @@ int main()
 	}
 	
 	
-	cout <<"open branches: "<< tableau.getOpenBranches().size() << endl;
-	cout << "closed branches: "<< tableau.getClosedBranches().size() << endl;
+
 	debugEnd();
 }

@@ -83,20 +83,20 @@ cout << "End Try" << endl;
 
 
 /*
-cout << "Testing copy Atom" << endl;
-Var b1("monastero", 0, 0);
-Var x("livello", 0, 0);
-Var x1("livello9", 0, 0);
-Var g("Edificio", 1, 0);
-Var g1("Edificio", 1, 0);
-Var h("haLivello", 3, 0);
-Var h1("haLivello", 3, 0);
-Atom* atom= new Atom(0, { &h,&b1,&x });
-cout << atom->toString() << endl;
-Atom* c = copyAtom(atom, new string("monastero"), &x1);
-delete (atom);
-//cout << atom->toString() << endl;
-cout << c->toString() << endl;
+cout << "Testing copy Literal" << endl;
+	Var b1("monastero", 0, 0, 0);
+	Var x("livello", 0, 0, 1);
+	Var x1("livello9", 0, 0, 2);
+	Var g("Edificio", 1, 0, 0);
+	Var g1("Edificio", 1, 0,1 );
+	Var h("haLivello", 3, 0, 1);
+	Var h1("haLivello", 3, 0, 2);
+	Literal* atom = new Literal(0, { &h,&b1,&x });
+	cout << atom->toString() << endl;
+	Literal* c = copyLiteral(atom, new string("monastero"), &x1);
+	delete (atom);
+	//cout << atom->toString() << endl;
+	cout << c->toString() << endl;
 */
 
 

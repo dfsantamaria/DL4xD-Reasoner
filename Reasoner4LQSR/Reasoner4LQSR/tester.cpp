@@ -45,7 +45,7 @@ int main()
 	//InitializeReasoner(3, 100, 20);
 
 	InitializeReasoner(maxLevNum, vector<int>{5, 5, 0, 5, 5, 5, 0, 5});
-
+	
 	/*
 	Inserting Knowledge Base
 	*/
@@ -55,7 +55,7 @@ int main()
 	vector<Formula*> KBnorm;
 	vector<Formula*> KBcnf;
 	vector<Formula*> KBmq;
-	string kbname = "Tester/tester9.txt";
+	string kbname = "Tester/tester1.txt";
 
 	/*Precomputing Space -- to be implemented*/
 	//  to be implemented
@@ -74,44 +74,51 @@ int main()
 	printTRadix(KBnorm); //print Tableau Radix	
 	cout << "--Converting Formulae to CNF--" << endl;
 	convertKBToCNF(KBnorm, KBcnf);
-	KBnorm.clear();
-	//printTRadix(KBcnf); //print Tableau Radix
+	KBnorm.clear();	
 	cout << "--Move Quantifiers--" << endl;
 	moveQuantifierKB(0, KBcnf, KBmq);
-	printTRadix(KBmq); //print Tableau Radix
-
-	vector<Formula*> expKB;
-	cout << "Expanding Quantifiers in KB" << endl;
-
-	auto started = std::chrono::high_resolution_clock::now();
-
-	expandKB(KBmq, expKB);
-	Tableau tableau = Tableau(new Node(expKB));
-	//Printing result of expansion
-	//printTExpanded(tableau);
-	//Printing content of VVL and VQL
-	
+	Tableau tableau = Tableau(new Node(KBmq));	
 	cout << "Expanding Tableau" << endl;
-	expandTableau(tableau);
-	cout << "Building EqSet" << endl;	
-
+	auto started = std::chrono::high_resolution_clock::now();
+	expandGammaTableau(tableau);
 	auto done = std::chrono::high_resolution_clock::now();
 	std::cout << "Milliseconds Execution: " << std::chrono::duration_cast<std::chrono::milliseconds>(done - started).count() << endl;
-
-    //printVarSet();
-	//print EqSet
-	//printEqSet(tableau);
-
-	//print open branches
+	buildEqSet(tableau);
+	cout << "open branches: " << tableau.getOpenBranches().size() << endl;
+	cout << "closed branches: " << tableau.getClosedBranches().size() << endl;
+	cout << "total branches: " << tableau.getOpenBranches().size() + tableau.getClosedBranches().size() << endl;
 	//printOpenBranches(tableau);
 
-	//print closed branches
-	//printClosedBranches(tableau);
 
+	/*string queryname = "Example/query2.txt";
+	vector<Formula> querySet;
+	vector<string> stringSet = vector<string>(0);
 
-	cout << "Open branches: " << tableau.getOpenBranches().size() << endl;
-	cout << "Closed branches: " << tableau.getClosedBranches().size() << endl;
-	cout << "Total branches: " << tableau.getOpenBranches().size() + tableau.getClosedBranches().size() << endl;
+	readQueryFromFile(queryname, stringSet);
+	vector<QueryManager*> results;
+	performQuerySet(results, stringSet, querySet, tableau);
+
+	cout << "Printing query results ..." << endl;
+	for (int i = 0; i < results.at(0)->getMatchSet().second.size(); i++)
+	{
+		cout << "Tableau branch number: " << results.at(0)->getMatchSet().first.at(i) << endl;
+		for (int j = 0; j < results.at(0)->getMatchSet().second.at(i).size(); j++)
+		{
+			cout << "Solution number: " << j << endl;
+			for (int k = 0; k < results.at(0)->getMatchSet().second.at(i).at(j).size(); k++)
+			{
+				cout << results.at(0)->getMatchSet().second.at(i).at(j).at(k).first->toString();
+				cout << ",";
+				cout << results.at(0)->getMatchSet().second.at(i).at(j).at(k).second->toString() << "; ";
+			}
+			cout << endl;
+		}
+	}
+	cout << "Printing Y/N results ..." << endl;
+	for (int i = 0; i < results.at(0)->getAnswerSet().size(); i++)
+	{
+		cout << "Branch number: " << i << " Answer:" << results.at(0)->getAnswerSet().at(i) << endl;
+	}*/
 
 	debugEnd();
 }
