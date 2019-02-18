@@ -68,6 +68,7 @@ private:
 	int setElementAt(int index, Var* element);
 	string toString();
 	int containsQVariable();
+	int containsEVariable();
 	int equals(Literal &atom);
 };
 
@@ -77,7 +78,7 @@ class Operators
 private:
 	vector<string> logOp = { "$OR","$AD","$RO","$DA", "$NG", "$IF", "$FI", "$II" }; //logic operators
 	vector<string> setOp = { "$IN", "$EQ", "$NI", "$QE", "$OA", "$AO", "$CO" }; //set operators
-	vector<string> qutOp = { "$FA" };	//quantifiers
+	vector<string> qutOp = { "$FA", "$EX" };	//quantifiers
 public:
 	Operators();
 	size_t getLogOpSize();
@@ -90,7 +91,7 @@ public:
 	string getSetOpElement(int index);
 	string getQuantiOpElement(int index);
 	/*
-	Return the value of the given string representing a logic operator
+	Return the value of the given string representing a logic connector
 	*/
 	int checkLogOp(string *s); 	
 };
@@ -162,12 +163,13 @@ class VariablesSet
 private:
 	vector< vector <Var> > VVL;
 	vector< vector <Var> > VQL;
+	vector< vector <Var> > VEL;
 	//vector< vector <Var> > QVQL;
 	//int capacity;
 	//int nlevel;
 public:
 	VariablesSet();
-	VariablesSet(int maxNVariable, int maxVSize, int maxQSize);
+	VariablesSet(int maxNVariable, int maxVSize, int maxQSize, int maxESize);
 	VariablesSet(int maxNVariable, vector<int>& KBsize);
 	vector<Var>*getAt(vector<vector<Var>>& vec, int level);
 	vector<Var>* getVVLAt(int level);
@@ -234,6 +236,8 @@ public:
 	pair <vector<int>, vector<vector<vector<pair<Var*, Var*>>>>>& getMatchSet();
 	void setMatchSet(pair <vector<int>, vector<vector<vector<pair<Var*, Var*>>>>>& input);
 	void setAnswerSet(vector<int> input);
+	void setFormula(Formula& f);
+	Formula getFormula();
 	int checkQueryLiteralMatchInBranch(Node* branch, Literal* query);
 	int checkQueryVariableMatchInBranch(Node* branch, Literal* query, vector<pair<Var*, Var*>>& currentMatch, vector<vector<pair<Var*, Var*>>>& matches);
 	Literal applySubstitution(Literal* result, Literal* query, const vector<pair<Var*, Var*>>& matches);
@@ -310,14 +314,17 @@ void debugStart();
 void debugEnd();
 void InitializeReasoner(int sizeV, int sizeQ, int sizet);
 void InitializeReasoner(int sizeV, vector<int>& KBsize);
+Formula* convertFormulaToCNF(Formula* formula);
 Formula* convertFormulaToNNF(Formula* formula);
+Formula* convertFormulaToDNF(Formula* formula);
 void convertKBToNNF(vector<Formula*>& KB, vector<Formula*>& KBnorm);
 void propagateNegation(Formula* current, vector<bool>& isNegated, vector<Formula*>& stackF, bool valLeft, bool valRight);
 void dropLRImplication(Formula* f);
 Formula* dropNegation(Formula *f, Formula **topform);
 void precomputeKBSpaceFromFile(string &name, vector<int>& KBsize, vector<int>& Litsize);
 int precomputeKBSpaceFromString(string& line, vector<int>& KBsize, vector<int>& Litsize);
-
+void computeClassHierarchy(vector<vector<int>>& hierarchy, vector<Formula*>& KB);
+void printClassHierarchy(vector<vector<int>>& hierarchy);
 //Printing Function;
 void printClosedBranches(Tableau& tableau);
 void printEqSet(Tableau& tableau);
