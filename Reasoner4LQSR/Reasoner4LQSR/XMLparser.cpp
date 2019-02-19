@@ -632,11 +632,9 @@ int parseSubObjectProperty(vector<std::string>& out, pugi::xml_node_iterator& it
 
 string retrieveNameFromNode(pugi::xml_node_iterator const& it, string const& attribute)
 {
-	cout << string(it->name()) <<" " << attribute << endl;
+	
 	string irival = it->attribute(attribute.c_str()).as_string();	
-	
-	irival = irival.substr(irival.find("#") + 1);
-	
+	irival = irival.substr(irival.find("#") + 1);	
 	return irival;
 }
 
@@ -659,7 +657,8 @@ int parseDLSafeRule(vector<std::string>& entry, pugi::xml_node_iterator& it, vec
 	string formula = "";
 	vector<string>varSet(0);
 	pugi::xml_node_iterator node = it->first_child();
-	
+	while (string(node->name()).compare("Annotation") == 0)
+		node = node->next_sibling();
 	parseDLSafeBody(body, node, varSet);
 	formula = body + "$IF";	
 	node = node->next_sibling();
@@ -670,8 +669,7 @@ int parseDLSafeRule(vector<std::string>& entry, pugi::xml_node_iterator& it, vec
 		{
 		 body += "($FA V0{z" + to_string(i) + "})";
 		}
-	formula = body + formula;
-	cout << "--------------------" << formula << endl;
+	formula = body + formula;	
 	entry.push_back(formula);
 	if (KBsize.at(qvar0)< varSet.size())
 		KBsize.at(qvar0) = (int)varSet.size();
