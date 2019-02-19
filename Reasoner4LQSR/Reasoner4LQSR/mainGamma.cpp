@@ -70,7 +70,8 @@ int main()
 	cout << "Classes: " << KB2size.at(1) << "." << endl;
 	cout << "Properties: " << KB2size.at(propertyindex) << "." << endl;
 	cout << "Quantified Variables of level 0: " << KB2size.at(qvar0) << "." << endl;
-	cout << "--Reading Ontology--" << endl;
+	cout << "--Reading Ontology--" << endl;	
+	
 	readKBFromStrings(0, formulae, KB2);
 	printTRadix(KB2);
 	cout << "--Converting KB2 to NNF--" << endl;
@@ -93,6 +94,14 @@ int main()
 	//printTExpanded(tableau2);
 	//Printing content of VVL and VQL
 	auto started = std::chrono::high_resolution_clock::now();
+	cout << "Computing Class Hierarchy " << endl;
+	vector<vector<int>> hierarchy = vector<vector<int>>(KB2size.at(1));
+	computeClassHierarchy(hierarchy, KB2mq);
+	auto done = std::chrono::high_resolution_clock::now();
+	printClassHierarchy(hierarchy);
+	std::cout << "Milliseconds Execution: " << std::chrono::duration_cast<std::chrono::milliseconds>(done - started).count() << endl;
+
+
 	cout << "Expanding Tableau" << endl;
 	expandGammaTableau(tableau2);
 	//printVarSet();
@@ -148,19 +157,13 @@ int main()
 	{
 		cout << "Branch number: " << i << " Answer:" << results.at(0)->getAnswerSet().at(i) << endl;
 	}
-
-	
-	auto done = std::chrono::high_resolution_clock::now();
-	std::cout << "Milliseconds Execution: "<< std::chrono::duration_cast<std::chrono::milliseconds>(done - started).count()<<endl;
+		
 	cout << "Open Branch: " << tableau2.getOpenBranches().size() << endl;
 	cout << "Closed Branch: " << tableau2.getClosedBranches().size() << endl;
 	printOpenBranches(tableau2);
 	printClosedBranches(tableau2);
 	printVarSet();
 	
-	cout << "Computing Class Hierarchy "<< endl;
-	vector<vector<int>> hierarchy = vector<vector<int>>(KB2size.at(1));	
-	computeClassHierarchy(hierarchy, KB2mq);
-	printClassHierarchy(hierarchy);
+	
 	debugEnd();
 }

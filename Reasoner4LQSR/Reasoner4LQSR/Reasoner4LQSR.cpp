@@ -1240,6 +1240,7 @@ int insertFormulaKB(int keepQ,vector<vector <Var>>& varset1, vector<vector <Var>
 		for (int i = 0; i < varset1.size(); i++)
 			vqlsize.push_back((int)varset1.at(i).size());
 	}
+	cout << ",,,," << formula << endl;
 	int res=parseInternalFormula(varset1, varset2, &formula, ffinal, vqlsize, *typeformula);
 	//vec.push_back(*ffinal);
 #ifdef debug  
@@ -2412,7 +2413,8 @@ void readKBFromStrings(int qflag, vector<string>&names, vector<Formula*>& KB)
 	{
 		if ((str.rfind("//", 0) == 0) || str.empty())
 			continue;			
-		insertFormulaKB(qflag,varSet.getVQL(), varSet.getVVL(), str, KB, &typeformula);
+		
+		insertFormulaKB(qflag, varSet.getVQL(), varSet.getVVL(), str, KB, &typeformula);
 	}	
 }
 
