@@ -3432,10 +3432,12 @@ int expandGammaTableau(Tableau& T)
   return 0;
 }
 
-void computeClassHierarchy(vector<vector<int>>& hierarchy, vector<Formula*>& KB)
+void computeTaxonomy(vector<vector<int>>& chierarchy, vector<vector<int>>& rhierarchy, vector<Formula*>& KB)
 {
-	for (int i = 0; i < hierarchy.size(); i++)
-		hierarchy.at(i).push_back(i);
+	for (int i = 0; i < chierarchy.size(); i++)
+		chierarchy.at(i).push_back(i);
+	for (int i = 0; i < rhierarchy.size(); i++)
+		rhierarchy.at(i).push_back(i);
 	Var* sup;
 	Var* sub;
 	for (int i = 0; i < KB.size(); i++)
@@ -3446,7 +3448,10 @@ void computeClassHierarchy(vector<vector<int>>& hierarchy, vector<Formula*>& KB)
 			{
 				Formula* left = tmp->getLSubformula();
 				Formula* right = tmp->getRSubformula();
-				if (left->getLiteral()->getElements().size() == 2 && right->getLiteral()->getElements().size() == 2)
+				//looking for class subsumption
+				if ( left->getLSubformula()==NULL && left->getRSubformula()==NULL && right->getLSubformula()==NULL && right->getRSubformula()==NULL
+					&& left->getLiteral()->getElements().size() == 2 && right->getLiteral()->getElements().size() == 2)
+				{
 					if (abs(left->getLiteral()->getLiteralOp() - right->getLiteral()->getLiteralOp()) == 2)
 						if (left->getLiteral()->getElementAt(1)->equal(right->getLiteral()->getElementAt(1)) == 0)
 						{
@@ -3462,15 +3467,49 @@ void computeClassHierarchy(vector<vector<int>>& hierarchy, vector<Formula*>& KB)
 								sup = left->getLiteral()->getElementAt(0);
 							}
 
-							hierarchy.at(sup->getIndex()).push_back(sub->getIndex());
+							chierarchy.at(sup->getIndex()).push_back(sub->getIndex());
+						
+
 							sup = NULL;
 							sub = NULL;
 						}
+				}
+				//looking for role subsumption
+				else
+				{
+					if (left->getLSubformula() == NULL && left->getRSubformula() == NULL && right->getLSubformula() == NULL && right->getRSubformula() == NULL
+						&& left->getLiteral()->getElements().size() == 3 && right->getLiteral()->getElements().size() == 3)
+					{
+						if (abs(left->getLiteral()->getLiteralOp() - right->getLiteral()->getLiteralOp()) == 2)
+							if (left->getLiteral()->getElementAt(1)->equal(right->getLiteral()->getElementAt(1)) == 0 &&
+								left->getLiteral()->getElementAt(2)->equal(right->getLiteral()->getElementAt(2)) == 0 )
+							{
 
+								if (left->getLiteral()->getLiteralOp() == 2)
+								{
+									sub = left->getLiteral()->getElementAt(0);
+									sup = right->getLiteral()->getElementAt(0);
+								}
+								else
+								{
+									sub = right->getLiteral()->getElementAt(0);
+									sup = left->getLiteral()->getElementAt(0);
+								}
+
+								rhierarchy.at(sup->getIndex()).push_back(sub->getIndex());
+
+
+								sup = NULL;
+								sub = NULL;
+							}
+					}
+				}
+				
+				}
 
 			}
 	}
-}
+
 
 
 /*
@@ -3579,18 +3618,28 @@ void printEqSet(Tableau& tableau)
 
 }
 
-void printClassHierarchy(vector<vector<int>>& hierarchy)
+void printClassTaxonomy(vector<vector<int>>& hierarchy)
 {
+	
 	for (int i = 0; i < hierarchy.size(); i++)
 	{
 		cout << "Hierarchy for: " << (*varSet.getVVLAt(1)).at(i).toString() << endl;
 		for (int j = 1; j < hierarchy.at(i).size(); j++)
-			cout << "-> " << (*varSet.getVVLAt(1)).at(hierarchy.at(i).at(j)).toString();
+			cout << "-> " << (*varSet.getVVLAt(1)).at(hierarchy.at(i).at(j)).toString()<<endl;
 		cout << endl;
 	}
-
 }
 
+void printRoleTaxonomy(vector<vector<int>>& hierarchy)
+{
+	for (int i = 0; i < hierarchy.size(); i++)
+	{
+		cout << "Hierarchy for: " << (*varSet.getVVLAt(3)).at(i).toString() << endl;
+		for (int j = 1; j < hierarchy.at(i).size(); j++)
+			cout << "-> " << (*varSet.getVVLAt(3)).at(hierarchy.at(i).at(j)).toString()<<endl;
+		cout << endl;
+	}
+}
 
 
 

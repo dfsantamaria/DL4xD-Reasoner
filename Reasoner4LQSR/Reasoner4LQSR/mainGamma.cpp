@@ -95,10 +95,12 @@ int main()
 	//Printing content of VVL and VQL
 	auto started = std::chrono::high_resolution_clock::now();
 	cout << "Computing Class Hierarchy " << endl;
-	vector<vector<int>> hierarchy = vector<vector<int>>(KB2size.at(1));
-	computeClassHierarchy(hierarchy, KB2mq);
+	vector<vector<int>> chierarchy = vector<vector<int>>(KB2size.at(1));
+	vector<vector<int>> rhierarchy = vector<vector<int>>(KB2size.at(propertyindex));
+	computeTaxonomy(chierarchy, rhierarchy, KB2mq);
 	auto done = std::chrono::high_resolution_clock::now();
-	printClassHierarchy(hierarchy);
+	printClassTaxonomy(chierarchy);
+	printRoleTaxonomy(rhierarchy);	
 	std::cout << "Milliseconds Execution: " << std::chrono::duration_cast<std::chrono::milliseconds>(done - started).count() << endl;
 
 
