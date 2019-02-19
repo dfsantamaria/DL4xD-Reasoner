@@ -1,14 +1,21 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <catalog prefer="public" xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog">
     <group id="Folder Repository, directory=, recursive=true, Auto-Update=true, version=2" prefer="public" xml:base="">
-        <uri id="Automatically generated entry, Timestamp=1520942885693" name="http://www.semanticweb.org/danie/ontologies/2017/11/untitled-ontology-476" uri="y2.owl"/>
-        <uri id="Automatically generated entry, Timestamp=1520942885693" name="http://www.semanticweb.org/danie/ontologies/2017/11/untitled-ontology-477" uri="l.owl"/>
-        <uri id="Automatically generated entry, Timestamp=1520942885693" name="http://www.semanticweb.org/danie/ontologies/2018/0/untitled-ontology-480" uri="yy4.owl"/>
-        <uri id="Automatically generated entry, Timestamp=1520942885693" name="duplicate:http://www.semanticweb.org/danie/ontologies/2018/0/untitled-ontology-500" uri="onto1.owl"/>
-        <uri id="Automatically generated entry, Timestamp=1520942885693" name="duplicate:http://www.semanticweb.org/danie/ontologies/2018/0/untitled-ontology-500" uri="onto2.owl"/>
-        <uri id="Automatically generated entry, Timestamp=1520942885693" name="http://www.semanticweb.org/danie/ontologies/2018/2/untitled-ontology-516" uri="paar.owl"/>
-        <uri id="Automatically generated entry, Timestamp=1520942885693" name="duplicate:http://www.semanticweb.org/daniele/ontologies/2017/10/untitled-ontology-411" uri="yy.owl"/>
-        <uri id="Automatically generated entry, Timestamp=1520942885693" name="duplicate:http://www.semanticweb.org/daniele/ontologies/2017/10/untitled-ontology-411" uri="yy3.owl"/>
-        <uri id="Automatically generated entry, Timestamp=1520942885693" name="http://www.semanticweb.org/mariannanicolosi/ontologies/2017/5/untitled-ontology-129" uri="monastero.owl"/>
+        <uri id="Automatically generated entry, Timestamp=1550597508703" name="http://www.semanticweb.org/danie/ontologies/2017/11/untitled-ontology-476" uri="y2.owl"/>
+        <uri id="Automatically generated entry, Timestamp=1550597508703" name="http://www.semanticweb.org/danie/ontologies/2017/11/untitled-ontology-477" uri="l.owl"/>
+        <uri id="Automatically generated entry, Timestamp=1550597508703" name="http://www.semanticweb.org/danie/ontologies/2018/0/untitled-ontology-480" uri="yy4.owl"/>
+        <uri id="Automatically generated entry, Timestamp=1550597508703" name="duplicate:http://www.semanticweb.org/danie/ontologies/2018/0/untitled-ontology-500" uri="onto1.owl"/>
+        <uri id="Automatically generated entry, Timestamp=1550597508703" name="duplicate:http://www.semanticweb.org/danie/ontologies/2018/0/untitled-ontology-500" uri="onto2.owl"/>
+        <uri id="Automatically generated entry, Timestamp=1550597508703" name="http://www.semanticweb.org/danie/ontologies/2018/1/untitled-ontology-507" uri="rassegnastampa/print.owl"/>
+        <uri id="Automatically generated entry, Timestamp=1550597508703" name="http://www.semanticweb.org/danie/ontologies/2018/1/untitled-ontology-513" uri="ex01.owl"/>
+        <uri id="Automatically generated entry, Timestamp=1550597508703" name="http://www.semanticweb.org/danie/ontologies/2018/2/untitled-ontology-516" uri="paar.owl"/>
+        <uri id="Automatically generated entry, Timestamp=1550597508703" name="http://www.semanticweb.org/danie/ontologies/2018/8/untitled-ontology-47" uri="equiv.owl"/>
+        <uri id="Automatically generated entry, Timestamp=1550597508703" name="duplicate:http://www.semanticweb.org/danie/ontologies/2019/0/untitled-ontology-760" uri="example.owl"/>
+        <uri id="Automatically generated entry, Timestamp=1550597508703" name="duplicate:http://www.semanticweb.org/danie/ontologies/2019/0/untitled-ontology-760" uri="hierarchy.owl"/>
+        <uri id="Automatically generated entry, Timestamp=1550597508703" name="http://www.semanticweb.org/danie/ontologies/2019/1/untitled-ontology-766" uri="exampleFI.owl"/>
+        <uri id="Automatically generated entry, Timestamp=1550597508703" name="duplicate:http://www.semanticweb.org/daniele/ontologies/2017/10/untitled-ontology-411" uri="yy.owl"/>
+        <uri id="Automatically generated entry, Timestamp=1550597508703" name="duplicate:http://www.semanticweb.org/daniele/ontologies/2017/10/untitled-ontology-411" uri="yy3.owl"/>
+        <uri id="Automatically generated entry, Timestamp=1550597508703" name="http://www.semanticweb.org/mariannanicolosi/ontologies/2017/5/untitled-ontology-129" uri="monastero.owl"/>
+        <uri id="Automatically generated entry, Timestamp=1550597508703" name="http://www.unict.dmidisum.it/Benedettini/ArchivioMuseoFabbricaDataset.owl" uri="Dataset.owl"/>
     </group>
 </catalog>

@@ -3623,7 +3623,7 @@ void printClassTaxonomy(vector<vector<int>>& hierarchy)
 	
 	for (int i = 0; i < hierarchy.size(); i++)
 	{
-		cout << "Hierarchy for: " << (*varSet.getVVLAt(1)).at(i).toString() << endl;
+		cout << "Class subsumption hierarchy for: " << (*varSet.getVVLAt(1)).at(i).toString() << endl;
 		for (int j = 1; j < hierarchy.at(i).size(); j++)
 			cout << "-> " << (*varSet.getVVLAt(1)).at(hierarchy.at(i).at(j)).toString()<<endl;
 		cout << endl;
@@ -3634,7 +3634,7 @@ void printRoleTaxonomy(vector<vector<int>>& hierarchy)
 {
 	for (int i = 0; i < hierarchy.size(); i++)
 	{
-		cout << "Hierarchy for: " << (*varSet.getVVLAt(3)).at(i).toString() << endl;
+		cout << "Role subsumption hierarchy for: " << (*varSet.getVVLAt(3)).at(i).toString() << endl;
 		for (int j = 1; j < hierarchy.at(i).size(); j++)
 			cout << "-> " << (*varSet.getVVLAt(3)).at(hierarchy.at(i).at(j)).toString()<<endl;
 		cout << endl;

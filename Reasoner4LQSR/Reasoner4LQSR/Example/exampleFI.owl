@@ -16,9 +16,6 @@
         <AnnotationProperty IRI="http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled"/>
     </Declaration>
     <Declaration>
-        <Class IRI="#DeactiveSystem"/>
-    </Declaration>
-    <Declaration>
         <Class IRI="#System"/>
     </Declaration>
     <Declaration>
@@ -26,6 +23,9 @@
     </Declaration>
     <Declaration>
         <NamedIndividual IRI="#b"/>
+    </Declaration>
+    <Declaration>
+        <Class IRI="#NotActiveSystem"/>
     </Declaration>
     <Declaration>
         <Class IRI="#OoSSystem"/>
@@ -41,12 +41,12 @@
         <Class IRI="#System"/>
     </SubClassOf>
     <SubClassOf>
-        <Class IRI="#DeactiveSystem"/>
+        <Class IRI="#NotActiveSystem"/>
         <Class IRI="#System"/>
     </SubClassOf>
     <SubClassOf>
         <Class IRI="#OoSSystem"/>
-        <Class IRI="#DeactiveSystem"/>
+        <Class IRI="#NotActiveSystem"/>
     </SubClassOf>
     <ClassAssertion>
         <Class IRI="#OoSSystem"/>
@@ -75,19 +75,19 @@
             <Literal datatypeIRI="http://www.w3.org/2001/XMLSchema#string">S1</Literal>
         </Annotation>
         <Body>
+            <ClassAtom>
+                <Class IRI="#OoSSystem"/>
+                <Variable IRI="#y"/>
+            </ClassAtom>
             <ObjectPropertyAtom>
                 <ObjectProperty IRI="#Connected"/>
                 <Variable IRI="#x"/>
                 <Variable IRI="#y"/>
             </ObjectPropertyAtom>
-            <ClassAtom>
-                <Class IRI="#OoSSystem"/>
-                <Variable IRI="#y"/>
-            </ClassAtom>
         </Body>
         <Head>
             <ClassAtom>
-                <Class IRI="#DeactiveSystem"/>
+                <Class IRI="#NotActiveSystem"/>
                 <Variable IRI="#x"/>
             </ClassAtom>
         </Head>
