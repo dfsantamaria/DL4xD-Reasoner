@@ -48,6 +48,10 @@
         <Class IRI="#OoSSystem"/>
         <Class IRI="#NotActiveSystem"/>
     </SubClassOf>
+    <DisjointClasses>
+        <Class IRI="#ActiveSystem"/>
+        <Class IRI="#NotActiveSystem"/>
+    </DisjointClasses>
     <ClassAssertion>
         <Class IRI="#OoSSystem"/>
         <NamedIndividual IRI="#a"/>
