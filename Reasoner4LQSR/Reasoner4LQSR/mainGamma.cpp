@@ -50,7 +50,7 @@ int main()
 	vector<int> KB2size(sizeofVVector,0);
 	cout << "Reading OWL File" << endl; 
 	
-	int chk=readOWLXMLOntology("Example/exampleFI.owl", ontNamespaces, formulae, KB2size);
+	int chk=readOWLXMLOntology("Example/ceramic.owl", ontNamespaces, formulae, KB2size);
 	if (chk == -1)
 	{
 		cout << "Ontology not supported" << endl;
@@ -84,7 +84,7 @@ int main()
 	//printTRadix(KB2cnf); //print Tableau Radix
 	cout << "--Move Quantifiers--" << endl;
 	moveQuantifierKB(0, KB2cnf, KB2mq);
-	printTRadix(KB2mq); //print Tableau Radix
+//	printTRadix(KB2mq); //print Tableau Radix
 	
 	//vector<Formula*> expKB2;
 	//cout << "Expanding Quantifiers in KB" << endl;
