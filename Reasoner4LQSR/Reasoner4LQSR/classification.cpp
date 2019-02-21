@@ -50,7 +50,7 @@ int main()
 	vector<int> KB2size(sizeofVVector,0);
 	cout << "Reading OWL File" << endl; 
 	
-	int chk=readOWLXMLOntology("Example/exampleFI.owl", ontNamespaces, formulae, KB2size);
+	int chk=readOWLXMLOntology("Example/cidoc.owl", ontNamespaces, formulae, KB2size);
 	if (chk == -1)
 	{
 		cout << "Ontology not supported" << endl;
@@ -93,80 +93,20 @@ int main()
 	//Printing result of expansion
 	//printTExpanded(tableau2);
 	//Printing content of VVL and VQL
-	auto started = std::chrono::high_resolution_clock::now();
+	
 	cout << "Computing Taxonomy " << endl;
 	vector<vector<int>> chierarchy = vector<vector<int>>(KB2size.at(1));
 	vector<vector<int>> rhierarchy = vector<vector<int>>(KB2size.at(propertyindex));
+
 	computeSubsumptionGraph(chierarchy, rhierarchy, KB2mq);
+
+    auto started = std::chrono::high_resolution_clock::now();
 	computeSubClassHierarchy(chierarchy);
 	computeSubRoleHierarchy(rhierarchy);
 	auto done = std::chrono::high_resolution_clock::now();
-	printClassGraph(chierarchy);
-	printRoleGraph(rhierarchy);
+	//printClassGraph(chierarchy);
+	//printRoleGraph(rhierarchy);
 	std::cout << "Milliseconds Execution: " << std::chrono::duration_cast<std::chrono::milliseconds>(done - started).count() << endl;
-
-
-	cout << "Expanding Tableau" << endl;
-	expandGammaTableau(tableau2);
-	//printVarSet();
-		
-
-	cout << "Building EqSet" << endl;
-	buildEqSet(tableau2);	
-	//print EqSet
-	printEqSet(tableau2);
-
-	//print open branches
-	printOpenBranches(tableau2);
-
-	//print closed branches
-	printClosedBranches(tableau2);	
-
-	cout << "--End reading ontology--" << endl;                       
-
-	/* Query Reading*/
-
-
-
-
-	
-	cout << "---" << endl;
-	cout << "Reading Query ..." << endl;
-	string queryname = "Example/query.txt";
-	vector<Formula> querySet;
-	vector<string> stringSet = vector<string>(0);
-
-	readQueryFromFile(queryname, stringSet);
-	vector<QueryManager*> results;
-	performQuerySet(results, stringSet, querySet, tableau2);
-
-	cout << "Printing query results ..." << endl;
-	for (int i = 0; i < results.at(0)->getMatchSet().second.size(); i++)
-	{
-		cout << "Tableau branch number: " << results.at(0)->getMatchSet().first.at(i) << endl;
-		for (int j = 0; j < results.at(0)->getMatchSet().second.at(i).size(); j++)
-		{
-			cout << "Solution number: " << j << endl;
-			for (int k = 0; k < results.at(0)->getMatchSet().second.at(i).at(j).size(); k++)
-			{
-				cout << results.at(0)->getMatchSet().second.at(i).at(j).at(k).first->toString();
-				cout << ",";
-				cout << results.at(0)->getMatchSet().second.at(i).at(j).at(k).second->toString() << "; ";
-			}
-			cout << endl;
-		}
-	}
-	cout << "Printing Y/N results ..." << endl;
-	for (int i = 0; i < results.at(0)->getAnswerSet().size(); i++)
-	{
-		cout << "Branch number: " << i << " Answer:" << results.at(0)->getAnswerSet().at(i) << endl;
-	}
-		
-	cout << "Open Branch: " << tableau2.getOpenBranches().size() << endl;
-	cout << "Closed Branch: " << tableau2.getClosedBranches().size() << endl;
-	printOpenBranches(tableau2);
-	printClosedBranches(tableau2);
-	printVarSet();
 	
 	
 	debugEnd();

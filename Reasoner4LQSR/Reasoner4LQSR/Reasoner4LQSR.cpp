@@ -3530,7 +3530,7 @@ void computeSubClassHierarchy(vector<vector<int>>& graph)
 		{
 			int value = temp.back();
 			temp.pop_back();
-			cout << "---> " << (*varSet.getVVLAt(1)).at(value).toString() << endl;
+		//	cout << "---> " << (*varSet.getVVLAt(1)).at(value).toString() << endl;
 			int s = 0;
 			while (s < graph.size())
 			{
@@ -3579,7 +3579,7 @@ void computeSubRoleHierarchy(vector<vector<int>>& graph)
 		{
 			int value = temp.back();
 			temp.pop_back();
-			cout << "---> " << (*varSet.getVVLAt(3)).at(value).toString() << endl;
+	//		cout << "---> " << (*varSet.getVVLAt(3)).at(value).toString() << endl;
 			int s = 0;
 			while (s < graph.size())
 			{
