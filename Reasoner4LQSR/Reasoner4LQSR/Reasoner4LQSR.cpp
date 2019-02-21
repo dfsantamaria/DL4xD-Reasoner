@@ -3432,7 +3432,7 @@ int expandGammaTableau(Tableau& T)
   return 0;
 }
 
-void computeTaxonomy(vector<vector<int>>& chierarchy, vector<vector<int>>& rhierarchy, vector<Formula*>& KB)
+void computeSubsumptionGraph(vector<vector<int>>& chierarchy, vector<vector<int>>& rhierarchy, vector<Formula*>& KB)
 {
 	for (int i = 0; i < chierarchy.size(); i++)
 		chierarchy.at(i).push_back(i);
@@ -3511,6 +3511,104 @@ void computeTaxonomy(vector<vector<int>>& chierarchy, vector<vector<int>>& rhier
 	}
 
 
+
+void computeSubClassHierarchy(vector<vector<int>>& graph)
+{
+	
+	for (int i = 0; i < graph.size(); i++)
+	{	
+        vector<int>color(0);
+		vector<int>temp(0);
+		cout << "Class: " << (*varSet.getVVLAt(1)).at(graph.at(i).at(0)).toString() << endl;
+		color.push_back(graph.at(i).at(0));
+		for (int j = 1; j < graph.at(i).size(); j++)
+		{
+			temp.push_back(graph.at(i).at(j));
+			
+		}
+		while (!temp.empty())
+		{
+			int value = temp.back();
+			temp.pop_back();
+			cout << "---> " << (*varSet.getVVLAt(1)).at(value).toString() << endl;
+			int s = 0;
+			while (s < graph.size())
+			{
+				if (value == graph.at(s).at(0))
+				 break;
+				s++;
+			}
+			if (s < graph.size())
+			{
+				int it = 0;
+				while (it < color.size())
+				{
+					if (color.at(it) == value)
+						break;
+					it++;
+				}						
+				if (it == color.size())
+				{
+					color.push_back(value); 
+					for (int j = 1; j < graph.at(s).size(); j++)
+					{						
+						temp.push_back(graph.at(s).at(j));
+					}
+				}
+			}				
+			}
+			
+		}
+	}
+
+void computeSubRoleHierarchy(vector<vector<int>>& graph)
+{
+
+	for (int i = 0; i < graph.size(); i++)
+	{
+		vector<int>color(0);
+		vector<int>temp(0);
+		cout << "Class: " << (*varSet.getVVLAt(3)).at(graph.at(i).at(0)).toString() << endl;
+		color.push_back(graph.at(i).at(0));
+		for (int j = 1; j < graph.at(i).size(); j++)
+		{
+			temp.push_back(graph.at(i).at(j));
+
+		}
+		while (!temp.empty())
+		{
+			int value = temp.back();
+			temp.pop_back();
+			cout << "---> " << (*varSet.getVVLAt(3)).at(value).toString() << endl;
+			int s = 0;
+			while (s < graph.size())
+			{
+				if (value == graph.at(s).at(0))
+					break;
+				s++;
+			}
+			if (s < graph.size())
+			{
+				int it = 0;
+				while (it < color.size())
+				{
+					if (color.at(it) == value)
+						break;
+					it++;
+				}
+				if (it == color.size())
+				{
+					color.push_back(value);
+					for (int j = 1; j < graph.at(s).size(); j++)
+					{
+						temp.push_back(graph.at(s).at(j));
+					}
+				}
+			}
+		}
+
+	}
+}
 
 /*
   Some printing function
@@ -3618,23 +3716,23 @@ void printEqSet(Tableau& tableau)
 
 }
 
-void printClassTaxonomy(vector<vector<int>>& hierarchy)
+void printClassGraph(vector<vector<int>>& hierarchy)
 {
 	
 	for (int i = 0; i < hierarchy.size(); i++)
 	{
-		cout << "Class subsumption hierarchy for: " << (*varSet.getVVLAt(1)).at(i).toString() << endl;
+		cout << "Adjacency list for the class: " << (*varSet.getVVLAt(1)).at(i).toString() << endl;
 		for (int j = 1; j < hierarchy.at(i).size(); j++)
 			cout << "-> " << (*varSet.getVVLAt(1)).at(hierarchy.at(i).at(j)).toString()<<endl;
 		cout << endl;
 	}
 }
 
-void printRoleTaxonomy(vector<vector<int>>& hierarchy)
+void printRoleGraph(vector<vector<int>>& hierarchy)
 {
 	for (int i = 0; i < hierarchy.size(); i++)
 	{
-		cout << "Role subsumption hierarchy for: " << (*varSet.getVVLAt(3)).at(i).toString() << endl;
+		cout << "Adjacency list for the role: " << (*varSet.getVVLAt(3)).at(i).toString() << endl;
 		for (int j = 1; j < hierarchy.at(i).size(); j++)
 			cout << "-> " << (*varSet.getVVLAt(3)).at(hierarchy.at(i).at(j)).toString()<<endl;
 		cout << endl;

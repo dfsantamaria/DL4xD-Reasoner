@@ -447,10 +447,10 @@ int parseEquivalentObjectProperties(vector<std::string>& out, pugi::xml_node_ite
 			entry.append("($OA V0{z} $CO V0{z1} $AO $IN ");
 			entry.append(prop2);
 			entry.append(")) $AD (");
-			entry.append("($OA V0{z} $CO V0{z1} $AO $NI ");
+			entry.append("($OA V0{z} $CO V0{z1} $AO $IN ");
 			entry.append(prop1);
 			entry.append(") $OR");
-			entry.append("($OA V0{z} $CO V0{z1} $AO $IN ");
+			entry.append("($OA V0{z} $CO V0{z1} $AO $NI ");
 			entry.append(prop2);
 			entry.append(")))");
 			out.push_back(entry);

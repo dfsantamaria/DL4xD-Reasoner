@@ -50,7 +50,7 @@ int main()
 	vector<int> KB2size(sizeofVVector,0);
 	cout << "Reading OWL File" << endl; 
 	
-	int chk=readOWLXMLOntology("Example/ceramic.owl", ontNamespaces, formulae, KB2size);
+	int chk=readOWLXMLOntology("Example/subsumclass.owl", ontNamespaces, formulae, KB2size);
 	if (chk == -1)
 	{
 		cout << "Ontology not supported" << endl;
@@ -94,13 +94,15 @@ int main()
 	//printTExpanded(tableau2);
 	//Printing content of VVL and VQL
 	auto started = std::chrono::high_resolution_clock::now();
-	cout << "Computing Class Hierarchy " << endl;
+	cout << "Computing Taxonomy " << endl;
 	vector<vector<int>> chierarchy = vector<vector<int>>(KB2size.at(1));
 	vector<vector<int>> rhierarchy = vector<vector<int>>(KB2size.at(propertyindex));
-	computeTaxonomy(chierarchy, rhierarchy, KB2mq);
+	computeSubsumptionGraph(chierarchy, rhierarchy, KB2mq);
+	computeSubClassHierarchy(chierarchy);
+	computeSubRoleHierarchy(rhierarchy);
 	auto done = std::chrono::high_resolution_clock::now();
-	printClassTaxonomy(chierarchy);
-	printRoleTaxonomy(rhierarchy);	
+	printClassGraph(chierarchy);
+	printRoleGraph(rhierarchy);
 	std::cout << "Milliseconds Execution: " << std::chrono::duration_cast<std::chrono::milliseconds>(done - started).count() << endl;
 
 
