@@ -50,7 +50,7 @@ int main()
 	vector<int> KB2size(sizeofVVector,0);
 	cout << "Reading OWL File" << endl; 
 	
-	int chk=readOWLXMLOntology("Example/archiviomuseo.owl", ontNamespaces, formulae, KB2size);
+	int chk=readOWLXMLOntology("Example/exampleFI.owl", ontNamespaces, formulae, KB2size);
 	if (chk == -1)
 	{
 		cout << "Ontology not supported" << endl;
@@ -73,7 +73,7 @@ int main()
 	cout << "--Reading Ontology--" << endl;	
 	
 	readKBFromStrings(0, formulae, KB2);
-	printTRadix(KB2);
+	//printTRadix(KB2);
 	cout << "--Converting KB2 to NNF--" << endl;
 	convertKBToNNF(KB2, KB2norm);
 	KB2.clear();
@@ -97,13 +97,16 @@ int main()
 	cout << "Computing Taxonomy " << endl;
 	vector<vector<int>> chierarchy = vector<vector<int>>(KB2size.at(1));
 	vector<vector<int>> rhierarchy = vector<vector<int>>(KB2size.at(propertyindex));
-
+			
 	computeSubsumptionGraph(chierarchy, rhierarchy, KB2mq);
 
     auto started = std::chrono::high_resolution_clock::now();
 	computeSubClassHierarchy(chierarchy);
 	computeSubRoleHierarchy(rhierarchy);
 	auto done = std::chrono::high_resolution_clock::now();
+	
+
+
 	//printClassGraph(chierarchy);
 	//printRoleGraph(rhierarchy);
 	std::cout << "Milliseconds Execution: " << std::chrono::duration_cast<std::chrono::milliseconds>(done - started).count() << endl;

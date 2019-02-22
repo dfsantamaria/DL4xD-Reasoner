@@ -3497,8 +3497,6 @@ void computeSubsumptionGraph(vector<vector<int>>& chierarchy, vector<vector<int>
 								}
 
 								rhierarchy.at(sup->getIndex()).push_back(sub->getIndex());
-
-
 								sup = NULL;
 								sub = NULL;
 							}
@@ -3518,7 +3516,7 @@ void computeSubClassHierarchy(vector<vector<int>>& graph)
 	for (int i = 0; i < graph.size(); i++)
 	{	
         vector<int>color(0);
-		vector<int>temp(0);
+		vector<int>temp(0);		
 		cout << "Class: " << (*varSet.getVVLAt(1)).at(graph.at(i).at(0)).toString() << endl;
 		color.push_back(graph.at(i).at(0));
 		for (int j = 1; j < graph.at(i).size(); j++)
@@ -3529,16 +3527,9 @@ void computeSubClassHierarchy(vector<vector<int>>& graph)
 		while (!temp.empty())
 		{
 			int value = temp.back();
-			temp.pop_back();
-		//	cout << "---> " << (*varSet.getVVLAt(1)).at(value).toString() << endl;
-			int s = 0;
-			while (s < graph.size())
-			{
-				if (value == graph.at(s).at(0))
-				 break;
-				s++;
-			}
-			if (s < graph.size())
+			cout << "---> " << (*varSet.getVVLAt(1)).at(value).toString() << endl;
+			temp.pop_back();			
+			if (value == graph.at(value).at(0))
 			{
 				int it = 0;
 				while (it < color.size())
@@ -3546,16 +3537,16 @@ void computeSubClassHierarchy(vector<vector<int>>& graph)
 					if (color.at(it) == value)
 						break;
 					it++;
-				}						
+				}
 				if (it == color.size())
 				{
-					color.push_back(value); 
-					for (int j = 1; j < graph.at(s).size(); j++)
-					{						
-						temp.push_back(graph.at(s).at(j));
+					color.push_back(value);
+					for (int j = 1; j < graph.at(value).size(); j++)
+					{
+						temp.push_back(graph.at(value).at(j));
 					}
 				}
-			}				
+			}
 			}
 			
 		}
@@ -3579,15 +3570,8 @@ void computeSubRoleHierarchy(vector<vector<int>>& graph)
 		{
 			int value = temp.back();
 			temp.pop_back();
-	//		cout << "---> " << (*varSet.getVVLAt(3)).at(value).toString() << endl;
-			int s = 0;
-			while (s < graph.size())
-			{
-				if (value == graph.at(s).at(0))
-					break;
-				s++;
-			}
-			if (s < graph.size())
+			cout << "---> " << (*varSet.getVVLAt(3)).at(value).toString() << endl;
+			if (value == graph.at(value).at(0))			
 			{
 				int it = 0;
 				while (it < color.size())
@@ -3599,9 +3583,9 @@ void computeSubRoleHierarchy(vector<vector<int>>& graph)
 				if (it == color.size())
 				{
 					color.push_back(value);
-					for (int j = 1; j < graph.at(s).size(); j++)
+					for (int j = 1; j < graph.at(value).size(); j++)
 					{
-						temp.push_back(graph.at(s).at(j));
+						temp.push_back(graph.at(value).at(j));
 					}
 				}
 			}
@@ -3613,6 +3597,8 @@ void computeSubRoleHierarchy(vector<vector<int>>& graph)
 /*
   Some printing function
 */
+
+
 
 
 template <typename C>
