@@ -16,6 +16,15 @@
         <AnnotationProperty IRI="http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled"/>
     </Declaration>
     <Declaration>
+        <ObjectProperty IRI="#C"/>
+    </Declaration>
+    <Declaration>
+        <ObjectProperty IRI="#B"/>
+    </Declaration>
+    <Declaration>
+        <ObjectProperty IRI="#D"/>
+    </Declaration>
+    <Declaration>
         <Class IRI="#System"/>
     </Declaration>
     <Declaration>
@@ -29,6 +38,9 @@
     </Declaration>
     <Declaration>
         <Class IRI="#OoSSystem"/>
+    </Declaration>
+    <Declaration>
+        <ObjectProperty IRI="#A"/>
     </Declaration>
     <Declaration>
         <Class IRI="#ActiveSystem"/>
@@ -65,6 +77,18 @@
         <NamedIndividual IRI="#b"/>
         <NamedIndividual IRI="#a"/>
     </ObjectPropertyAssertion>
+    <EquivalentObjectProperties>
+        <ObjectProperty IRI="#C"/>
+        <ObjectProperty IRI="#Connected"/>
+    </EquivalentObjectProperties>
+    <SubObjectPropertyOf>
+        <ObjectProperty IRI="#A"/>
+        <ObjectProperty IRI="#Connected"/>
+    </SubObjectPropertyOf>
+    <SubObjectPropertyOf>
+        <ObjectProperty IRI="#B"/>
+        <ObjectProperty IRI="#A"/>
+    </SubObjectPropertyOf>
     <DLSafeRule>
         <Annotation>
             <AnnotationProperty IRI="http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled"/>

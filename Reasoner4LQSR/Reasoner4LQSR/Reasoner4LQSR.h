@@ -326,8 +326,8 @@ int precomputeKBSpaceFromString(string& line, vector<int>& KBsize, vector<int>& 
 void computeSubsumptionGraph(vector<vector<int>>& chierarchy, vector<vector<int>>& rhierarchy, vector<Formula*>& KB);
 void printClassGraph(vector<vector<int>>& hierarchy);
 void printRoleGraph(vector<vector<int>>& hierarchy);
-void computeSubClassHierarchy(vector<vector<int>>& graph);
-void computeSubRoleHierarchy(vector<vector<int>>& graph);
+void computeSubClassHierarchy(vector<vector<int>>& graph, vector<vector<int>>& out);
+void computeSubRoleHierarchy(vector<vector<int>>& graph, vector<vector<int>>& out);
 //Printing Function;
 void printClosedBranches(Tableau& tableau);
 void printEqSet(Tableau& tableau);
@@ -338,5 +338,5 @@ void printTExpanded(Tableau& tableau);
 void printTRadix(vector<Formula*>& KB);
 void printVarSet();
 void printVector(vector<Var>& v);
-
+void printHierarchy(vector<vector<int>>& out, int val, string file);
 

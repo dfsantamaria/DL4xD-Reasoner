@@ -50,7 +50,7 @@ int main()
 	vector<int> KB2size(sizeofVVector,0);
 	cout << "Reading OWL File" << endl; 
 	
-	int chk=readOWLXMLOntology("Example/exampleFI.owl", ontNamespaces, formulae, KB2size);
+	int chk=readOWLXMLOntology("Example/archivioMuseo.owl", ontNamespaces, formulae, KB2size);
 	if (chk == -1)
 	{
 		cout << "Ontology not supported" << endl;
@@ -73,7 +73,7 @@ int main()
 	cout << "--Reading Ontology--" << endl;	
 	
 	readKBFromStrings(0, formulae, KB2);
-	//printTRadix(KB2);
+//	printTRadix(KB2);
 	cout << "--Converting KB2 to NNF--" << endl;
 	convertKBToNNF(KB2, KB2norm);
 	KB2.clear();
@@ -95,17 +95,22 @@ int main()
 	//Printing content of VVL and VQL
 	
 	cout << "Computing Taxonomy " << endl;
+	auto started = std::chrono::high_resolution_clock::now();
+
 	vector<vector<int>> chierarchy = vector<vector<int>>(KB2size.at(1));
 	vector<vector<int>> rhierarchy = vector<vector<int>>(KB2size.at(propertyindex));
+	
+	vector<vector<int>> chierarchyOUT = vector<vector<int>>(KB2size.at(1));
+	vector<vector<int>> rhierarchyOUT = vector<vector<int>>(KB2size.at(propertyindex));
 			
-	computeSubsumptionGraph(chierarchy, rhierarchy, KB2mq);
-
-    auto started = std::chrono::high_resolution_clock::now();
-	computeSubClassHierarchy(chierarchy);
-	computeSubRoleHierarchy(rhierarchy);
+	computeSubsumptionGraph(chierarchy, rhierarchy, KB2mq);    
+	computeSubClassHierarchy(chierarchy, chierarchyOUT);
+	computeSubRoleHierarchy(rhierarchy, rhierarchyOUT);
 	auto done = std::chrono::high_resolution_clock::now();
 	
-
+	printHierarchy(chierarchyOUT, 1, "LOG/example.txt");
+	printHierarchy(rhierarchyOUT, 3, "LOG/example.txt");
+	remove("LOG/example.txt");
 
 	//printClassGraph(chierarchy);
 	//printRoleGraph(rhierarchy);
