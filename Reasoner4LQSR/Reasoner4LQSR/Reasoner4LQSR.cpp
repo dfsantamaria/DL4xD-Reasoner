@@ -3467,7 +3467,7 @@ void computeSubsumptionGraph(vector<vector<int>>& chierarchy, vector<vector<int>
 								sup = left->getLiteral()->getElementAt(0);
 							}
 
-							chierarchy.at(sup->getIndex()).push_back(sub->getIndex());
+							chierarchy.at(sub->getIndex()).push_back(sup->getIndex());
 						
 
 							sup = NULL;
