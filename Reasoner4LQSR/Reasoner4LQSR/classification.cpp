@@ -50,7 +50,7 @@ int main()
 	vector<int> KB2size(sizeofVVector,0);
 	cout << "Reading OWL File" << endl; 
 	
-	int chk=readOWLXMLOntology("Example/archivioMuseo.owl", ontNamespaces, formulae, KB2size);
+	int chk=readOWLXMLOntology("Example/ceramic.owl", ontNamespaces, formulae, KB2size);
 	if (chk == -1)
 	{
 		cout << "Ontology not supported" << endl;
@@ -97,20 +97,38 @@ int main()
 	cout << "Computing Taxonomy " << endl;
 	auto started = std::chrono::high_resolution_clock::now();
 
-	vector<vector<int>> chierarchy = vector<vector<int>>(KB2size.at(1));
-	vector<vector<int>> rhierarchy = vector<vector<int>>(KB2size.at(propertyindex));
+	vector<vector<int>> chierarchySUB = vector<vector<int>>(KB2size.at(1));
+	vector<vector<int>> rhierarchySUB = vector<vector<int>>(KB2size.at(propertyindex));
 	
-	vector<vector<int>> chierarchyOUT = vector<vector<int>>(KB2size.at(1));
-	vector<vector<int>> rhierarchyOUT = vector<vector<int>>(KB2size.at(propertyindex));
-			
-	computeSubsumptionGraph(chierarchy, rhierarchy, KB2mq);    
-	computeSubClassHierarchy(chierarchy, chierarchyOUT);
-	computeSubRoleHierarchy(rhierarchy, rhierarchyOUT);
+	vector<vector<int>> chierarchyOUTSUB = vector<vector<int>>(KB2size.at(1));
+	vector<vector<int>> rhierarchyOUTSUB = vector<vector<int>>(KB2size.at(propertyindex));
+		
+
+	computeSubsumptionGraph(chierarchySUB, rhierarchySUB, KB2mq);    
+	computeSubHierarchy(chierarchySUB, chierarchyOUTSUB);
+	computeSubHierarchy(rhierarchySUB, rhierarchyOUTSUB);
+
+	vector<vector<int>> chierarchySUP = vector<vector<int>>(KB2size.at(1));
+	vector<vector<int>> rhierarchySUP = vector<vector<int>>(KB2size.at(propertyindex));
+
+	vector<vector<int>> chierarchyOUTSUP = vector<vector<int>>(KB2size.at(1));
+	vector<vector<int>> rhierarchyOUTSUP = vector<vector<int>>(KB2size.at(propertyindex));
+
+	computeSubsumptionGraph(chierarchySUP, rhierarchySUP, KB2mq);
+	computeSuperHierarchy(chierarchySUP, chierarchyOUTSUP);
+	computeSuperHierarchy(rhierarchySUP, rhierarchyOUTSUP);
+
 	auto done = std::chrono::high_resolution_clock::now();
 	
-	printHierarchy(chierarchyOUT, 1, "LOG/example.txt");
-	printHierarchy(rhierarchyOUT, 3, "LOG/example.txt");
-	remove("LOG/example.txt");
+	printHierarchy(chierarchyOUTSUB, 1, "LOG/exampleSUB.txt");
+
+	printHierarchy(rhierarchyOUTSUB, 3, "LOG/exampleSUB.txt");
+
+	printHierarchy(chierarchyOUTSUP, 1, "LOG/exampleSUP.txt");
+
+	printHierarchy(rhierarchyOUTSUP, 3, "LOG/exampleSUP.txt");
+
+	
 
 	//printClassGraph(chierarchy);
 	//printRoleGraph(rhierarchy);

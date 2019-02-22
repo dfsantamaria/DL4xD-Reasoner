@@ -3526,15 +3526,34 @@ void printHierarchy(vector<vector<int>>& out, int val, string file)
 	myfile.close();
 }
 
-void computeSubClassHierarchy(vector<vector<int>>& graph, vector<vector<int>>& out)
+
+
+void computeSuperHierarchy(vector<vector<int>>& graph, vector<vector<int>>& out)
 {
-	
+	vector <vector<int>> invGraph(graph.size());
 	for (int i = 0; i < graph.size(); i++)
-	{	
-        vector<int>color(0);
+	{
+		for (int j = 0; j < graph.at(i).size(); j++)
+		{
+			invGraph.at(graph.at(i).at(j)).push_back(i);
+		}
+	}
+	computeSubHierarchy(invGraph, out);
+}
+	
+
+
+void computeSubHierarchy(vector<vector<int>>& graph, vector<vector<int>>& out)
+{	
+	for (int i = 0; i < graph.size(); i++)
+	{
+		
+        vector<int>color(graph.size());
+		for (int c = 0; c < color.size(); c++)
+			color.at(c) = 0;
 		vector<int>temp(0);		
 		//cout << "Class: " << (*varSet.getVVLAt(1)).at(i).toString() << endl;
-		color.push_back(i);
+		color.at(i) = 1;
 		for (int j = 0; j < graph.at(i).size(); j++)
 		{
 			temp.push_back(graph.at(i).at(j));
@@ -3546,17 +3565,10 @@ void computeSubClassHierarchy(vector<vector<int>>& graph, vector<vector<int>>& o
 		//	cout << "---> " << (*varSet.getVVLAt(1)).at(value).toString() << endl;
 			out.at(i).push_back(value);
 			temp.pop_back();			
-			
-				int it = 0;
-				while (it < color.size())
-				{
-					if (color.at(it) == value)
-						break;
-					it++;
-				}
-				if (it == color.size())
-				{
-					color.push_back(value);
+		
+			if (color.at(value)==0)
+			{ 
+				    color.at(value) = 1;
 					for (int j = 0; j < graph.at(value).size(); j++)
 					{
 						temp.push_back(graph.at(value).at(j));
@@ -3567,46 +3579,6 @@ void computeSubClassHierarchy(vector<vector<int>>& graph, vector<vector<int>>& o
 		}
 	}
 
-void computeSubRoleHierarchy(vector<vector<int>>& graph, vector<vector<int>>& out)
-{
-
-	for (int i = 0; i < graph.size(); i++)
-	{
-	vector<int>color(0);
-	vector<int>temp(0);
-	//cout << "Class: " << (*varSet.getVVLAt(3)).at(i).toString() << endl;
-	color.push_back(i);
-	for (int j = 0; j < graph.at(i).size(); j++)
-	{
-		temp.push_back(graph.at(i).at(j));
-
-	}
-	while (!temp.empty())
-	{
-		int value = temp.back();
-		out.at(i).push_back(value);
-	//	cout << "---> " << (*varSet.getVVLAt(3)).at(value).toString() << endl;
-		temp.pop_back();
-
-		int it = 0;
-		while (it < color.size())
-		{
-			if (color.at(it) == value)
-				break;
-			it++;
-		}
-		if (it == color.size())
-		{
-			color.push_back(value);
-			for (int j = 0; j < graph.at(value).size(); j++)
-			{
-				temp.push_back(graph.at(value).at(j));
-			}
-		}
-	}
-
-}
-}
 
 /*
   Some printing function
