@@ -3635,11 +3635,12 @@ void computeSubHierarchy(vector<vector<int>>& graph, vector<vector<int>>& out)
 		{
 			int value = temp.back();
 		//	cout << "---> " << (*varSet.getVVLAt(1)).at(value).toString() << endl;
-			out.at(i).push_back(value);
+			
 			temp.pop_back();			
 		
 			if (color.at(value)==0)
 			{ 
+				    out.at(i).push_back(value);
 				    color.at(value) = 1;
 					for (int j = 0; j < graph.at(value).size(); j++)
 					{

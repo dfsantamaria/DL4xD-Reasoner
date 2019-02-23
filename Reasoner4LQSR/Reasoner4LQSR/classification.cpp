@@ -50,7 +50,7 @@ int main()
 	vector<int> KB2size(sizeofVVector,0);
 	cout << "Reading OWL File" << endl; 
 	
-	int chk=readOWLXMLOntology("Example/ceramic.owl", ontNamespaces, formulae, KB2size);
+	int chk=readOWLXMLOntology("Example/exampleFI.owl", ontNamespaces, formulae, KB2size);
 	if (chk == -1)
 	{
 		cout << "Ontology not supported" << endl;
@@ -97,26 +97,27 @@ int main()
 	cout << "Computing Taxonomy " << endl;
 	auto started = std::chrono::high_resolution_clock::now();
 
-	vector<vector<int>> chierarchySUB = vector<vector<int>>(KB2size.at(1));
-	vector<vector<int>> rhierarchySUB = vector<vector<int>>(KB2size.at(propertyindex));
+	vector<vector<int>> chierarchy = vector<vector<int>>(KB2size.at(1));
+	vector<vector<int>> rhierarchy = vector<vector<int>>(KB2size.at(propertyindex));
+
 	
 	vector<vector<int>> chierarchyOUTSUB = vector<vector<int>>(KB2size.at(1));
 	vector<vector<int>> rhierarchyOUTSUB = vector<vector<int>>(KB2size.at(propertyindex));
 		
 
-	computeSubsumptionGraph(chierarchySUB, rhierarchySUB, KB2mq);    
-	computeSubHierarchy(chierarchySUB, chierarchyOUTSUB);
-	computeSubHierarchy(rhierarchySUB, rhierarchyOUTSUB);
+	computeSubsumptionGraph(chierarchy, rhierarchy, KB2mq); 
 
-	vector<vector<int>> chierarchySUP = vector<vector<int>>(KB2size.at(1));
-	vector<vector<int>> rhierarchySUP = vector<vector<int>>(KB2size.at(propertyindex));
+
+	computeSubHierarchy(chierarchy, chierarchyOUTSUB);
+	computeSubHierarchy(rhierarchy, rhierarchyOUTSUB);
+
 
 	vector<vector<int>> chierarchyOUTSUP = vector<vector<int>>(KB2size.at(1));
 	vector<vector<int>> rhierarchyOUTSUP = vector<vector<int>>(KB2size.at(propertyindex));
 
-	computeSubsumptionGraph(chierarchySUP, rhierarchySUP, KB2mq);
-	computeSuperHierarchy(chierarchySUP, chierarchyOUTSUP);
-	computeSuperHierarchy(rhierarchySUP, rhierarchyOUTSUP);
+	
+	computeSuperHierarchy(chierarchy, chierarchyOUTSUP);
+	computeSuperHierarchy(rhierarchy, rhierarchyOUTSUP);
 
 	auto done = std::chrono::high_resolution_clock::now();
 	
