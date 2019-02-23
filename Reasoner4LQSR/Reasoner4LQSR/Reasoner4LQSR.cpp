@@ -3505,6 +3505,78 @@ void computeSubsumptionGraph(vector<vector<int>>& chierarchy, vector<vector<int>
 	}
 
 
+void computeSubsumptionFWGraph(vector<vector<int>>& chierarchy, vector<vector<int>>& rhierarchy, vector<Formula*>& KB)
+{
+	Var* sup;
+	Var* sub;
+	
+	for (int i = 0; i < KB.size(); i++)
+	{
+		Formula* tmp = KB.at(i);
+		if (tmp->getLiteral() == NULL && tmp->getOperand() == 0)
+			if (tmp->getLSubformula()->getLiteral() != NULL && tmp->getRSubformula()->getLiteral() != NULL)
+			{
+				Formula* left = tmp->getLSubformula();
+				Formula* right = tmp->getRSubformula();
+				//looking for class subsumption
+				if (left->getLSubformula() == NULL && left->getRSubformula() == NULL && right->getLSubformula() == NULL && right->getRSubformula() == NULL
+					&& left->getLiteral()->getElements().size() == 2 && right->getLiteral()->getElements().size() == 2)
+				{
+					if (abs(left->getLiteral()->getLiteralOp() - right->getLiteral()->getLiteralOp()) == 2)
+						if (left->getLiteral()->getElementAt(1)->equal(right->getLiteral()->getElementAt(1)) == 0)
+						{
+
+							if (left->getLiteral()->getLiteralOp() == 2)
+							{
+								sub = left->getLiteral()->getElementAt(0);
+								sup = right->getLiteral()->getElementAt(0);
+							}
+							else
+							{
+								sub = right->getLiteral()->getElementAt(0);
+								sup = left->getLiteral()->getElementAt(0);
+							}							
+							chierarchy.at(sup->getIndex()).at(sub->getIndex())=1;							
+
+							sup = NULL;
+							sub = NULL;
+						}
+				}
+				//looking for role subsumption
+				else
+				{
+					if (left->getLSubformula() == NULL && left->getRSubformula() == NULL && right->getLSubformula() == NULL && right->getRSubformula() == NULL
+						&& left->getLiteral()->getElements().size() == 3 && right->getLiteral()->getElements().size() == 3)
+					{
+						if (abs(left->getLiteral()->getLiteralOp() - right->getLiteral()->getLiteralOp()) == 2)
+							if (left->getLiteral()->getElementAt(1)->equal(right->getLiteral()->getElementAt(1)) == 0 &&
+								left->getLiteral()->getElementAt(2)->equal(right->getLiteral()->getElementAt(2)) == 0)
+							{
+
+								if (left->getLiteral()->getLiteralOp() == 2)
+								{
+									sub = left->getLiteral()->getElementAt(0);
+									sup = right->getLiteral()->getElementAt(0);
+								}
+								else
+								{
+									sub = right->getLiteral()->getElementAt(0);
+									sup = left->getLiteral()->getElementAt(0);
+								}
+
+								rhierarchy.at(sup->getIndex()).at(sub->getIndex())=1;
+								sup = NULL;
+								sub = NULL;
+							}
+					}
+				}
+
+			}
+
+	}
+}
+
+
 
 void printHierarchy(vector<vector<int>>& out, int val, string file)
 {
