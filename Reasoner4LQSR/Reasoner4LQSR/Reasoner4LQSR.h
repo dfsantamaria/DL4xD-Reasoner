@@ -324,14 +324,19 @@ Formula* dropNegation(Formula *f, Formula **topform);
 void precomputeKBSpaceFromFile(string &name, vector<int>& KBsize, vector<int>& Litsize);
 int precomputeKBSpaceFromString(string& line, vector<int>& KBsize, vector<int>& Litsize);
 void computeSubsumptionGraph(vector<vector<int>>& chierarchy, vector<vector<int>>& rhierarchy, vector<Formula*>& KB);
-void computeSubsumptionFWGraph(vector<vector<int>>& chierarchy, vector<vector<int>>& rhierarchy, vector<Formula*>& KB);
-void printClassGraph(vector<vector<int>>& hierarchy);
-void printRoleGraph(vector<vector<int>>& hierarchy);
 
+
+void printClassGraph(vector<vector<int>>& hierarchy); //BFS classification
+void printRoleGraph(vector<vector<int>>& hierarchy);
 void computeSubHierarchy(vector<vector<int>>& graph, vector<vector<int>>& out);
 void computeSuperHierarchy(vector<vector<int>>& graph, vector<vector<int>>& out);
+void printHierarchy(vector<vector<int>>& out, int val, string file); //END BFS Classification
 
-
+void computetransitiveClosure(vector<vector<int>>& graph, vector<vector<int>>& out); //Floyd-Warshall Algorithm
+void computeClassAdjacencyMatrix(vector<vector<int>>& chierarchy, vector<Formula*>& KB);
+void computeRoleAdjacencyMatrix(vector<vector<int>>& chierarchy, vector<Formula*>& KB);
+void printSubFWHierarchy(vector<vector<int>>& out, int val, string file);
+void printSupFWHierarchy(vector<vector<int>>& out, int val, string file); //End Floyd_Warshall Algorithm
 //Printing Function;
 void printClosedBranches(Tableau& tableau);
 void printEqSet(Tableau& tableau);
@@ -342,5 +347,5 @@ void printTExpanded(Tableau& tableau);
 void printTRadix(vector<Formula*>& KB);
 void printVarSet();
 void printVector(vector<Var>& v);
-void printHierarchy(vector<vector<int>>& out, int val, string file);
+
 

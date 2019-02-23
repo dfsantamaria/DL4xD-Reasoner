@@ -50,7 +50,7 @@ int main()
 	vector<int> KB2size(sizeofVVector,0);
 	cout << "Reading OWL File" << endl; 
 	
-	int chk=readOWLXMLOntology("Example/exampleFI.owl", ontNamespaces, formulae, KB2size);
+	int chk=readOWLXMLOntology("Example/archivioMuseo.owl", ontNamespaces, formulae, KB2size);
 	if (chk == -1)
 	{
 		cout << "Ontology not supported" << endl;
@@ -97,55 +97,32 @@ int main()
 	cout << "Computing Taxonomy " << endl;
 	auto started = std::chrono::high_resolution_clock::now();
 
-	vector<vector<int>> chierarchySUB = vector<vector<int>>(KB2size.at(1), vector<int>(KB2size.at(1)));
-	vector<vector<int>> rhierarchySUB = vector<vector<int>>(KB2size.at(propertyindex), vector<int>(KB2size.at(propertyindex)));
+	vector<vector<int>> chierarchy = vector<vector<int>>(KB2size.at(1), vector<int>(KB2size.at(1))); //Class adjacency matrix
+	vector<vector<int>> rhierarchy = vector<vector<int>>(KB2size.at(propertyindex), vector<int>(KB2size.at(propertyindex))); //Role adjacency matrix
 	
-	vector<vector<int>> chierarchyOUTSUB = vector<vector<int>>(KB2size.at(1), vector<int>(KB2size.at(1)));
-	vector<vector<int>> rhierarchyOUTSUB = vector<vector<int>>(KB2size.at(propertyindex), vector<int>(KB2size.at(propertyindex)));
-		
+	vector<vector<int>> chierarchyOUT = vector<vector<int>>(KB2size.at(1), vector<int>(KB2size.at(1))); //Class transitive closure matrix
+	vector<vector<int>> rhierarchyOUT = vector<vector<int>>(KB2size.at(propertyindex), vector<int>(KB2size.at(propertyindex))); //Role transitive closure matrix
 
-	computeSubsumptionFWGraph(chierarchySUB, rhierarchySUB, KB2mq);    
-	//computeSubHierarchy(chierarchySUB, chierarchyOUTSUB);
-	//computeSubHierarchy(rhierarchySUB, rhierarchyOUTSUB);
+	computeClassAdjacencyMatrix(chierarchy, KB2mq);    //compute AdjacencyMatrix for Classes
+	computeRoleAdjacencyMatrix(rhierarchy, KB2mq);    //compute AdjacencyMatrix for Classes
 
-	//vector<vector<int>> chierarchySUP = vector<vector<int>>(KB2size.at(1), vector<int>(KB2size.at(1)));
-	//vector<vector<int>> rhierarchySUP = vector<vector<int>>(KB2size.at(propertyindex),vector<int>(KB2size.at(propertyindex)));
-
-	//vector<vector<int>> chierarchyOUTSUP = vector<vector<int>>(KB2size.at(1));
-	//vector<vector<int>> rhierarchyOUTSUP = vector<vector<int>>(KB2size.at(propertyindex));
-
-	//computeSubsumptionGraph(chierarchySUP, rhierarchySUP, KB2mq);
-
-	//computeSuperHierarchy(chierarchySUP, chierarchyOUTSUP);
-	//computeSuperHierarchy(rhierarchySUP, rhierarchyOUTSUP);
+	computetransitiveClosure(chierarchy, chierarchyOUT);
+	computetransitiveClosure(rhierarchy, rhierarchyOUT);
 
 	auto done = std::chrono::high_resolution_clock::now();
 	
-	cout << "Print" << endl;
-	for (int i = 0; i < chierarchySUB.size(); i++)
-	{		
-		for (int j = 0; j < chierarchySUB.at(i).size(); j++)
-		{
-			cout << chierarchySUB.at(i).at(j) << " ";
-		}
-		cout << endl;
-	}
-
-
-	/*printHierarchy(chierarchyOUTSUB, 1, "LOG/exampleSUB.txt");
-
-	printHierarchy(rhierarchyOUTSUB, 3, "LOG/exampleSUB.txt");
-
-	printHierarchy(chierarchyOUTSUP, 1, "LOG/exampleSUP.txt");
-
-	printHierarchy(rhierarchyOUTSUP, 3, "LOG/exampleSUP.txt");*/
-
+	
+	printSubFWHierarchy(chierarchyOUT, 1, "LOG/exampleSUB.txt");	
+	printSubFWHierarchy(rhierarchyOUT, 3, "LOG/exampleSUB.txt");
+   
+	printSupFWHierarchy(chierarchyOUT, 1, "LOG/exampleSUP.txt");
+	printSupFWHierarchy(rhierarchyOUT, 3, "LOG/exampleSUP.txt");
 	
 
 	//printClassGraph(chierarchy);
 	//printRoleGraph(rhierarchy);
 	std::cout << "Milliseconds Execution: " << std::chrono::duration_cast<std::chrono::milliseconds>(done - started).count() << endl;
-	
+	//printVarSet();
 	
 	debugEnd();
 }

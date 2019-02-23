@@ -3505,7 +3505,7 @@ void computeSubsumptionGraph(vector<vector<int>>& chierarchy, vector<vector<int>
 	}
 
 
-void computeSubsumptionFWGraph(vector<vector<int>>& chierarchy, vector<vector<int>>& rhierarchy, vector<Formula*>& KB)
+void computeClassAdjacencyMatrix(vector<vector<int>>& chierarchy, vector<Formula*>& KB)
 {
 	Var* sup;
 	Var* sub;
@@ -3542,10 +3542,27 @@ void computeSubsumptionFWGraph(vector<vector<int>>& chierarchy, vector<vector<in
 							sub = NULL;
 						}
 				}
-				//looking for role subsumption
-				else
-				{
-					if (left->getLSubformula() == NULL && left->getRSubformula() == NULL && right->getLSubformula() == NULL && right->getRSubformula() == NULL
+			}
+
+	}
+}
+
+
+
+void computeRoleAdjacencyMatrix(vector<vector<int>>& rhierarchy, vector<Formula*>& KB)
+{
+	Var* sup;
+	Var* sub;
+
+	for (int i = 0; i < KB.size(); i++)
+	{
+		Formula* tmp = KB.at(i);
+		if (tmp->getLiteral() == NULL && tmp->getOperand() == 0)
+			if (tmp->getLSubformula()->getLiteral() != NULL && tmp->getRSubformula()->getLiteral() != NULL)
+			{
+				Formula* left = tmp->getLSubformula();
+				Formula* right = tmp->getRSubformula();
+				if (left->getLSubformula() == NULL && left->getRSubformula() == NULL && right->getLSubformula() == NULL && right->getRSubformula() == NULL
 						&& left->getLiteral()->getElements().size() == 3 && right->getLiteral()->getElements().size() == 3)
 					{
 						if (abs(left->getLiteral()->getLiteralOp() - right->getLiteral()->getLiteralOp()) == 2)
@@ -3564,7 +3581,7 @@ void computeSubsumptionFWGraph(vector<vector<int>>& chierarchy, vector<vector<in
 									sup = left->getLiteral()->getElementAt(0);
 								}
 
-								rhierarchy.at(sup->getIndex()).at(sub->getIndex())=1;
+								rhierarchy.at(sup->getIndex()).at(sub->getIndex()) = 1;
 								sup = NULL;
 								sub = NULL;
 							}
@@ -3574,7 +3591,6 @@ void computeSubsumptionFWGraph(vector<vector<int>>& chierarchy, vector<vector<in
 			}
 
 	}
-}
 
 
 
@@ -3652,6 +3668,68 @@ void computeSubHierarchy(vector<vector<int>>& graph, vector<vector<int>>& out)
 		}
 	}
 
+
+void computetransitiveClosure(vector<vector<int>>& graph, vector<vector<int>>& out)
+{		
+	for (int i = 0; i < out.size(); i++)
+	 for (int j = 0; j < out.at(i).size(); j++)
+		{		     
+			out.at(i).at(j) = graph.at(i).at(j);
+		}
+	
+	for (int k = 0; k < out.size(); k++)
+	 for (int i = 0; i < out.size(); i++)
+	  for (int j = 0; j < out.size(); j++)
+		{		  		  
+		  out.at(i).at(j) = out.at(i).at(j) || (out.at(i).at(k) && out.at(k).at(j));		//  reach[i][j] = reach[i][j] || (reach[i][k] && reach[k][j]);   
+		}
+
+}
+
+
+void printSubFWHierarchy(vector<vector<int>>& out, int val, string file)
+{
+	ofstream myfile;
+	myfile.open(file, std::ios_base::app);
+
+	string type = "Class";
+	if (val == 3)
+		type = "Role";
+
+	for (int i = 0; i < out.size(); i++)
+	{		
+		myfile << type << ": " << (*varSet.getVVLAt(val)).at(i).toString() << endl;
+		for (int j = 0; j < out.at(i).size(); j++)
+		{
+         if(out.at(i).at(j)==1)
+			myfile << "--->" << (*varSet.getVVLAt(val)).at(j).toString() << endl;
+		}
+		cout << endl;
+	}
+	myfile.close();
+}
+
+void printSupFWHierarchy(vector<vector<int>>& out, int val, string file)
+{
+	ofstream myfile;
+	myfile.open(file, std::ios_base::app);
+
+	string type = "Class";
+	if (val == 3)
+		type = "Role";
+
+	for (int j = 0; j < out.size(); j++)
+	{
+		myfile << type << ": " << (*varSet.getVVLAt(val)).at(j).toString() << endl;
+		for (int i = 0; i < out.at(j).size(); i++)
+		{
+			if (out.at(i).at(j) == 1)
+				myfile << "--->" << (*varSet.getVVLAt(val)).at(i).toString() << endl;
+		}
+		cout << endl;
+	}
+	myfile.close();
+}
 
 /*
   Some printing function
