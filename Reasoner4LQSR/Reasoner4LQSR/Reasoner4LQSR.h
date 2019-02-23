@@ -323,10 +323,11 @@ void dropLRImplication(Formula* f);
 Formula* dropNegation(Formula *f, Formula **topform);
 void precomputeKBSpaceFromFile(string &name, vector<int>& KBsize, vector<int>& Litsize);
 int precomputeKBSpaceFromString(string& line, vector<int>& KBsize, vector<int>& Litsize);
-void computeSubsumptionGraph(vector<vector<int>>& chierarchy, vector<vector<int>>& rhierarchy, vector<Formula*>& KB);
 
 
-void printClassGraph(vector<vector<int>>& hierarchy); //BFS classification
+void computeClassSubsumptionGraph(vector<vector<int>>& chierarchy, vector<Formula*>& KB);//BFS classification
+void computeRoleSubsumptionGraph(vector<vector<int>>& rhierarchy, vector<Formula*>& KB);
+void printClassGraph(vector<vector<int>>& hierarchy); 
 void printRoleGraph(vector<vector<int>>& hierarchy);
 void computeSubHierarchy(vector<vector<int>>& graph, vector<vector<int>>& out);
 void computeSuperHierarchy(vector<vector<int>>& graph, vector<vector<int>>& out);

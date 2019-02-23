@@ -50,7 +50,7 @@ int main()
 	vector<int> KB2size(sizeofVVector,0);
 	cout << "Reading OWL File" << endl; 
 	
-	int chk=readOWLXMLOntology("Example/exampleFI.owl", ontNamespaces, formulae, KB2size);
+	int chk=readOWLXMLOntology("Example/ceramic.owl", ontNamespaces, formulae, KB2size);
 	if (chk == -1)
 	{
 		cout << "Ontology not supported" << endl;
@@ -97,23 +97,23 @@ int main()
 	cout << "Computing Taxonomy " << endl;
 	auto started = std::chrono::high_resolution_clock::now();
 
-	vector<vector<int>> chierarchy = vector<vector<int>>(KB2size.at(1));
-	vector<vector<int>> rhierarchy = vector<vector<int>>(KB2size.at(propertyindex));
+	vector<vector<int>> chierarchy = vector<vector<int>>(KB2size.at(1)); //Class Adjacency List
+	vector<vector<int>> rhierarchy = vector<vector<int>>(KB2size.at(propertyindex)); //Role adjacency List
 
 	
-	vector<vector<int>> chierarchyOUTSUB = vector<vector<int>>(KB2size.at(1));
-	vector<vector<int>> rhierarchyOUTSUB = vector<vector<int>>(KB2size.at(propertyindex));
+	vector<vector<int>> chierarchyOUTSUB = vector<vector<int>>(KB2size.at(1)); //Sub-Class Hierarchy
+	vector<vector<int>> rhierarchyOUTSUB = vector<vector<int>>(KB2size.at(propertyindex)); //Sub-Role Hierachy
 		
 
-	computeSubsumptionGraph(chierarchy, rhierarchy, KB2mq); 
+	computeClassSubsumptionGraph(chierarchy, KB2mq); //compute Class subsumption graph
+	computeRoleSubsumptionGraph(rhierarchy, KB2mq); //compute Class subsumption graph
+
+	computeSubHierarchy(chierarchy, chierarchyOUTSUB); //compute sub-class hierarchy
+	computeSubHierarchy(rhierarchy, rhierarchyOUTSUB); //compute sub-role hierarchy
 
 
-	computeSubHierarchy(chierarchy, chierarchyOUTSUB);
-	computeSubHierarchy(rhierarchy, rhierarchyOUTSUB);
-
-
-	vector<vector<int>> chierarchyOUTSUP = vector<vector<int>>(KB2size.at(1));
-	vector<vector<int>> rhierarchyOUTSUP = vector<vector<int>>(KB2size.at(propertyindex));
+	vector<vector<int>> chierarchyOUTSUP = vector<vector<int>>(KB2size.at(1)); //Super-class hierarchy
+	vector<vector<int>> rhierarchyOUTSUP = vector<vector<int>>(KB2size.at(propertyindex)); //Super-role hierachy
 
 	
 	computeSuperHierarchy(chierarchy, chierarchyOUTSUP);
