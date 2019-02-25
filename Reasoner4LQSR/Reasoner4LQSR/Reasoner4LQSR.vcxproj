@@ -154,7 +154,9 @@
     <ClInclude Include="XMLparser.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="classification.cpp" />
+    <ClCompile Include="classification-FW-Main.cpp" />
+    <ClCompile Include="classificationMain.cpp" />
+    <ClCompile Include="main.cpp" />
     <ClCompile Include="XMLparser.cpp" />
     <ClCompile Include="Reasoner4LQSR.cpp" />
     <ClCompile Include="stdafx.cpp">
