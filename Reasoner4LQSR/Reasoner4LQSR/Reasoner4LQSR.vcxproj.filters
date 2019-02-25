@@ -56,9 +56,6 @@
     <ClCompile Include="classificationMain.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
-    <ClCompile Include="classification-FW-Main.cpp">
-      <Filter>File di origine</Filter>
-    </ClCompile>
     <ClCompile Include="main.cpp">
       <Filter>File di origine</Filter>
     </ClCompile>
