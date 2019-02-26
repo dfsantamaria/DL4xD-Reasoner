@@ -1,0 +1,45 @@
+Class: V1{C}
+--->V1{A}
+--->V1{B}
+Class: V1{B}
+Class: V1{A}
+Class: V1{System}
+Class: V1{NotActiveSystem}
+--->V1{System}
+Class: V1{OoSSystem}
+--->V1{NotActiveSystem}
+--->V1{System}
+Class: V1{ActiveSystem}
+--->V1{System}
+Role: V3{C}
+--->V3{Connected}
+Role: V3{B}
+--->V3{A}
+--->V3{Connected}
+--->V3{C}
+Role: V3{D}
+Role: V3{Connected}
+--->V3{C}
+Role: V3{A}
+--->V3{Connected}
+--->V3{C}
+Class: V1{System}
+Class: V1{NotActiveSystem}
+--->V1{System}
+Class: V1{OoSSystem}
+--->V1{NotActiveSystem}
+--->V1{System}
+Class: V1{ActiveSystem}
+--->V1{System}
+Role: V3{C}
+--->V3{Connected}
+Role: V3{B}
+--->V3{A}
+--->V3{Connected}
+--->V3{C}
+Role: V3{D}
+Role: V3{Connected}
+--->V3{C}
+Role: V3{A}
+--->V3{Connected}
+--->V3{C}

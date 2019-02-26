@@ -93,17 +93,49 @@ int main()
 	//Printing result of expansion
 	//printTExpanded(tableau2);
 	//Printing content of VVL and VQL
+
+
 	auto started = std::chrono::high_resolution_clock::now();
-	cout << "Computing Taxonomy " << endl;
-	vector<vector<int>> chierarchy = vector<vector<int>>(KB2size.at(1));
-	vector<vector<int>> rhierarchy = vector<vector<int>>(KB2size.at(propertyindex));
-	computeSubsumptionGraph(chierarchy, rhierarchy, KB2mq);
-	computeSubClassHierarchy(chierarchy);
-	computeSubRoleHierarchy(rhierarchy);
+
+	vector<vector<int>> chierarchy = vector<vector<int>>(KB2size.at(1)); //Class Adjacency List
+	vector<vector<int>> rhierarchy = vector<vector<int>>(KB2size.at(propertyindex)); //Role adjacency List
+
+
+	vector<vector<int>> chierarchyOUTSUB = vector<vector<int>>(KB2size.at(1)); //Sub-Class Hierarchy
+	vector<vector<int>> rhierarchyOUTSUB = vector<vector<int>>(KB2size.at(propertyindex)); //Sub-Role Hierachy
+
+
+	computeClassSubsumptionGraph(chierarchy, KB2mq); //compute Class subsumption graph
+	computeRoleSubsumptionGraph(rhierarchy, KB2mq); //compute Class subsumption graph
+
+	computeSubHierarchy(chierarchy, chierarchyOUTSUB); //compute sub-class hierarchy
+	computeSubHierarchy(rhierarchy, rhierarchyOUTSUB); //compute sub-role hierarchy
+
+
+	vector<vector<int>> chierarchyOUTSUP = vector<vector<int>>(KB2size.at(1)); //Super-class hierarchy
+	vector<vector<int>> rhierarchyOUTSUP = vector<vector<int>>(KB2size.at(propertyindex)); //Super-role hierachy
+
+
+	computeSuperHierarchy(chierarchy, chierarchyOUTSUP);
+	computeSuperHierarchy(rhierarchy, rhierarchyOUTSUP);
+
 	auto done = std::chrono::high_resolution_clock::now();
-	printClassGraph(chierarchy);
-	printRoleGraph(rhierarchy);
+
+	printHierarchy(chierarchyOUTSUB, 1, "LOG/exampleSUB.txt");
+
+	printHierarchy(rhierarchyOUTSUB, 3, "LOG/exampleSUB.txt");
+
+	printHierarchy(chierarchyOUTSUP, 1, "LOG/exampleSUP.txt");
+
+	printHierarchy(rhierarchyOUTSUP, 3, "LOG/exampleSUP.txt");
+
+
+
+	//printClassGraph(chierarchy);
+	//printRoleGraph(rhierarchy);
 	std::cout << "Milliseconds Execution: " << std::chrono::duration_cast<std::chrono::milliseconds>(done - started).count() << endl;
+
+
 
 
 	cout << "Expanding Tableau" << endl;
