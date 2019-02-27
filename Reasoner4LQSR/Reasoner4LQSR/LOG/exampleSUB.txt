@@ -1,15 +1,5 @@
 Class: V1{D}
 --->V1{CD}
-Class: V1{C}
---->V1{CD}
-Class: V1{AB}
---->V1{A}
---->V1{B}
-Class: V1{CD}
-Class: V1{B}
-Class: V1{A}
-Class: V1{D}
---->V1{CD}
 --->V1{AB}
 --->V1{A}
 --->V1{B}
