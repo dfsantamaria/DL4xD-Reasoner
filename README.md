@@ -5,9 +5,9 @@ A Reasoner for the Description Logic DL4xD based on the set-theoretic fragment 4
 Copyright 2015 Domenico Cantone, Marianna Nicolosi Asmundo, Daniele Francesco Santamaria
 
 This is the project page of DL4xD-Reasoner, a KE-tableau-based implementation of a reasoner for a decidable fragment of stratified set theory expressing the description logic DL4xD. Our solution solves the main TBox and ABox reasoning problems for DL4xD. In particular, it solves the consistency problem for DL4xD-knowledge bases represented in set-theoretic terms, and a generalization of the Conjunctive
-Query Answering problem in which conjunctive queries with variables of three sorts are admitted, called Higher-Order Conjunctive Query Answering. The reasoner also solves the classification problem for DL4xD-knowledge bases. The reasoner, implemented in C++, supports DL4xD-knowledge bases serialized in the o OWL/XML format for OWL 2 ontologies also admitting rules expressed in SWRL (Semantic Web Rule Language).
+Query Answering problem in which conjunctive queries with variables of three sorts are admitted, called Higher-Order Conjunctive Query Answering. The reasoner also solves the classification problem for DL4xD-knowledge bases. The reasoner, implemented in C++, supports DL4xD-knowledge bases serialized in the OWL/XML format for OWL 2 ontologies and admitting rules expressed in SWRL (Semantic Web Rule Language).
 
-Publications of article or papers refering to the DL4xD-Reasoner are listed below.
+Publications of articles or papers refering to the DL4xD-Reasoner are listed below.
 
 - Domenico Cantone, Marianna Nicolosi-Asmundo, and Daniele Francesco Santamaria. An optimized KE-tableau-based system for reasoning in the description logic DL4xD. In Benzmuller, C., Ricca, F., Parent, X., Roman, D. (Eds.). Rules and Reasoning Second International Joint Conference, RuleML+RR 2018, Luxembourg, Luxembourg, September 18–21, 2018. Lecture Notes in Computer Science 11092, Springer 2018, ISBN 978-3-319-99905-0.
 
