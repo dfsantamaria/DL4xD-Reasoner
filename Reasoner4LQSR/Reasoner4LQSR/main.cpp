@@ -157,10 +157,6 @@ int main()
 	cout << "--End reading ontology--" << endl;                       
 
 	/* Query Reading*/
-
-
-
-
 	
 	cout << "---" << endl;
 	cout << "Reading Query ..." << endl;
@@ -170,7 +166,7 @@ int main()
 
 	readQueryFromFile(queryname, stringSet);
 	vector<QueryManager*> results;
-	performQuerySet(results, stringSet, querySet, tableau2);
+	performQuerySet(results, stringSet, querySet, tableau2, 0); //0 credoulous 1 skeptical
 
 	cout << "Printing query results ..." << endl;
 	for (int i = 0; i < results.at(0)->getMatchSet().second.size(); i++)
@@ -191,14 +187,14 @@ int main()
 	cout << "Printing Y/N results ..." << endl;
 	for (int i = 0; i < results.at(0)->getAnswerSet().size(); i++)
 	{
-		cout << "Branch number: " << i << " Answer:" << results.at(0)->getAnswerSet().at(i) << endl;
+//		cout << "Branch number: " << i << " Answer:" << results.at(0)->getAnswerSet().at(i) << endl;
 	}
 		
-	cout << "Open Branch: " << tableau2.getOpenBranches().size() << endl;
-	cout << "Closed Branch: " << tableau2.getClosedBranches().size() << endl;
-	printOpenBranches(tableau2);
-	printClosedBranches(tableau2);
-	printVarSet();
+//	cout << "Open Branch: " << tableau2.getOpenBranches().size() << endl;
+//	cout << "Closed Branch: " << tableau2.getClosedBranches().size() << endl;
+//	printOpenBranches(tableau2);
+//	printClosedBranches(tableau2);
+//	printVarSet();
 	
 	
 	debugEnd();

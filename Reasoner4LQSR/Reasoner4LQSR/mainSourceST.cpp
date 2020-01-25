@@ -112,7 +112,7 @@ int main()
 
 	readQueryFromFile(queryname, stringSet);
 	vector<QueryManager*> results;
-	performQuerySet(results, stringSet, querySet, tableau);
+	performQuerySet(results, stringSet, querySet, tableau, 0); //0 credulous, 1 skeptical
 
 	cout << "Printing query results ..." << endl;
 	for (int i = 0; i < results.at(0)->getMatchSet().second.size(); i++)

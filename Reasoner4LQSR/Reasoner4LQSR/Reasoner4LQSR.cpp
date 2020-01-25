@@ -2607,7 +2607,7 @@ Literal QueryManager::applySubstitution(Literal* result, Literal* query, const v
 
 
 
-int QueryManager::executeQuery(Formula& f, Tableau& tableau, pair <vector<int>, vector<vector<vector<pair<Var*, Var*>>>>>& result, int YN, vector<int>& ynAnswer)
+int QueryManager::executeQuery(Formula& f, Tableau& tableau, pair <vector<int>, vector<vector<vector<pair<Var*, Var*>>>>>& result, int YN, vector<int>& ynAnswer, int skept)
 	{
 	   
 		vector<Literal*> qLits;		
@@ -2681,7 +2681,12 @@ int QueryManager::executeQuery(Formula& f, Tableau& tableau, pair <vector<int>, 
 				matchFound = (res?res:0);
 			}
 		} 
-		return matchFound;
+		if(skept==0)
+		  return matchFound;
+		else
+		{
+			return matchFound;
+		}
 	};
 
 /**
@@ -2742,7 +2747,7 @@ End QueryManager
 
 
 
-int performQuery(QueryManager*& queryManager, string& str, Formula** formula, Tableau& tableau, int yn)
+int performQuery(QueryManager*& queryManager, string& str, Formula** formula, Tableau& tableau, int yn, int skept)
 	{
 
 		queryManager = (new QueryManager(5, 50));
@@ -2755,13 +2760,13 @@ int performQuery(QueryManager*& queryManager, string& str, Formula** formula, Ta
 			ynanswer = vector<int>(0);
 		else
 			ynanswer = vector<int>(tableau.getOpenBranches().size());
-		int matchFound = queryManager->executeQuery(**formula, tableau, result, yn, ynanswer);
+		int matchFound = queryManager->executeQuery(**formula, tableau, result, yn, ynanswer, skept);
 		queryManager->setMatchSet(result);
 		queryManager->setAnswerSet(ynanswer);
 		return matchFound;
 	};
 
-void performQuerySet(vector<QueryManager*>& results,vector<string>& strings, vector<Formula>& formulae, Tableau& tableau)
+void performQuerySet(vector<QueryManager*>& results,vector<string>& strings, vector<Formula>& formulae, Tableau& tableau, int skept)
 {
 #ifdef debug 
 #ifdef debugquery
@@ -2772,7 +2777,7 @@ void performQuerySet(vector<QueryManager*>& results,vector<string>& strings, vec
 	{
 		Formula *f = NULL;  
 		QueryManager* manager=NULL; 
-		int result = performQuery(manager, s, &f, tableau, 1);       
+		int result = performQuery(manager, s, &f, tableau, 1, skept);       
 		formulae.push_back(*f);
 		results.push_back(manager); //Multiple query to be managed
 	}	
