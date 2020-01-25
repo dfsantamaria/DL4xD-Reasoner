@@ -1,4 +1,3 @@
-#include "stdafx.h" // only on windows
 #include <string>
 #include <sstream>
 #include "VariablesSet_Tester.h"
@@ -42,12 +41,12 @@ int testVariablesSet_getNumberOfExQuantifiedVarsOfSort(VariablesSet& varset, int
 
 int testVariablesSet_insertConstant(VariablesSet& varset, vector<Var>& vars)
 {
-	for (int i=0; i<vars.size(); i++)
+	for (size_t i=0; i<vars.size(); i++)
 	{
-		int n_elements = varset.getNumberOfConstantsOfSort(vars.at(i).getSort());
+		int n_elements = (int) varset.getNumberOfConstantsOfSort(vars.at(i).getSort());
 		int position=varset.insertConstant(vars.at(i), vars.at(i).getSort());
 		int result = 0;
-		if (varset.getNumberOfConstantsOfSort(vars.at(i).getSort()) != n_elements+1) 
+		if (varset.getNumberOfConstantsOfSort(vars.at(i).getSort()) != ++n_elements ) 
 			result++; 
 		if (position != n_elements)
 			result++;
@@ -59,12 +58,12 @@ int testVariablesSet_insertConstant(VariablesSet& varset, vector<Var>& vars)
 
 int testVariablesSet_insertUniQuantifiedVariable(VariablesSet& varset, vector<Var>& vars)
 {
-	for (int i = 0; i < vars.size(); i++)
+	for (size_t i = 0; i < vars.size(); i++)
 	{
-		int n_elements = varset.getNumberOfUniQuantifiedVarsOfSort(vars.at(i).getSort());
+		int n_elements = (int) varset.getNumberOfUniQuantifiedVarsOfSort(vars.at(i).getSort());
 		int position = varset.insertUniQuantifiedVar(vars.at(i), vars.at(i).getSort());
 		int result = 0;
-		if (varset.getNumberOfUniQuantifiedVarsOfSort(vars.at(i).getSort()) != n_elements + 1)
+		if (varset.getNumberOfUniQuantifiedVarsOfSort(vars.at(i).getSort()) != ++n_elements)
 			result++;
 		if (position != n_elements)
 			result++;
@@ -76,12 +75,12 @@ int testVariablesSet_insertUniQuantifiedVariable(VariablesSet& varset, vector<Va
 
 int testVariablesSet_insertExQuantifiedVariable(VariablesSet& varset, vector<Var>& vars)
 {
-	for (int i = 0; i < vars.size(); i++)
+	for (size_t i = 0; i < vars.size(); i++)
 	{
-		int n_elements = varset.getNumberOfExQuantifiedVarsOfSort(vars.at(i).getSort());
+		int n_elements = (int) varset.getNumberOfExQuantifiedVarsOfSort(vars.at(i).getSort());
 		int position = varset.insertExQuantifiedVar(vars.at(i), vars.at(i).getSort());
 		int result = 0;
-		if (varset.getNumberOfExQuantifiedVarsOfSort(vars.at(i).getSort()) != n_elements + 1)
+		if (varset.getNumberOfExQuantifiedVarsOfSort(vars.at(i).getSort()) != (++n_elements) )
 			result++;
 		if (position != n_elements)
 			result++;

@@ -60,33 +60,37 @@
     <ClInclude Include="Literal_Tester.h">
       <Filter>File di intestazione\Test</Filter>
     </ClInclude>
+    <ClInclude Include="Test\Literal_Tester.h">
+      <Filter>File di origine\Test</Filter>
+    </ClInclude>
+    <ClInclude Include="Test\Operators_Tester.h">
+      <Filter>File di origine\Test</Filter>
+    </ClInclude>
+    <ClInclude Include="Test\Var_Tester.h">
+      <Filter>File di origine\Test</Filter>
+    </ClInclude>
+    <ClInclude Include="Test\VariablesSet_Tester.h">
+      <Filter>File di origine\Test</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Structure4LQSR.cpp">
       <Filter>File di origine\Structure</Filter>
     </ClCompile>
-    <ClCompile Include="Var_Tester.cpp">
+    <ClCompile Include="Test\Literal_Tester.cpp">
       <Filter>File di origine\Test</Filter>
     </ClCompile>
-    <ClCompile Include="VariablesSet_Tester.cpp">
+    <ClCompile Include="Test\mainTester.cpp">
       <Filter>File di origine\Test</Filter>
     </ClCompile>
-    <ClCompile Include="Operators_Tester.cpp">
+    <ClCompile Include="Test\Operators_Tester.cpp">
       <Filter>File di origine\Test</Filter>
     </ClCompile>
-    <ClCompile Include="stdafx.cpp">
-      <Filter>File di origine\Enviroment</Filter>
-    </ClCompile>
-    <ClCompile Include="mainTester.cpp">
+    <ClCompile Include="Test\Var_Tester.cpp">
       <Filter>File di origine\Test</Filter>
     </ClCompile>
-    <ClCompile Include="Literal_Tester.cpp">
+    <ClCompile Include="Test\VariablesSet_Tester.cpp">
       <Filter>File di origine\Test</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="Reasoner4LQSR.rc">
-      <Filter>File di risorse</Filter>
-    </ResourceCompile>
   </ItemGroup>
 </Project>

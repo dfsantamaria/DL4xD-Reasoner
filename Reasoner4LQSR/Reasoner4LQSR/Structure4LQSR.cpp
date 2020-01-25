@@ -1,5 +1,3 @@
-
-#include "stdafx.h" // only on windows
 #include <fstream>
 #include <string>
 #include <iostream>
@@ -267,7 +265,7 @@ int  VariablesSet::insertConstant(const Var& variable, const int vectorSort)
 	if (variable.getVarType() != 0 || variable.getSort() != vectorSort)
 		return -1;
 	getUnsafeAccessToConstantsOfSort(vectorSort).push_back(variable);
-	int pos = getUnsafeAccessToConstantsOfSort(vectorSort).size() - 1;
+	int pos = ((int) getUnsafeAccessToConstantsOfSort(vectorSort).size()) - 1;
 	getUnsafeAccessToConstantsOfSort(vectorSort).back().setIndex(pos);
 	return pos;	
 };
@@ -284,7 +282,7 @@ int  VariablesSet::insertUniQuantifiedVar(const Var& variable, const int vectorS
 	if (variable.getVarType() != 1 || variable.getSort() != vectorSort)
 		return -1;
 	getUnsafeAccessToUniQuantifiedVarsOfSort(vectorSort).push_back(variable);
-	int pos = getUnsafeAccessToUniQuantifiedVarsOfSort(vectorSort).size() - 1;
+	int pos = ((int) getUnsafeAccessToUniQuantifiedVarsOfSort(vectorSort).size()) - 1;
 	getUnsafeAccessToUniQuantifiedVarsOfSort(vectorSort).back().setIndex(pos);
 	return pos;
 };
@@ -301,7 +299,7 @@ int  VariablesSet::insertExQuantifiedVar(const Var& variable, const int vectorSo
 	if (variable.getVarType() != 2 || variable.getSort() != vectorSort)
 		return -1;
 	getUnsafeAccessToExQuantifiedVarsOfSort(vectorSort).push_back(variable);
-	int pos = getUnsafeAccessToExQuantifiedVarsOfSort(vectorSort).size() - 1;
+	int pos = ((int) getUnsafeAccessToExQuantifiedVarsOfSort(vectorSort).size()) - 1;
 	getUnsafeAccessToExQuantifiedVarsOfSort(vectorSort).back().setIndex(pos);
 	return pos;
 };
@@ -315,7 +313,7 @@ int  VariablesSet::insertExQuantifiedVar(const Var& variable, const int vectorSo
 int  VariablesSet::insertConstant(const string& name, const int vectorSort)
 {	
 	getUnsafeAccessToConstantsOfSort(vectorSort).push_back(Var(name, vectorSort, 0, 0));
-	int pos = getUnsafeAccessToConstantsOfSort(vectorSort).size() - 1;
+	int pos = ((int)getUnsafeAccessToConstantsOfSort(vectorSort).size()) - 1;
 	getUnsafeAccessToConstantsOfSort(vectorSort).back().setIndex(pos);
 	return pos;
 };
@@ -329,7 +327,7 @@ int  VariablesSet::insertConstant(const string& name, const int vectorSort)
 int  VariablesSet::insertUniQuantifiedVar(const string& name, const int vectorSort)
 {
 	getUnsafeAccessToUniQuantifiedVarsOfSort(vectorSort).push_back(Var(name, vectorSort, 0, 0));
-	int pos = getUnsafeAccessToUniQuantifiedVarsOfSort(vectorSort).size() - 1;
+	int pos = ((int) getUnsafeAccessToUniQuantifiedVarsOfSort(vectorSort).size()) - 1;
 	getUnsafeAccessToUniQuantifiedVarsOfSort(vectorSort).back().setIndex(pos);
 	return pos;
 };
@@ -343,7 +341,7 @@ int  VariablesSet::insertUniQuantifiedVar(const string& name, const int vectorSo
 int  VariablesSet::insertExQuantifiedVar(const string& name, const int vectorSort)
 {
 	getUnsafeAccessToExQuantifiedVarsOfSort(vectorSort).push_back(Var(name, vectorSort, 0, 0));
-	int pos = getUnsafeAccessToExQuantifiedVarsOfSort(vectorSort).size() - 1;
+	int pos = ((int)getUnsafeAccessToExQuantifiedVarsOfSort(vectorSort).size()) - 1;
 	getUnsafeAccessToExQuantifiedVarsOfSort(vectorSort).back().setIndex(pos);
 	return pos;
 };
@@ -424,6 +422,15 @@ int Operators::getLogConnectValue(string connective) const
 };
 
 /// <summary>
+/// This function returns always 0. It used to check wheter this FormulaObject is a Literal
+/// </summary>
+int Operators::isALiteral()
+{
+	return 0;
+};
+
+
+/// <summary>
 /// This function returns the integer representing the given set operator. Such number corresponds to the position of the operator in the vector.  Returns -1 if the operator does not exist.
 /// </summary>
 /// <param name="setOperator"> The set operator</param>
@@ -480,6 +487,13 @@ string Operators::getQuantElement(int index_quant) const
 	return "";
 };
 
+
+
+//This class is used to represented either a Literal or an Operator in a Formula. 
+//A formula is just a vector of FormulaObject that are represent in the Polish Notation.
+FormulaObject::~FormulaObject() {};
+
+
 /// <summary>
 /// This class represents a 4LQSR literal
 /// </summary>
@@ -489,6 +503,13 @@ Literal::Literal()
 	components = vector<Var*>(0);
 };
 
+/// <summary>
+/// This function returns always 1. It used to check wheter this FormulaObject is a Literal
+/// </summary>
+int Literal::isALiteral()
+{
+	return 0;
+};
 
 /// <summary>
 /// This class represents a 4LQSR literal

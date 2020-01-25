@@ -1,4 +1,3 @@
-#include "stdafx.h" // only on windows
 #include <string>
 #include <sstream>
 #include "Literal_Tester.h"
@@ -53,7 +52,7 @@ int testLiteral_equals(Literal &literal, Literal& literal2, int check)
 int testLiteral_addElement(Literal literal, Var* var)
 {
 	literal.addElement(var);
-	if (literal.getElementAt(literal.getElements().size() - 1)->equal(var) == 0)
+	if (literal.getElementAt( ((int)literal.getElements().size()) - 1)->equal(var) == 0)
 		return 0;
 	return 1;
 

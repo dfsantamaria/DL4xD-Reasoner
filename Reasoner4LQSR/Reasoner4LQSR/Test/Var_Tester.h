@@ -1,7 +1,7 @@
 #pragma once
 #include <string>
 #include <vector>
-#include "Structure4LQSR.h"
+#include "..\Structure4LQSR.h"
 
 void testVar(std::vector<std::pair<std::string, int>>& results);
 int testVar_getName(Var& variable, std::string name);

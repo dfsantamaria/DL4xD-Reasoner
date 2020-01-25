@@ -1,5 +1,5 @@
 #pragma once
-#include "stdafx.h" // only on windows
+
 #include "Var_Tester.h"
 #include "VariablesSet_Tester.h"
 #include "Operators_Tester.h"
@@ -27,9 +27,6 @@ int main()
 	testVar(output);
 	testVariablesSet(output);
 	testOperators(output);
-	testLiteral(output); 
-
-
+	testLiteral(output);
 	printOutput(output);
-	
 }

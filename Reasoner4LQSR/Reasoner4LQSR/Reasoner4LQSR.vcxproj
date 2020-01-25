@@ -22,7 +22,7 @@
     <ProjectGuid>{970A2EAE-BCAC-4974-A4F6-B6D715078533}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>Reasoner4LQSR</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -41,7 +41,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
@@ -96,11 +96,12 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <PrecompiledHeader>Use</PrecompiledHeader>
-      <WarningLevel>EnableAllWarnings</WarningLevel>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -147,6 +148,10 @@
   <ItemGroup>
     <ClInclude Include="Literal_Tester.h" />
     <ClInclude Include="Operators_Tester.h" />
+    <ClInclude Include="Test\Literal_Tester.h" />
+    <ClInclude Include="Test\Operators_Tester.h" />
+    <ClInclude Include="Test\VariablesSet_Tester.h" />
+    <ClInclude Include="Test\Var_Tester.h" />
     <ClInclude Include="VariablesSet_Tester.h" />
     <ClInclude Include="Var_Tester.h" />
     <ClInclude Include="Structure4LQSR.h" />
@@ -155,21 +160,12 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="mainTester.cpp" />
-    <ClCompile Include="Operators_Tester.cpp" />
     <ClCompile Include="Structure4LQSR.cpp" />
-    <ClCompile Include="stdafx.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="Literal_Tester.cpp" />
-    <ClCompile Include="VariablesSet_Tester.cpp" />
-    <ClCompile Include="Var_Tester.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="Reasoner4LQSR.rc" />
+    <ClCompile Include="Test\Literal_Tester.cpp" />
+    <ClCompile Include="Test\mainTester.cpp" />
+    <ClCompile Include="Test\Operators_Tester.cpp" />
+    <ClCompile Include="Test\VariablesSet_Tester.cpp" />
+    <ClCompile Include="Test\Var_Tester.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

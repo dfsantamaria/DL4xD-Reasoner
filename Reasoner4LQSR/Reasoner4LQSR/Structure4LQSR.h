@@ -74,9 +74,18 @@ public:
 
 };
 
+//This class is used to represented either a Literal or an Operator in a Formula. A formula is just a vector of 
+//FormulaObject that are represent in the Polish Notation.
+class FormulaObject
+{
+ public:
+   virtual ~FormulaObject()=0;	
+   virtual int isALiteral()=0;   
+};
+
 
 //This Class contains  the operators used by 4LQSR formulae
-class Operators
+class Operators : public FormulaObject
 {
 private:
 	vector<string> logConnect = { "$OR","$AD","$RO","$DA", "$NG", "$IF", "$FI", "$II" }; //logic connectors {OR,AND,NOR,NAND,NOT,RIMPLIES,LIMPLIES,DIMPLIES}
@@ -93,10 +102,11 @@ public:
 	string getLogConnectElement(int index_log)const;
 	string getSetOpElement(int index_op) const;
 	string getQuantElement(int index_quant) const;
+	int isALiteral();
 };
 
 //This class manages a 4LQSR literal
-class Literal
+class Literal : public FormulaObject
 {
 private:
 	int literalOp;//-1 if unsetted, otherwise a value corresponding to an index of the setOp vector	
@@ -117,4 +127,5 @@ public:
 	void addElement(Var* element);
 	void setElementAt(const int index, Var* element);	
 	int equals(const Literal &literal) const;
+	int isALiteral();
 };

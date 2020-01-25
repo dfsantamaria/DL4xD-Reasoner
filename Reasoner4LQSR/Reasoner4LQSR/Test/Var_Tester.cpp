@@ -1,4 +1,3 @@
-#include "stdafx.h" // only on windows
 #include <string>
 #include <sstream>
 #include "Var_Tester.h"
