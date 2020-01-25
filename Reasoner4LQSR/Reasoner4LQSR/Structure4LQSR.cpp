@@ -19,7 +19,7 @@ using namespace std;
 /// <param name="_sort"> Sort of the variable</param>
 /// <param name="_qvar">Existential Quantified (value 2), Universally Quantified (value 1), or constant (value 0) </param>
 /// <param name="_index">Position in the vector</param>
-Var::Var(const string _name,const int _sort, const int _qvar,const int _index)
+Var::Var(const string _name, const int _sort, const int _qvar, const int _index)
 {
 	setName(_name);
 	setSort(_sort);
@@ -134,13 +134,13 @@ string Var::toString() const
   Start Variable Set
 */
 /// <summary>
-/// This Class is delegated to masks the datastructures of the variables used by a knowledge base
+/// This Class is delegated to mask the datastructures of the variables used by a knowledge base
 /// </summary>
 
 VariablesSet::VariablesSet() {};
 
 /// <summary>
-/// This Class is delegated to masks the datastructures of the variables used by a knowledge base. This constructor builds maxNsorts+1 vectors of lenght maxNConstants
+/// This Class is delegated to mask the datastructures of the variables used by a knowledge base. This constructor builds maxNsorts+1 vectors of lenght maxNConstants
 /// for the constants, maxNsorts+1 vectors of lenght maxNUniQuantified for universal quantified variables, and maxNsorts+1 vectors of lenght maxNExistQuantified for existential quantified
 /// </summary>
 /// <param name="_maxNsorts"> Maximum sorting </param>
@@ -166,7 +166,7 @@ VariablesSet::VariablesSet(const size_t maxNsorts, const size_t maxNConstants, c
 	}
 };
 /// <summary>
-/// This Class is delegated to masks the datastructures of the variables used by a knowledge base. This constructor builds maxNsorts vectors whose sizes
+/// This Class is delegated to mask the datastructures of the variables used by a knowledge base. This constructor builds maxNsorts vectors whose sizes
 /// are provided by the vector kbSizeVector.
 /// </summary>
 /// <param name="_maxNsorts"> Numerber of sorts </param>
