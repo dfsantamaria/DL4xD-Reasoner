@@ -46,7 +46,7 @@ int testVariablesSet_insertConstant(VariablesSet& varset, vector<Var>& vars)
 		int n_elements = (int) varset.getNumberOfConstantsOfSort(vars.at(i).getSort());
 		int position=varset.insertConstant(vars.at(i), vars.at(i).getSort());
 		int result = 0;
-		if ((int)varset.getNumberOfConstantsOfSort(vars.at(i).getSort()) != ++n_elements ) 
+		if (varset.getNumberOfConstantsOfSort(vars.at(i).getSort()) != n_elements + 1) 
 			result++; 
 		if (position != n_elements)
 			result++;
@@ -63,7 +63,7 @@ int testVariablesSet_insertUniQuantifiedVariable(VariablesSet& varset, vector<Va
 		int n_elements = (int) varset.getNumberOfUniQuantifiedVarsOfSort(vars.at(i).getSort());
 		int position = varset.insertUniQuantifiedVar(vars.at(i), vars.at(i).getSort());
 		int result = 0;
-		if ((int)varset.getNumberOfUniQuantifiedVarsOfSort(vars.at(i).getSort()) != ++n_elements)
+		if ((int)varset.getNumberOfUniQuantifiedVarsOfSort(vars.at(i).getSort()) != n_elements + 1)
 			result++;
 		if (position != n_elements)
 			result++;
@@ -80,7 +80,7 @@ int testVariablesSet_insertExQuantifiedVariable(VariablesSet& varset, vector<Var
 		int n_elements = (int) varset.getNumberOfExQuantifiedVarsOfSort(vars.at(i).getSort());
 		int position = varset.insertExQuantifiedVar(vars.at(i), vars.at(i).getSort());
 		int result = 0;
-		if ( (int)varset.getNumberOfExQuantifiedVarsOfSort(vars.at(i).getSort()) != (++n_elements) )
+		if ( (int)varset.getNumberOfExQuantifiedVarsOfSort(vars.at(i).getSort()) != (n_elements + 1) )
 			result++;
 		if (position != n_elements)
 			result++;
@@ -146,7 +146,7 @@ void testVariablesSet(vector<pair<string, int>>& results)
 	                                	vector<Var>{Var("one1", 0, qType, 0), Var("one2", 1, qType, 0), Var("one22", 2, qType, 0), Var("one3", 3, qType, 0)})));
 
 	results.push_back(std::make_pair("testVariablesSet_insertConstant", testVariablesSet_insertConstant(VariablesSet(3,	
-		vector<size_t>{1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0}),
+		vector<size_t>{1, 1, 0, 1,  0, 0, 0, 0,  0, 0, 0, 0}),
 		vector<pair<string,int>>{std::make_pair("one1", 0), std::make_pair("one2", 1), std::make_pair("one22", 2), std::make_pair("one3",3)})));
 
 	// Testing Univ. quantified variables insertion

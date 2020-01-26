@@ -176,7 +176,7 @@ VariablesSet::VariablesSet(const size_t maxNsorts, const vector<size_t>& kbSizeV
   setUniQuantified.reserve(maxNsorts); //initialize vectors of Univ. quantified variables
   setExistQuantified.reserve(maxNsorts); //initialize vectors of Exist. quantified variables	
 
-  for (size_t i = 0; i <= maxNsorts; i++) // for each vector we allocate space for all the sorts
+  for (size_t i = 0; i <= maxNsorts; i++) // for each vector we allocate space for all the sorts	  
   {
 	  setConstants.push_back(vector<Var>());
 	  setUniQuantified.push_back(vector<Var>());
@@ -184,7 +184,7 @@ VariablesSet::VariablesSet(const size_t maxNsorts, const vector<size_t>& kbSizeV
 
 	  setConstants.at(i).reserve(kbSizeVector.at(i));
 	  setUniQuantified.at(i).reserve(kbSizeVector.at(i+maxNsorts+1));
-	  setExistQuantified.at(i).reserve(i + 2*maxNsorts + 2);	 
+	  setExistQuantified.at(i).reserve(kbSizeVector.at(i + 2*maxNsorts + 2));
   }
 
 };
@@ -199,7 +199,7 @@ size_t VariablesSet::getSorting() { return setConstants.size()-1; };
 /// <param name="vectorSort"> The sorting of the vector</param>
 size_t VariablesSet::getNumberOfConstantsOfSort(const size_t vectorSort)
 {
-	if (vectorSort <= (int)setConstants.size())
+	if (vectorSort < setConstants.size()) //<=
 		return setConstants.at(vectorSort).size(); 
 	return 0;
 };
@@ -210,8 +210,8 @@ size_t VariablesSet::getNumberOfConstantsOfSort(const size_t vectorSort)
 /// <param name="vectorSort"> The sorting of the vector</param>
 size_t VariablesSet::getNumberOfUniQuantifiedVarsOfSort(size_t vectorSort)
 {
-	if (vectorSort <= (int) setUniQuantified.size())
-		return setUniQuantified.at((size_t) vectorSort).size();
+	if (vectorSort <  setUniQuantified.size()) //<=
+		return setUniQuantified.at(vectorSort).size();
 	return 0;
 };
 
@@ -221,7 +221,7 @@ size_t VariablesSet::getNumberOfUniQuantifiedVarsOfSort(size_t vectorSort)
 /// <param name="vectorSort"> The sorting of the vector</param>
 size_t VariablesSet::getNumberOfExQuantifiedVarsOfSort(size_t vectorSort)
 {
-	if (vectorSort <= setExistQuantified.size())
+	if (vectorSort < setExistQuantified.size()) //<=
 		return setExistQuantified.at(vectorSort).size();
 	return 0;
 };
