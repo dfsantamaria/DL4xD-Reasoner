@@ -135,8 +135,10 @@ void testVariablesSet(vector<pair<string, int>>& results)
 		testVariablesSet_getNumberOfUniQuantifiedVarsOfSort(VariablesSet(3, vector<size_t>{0, 0, 0, 0,  1, 1, 0, 1,  1, 0, 0, 0}), 0, 0)));
 
 	//testing ex. quantified vars counter
+	VariablesSet s =VariablesSet(3, vector<size_t>{0, 0, 0, 0,  0, 0, 0, 0,  1, 0, 1, 1});
+	s.insertExQuantifiedVar(Var("one1", 3, 2, 0), 3);
 	results.push_back(std::make_pair("testVariablesSet_getNumberOfExQuantifiedOfSort(3, vector<size_t>{1, 1, 0, 1, 1, 1, 0, 1, 1, 0, 0, 0}, 0, 0)",
-		testVariablesSet_getNumberOfExQuantifiedVarsOfSort(VariablesSet(3, vector<size_t>{0, 0, 0, 0,  0, 0, 0, 0,  1, 0, 1, 1}), 0, 0)));
+		testVariablesSet_getNumberOfExQuantifiedVarsOfSort(s, 3, 1)));
 
 
 	//Testing constant insertion	
