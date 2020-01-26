@@ -168,7 +168,8 @@ VariablesSet::VariablesSet(const size_t maxNsorts, const size_t maxNConstants, c
 /// are provided by the vector kbSizeVector.
 /// </summary>
 /// <param name="_maxNsorts"> Numerber of sorts </param>
-/// <param name="_kbSizeVector"> vector of sizes of each vector</param>
+/// <param name="_kbSizeVector"> vector of sizes of each vector. Example for 3 sorts we have {C_0, C_1, C_2, C_3, F_0, F_1, F_2, F_3, E_0, E_1, E_2, E_3},
+/// with C_i the number of constants of sort i, F_j the number of univ. quant. variables of sort j, E_k the number of exist. quant. variables of sort k </param>
 
 VariablesSet::VariablesSet(const size_t maxNsorts, const vector<size_t>& kbSizeVector)
 {
