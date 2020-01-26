@@ -35,7 +35,7 @@ int testLiteral_setLiteralOp(Literal &literal, int checkLiteralOp)
 	return testLiteral_getLiteralOp(literal, checkLiteralOp);
 }
 
-int testLiteral_getElementAt(Literal &literal, int position, Var* check)
+int testLiteral_getElementAt(Literal &literal, size_t position, Var* check)
 {
 	if ( (literal.getElementAt(position))->equal(check) == 0)
 		return 0;
@@ -52,13 +52,14 @@ int testLiteral_equals(Literal &literal, Literal& literal2, int check)
 int testLiteral_addElement(Literal literal, Var* var)
 {
 	literal.addElement(var);
-	if (literal.getElementAt( ((int)literal.getElements().size()) - 1)->equal(var) == 0)
+	if((literal.getElements().size())>0)
+	 if (literal.getElementAt((literal.getElements().size()) - 1)->equal(var) == 0)
 		return 0;
 	return 1;
 
 }
 
-int testLiteral_setElementAt(Literal literal, Var* var, int position)
+int testLiteral_setElementAt(Literal literal, Var* var, size_t position)
 {
 	literal.setElementAt(position, var);
 	if (literal.getElementAt(position)->equal(var) == 0)

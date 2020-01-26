@@ -1,5 +1,3 @@
-#pragma once
-
 #include "Var_Tester.h"
 #include "VariablesSet_Tester.h"
 #include "Operators_Tester.h"

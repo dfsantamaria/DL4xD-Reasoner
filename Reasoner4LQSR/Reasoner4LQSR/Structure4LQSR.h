@@ -18,23 +18,24 @@ using namespace std;
 class Var
 {
 private:
-	int sort; //sort of the variable
-	int qvar; //establish wheter the variable is quantified (value 1-2) or not (value 0)
+	size_t sort; //sort of the variable
+	size_t qvar; //establish wheter the variable is quantified (value 1-2) or not (value 0)
 	int index; //index of the variable in the corresponding vector
-	string name; //name of the varaible
+	int stuffing; //stuffing data
+	string name; //name of the varaible		
 public:
-	Var(const string _name, const int _sort, const int _qvar, const int _index);
+	Var(const string _name, const size_t _sort, const size_t _qvar, const int _index);
 	~Var();	
-	int getSort() const;
+	size_t getSort() const;
 	string getName() const;
-	int getVarType() const;
+	size_t getVarType() const;
 	int getIndex() const;
 	void setIndex(const int _index);
 	void setName(const string _name);
-	void setSort(const int _type);
-	void setVarType(const int _var);
+	void setSort(const size_t _type);
+	void setVarType(const size_t _var);
 	int equal(const Var* match) const ;
-	int equal(const string _name, const int _type, const int _varType) const;
+	int equal(const string _name, const size_t _type, const size_t _varType) const;
 	string toString() const;
 };
 
@@ -46,31 +47,31 @@ private:
 	vector< vector <Var> > setConstants; //vector of constants
 	vector< vector <Var> > setUniQuantified; //vector of quantified variables
 	vector< vector <Var> > setExistQuantified; //vector of existential quantified variables 
-	vector<Var>& getUnsafeAccessToConstantsOfSort(const int vectorSort);
-	vector<Var>& getUnsafeAccessToUniQuantifiedVarsOfSort(const int vectorSort);
-	vector<Var>& getUnsafeAccessToExQuantifiedVarsOfSort(const int vectorSort);
+	vector<Var>& getUnsafeAccessToConstantsOfSort(const size_t vectorSort);
+	vector<Var>& getUnsafeAccessToUniQuantifiedVarsOfSort(const size_t vectorSort);
+	vector<Var>& getUnsafeAccessToExQuantifiedVarsOfSort(const size_t vectorSort);
 public:
 	VariablesSet();
 	
 	VariablesSet(const size_t maxNsorts, const size_t maxNConstants, const size_t maxNUniQuantified, const size_t maxNExistQuantified);
 	VariablesSet(const size_t maxNSorts, const vector<size_t>& kbSizeVector);
 	size_t getSorting();
-	size_t getNumberOfConstantsOfSort(const int vectorSort);
-	size_t getNumberOfUniQuantifiedVarsOfSort(const int vectorSort);
-	size_t getNumberOfExQuantifiedVarsOfSort(const int vectorSort);
+	size_t getNumberOfConstantsOfSort(const size_t vectorSort);
+	size_t getNumberOfUniQuantifiedVarsOfSort(const size_t vectorSort);
+	size_t getNumberOfExQuantifiedVarsOfSort(const size_t vectorSort);
 	
-	const vector<Var>& getAccessToConstantsOfSort(const int vectorSort) const;
-	const vector<Var>& getAccessToUniQuantifiedVarsOfSort(const int vectorSort) const;
-	const vector<Var>& getAccessToExQuantifiedVarsOfSort(const int vectorSort) const;
+	const vector<Var>& getAccessToConstantsOfSort(const size_t vectorSort) const;
+	const vector<Var>& getAccessToUniQuantifiedVarsOfSort(const size_t vectorSort) const;
+	const vector<Var>& getAccessToExQuantifiedVarsOfSort(const size_t vectorSort) const;
 
-	int  insertConstant(const Var& variable, const int vectorSort);
-	int  insertConstant(const string& name, const int vectorSort);	
+	int  insertConstant(const Var& variable, const size_t vectorSort);
+	int  insertConstant(const string& name, const size_t vectorSort);
 
-	int  insertUniQuantifiedVar(const Var& variable, const int vectorSort);
-	int  insertUniQuantifiedVar(const string& name, const int vectorSort);
+	int  insertUniQuantifiedVar(const Var& variable, const size_t vectorSort);
+	int  insertUniQuantifiedVar(const string& name, const size_t vectorSort);
 
-	int  insertExQuantifiedVar(const Var& variable, const int vectorSort);
-	int  insertExQuantifiedVar(const string& name, const int vectorSort);
+	int  insertExQuantifiedVar(const Var& variable, const size_t vectorSort);
+	int  insertExQuantifiedVar(const string& name, const size_t vectorSort);
 
 };
 
@@ -99,9 +100,9 @@ public:
 	int getLogConnectValue(string connect) const;
 	int getSetOpValue(string setOperator) const;
 	int getQuantValue(string quantifier) const;
-	string getLogConnectElement(int index_log)const;
-	string getSetOpElement(int index_op) const;
-	string getQuantElement(int index_quant) const;
+	string getLogConnectElement(size_t index_log)const;
+	string getSetOpElement(size_t index_op) const;
+	string getQuantElement(size_t index_quant) const;
 	int isALiteral();
 };
 
@@ -110,6 +111,7 @@ class Literal : public FormulaObject
 {
 private:
 	int literalOp;//-1 if unsetted, otherwise a value corresponding to an index of the setOp vector	
+	int stuffing; //stuffing data
 	vector<Var*> components;
 	/*
 	Right Operand is the first element of the vector.
@@ -118,14 +120,14 @@ private:
 public:
 	Literal();
 	Literal(const int literalOp_, const vector<Var*>& components_);
-	Literal(const int literalOp_, const int componentsSize);
+	Literal(const int literalOp_, const size_t componentsSize);
 	~Literal();
 	const vector<Var*>& getElements() const;
 	int getLiteralOp() const;
 	void setLiteralOp(const int literalOp_);
-	const Var* getElementAt(const int index) const;		
+	const Var* getElementAt(const size_t index) const;		
 	void addElement(Var* element);
-	void setElementAt(const int index, Var* element);	
+	void setElementAt(const size_t index, Var* element);	
 	int equals(const Literal &literal) const;
 	int isALiteral();
 };

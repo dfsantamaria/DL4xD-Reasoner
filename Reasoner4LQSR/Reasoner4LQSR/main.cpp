@@ -1,4 +1,3 @@
-#include "stdafx.h" // only on windows
 #include "Structure4LQSR.h"
 
 using namespace std;

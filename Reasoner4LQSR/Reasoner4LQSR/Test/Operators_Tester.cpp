@@ -4,21 +4,21 @@
 
 
 
-int test_getLogConnectSize(Operators& operators, int aspected)
+int test_getLogConnectSize(Operators& operators, size_t aspected)
 {
 	if (operators.getLogConnectSize() == aspected)
 		return 0;
 	return 1;
 }
 
-int test_getSetOpSize(Operators& operators, int aspected)
+int test_getSetOpSize(Operators& operators, size_t aspected)
 {
 	if (operators.getSetOpSize() == aspected)
 		return 0;
 	return 1;
 }
 
-int test_getQuantSize(Operators& operators, int aspected)
+int test_getQuantSize(Operators& operators, size_t aspected)
 {
 	if (operators.getQuantSize() == aspected)
 		return 0;
@@ -27,14 +27,14 @@ int test_getQuantSize(Operators& operators, int aspected)
 
 int test_getLogConnectValue(Operators& operators, string connect, int aspected)
 {
-	if (operators.getLogConnectValue(connect) == aspected)
+	if (operators.getLogConnectValue(connect) ==  aspected)
 		return 0;
 	return 1;
 }
 
 int test_getSetOpValue(Operators& operators, string connect, int aspected)
 {
-	if (operators.getSetOpValue(connect) == aspected)
+	if (operators.getSetOpValue(connect) ==  aspected)
 		return 0;
 	return 1;
 }
@@ -47,21 +47,21 @@ int test_getQuantValue(Operators& operators, string connect, int aspected)
 }
 
 
-int test_getLogConnectElement(Operators& operators, int position, string aspected)
+int test_getLogConnectElement(Operators& operators, size_t position, string aspected)
 {
 	if (operators.getLogConnectElement(position).compare(aspected) == 0)
 		return 0;
 	return 1;
 }
 
-int test_getSetOpElement(Operators& operators, int position, string aspected)
+int test_getSetOpElement(Operators& operators, size_t position, string aspected)
 {
 	if (operators.getSetOpElement(position).compare(aspected) == 0)
 		return 0;
 	return 1;
 }
 
-int test_getQuantElement(Operators& operators, int position, string aspected)
+int test_getQuantElement(Operators& operators, size_t position, string aspected)
 {
 	if (operators.getQuantElement(position).compare(aspected) == 0)
 		return 0;

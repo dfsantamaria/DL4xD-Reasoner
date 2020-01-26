@@ -17,7 +17,7 @@ using namespace std;
 /// <param name="_sort"> Sort of the variable</param>
 /// <param name="_qvar">Existential Quantified (value 2), Universally Quantified (value 1), or constant (value 0) </param>
 /// <param name="_index">Position in the vector</param>
-Var::Var(const string _name, const int _sort, const int _qvar, const int _index)
+Var::Var(const string _name, const size_t _sort, const size_t _qvar, const int _index)
 {
 	setName(_name);
 	setSort(_sort);
@@ -33,7 +33,7 @@ Var::~Var(){};
 /// Return the sort of the variable
 /// </summary>
 /// 
- int  Var::getSort() const { return sort; };
+size_t  Var::getSort() const { return sort; };
 /// <summary>
 /// Reeturn the name of the variable
 /// </summary>
@@ -41,7 +41,7 @@ string Var::getName() const { return name; };
 /// <summary>
 /// Return wheter or not the variable is quantified (1 for quantification, 0 for constant)
 /// </summary>
-int Var::getVarType() const { return qvar; };
+size_t Var::getVarType() const { return qvar; };
 /// <summary>
 /// Return the index of the variable in the corresponding vector
 /// </summary>
@@ -66,7 +66,7 @@ void Var::setName(const string _name)
 /// Set the sort of the variable
 /// </summary>
 /// <param name="_sort">Sort of the variable</param>
-void Var::setSort(const int _sort)
+void Var::setSort(const size_t _sort)
 {
 	sort = _sort;
 };
@@ -75,7 +75,7 @@ void Var::setSort(const int _sort)
 /// Set the quantification of the variable
 /// </summary>
 /// <param name="_qvar">0 for constant, 1 for U-quantified variable, 2 for E-quantified variable</param>
-void Var::setVarType(const int _qvar)
+void Var::setVarType(const size_t _qvar)
 {
 	qvar = _qvar;
 };
@@ -102,7 +102,7 @@ int Var::equal (const Var* match) const
 /// <param name="_sort"></param>
 /// <param name="_varType"></param>
 /// <returns></returns>
-int Var::equal(const string _name, const int _sort, const int _varType) const
+int Var::equal(const string _name, const size_t _sort, const size_t _varType) const
 {
 	if ( (getSort() == _sort)  && (getVarType() == _varType) && (getName().compare(_name)) == 0 )
 		return 0;
@@ -151,7 +151,7 @@ VariablesSet::VariablesSet(const size_t maxNsorts, const size_t maxNConstants, c
 	setUniQuantified.reserve(maxNsorts); //initialize vectors of Univ. quantified variables
 	setExistQuantified.reserve(maxNsorts); //initialize vectors of Exist. quantified variables	
 	
-	for (int i = 0; i <= maxNsorts; i++) // for each vector we allocate space for all the sorts
+	for (size_t i = 0; i <= maxNsorts; i++) // for each vector we allocate space for all the sorts
 	{
 		setConstants.push_back(vector<Var>());
 		setUniQuantified.push_back(vector<Var>());
@@ -176,7 +176,7 @@ VariablesSet::VariablesSet(const size_t maxNsorts, const vector<size_t>& kbSizeV
   setUniQuantified.reserve(maxNsorts); //initialize vectors of Univ. quantified variables
   setExistQuantified.reserve(maxNsorts); //initialize vectors of Exist. quantified variables	
 
-  for (int i = 0; i <= maxNsorts; i++) // for each vector we allocate space for all the sorts
+  for (size_t i = 0; i <= maxNsorts; i++) // for each vector we allocate space for all the sorts
   {
 	  setConstants.push_back(vector<Var>());
 	  setUniQuantified.push_back(vector<Var>());
@@ -197,9 +197,9 @@ size_t VariablesSet::getSorting() { return setConstants.size()-1; };
 /// This function returns the number of constants of the sort specified by the parameter 
 /// </summary>
 /// <param name="vectorSort"> The sorting of the vector</param>
-size_t VariablesSet::getNumberOfConstantsOfSort(const int vectorSort)
+size_t VariablesSet::getNumberOfConstantsOfSort(const size_t vectorSort)
 {
-	if (vectorSort <= setConstants.size())
+	if (vectorSort <= (int)setConstants.size())
 		return setConstants.at(vectorSort).size(); 
 	return 0;
 };
@@ -208,10 +208,10 @@ size_t VariablesSet::getNumberOfConstantsOfSort(const int vectorSort)
 /// This function returns the number of universally quantified variables of the sort specified by the parameter 
 /// </summary>
 /// <param name="vectorSort"> The sorting of the vector</param>
-size_t VariablesSet::getNumberOfUniQuantifiedVarsOfSort(int vectorSort)
+size_t VariablesSet::getNumberOfUniQuantifiedVarsOfSort(size_t vectorSort)
 {
-	if (vectorSort <= setUniQuantified.size())
-		return setUniQuantified.at(vectorSort).size();
+	if (vectorSort <= (int) setUniQuantified.size())
+		return setUniQuantified.at((size_t) vectorSort).size();
 	return 0;
 };
 
@@ -219,7 +219,7 @@ size_t VariablesSet::getNumberOfUniQuantifiedVarsOfSort(int vectorSort)
 /// This function returns the number of existentially quantified variables of the sort specified by the parameter 
 /// </summary>
 /// <param name="vectorSort"> The sorting of the vector</param>
-size_t VariablesSet::getNumberOfExQuantifiedVarsOfSort(int vectorSort)
+size_t VariablesSet::getNumberOfExQuantifiedVarsOfSort(size_t vectorSort)
 {
 	if (vectorSort <= setExistQuantified.size())
 		return setExistQuantified.at(vectorSort).size();
@@ -230,7 +230,7 @@ size_t VariablesSet::getNumberOfExQuantifiedVarsOfSort(int vectorSort)
 /// This private function get a reference of the vector of constants of the given sort.  
 /// </summary>
 /// <param name="vectorSort"> The sort of the vector to get access</param>
-vector<Var>& VariablesSet::getUnsafeAccessToConstantsOfSort(const int vectorSort)
+vector<Var>& VariablesSet::getUnsafeAccessToConstantsOfSort(const size_t vectorSort)
 {
 	return setConstants.at(vectorSort);
 };
@@ -240,7 +240,7 @@ vector<Var>& VariablesSet::getUnsafeAccessToConstantsOfSort(const int vectorSort
 /// This private function get a reference of the vector of universally quantified variables of the given sort.  
 /// </summary>
 /// <param name="vectorSort"> The sort of the vector to get access</param>
-vector<Var>& VariablesSet::getUnsafeAccessToUniQuantifiedVarsOfSort(const int vectorSort)
+vector<Var>& VariablesSet::getUnsafeAccessToUniQuantifiedVarsOfSort(const size_t vectorSort)
 {
 	return setUniQuantified.at(vectorSort);
 };
@@ -249,7 +249,7 @@ vector<Var>& VariablesSet::getUnsafeAccessToUniQuantifiedVarsOfSort(const int ve
 /// This private function get a reference of the vector of existentially quantified variables of the given sort.  
 /// </summary>
 /// <param name="vectorSort"> The sort of the vector to get access</param>
-vector<Var>& VariablesSet::getUnsafeAccessToExQuantifiedVarsOfSort(const int vectorSort)
+vector<Var>& VariablesSet::getUnsafeAccessToExQuantifiedVarsOfSort(const size_t vectorSort)
 {
 	return setExistQuantified.at(vectorSort);
 };
@@ -260,7 +260,7 @@ vector<Var>& VariablesSet::getUnsafeAccessToExQuantifiedVarsOfSort(const int vec
 /// </summary>
 /// <param name="variable"> The constant to be inserted</param>
 /// <param name="vectorSort"> The sort of the vector where constant is inserted</param>
-int  VariablesSet::insertConstant(const Var& variable, const int vectorSort)
+int  VariablesSet::insertConstant(const Var& variable, const size_t vectorSort)
 {
 	if (variable.getVarType() != 0 || variable.getSort() != vectorSort)
 		return -1;
@@ -277,7 +277,7 @@ int  VariablesSet::insertConstant(const Var& variable, const int vectorSort)
 /// </summary>
 /// <param name="variable"> The universally quantified variable to be inserted</param>
 /// <param name="vectorSort"> The sort of the vector where variable is inserted</param>
-int  VariablesSet::insertUniQuantifiedVar(const Var& variable, const int vectorSort)
+int  VariablesSet::insertUniQuantifiedVar(const Var& variable, const size_t vectorSort)
 {
 	if (variable.getVarType() != 1 || variable.getSort() != vectorSort)
 		return -1;
@@ -294,7 +294,7 @@ int  VariablesSet::insertUniQuantifiedVar(const Var& variable, const int vectorS
 /// </summary>
 /// <param name="variable"> The existentially quantified variable to be inserted</param>
 /// <param name="vectorSort"> The sort of the vector where variable is inserted</param>
-int  VariablesSet::insertExQuantifiedVar(const Var& variable, const int vectorSort)
+int  VariablesSet::insertExQuantifiedVar(const Var& variable, const size_t vectorSort)
 {
 	if (variable.getVarType() != 2 || variable.getSort() != vectorSort)
 		return -1;
@@ -310,7 +310,7 @@ int  VariablesSet::insertExQuantifiedVar(const Var& variable, const int vectorSo
 /// </summary>
 /// <param name="variable_name"> The name of the constant to be inserted</param>
 /// <param name="vectorSort"> The sort of the vector where the constant is inserted</param>
-int  VariablesSet::insertConstant(const string& name, const int vectorSort)
+int  VariablesSet::insertConstant(const string& name, const size_t vectorSort)
 {	
 	getUnsafeAccessToConstantsOfSort(vectorSort).push_back(Var(name, vectorSort, 0, 0));
 	int pos = ((int)getUnsafeAccessToConstantsOfSort(vectorSort).size()) - 1;
@@ -324,7 +324,7 @@ int  VariablesSet::insertConstant(const string& name, const int vectorSort)
 /// </summary>
 /// <param name="variable_name"> The name of the universally quantified variable to be inserted</param>
 /// <param name="vectorSort"> The sort of the vector where the variable is inserted</param>
-int  VariablesSet::insertUniQuantifiedVar(const string& name, const int vectorSort)
+int  VariablesSet::insertUniQuantifiedVar(const string& name, const size_t vectorSort)
 {
 	getUnsafeAccessToUniQuantifiedVarsOfSort(vectorSort).push_back(Var(name, vectorSort, 0, 0));
 	int pos = ((int) getUnsafeAccessToUniQuantifiedVarsOfSort(vectorSort).size()) - 1;
@@ -338,7 +338,7 @@ int  VariablesSet::insertUniQuantifiedVar(const string& name, const int vectorSo
 /// </summary>
 /// <param name="variable_name"> The name of the existantially quantified variable to be inserted</param>
 /// <param name="vectorSort"> The sort of the vector where the variable is inserted</param>
-int  VariablesSet::insertExQuantifiedVar(const string& name, const int vectorSort)
+int  VariablesSet::insertExQuantifiedVar(const string& name, const size_t vectorSort)
 {
 	getUnsafeAccessToExQuantifiedVarsOfSort(vectorSort).push_back(Var(name, vectorSort, 0, 0));
 	int pos = ((int)getUnsafeAccessToExQuantifiedVarsOfSort(vectorSort).size()) - 1;
@@ -351,7 +351,7 @@ int  VariablesSet::insertExQuantifiedVar(const string& name, const int vectorSor
 /// This function get a constant reference of  the vector of constants of the given sort.  
 /// </summary>
 /// <param name="vectorSort"> The sort of the vector to get access</param>
-const vector<Var>& VariablesSet::getAccessToConstantsOfSort (const int vectorSort) const
+const vector<Var>& VariablesSet::getAccessToConstantsOfSort (const size_t vectorSort) const
 {
 	return setConstants.at(vectorSort);
 };
@@ -361,7 +361,7 @@ const vector<Var>& VariablesSet::getAccessToConstantsOfSort (const int vectorSor
 /// This function get a constant reference of the vector of universally quantified variables of the given sort.  
 /// </summary>
 /// <param name="vectorSort"> The sort of the vector to get access</param>
-const vector<Var>& VariablesSet::getAccessToUniQuantifiedVarsOfSort(const int vectorSort) const
+const vector<Var>& VariablesSet::getAccessToUniQuantifiedVarsOfSort(const size_t vectorSort) const
 {
 	return setUniQuantified.at(vectorSort);
 };
@@ -371,7 +371,7 @@ const vector<Var>& VariablesSet::getAccessToUniQuantifiedVarsOfSort(const int ve
 /// This function get a constant reference of the vector of exist. quantified variables of the given sort.  
 /// </summary>
 /// <param name="vectorSort"> The sort of the vector to get access</param>
-const vector<Var>& VariablesSet::getAccessToExQuantifiedVarsOfSort(const int vectorSort) const
+const vector<Var>& VariablesSet::getAccessToExQuantifiedVarsOfSort(const size_t vectorSort) const
 {
 	return setExistQuantified.at(vectorSort);
 };
@@ -415,9 +415,9 @@ size_t Operators::getQuantSize() const
 /// <param name="connective"> The logic connective</param>
 int Operators::getLogConnectValue(string connective) const
 {
-	for (int i = 0; i < logConnect.size(); i++)
+	for (size_t i = 0; i < logConnect.size(); i++)
 		if (logConnect.at(i).compare(connective) == 0)
-			return i;
+			return (int) i;
 	return -1;
 };
 
@@ -436,9 +436,9 @@ int Operators::isALiteral()
 /// <param name="setOperator"> The set operator</param>
 int Operators::getSetOpValue(string setOperator) const
 {
-	for (int i = 0; i < setOp.size(); i++)
+	for (size_t i = 0; i < setOp.size(); i++)
 		if (setOp.at(i).compare(setOperator) == 0)
-			return i;
+			return (int) i;
 	return -1;
 };
 
@@ -448,9 +448,9 @@ int Operators::getSetOpValue(string setOperator) const
 /// <param name="quantifier"> The quantifier</param>
 int Operators::getQuantValue(string quantifier) const
 {
-	for (int i = 0; i < quantifiers.size(); i++)
+	for (size_t i = 0; i < quantifiers.size(); i++)
 		if (quantifiers.at(i).compare(quantifier) == 0)
-			return i;
+			return (int) i;
 	return -1;
 };
 
@@ -458,7 +458,7 @@ int Operators::getQuantValue(string quantifier) const
 /// This function returns the logic connective represented by the given integer. Such number corresponds to the position of the connective in the vector.  Returns null if the connective does not exist.
 /// </summary>
 /// <param name="index_log"> The integer representing the logic connective</param>
-string Operators::getLogConnectElement(int index_log) const
+string Operators::getLogConnectElement(size_t index_log) const
 {
 	if (index_log < logConnect.size())
 		return logConnect.at(index_log);
@@ -469,7 +469,7 @@ string Operators::getLogConnectElement(int index_log) const
 /// This function returns the set operator represented by the given integer. Such number corresponds to the position of the operator in the vector.  Returns null if the operator does not exist.
 /// </summary>
 /// <param name="index_op"> The integer representing the operator</param>
-string Operators::getSetOpElement(int index_op) const
+string Operators::getSetOpElement(size_t index_op) const
 {
 	if (index_op < setOp.size())
 		return setOp.at(index_op);
@@ -480,7 +480,7 @@ string Operators::getSetOpElement(int index_op) const
 /// This function returns the quantifier represented by the given integer. Such number corresponds to the position of the quantifier in the vector.  Returns null if the quantifier does not exist.
 /// </summary>
 /// <param name="index_quant"> The integer representing the quantifier</param>
-string Operators::getQuantElement(int index_quant) const
+string Operators::getQuantElement(size_t index_quant) const
 {
 	if (index_quant < quantifiers.size())
 		return quantifiers.at(index_quant);
@@ -527,7 +527,7 @@ Literal::Literal(const int literalOp_, const vector<Var*>& components_)
 /// </summary>
 /// <param name="literalOp_"> The value of the set operator</param>
 /// <param name="componentsSize"> The size of vector of vars</param>
-Literal::Literal(const int literalOp_, const int componentsSize)
+Literal::Literal(const int literalOp_, const size_t componentsSize)
 {
 	literalOp = literalOp_;
 	components = vector<Var*>(componentsSize);
@@ -564,7 +564,7 @@ void Literal::setLiteralOp(const int literalOp_)
 /// This function returns the variable at the given position. Returns null if the index is greater than the size of the vector.
 /// </summary>
 /// <param name="index"> The index of the var to be returned</param>
-const Var* Literal::getElementAt(const int index) const
+const Var* Literal::getElementAt(const size_t index) const
 {
 	if(index<components.size())
 	 return components.at(index);
@@ -585,7 +585,7 @@ void Literal::addElement(Var* element)
 /// </summary>
 /// <param name="index"> The index of the variable to replace</param>
 /// <param name="element"> The element to insert</param>
-void Literal::setElementAt(const int index, Var* element)
+void Literal::setElementAt(const size_t index, Var* element)
 {
 	if (index < components.size())
 		components.at(index) = element;
@@ -599,9 +599,9 @@ void Literal::setElementAt(const int index, Var* element)
 int Literal::equals(const Literal &literal) const
 {
   if ((this->getElements().size() == literal.getElements().size()) &&
-	  (this->getLiteralOp() == literal.getLiteralOp()) ) //same size and same set operator allows for a deeper check
+	  (this->getLiteralOp() == literal.getLiteralOp()) ) //same size and same set operator allow for a deeper check
 	{
-		int j = 0;
+		size_t j = 0;
 		for (;j < this->getElements().size(); j++) //lets check each single var		
 		 if ( this->getElementAt(j)->equal(literal.getElementAt(j)) != 0)
 			break;
