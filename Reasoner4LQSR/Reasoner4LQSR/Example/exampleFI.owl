@@ -34,7 +34,7 @@
         <NamedIndividual IRI="#b"/>
     </Declaration>
     <Declaration>
-        <Class IRI="#NotActiveSystem"/>
+        <Class IRI="#NonActiveSystem"/>
     </Declaration>
     <Declaration>
         <Class IRI="#OoSSystem"/>
@@ -53,16 +53,16 @@
         <Class IRI="#System"/>
     </SubClassOf>
     <SubClassOf>
-        <Class IRI="#NotActiveSystem"/>
+        <Class IRI="#NonActiveSystem"/>
         <Class IRI="#System"/>
     </SubClassOf>
     <SubClassOf>
         <Class IRI="#OoSSystem"/>
-        <Class IRI="#NotActiveSystem"/>
+        <Class IRI="#NonActiveSystem"/>
     </SubClassOf>
     <DisjointClasses>
         <Class IRI="#ActiveSystem"/>
-        <Class IRI="#NotActiveSystem"/>
+        <Class IRI="#NonActiveSystem"/>
     </DisjointClasses>
     <ClassAssertion>
         <Class IRI="#OoSSystem"/>
@@ -115,7 +115,7 @@
         </Body>
         <Head>
             <ClassAtom>
-                <Class IRI="#NotActiveSystem"/>
+                <Class IRI="#NonActiveSystem"/>
                 <Variable IRI="#x"/>
             </ClassAtom>
         </Head>
