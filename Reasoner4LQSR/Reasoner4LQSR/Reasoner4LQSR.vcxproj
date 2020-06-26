@@ -98,11 +98,12 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <WarningLevel>EnableAllWarnings</WarningLevel>
+      <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalIncludeDirectories>C:\Users\danie\source\repos\DL4xD-Reasoner\Reasoner4LQSR\Reasoner4LQSR;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -162,7 +163,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Structure4LQSR.cpp" />
-    <ClCompile Include="Test\Literal_Tester.cpp" />
+    <ClCompile Include="Test\Literal_Tester.cpp">
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Structure;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
     <ClCompile Include="Test\mainTester.cpp" />
     <ClCompile Include="Test\Operators_Tester.cpp" />
     <ClCompile Include="Test\VariablesSet_Tester.cpp" />
