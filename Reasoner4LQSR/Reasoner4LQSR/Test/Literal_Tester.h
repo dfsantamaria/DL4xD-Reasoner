@@ -2,7 +2,7 @@
 
 #include <string>
 #include <vector>
-#include "Structure4LQSR.h"
+#include "../Structure4LQSR.h"
 
 
 int testLiteral_getElements(Literal &literal, Var* &var);

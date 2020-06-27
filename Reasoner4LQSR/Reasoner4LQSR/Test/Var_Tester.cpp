@@ -92,25 +92,44 @@ int testVar_setVarType(Var& variable, int type)
 
 void testVar(vector<pair<string, int>>& results)
 {	
+        Var s = Var("x_0", 0, 0, 0); //gcc compatibility
 	results.push_back(std::make_pair( "testVarCreation", testVarCreation()));
-	results.push_back(std::make_pair("testVar_getName input Var(x_0, 0, 0, 0), x_0", testVar_getName(Var("x_0", 0, 0, 0), "x_0")));
-	results.push_back(std::make_pair("testVar_getSort input Var(x_1, 1, 0, 0), 1", testVar_getSort(Var("x_1", 1, 0, 0), 1)));
-	results.push_back(std::make_pair("testVar_setName input Var(x_0, 0, 0, 0), newName", testVar_setName(Var("x_0", 0, 0, 0), "newName")));
-	results.push_back(std::make_pair("testVar_setSort input Var(x_0, 0, 0, 0), 1", testVar_setSort(Var("x_0", 0, 0, 0), 1)));
-	results.push_back(std::make_pair("testVar_getIndex input Var(x_1, 1, 0, 34), 34", testVar_getIndex(Var("x_1", 1, 0, 34), 34)));
-	results.push_back(std::make_pair("testVar_setIndex input Var(x_1, 1, 0, 0), 34", testVar_setIndex(Var("x_1", 1, 0, 0), 34)));
-	results.push_back(std::make_pair("testVar_getVarType input Var(x_1, 1, 1, 0), 1", testVar_getVarType( Var("x_1", 1, 1, 0), 1)));
-	results.push_back(std::make_pair("testVar_setVarType input Var(x_1, 1, 1, 0), 3", testVar_setVarType(Var("x_1", 1, 1, 0), 3)));
+	results.push_back(std::make_pair("testVar_getName input Var(x_0, 0, 0, 0), x_0", testVar_getName(s, "x_0")));
+        s=Var("x_1", 1, 0, 0);
+	results.push_back(std::make_pair("testVar_getSort input Var(x_1, 1, 0, 0), 1", testVar_getSort(s, 1)));
+        s=Var("x_0", 0, 0, 0);
+	results.push_back(std::make_pair("testVar_setName input Var(x_0, 0, 0, 0), newName", testVar_setName(s, "newName")));
+        s=Var("x_0", 0, 0, 0);
+	results.push_back(std::make_pair("testVar_setSort input Var(x_0, 0, 0, 0), 1", testVar_setSort(s, 1)));
+        s=Var("x_1", 1, 0, 34);
+	results.push_back(std::make_pair("testVar_getIndex input Var(x_1, 1, 0, 34), 34", testVar_getIndex(s, 34)));
+        s=Var("x_1", 1, 0, 0);
+	results.push_back(std::make_pair("testVar_setIndex input Var(x_1, 1, 0, 0), 34", testVar_setIndex(s, 34)));
+        s=Var("x_1", 1, 1, 0);
+	results.push_back(std::make_pair("testVar_getVarType input Var(x_1, 1, 1, 0), 1", testVar_getVarType(s , 1)));
+        s=Var("x_1", 1, 1, 0);
+	results.push_back(std::make_pair("testVar_setVarType input Var(x_1, 1, 1, 0), 3", testVar_setVarType(s, 3)));
 	//Checking var equality
-	results.push_back(std::make_pair("testVar_equal input Var(one, 1, 0, 0), Var(one, 1, 0, 0), 0 ", testVar_equal(Var("one", 1, 0, 0), Var("one", 1, 0, 0), 0)));
-	results.push_back(std::make_pair("testVar_equal input Var(ones, 1, 0, 0), Var(one, 1, 0, 0), 1 ", testVar_equal(Var("ones", 1, 0, 0), Var("one", 1, 0, 0), 1)));
-	results.push_back(std::make_pair("testVar_equal input Var(one, 1, 0, 1), Var(one, 1, 0, 5), 0 ", testVar_equal(Var("one", 1, 0, 1), Var("one", 1, 0, 5), 0)));
-	results.push_back(std::make_pair("testVar_equal input Var(one, 1, 2, 0), Var(one, 1, 0, 0), 1 ", testVar_equal(Var("one", 1, 2, 0), Var("one", 1, 0, 0), 1)));
-
+        s=Var("one", 1, 0, 0);
+        Var t=Var("one", 1, 0, 0);
+	results.push_back(std::make_pair("testVar_equal input Var(one, 1, 0, 0), Var(one, 1, 0, 0), 0 ", testVar_equal(s, t, 0)));
+        s=Var("ones", 1, 0, 0);	
+        t=Var("one", 1, 0, 0);
+        results.push_back(std::make_pair("testVar_equal input Var(ones, 1, 0, 0), Var(one, 1, 0, 0), 1 ", testVar_equal(s, t, 1)));
+        s=Var("one", 1, 0, 1);
+        t= Var("one", 1, 0, 5);
+	results.push_back(std::make_pair("testVar_equal input Var(one, 1, 0, 1), Var(one, 1, 0, 5), 0 ", testVar_equal(s, t, 0)));
+        s=Var("one", 1, 2, 0);
+        t=Var("one", 1, 0, 0);
+	results.push_back(std::make_pair("testVar_equal input Var(one, 1, 2, 0), Var(one, 1, 0, 0), 1 ", testVar_equal(s, t, 1)));
 	//Checking var equality
-	results.push_back(std::make_pair("testVar_equal input Var(one, 1, 0, 0), one, 1, 0, 0, 0 ", testVar_equal(Var("one", 1, 0, 0), "one", 1, 0, 0)));
-	results.push_back(std::make_pair("testVar_equal input Var(ones, 1, 0, 0), Var(one, 1, 0, 0), 1 ", testVar_equal(Var("ones", 1, 0, 0), "one", 1, 0, 1)));
-	results.push_back(std::make_pair("testVar_equal input Var(one, 1, 0, 1), Var(one, 1, 0, 5), 0 ", testVar_equal(Var("one", 1, 0, 1), "one", 1, 0,  0)));
-	results.push_back(std::make_pair("testVar_equal input Var(one, 1, 2, 0), Var(one, 1, 0, 0), 1 ", testVar_equal(Var("one", 1, 2, 0), "one", 1, 0, 1)));
+        s=Var("one", 1, 0, 0);
+	results.push_back(std::make_pair("testVar_equal input Var(one, 1, 0, 0), one, 1, 0, 0, 0 ", testVar_equal(s, "one", 1, 0, 0)));
+        s=Var("ones", 1, 0, 0);
+	results.push_back(std::make_pair("testVar_equal input Var(ones, 1, 0, 0), Var(one, 1, 0, 0), 1 ", testVar_equal(s, "one", 1, 0, 1)));
+        s=Var("one", 1, 0, 1);
+	results.push_back(std::make_pair("testVar_equal input Var(one, 1, 0, 1), Var(one, 1, 0, 5), 0 ", testVar_equal(s, "one", 1, 0,  0)));
+        s=Var("one", 1, 2, 0);
+	results.push_back(std::make_pair("testVar_equal input Var(one, 1, 2, 0), Var(one, 1, 0, 0), 1 ", testVar_equal(s, "one", 1, 0, 1)));
 
 }

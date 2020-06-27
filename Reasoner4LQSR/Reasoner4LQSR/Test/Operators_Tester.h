@@ -1,7 +1,7 @@
 #pragma once
 #include <string>
 #include <vector>
-#include "Structure4LQSR.h"
+#include "../Structure4LQSR.h"
 
 int test_getLogConnectSize(Operators& operators, size_t aspected);
 int test_getSetOpSize(Operators& operators, size_t aspected);

@@ -1,7 +1,7 @@
 #pragma once
 #include <string>
 #include <vector>
-#include "Structure4LQSR.h"
+#include "../Structure4LQSR.h"
 
 void testVariablesSet(vector<pair<string, int>>& results);
 int testVariablesSetCreation(size_t n, vector<size_t>& vec);
