@@ -2,8 +2,8 @@ CC = g++
 CFLAGC = -std=c++11  -c
 CFLAGO = -std=c++11 -o
 
-main : Structure4LQSR.o mainTester.o
-	$(CC) $(CFLAGO)   main Structure4LQSR.o mainTester.o
+runTest : Structure4LQSR.o mainTester.o
+	$(CC) $(CFLAGO) runTest Structure4LQSR.o mainTester.o Literal_Tester.o Operators_Tester.o Var_Tester.o VariablesSet_Tester.o
 
 Structure4LQSR.o :  Structure4LQSR.cpp Structure4LQSR.h
 	$(CC) $(CFLAGC) Structure4LQSR.cpp
@@ -24,4 +24,4 @@ mainTester.o : Test/mainTester.cpp  Literal_Tester.o Operators_Tester.o Var_Test
 	$(CC) $(CFLAGC)  Test/mainTester.cpp
 
 clean:
-	rm *.o program
+	rm *.o 

@@ -123,19 +123,27 @@ int testVariablesSet_insertExQuantifiedVariable(VariablesSet& varset, vector<pai
 void testVariablesSet(vector<pair<string, int>>& results)
 {
 	//Empty Variables Set Test
-	results.push_back(std::make_pair("testVariablesSetCreation input (3, vector<size_t>{1, 1, 0, 1, 1, 1, 0, 1, 1, 0, 0, 0})", testVariablesSetCreation(3, vector<size_t>{1, 1, 0, 1, 1, 1, 0, 1, 1, 0, 0, 0})));
-	results.push_back(std::make_pair("testVariablesSet_getSorting input (3, vector<size_t>{1, 1, 0, 1, 1, 1, 0, 1, 1, 0, 0, 0})", testVariablesSetCreation(3, vector<size_t>{1, 1, 0, 1, 1, 1, 0, 1, 1, 0, 0, 0})));
+    vector<size_t> v = vector<size_t>{1, 1, 0, 1, 1, 1, 0, 1, 1, 0, 0, 0};
+	results.push_back(std::make_pair("testVariablesSetCreation input (3, vector<size_t>{1, 1, 0, 1, 1, 1, 0, 1, 1, 0, 0, 0})", testVariablesSetCreation(3, v)));
+	
+    v=vector<size_t>{1, 1, 0, 1, 1, 1, 0, 1, 1, 0, 0, 0};
+	results.push_back(std::make_pair("testVariablesSet_getSorting input (3, vector<size_t>{1, 1, 0, 1, 1, 1, 0, 1, 1, 0, 0, 0})", testVariablesSetCreation(3, v)));
 	
 	//testing constants counter
+    v=vector<size_t>{1, 1, 0, 1, 1, 1, 0, 1, 1, 0, 0, 0};   
+    VariablesSet s = VariablesSet(3, v);
 	results.push_back(std::make_pair("testVariablesSet_getNumberOfConstantsOfSort(3, vector<size_t>{1, 1, 0, 1, 1, 1, 0, 1, 1, 0, 0, 0}, 0, 0)",  
-		                        testVariablesSet_getNumberOfConstantsOfSort(VariablesSet(3, vector<size_t>{1, 1, 0, 1, 1, 1, 0, 1, 1, 0, 0, 0}), 0, 0)));
+		                        testVariablesSet_getNumberOfConstantsOfSort(s, 0, 0)));
 	
 	//testing uni. quantified vars counter
+	v=vector<size_t>{0, 0, 0, 0,  1, 1, 0, 1,  1, 0, 0, 0};
+	s=VariablesSet(3, v);
 	results.push_back(std::make_pair("testVariablesSet_getNumberOfUniQuantifiedVarsOfSort(3, vector<size_t>{1, 1, 0, 1, 1, 1, 0, 1, 1, 0, 0, 0}, 0, 0)",
-		testVariablesSet_getNumberOfUniQuantifiedVarsOfSort(VariablesSet(3, vector<size_t>{0, 0, 0, 0,  1, 1, 0, 1,  1, 0, 0, 0}), 0, 0)));
+		testVariablesSet_getNumberOfUniQuantifiedVarsOfSort(s, 0, 0)));
 
 	//testing ex. quantified vars counter
-	VariablesSet s =VariablesSet(3, vector<size_t>{0, 0, 0, 0,  0, 0, 0, 0,  1, 0, 1, 1});
+	v=vector<size_t>{0, 0, 0, 0,  0, 0, 0, 0,  1, 0, 1, 1};
+	s =VariablesSet(3, v);
 	s.insertExQuantifiedVar(Var("one1", 3, 2, 0), 3);
 	results.push_back(std::make_pair("testVariablesSet_getNumberOfExQuantifiedOfSort(3, vector<size_t>{1, 1, 0, 1, 1, 1, 0, 1, 1, 0, 0, 0}, 0, 0)",
 		testVariablesSet_getNumberOfExQuantifiedVarsOfSort(s, 3, 1)));
@@ -143,33 +151,40 @@ void testVariablesSet(vector<pair<string, int>>& results)
 
 	//Testing constant insertion	
 	int qType = 0;
-	results.push_back(std::make_pair("testVariablesSet_insertConstant",	testVariablesSet_insertConstant(VariablesSet(3, 
-		                                vector<size_t>{1, 1, 0, 1,   0, 0, 0, 0,   0, 0, 0, 0}),
-	                                	vector<Var>{Var("one1", 0, qType, 0), Var("one2", 1, qType, 0), Var("one22", 2, qType, 0), Var("one3", 3, qType, 0)})));
+	v=vector<size_t>{1, 1, 0, 1,   0, 0, 0, 0,   0, 0, 0, 0};
+	s=VariablesSet(3,v);
+	vector<Var> vv = vector<Var>{Var("one1", 0, qType, 0), Var("one2", 1, qType, 0), Var("one22", 2, qType, 0), Var("one3", 3, qType, 0)};
+	results.push_back(std::make_pair("testVariablesSet_insertConstant",	testVariablesSet_insertConstant(s, vv)));
 
-	results.push_back(std::make_pair("testVariablesSet_insertConstant", testVariablesSet_insertConstant(VariablesSet(3,	
-		vector<size_t>{1, 1, 0, 1,  0, 0, 0, 0,  0, 0, 0, 0}),
-		vector<pair<string,int>>{std::make_pair("one1", 0), std::make_pair("one2", 1), std::make_pair("one22", 2), std::make_pair("one3",3)})));
+    v=vector<size_t>{1, 1, 0, 1,  0, 0, 0, 0,  0, 0, 0, 0};
+    s=VariablesSet(3,v);
+    vector<pair<string,int>> vp = vector<pair<string,int>>{std::make_pair("one1", 0), std::make_pair("one2", 1), std::make_pair("one22", 2), std::make_pair("one3",3)};
+	results.push_back(std::make_pair("testVariablesSet_insertConstant", testVariablesSet_insertConstant(s, vp)));
 
 	// Testing Univ. quantified variables insertion
 
 	qType = 1;
-	results.push_back(std::make_pair("testVariablesSet_insertUniQuantifiedVariable", testVariablesSet_insertUniQuantifiedVariable(VariablesSet(3,
-		vector<size_t>{0, 0, 0, 0,  1, 1, 0, 1,  0, 0, 0, 0}),
-		vector<Var>{Var("one1", 0, qType, 0), Var("one2", 1, qType, 0), Var("one22", 2, qType, 0), Var("one3", 3, qType, 0)})));
+	v=vector<size_t>{0, 0, 0, 0,  1, 1, 0, 1,  0, 0, 0, 0};
+	s=VariablesSet(3,v);
+	vv=vector<Var>{Var("one1", 0, qType, 0), Var("one2", 1, qType, 0), Var("one22", 2, qType, 0), Var("one3", 3, qType, 0)};
+	results.push_back(std::make_pair("testVariablesSet_insertUniQuantifiedVariable", testVariablesSet_insertUniQuantifiedVariable(s,vv)));
 
-	results.push_back(std::make_pair("testVariablesSet_insertUniquantifiedVariable", testVariablesSet_insertUniQuantifiedVariable(VariablesSet(3,
-		vector<size_t>{0, 0, 0, 0,  1, 0, 1, 1,  0, 0, 0, 0}),
-		vector<pair<string, size_t>>{std::make_pair("one1", 0), std::make_pair("one2", 1), std::make_pair("one22", 2), std::make_pair("one3", 3)})));
+    v=vector<size_t>{0, 0, 0, 0,  1, 0, 1, 1,  0, 0, 0, 0};
+    s=VariablesSet(3,v);
+    vector<pair<string, size_t>> vpt = vector<pair<string, size_t>>{std::make_pair("one1", 0), std::make_pair("one2", 1), std::make_pair("one22", 2), std::make_pair("one3", 3)};
+	results.push_back(std::make_pair("testVariablesSet_insertUniquantifiedVariable", testVariablesSet_insertUniQuantifiedVariable(s, vpt)));
 
 	// Testing Ex. quantified variables insertion
 
 	qType = 2;
-	results.push_back(std::make_pair("testVariablesSet_insertExQuantifiedVariable", testVariablesSet_insertExQuantifiedVariable(VariablesSet(3,
-		vector<size_t>{0, 0, 0, 0,  0, 0, 0, 0,  1, 1, 1, 1}),
-		vector<Var>{Var("one1", 0, qType, 0), Var("one2", 1, qType, 0), Var("one22", 2, qType, 0), Var("one3", 3, qType, 0)})));
+	v=vector<size_t>{0, 0, 0, 0,  0, 0, 0, 0,  1, 1, 1, 1};
+	s=VariablesSet(3,v);
+	vv = vector<Var>{Var("one1", 0, qType, 0), Var("one2", 1, qType, 0), Var("one22", 2, qType, 0), Var("one3", 3, qType, 0)};
+	results.push_back(std::make_pair("testVariablesSet_insertExQuantifiedVariable", testVariablesSet_insertExQuantifiedVariable(s,
+		vv)));
 
-	results.push_back(std::make_pair("testVariablesSet_insertExquantifiedVariable", testVariablesSet_insertExQuantifiedVariable(VariablesSet(3,
-		vector<size_t>{0, 0, 0, 0,  0, 0, 0, 0,  1, 1, 1, 1}),
-		vector<pair<string, size_t>>{std::make_pair("one1", 0), std::make_pair("one2", 1), std::make_pair("one22", 2), std::make_pair("one3", 3)})));
+    v=vector<size_t>{0, 0, 0, 0,  0, 0, 0, 0,  1, 1, 1, 1};
+    s=VariablesSet(3,v);
+    vpt=vector<pair<string, size_t>>{std::make_pair("one1", 0), std::make_pair("one2", 1), std::make_pair("one22", 2), std::make_pair("one3", 3)};
+	results.push_back(std::make_pair("testVariablesSet_insertExquantifiedVariable", testVariablesSet_insertExQuantifiedVariable(s, vpt)));
 }
