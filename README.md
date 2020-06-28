@@ -9,7 +9,7 @@ This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 
 Compile instructions:
 
-The software has been implemented in the Microsoft Visual Studio 2017 environment. Please refer to VS17 documentation for compiling instructions. If you decide to compile the program with GCC remove all the #include "stdafx.h" instructions. Always refer to the "main" branch for the last (stable) version of the sofware.
+The software has been implemented in the Microsoft Visual Studio 2020 environment. Please refer to VS20 documentation for compiling instructions. If you decide to compile the program with GCC run make and make clean on the parent folder. Always refer to the "main" branch for the last (stable) version of the sofware.
 
 Software downloaded from this repository is provided 'as is' without warranty of any kind, either express or implied, including, but not limited to, the implied warranties of fitness for a purpose, or the warranty of non-infringement. Without limiting the foregoing, the authors make no warranty that:
 
