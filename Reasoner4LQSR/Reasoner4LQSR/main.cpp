@@ -50,7 +50,7 @@ int main()
 	vector<int> KB2size(sizeofVVector,0);
 	cout << "Reading OWL File" << endl; 
 	
-	int chk=readOWLXMLOntology("Example/exampleFI.owl", ontNamespaces, formulae, KB2size);
+	int chk=readOWLXMLOntology("Example/ceramic.owl", ontNamespaces, formulae, KB2size);
 	if (chk == -1)
 	{
 		cout << "Ontology not supported" << endl;
@@ -95,49 +95,49 @@ int main()
 	//Printing content of VVL and VQL
 
 
-	auto started = std::chrono::high_resolution_clock::now();
+	//auto started = std::chrono::high_resolution_clock::now();
 
-	vector<vector<int>> chierarchy = vector<vector<int>>(KB2size.at(1)); //Class Adjacency List
-	vector<vector<int>> rhierarchy = vector<vector<int>>(KB2size.at(propertyindex)); //Role adjacency List
-
-
-	vector<vector<int>> chierarchyOUTSUB = vector<vector<int>>(KB2size.at(1)); //Sub-Class Hierarchy
-	vector<vector<int>> rhierarchyOUTSUB = vector<vector<int>>(KB2size.at(propertyindex)); //Sub-Role Hierachy
+	//vector<vector<int>> chierarchy = vector<vector<int>>(KB2size.at(1)); //Class Adjacency List
+	//vector<vector<int>> rhierarchy = vector<vector<int>>(KB2size.at(propertyindex)); //Role adjacency List
 
 
-	computeClassSubsumptionGraph(chierarchy, KB2mq); //compute Class subsumption graph
-	computeRoleSubsumptionGraph(rhierarchy, KB2mq); //compute Class subsumption graph
-
-	computeSubHierarchy(chierarchy, chierarchyOUTSUB); //compute sub-class hierarchy
-	computeSubHierarchy(rhierarchy, rhierarchyOUTSUB); //compute sub-role hierarchy
+	//vector<vector<int>> chierarchyOUTSUB = vector<vector<int>>(KB2size.at(1)); //Sub-Class Hierarchy
+	//vector<vector<int>> rhierarchyOUTSUB = vector<vector<int>>(KB2size.at(propertyindex)); //Sub-Role Hierachy
 
 
-	vector<vector<int>> chierarchyOUTSUP = vector<vector<int>>(KB2size.at(1)); //Super-class hierarchy
-	vector<vector<int>> rhierarchyOUTSUP = vector<vector<int>>(KB2size.at(propertyindex)); //Super-role hierachy
+	//computeClassSubsumptionGraph(chierarchy, KB2mq); //compute Class subsumption graph
+	//computeRoleSubsumptionGraph(rhierarchy, KB2mq); //compute Class subsumption graph
+
+	//computeSubHierarchy(chierarchy, chierarchyOUTSUB); //compute sub-class hierarchy
+	//computeSubHierarchy(rhierarchy, rhierarchyOUTSUB); //compute sub-role hierarchy
 
 
-	computeSuperHierarchy(chierarchy, chierarchyOUTSUP);
-	computeSuperHierarchy(rhierarchy, rhierarchyOUTSUP);
+	//vector<vector<int>> chierarchyOUTSUP = vector<vector<int>>(KB2size.at(1)); //Super-class hierarchy
+	//vector<vector<int>> rhierarchyOUTSUP = vector<vector<int>>(KB2size.at(propertyindex)); //Super-role hierachy
 
-	auto done = std::chrono::high_resolution_clock::now();
 
-	printHierarchy(chierarchyOUTSUB, 1, "LOG/exampleSUB.txt");
+	//computeSuperHierarchy(chierarchy, chierarchyOUTSUP);
+	//computeSuperHierarchy(rhierarchy, rhierarchyOUTSUP);
 
-	printHierarchy(rhierarchyOUTSUB, 3, "LOG/exampleSUB.txt");
+	//auto done = std::chrono::high_resolution_clock::now();
 
-	printHierarchy(chierarchyOUTSUP, 1, "LOG/exampleSUP.txt");
+	//printHierarchy(chierarchyOUTSUB, 1, "LOG/exampleSUB.txt");
 
-	printHierarchy(rhierarchyOUTSUP, 3, "LOG/exampleSUP.txt");
+	//printHierarchy(rhierarchyOUTSUB, 3, "LOG/exampleSUB.txt");
+
+	//printHierarchy(chierarchyOUTSUP, 1, "LOG/exampleSUP.txt");
+
+	//printHierarchy(rhierarchyOUTSUP, 3, "LOG/exampleSUP.txt");
 
 
 
 	//printClassGraph(chierarchy);
 	//printRoleGraph(rhierarchy);
-	std::cout << "Milliseconds Execution: " << std::chrono::duration_cast<std::chrono::milliseconds>(done - started).count() << endl;
+	//std::cout << "Milliseconds Execution: " << std::chrono::duration_cast<std::chrono::milliseconds>(done - started).count() << endl;
 
 
 
-
+	auto started = std::chrono::high_resolution_clock::now();
 	cout << "Expanding Tableau" << endl;
 	expandGammaTableau(tableau2);
 	//printVarSet();
@@ -146,6 +146,8 @@ int main()
 	cout << "Building EqSet" << endl;
 	buildEqSet(tableau2);	
 	//print EqSet
+	auto done = std::chrono::high_resolution_clock::now();
+
 	printEqSet(tableau2);
 
 	//print open branches
@@ -153,11 +155,11 @@ int main()
 
 	//print closed branches
 	printClosedBranches(tableau2);	
-
+	std::cout << "Milliseconds Execution: " << std::chrono::duration_cast<std::chrono::milliseconds>(done - started).count() << endl;
 	cout << "--End reading ontology--" << endl;                       
-
-	/* Query Reading*/
 	
+	/* Query Reading*/
+	/*
 	cout << "---" << endl;
 	cout << "Reading Query ..." << endl;
 	string queryname = "Example/query.txt";
@@ -183,12 +185,12 @@ int main()
 			}
 			cout << endl;
 		}
-	}
-	cout << "Printing Y/N results ..." << endl;
-	for (int i = 0; i < results.at(0)->getAnswerSet().size(); i++)
-	{
+	}*/
+//	cout << "Printing Y/N results ..." << endl;
+//	for (int i = 0; i < results.at(0)->getAnswerSet().size(); i++)
+//	{
 //		cout << "Branch number: " << i << " Answer:" << results.at(0)->getAnswerSet().at(i) << endl;
-	}
+//	}
 		
 //	cout << "Open Branch: " << tableau2.getOpenBranches().size() << endl;
 //	cout << "Closed Branch: " << tableau2.getClosedBranches().size() << endl;
