@@ -1,8 +1,0 @@
-( (V0{Ann} $IN V1{Person})  $OR (V0{Ann} $NI V1{Kid}) )
-( ( (V0{Ann} $NI V1{Person})  $OR (V0{Ann} $NI V1{VeryYoung}) ) $OR (V0{Ann} $IN V1{Kid}) )
-( (V0{Ann} $IN V1{VeryYoung})  $OR (V0{Ann} $NI V1{Kid}) )
-(V0{Ann} $IN V1{Person})
-( (V0{Annette} $IN V1{Person})  $OR (V0{Annette} $NI V1{Kid}) )
-( ( (V0{Annette} $NI V1{Person})  $OR (V0{Annette} $NI V1{VeryYoung}) ) $OR (V0{Annette} $IN V1{Kid}) )
-( (V0{Annette} $IN V1{VeryYoung})  $OR (V0{Annette} $NI V1{Kid}) )
-(V0{Annette} $IN V1{Person})

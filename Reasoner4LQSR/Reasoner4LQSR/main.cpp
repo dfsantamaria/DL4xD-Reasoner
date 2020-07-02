@@ -34,9 +34,9 @@ void debugEnd()
 	logFile.close();
 };
 
-int main()
+int main(int argc, char** argv)
 {
-	debugStart();	
+	//debugStart();	
 	/*
 	    OWL/XML Reader
 	*/
@@ -50,7 +50,7 @@ int main()
 	vector<int> KB2size(sizeofVVector,0);
 	cout << "Reading OWL File" << endl; 
 	
-	int chk=readOWLXMLOntology("Example/exampleFI.owl", ontNamespaces, formulae, KB2size);
+	int chk=readOWLXMLOntology(argv[1], ontNamespaces, formulae, KB2size);
 	if (chk == -1)
 	{
 		cout << "Ontology not supported" << endl;
@@ -135,9 +135,6 @@ int main()
 	//printRoleGraph(rhierarchy);
 	std::cout << "Milliseconds Execution: " << std::chrono::duration_cast<std::chrono::milliseconds>(done - started).count() << endl;
 
-
-
-
 	cout << "Expanding Tableau" << endl;
 	expandGammaTableau(tableau2);
 	//printVarSet();
@@ -160,7 +157,7 @@ int main()
 	
 	cout << "---" << endl;
 	cout << "Reading Query ..." << endl;
-	string queryname = "Example/query.txt";
+	string queryname = argv[2];
 	vector<Formula> querySet;
 	vector<string> stringSet = vector<string>(0);
 
@@ -187,7 +184,7 @@ int main()
 	cout << "Printing Y/N results ..." << endl;
 	for (int i = 0; i < results.at(0)->getAnswerSet().size(); i++)
 	{
-//		cout << "Branch number: " << i << " Answer:" << results.at(0)->getAnswerSet().at(i) << endl;
+		cout << "Branch number: " << i << " Answer:" << results.at(0)->getAnswerSet().at(i) << endl;
 	}
 		
 //	cout << "Open Branch: " << tableau2.getOpenBranches().size() << endl;
@@ -197,5 +194,5 @@ int main()
 //	printVarSet();
 	
 	
-	debugEnd();
+	//debugEnd();
 }
