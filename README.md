@@ -44,7 +44,7 @@ The use of the software downloaded through this repository is done at your own d
 
 Compile instructions:
 
-The software has been implemented with the Microsoft Visual Studio 2017 and above environment. Please refer to VS documentation for compiling instructions.  Always refer to the "main" branch for the last (stable) version of the sofware. Run the program by typing: 
+The software has been implemented with the Microsoft Visual Studio (MVS) 2017 and above environments. Please refer to MVS documentation for compiling instructions.  Always refer to the "main" branch for the last (stable) version of the sofware. Run the program by typing: 
 
 name_of_the_program ontolog_file_name query_file_name
 
