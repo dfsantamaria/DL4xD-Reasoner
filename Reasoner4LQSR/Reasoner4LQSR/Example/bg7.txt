@@ -1,5 +1,0 @@
-(V0{Ann})
-(V0{George})
-V1{Kid}
-V1{Young}
-($FA V0{t}) ($FA V1{t1})((V0{t} $IN V1{Person}) $AD (V0{t} $IN V1{t1}))

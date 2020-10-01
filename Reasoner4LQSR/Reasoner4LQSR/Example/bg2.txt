@@ -1,6 +1,0 @@
-V0{Annetta}
-V0{Clara}
-V0{Luis}
-($FA V0{z})($FA V0{z1})($FA V0{z2})($FA V0{z3})($FA V0{z4})( ($OA V0{z1} $CO V0{z2} $OA $IN V3{prop}) $OR ($OA V0{z3} $CO V0{z4} $OA $IN V3{prop2}) )
-($FA V0{z})($FA V0{z1})($FA V0{z2})($FA V0{z3})($FA V0{z4})( ($OA V0{z1} $CO V0{z2} $OA $IN V3{prop1}) $OR ($OA V0{z3} $CO V0{z4} $OA $IN V3{prop3}) )
-//END

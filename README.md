@@ -44,7 +44,11 @@ The use of the software downloaded through this repository is done at your own d
 
 Compile instructions:
 
-The software has been implemented in the Microsoft Visual Studio 2017 environment. Please refer to VS17 documentation for compiling instructions. If you decide to compile the program with GCC remove all the #include "stdafx.h" instructions. Always refer to the "main" branch for the last (stable) version of the sofware.
+The software has been implemented with the Microsoft Visual Studio (MVS) 2017 and above environments. Please refer to MVS documentation for compiling instructions.  Always refer to the "main" branch for the last (stable) version of the sofware. Run the program by typing: 
+
+name_of_the_program ontolog_file_name query_file_name
+
+For convenience, you may redirect the output on a file. An ontology and query example can be found in the "Example" folder.
 
 Software downloaded from this repository is provided 'as is' without warranty of any kind, either express or implied, including, but not limited to, the implied warranties of fitness for a purpose, or the warranty of non-infringement. Without limiting the foregoing, the authors make no warranty that:
 

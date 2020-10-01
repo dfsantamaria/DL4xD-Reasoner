@@ -1,6 +1,0 @@
-V0{a}
-V0{b}
-V0{c}
-V0{d}
-V0{e}
-($FA V0{z})($FA V0{z1})($FA V0{z2}) ((((V0{z} $IN V1{Location})  $AD (V0{z1} $IN V1{Trauma})) $AD ($OA V0{z} $CO V0{z2}$AO $IN V3{isPartOf})) $IF ($OA V0{z2} $CO V0{z1}$AO $IN V3{isLocationOf}))

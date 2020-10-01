@@ -1,7 +1,0 @@
-V0{a}
-V0{b}
-V0{c}
-V0{d}
-($OA V0{c} $CO V0{c}$AO $NI V3{P})
-($FA V0{z})($FA V0{z1})( (V0{z} $NI V1{A})  $OR ( ( ($OA V0{z} $CO V0{z1}$AO $NI V3{P})  $OR (V0{z1} $IN V1{C}) ) $OR ( ($OA V0{z} $CO V0{z1}$AO $NI V3{P1})  $OR (V0{z1} $IN V1{B}) )))
-($FA V0{z})($FA V0{z1})( (V0{z} $NI V1{A})  $OR ( V0{z1} $IN V1{B} ))
