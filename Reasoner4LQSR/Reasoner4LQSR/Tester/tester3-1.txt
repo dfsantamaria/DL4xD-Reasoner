@@ -1,0 +1,15 @@
+V0{a}
+V0{b}
+V0{c}
+V0{d}
+V0{e}
+V0{f}
+V0{g}
+V0{h}
+V0{i}
+V0{l}
+V0{m}
+V0{o}
+($FA V0{z})($FA V0{z1})( ( ($OA V0{z} $CO V0{z1}$AO $NI V3{P})  $OR (V0{z1} $IN V1{C}) ) $OR ( ($OA V0{z} $CO V0{z1}$AO $NI V3{P1})  $OR (V0{z1} $IN V1{B}) )
+($FA V0{z})((V0{z} $IN V1{C1}) $OR (V0{z} $NI V1{C}) )
+($FA V0{z})($FA V0{z1})( ($OA V0{z} $CO V0{z1}$AO $IN V3{P1})  $OR (V0{z1} $NI V1{C1}) )
